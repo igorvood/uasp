@@ -8,7 +8,7 @@ import ru.vtb.uasp.common.service.dto.KafkaDto
 import ru.vtb.uasp.filter.configuration.property.FilterRule
 import ru.vtb.uasp.filter.service.FilterPredef.Predef
 
-class FilterProcessFunction(private val filterConfig: FilterRule) extends DlqProcessFunction[UaspDto, UaspDto, KafkaDto]{
+class FilterProcessFunction(private val filterConfig: FilterRule) extends DlqProcessFunction[UaspDto, UaspDto, KafkaDto] {
 
   override def processWithDlq(dto: UaspDto): Either[KafkaDto, UaspDto] =
     if (dto.filterResult(filterConfig)) {
