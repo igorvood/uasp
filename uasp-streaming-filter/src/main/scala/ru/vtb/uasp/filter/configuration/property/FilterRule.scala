@@ -62,10 +62,7 @@ object FilterRule extends PropertyCombiner[FilterRule] {
             fieldName <- propertyVal[String](prf, "fieldName")(appProps, configurationInitialise, s)
             operandClass <- propertyVal[String](prf, "operandClass")(appProps, configurationInitialise, s)
             compareWith <- propertyValOptional[String](prf, "compareWith")(appProps, configurationInitialise, s)
-
-
             operator <- propertyVal(prf, "operator")(appProps, configurationInitialise, s)
-
           } yield new FilterRule(
             tagPrefix = tagPrefix,
             fieldName = fieldName,

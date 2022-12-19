@@ -39,26 +39,6 @@ object FilterConfiguration extends ConfigurationInitialise[FilterConfiguration] 
 
   val appPrefixDefaultName = "filter"
 
-
-//  override def create[CONFIGURATION](prf: String)(implicit appProps: AllApplicationProperties, configurationInitialise: ConfigurationInitialise[CONFIGURATION]): Either[ReadConfigErrors, FilterConfiguration] =
-//    for {
-//      kafkaProducerPropsMap <- KafkaProducerPropertyMap.create(s"$prf.app.kafka.producers") //(s"$appPrefixDefaultName.app.kafka.producers")
-//      executionEnvironmentProperty <- ExecutionFlinkEnvironmentProperty.create(s"$prf.app.flink.job.checkpoint")
-//      filterRule <- FilterRule.create(s"$prf.app.filter")
-//      kafkaCnsProperty <- KafkaCnsProperty.create(s"$prf.app.kafka.consumer.property")
-//      consumerTopicName <- propertyVal[String](s"$prf.app.kafka.consumer", "topicName")
-//      kafkaPrdProperty <- KafkaPrdProperty.create(s"$prf.kafka")
-//    } yield new FilterConfiguration(
-//      kafkaProducerPropsMap = kafkaProducerPropsMap,
-//      executionEnvironmentProperty = executionEnvironmentProperty,
-//      filterRule = filterRule,
-//      kafkaCnsProperty = kafkaCnsProperty,
-//      consumerTopicName = consumerTopicName,
-//      kafkaPrdProperty = kafkaPrdProperty
-//    )
-//
-//  override def defaultConfiguration(prf: String)(implicit allProps: AllApplicationProperties, readKey: mutable.Set[String]): FilterConfiguration = FilterConfiguration(appPrefixDefaultName)(allProps, FilterConfiguration)
-
   override def defaultConfiguration(prf: String)(implicit allProps: AllApplicationProperties, readKey: mutable.Set[String]): FilterConfiguration = FilterConfiguration(appPrefixDefaultName)(allProps, FilterConfiguration)
 
   override protected def createMayBeErr[CONFIGURATION](prf: String)(implicit appProps: AllApplicationProperties, configurationInitialise: ConfigurationInitialise[CONFIGURATION]): Either[ReadConfigErrors, FilterConfiguration] =
