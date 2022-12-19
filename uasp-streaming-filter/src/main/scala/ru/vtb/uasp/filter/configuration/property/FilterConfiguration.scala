@@ -34,11 +34,11 @@ object FilterConfiguration extends ConfigurationInitialise[FilterConfiguration] 
 
   override protected def createMayBeErr[CONFIGURATION](prf: String)(implicit appProps: AllApplicationProperties, configurationInitialise: ConfigurationInitialise[CONFIGURATION]): Either[ReadConfigErrors, FilterConfiguration] =
     for {
-      executionEnvironmentProperty <- ExecutionFlinkEnvironmentProperty.create(s"$prf.app.flink.job.checkpoint")
-      filterRule <- FilterRule.create(s"$prf.app.filter")
-      consumerTopicName <- FlinkConsumerProperties.create(s"$prf.app.kafka.consumer")
-      flinkSinkPropertiesOk <- FlinkSinkProperties.create(s"$prf.app.kafka.producers.filterTag-success")
-      flinkSinkPropertiesErr <- createByClassOption(s"$prf.app.kafka.producers.filterTag-error", FlinkSinkProperties.getClass, { p =>
+      executionEnvironmentProperty <- ExecutionFlinkEnvironmentProperty.create(s"$prf.flink.job")
+      filterRule <- FilterRule.create(s"$prf.filter")
+      consumerTopicName <- FlinkConsumerProperties.create(s"$prf.kafka.consumer")
+      flinkSinkPropertiesOk <- FlinkSinkProperties.create(s"$prf.kafka.producer.filterTag-success")
+      flinkSinkPropertiesErr <- createByClassOption(s"$prf.kafka.producer.filterTag-error", FlinkSinkProperties.getClass, { p =>
         FlinkSinkProperties.create(p)
       })
     } yield new FilterConfiguration(
