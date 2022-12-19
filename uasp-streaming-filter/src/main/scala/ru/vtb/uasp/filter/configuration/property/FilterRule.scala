@@ -1,6 +1,5 @@
 package ru.vtb.uasp.filter.configuration.property
 
-import ru.vtb.uasp.common.utils.config.PropertyUtil.{propertyVal, propertyValOptional}
 import ru.vtb.uasp.common.utils.config.{AllApplicationProperties, ConfigurationInitialise, PropertyCombiner, ReadConfigErrors}
 import ru.vtb.uasp.filter.service.dto._
 
@@ -56,22 +55,22 @@ object FilterRule extends PropertyCombiner[FilterRule] {
     }
 
 
-  override def create[CONFIGURATION](prf: String)(implicit appProps: AllApplicationProperties, configurationInitialise: ConfigurationInitialise[CONFIGURATION]): Either[ReadConfigErrors, FilterRule] =
+  import ru.vtb.uasp.common.utils.config.PropertyUtil._
+  override protected def createMayBeErr[CONFIGURATION](prf: String)(implicit appProps: AllApplicationProperties, configurationInitialise: ConfigurationInitialise[CONFIGURATION]): Either[ReadConfigErrors, FilterRule] =
     for {
-      tagPrefix <- propertyVal[String](prf, "tagPrefix")
-      fieldName <- propertyVal[String](prf, "fieldName")
-      operandClass <- propertyVal[String](prf, "operandClass")
-      compareWith <- propertyValOptional[String](prf, "compareWith")
+            tagPrefix <- propertyVal[String](prf, "tagPrefix")(appProps, configurationInitialise, s)
+            fieldName <- propertyVal[String](prf, "fieldName")(appProps, configurationInitialise, s)
+            operandClass <- propertyVal[String](prf, "operandClass")(appProps, configurationInitialise, s)
+            compareWith <- propertyValOptional[String](prf, "compareWith")(appProps, configurationInitialise, s)
 
 
-      operator <- propertyVal(prf, "operator")
+            operator <- propertyVal(prf, "operator")(appProps, configurationInitialise, s)
 
-    } yield new FilterRule(
-      tagPrefix = tagPrefix,
-      fieldName = fieldName,
-      operandClass = getOperatorClass(operandClass, compareWith),
-      operator = operator
+          } yield new FilterRule(
+            tagPrefix = tagPrefix,
+            fieldName = fieldName,
+            operandClass = getOperatorClass(operandClass, compareWith),
+            operator = operator
 
-    )
-
+          )
 }

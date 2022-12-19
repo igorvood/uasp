@@ -13,11 +13,8 @@ case class ExecutionFlinkEnvironmentProperty(
 object ExecutionFlinkEnvironmentProperty extends PropertyCombiner[ExecutionFlinkEnvironmentProperty] {
 
 
-  override def create[CONFIGURATION](prf: String)(implicit appProps: AllApplicationProperties, configurationInitialise: ConfigurationInitialise[CONFIGURATION]): Either[ReadConfigErrors, ExecutionFlinkEnvironmentProperty] =
-    for {
-      appServiceName <- propertyVal[String](prf, "service.name")
-      syncParallelism <- propertyVal[Int](prf, "sync.parallelism")
-    } yield ExecutionFlinkEnvironmentProperty(appServiceName, syncParallelism
-    )
-
+  override protected def createMayBeErr[CONFIGURATION](prf: String)(implicit appProps: AllApplicationProperties, configurationInitialise: ConfigurationInitialise[CONFIGURATION]): Either[ReadConfigErrors, ExecutionFlinkEnvironmentProperty] =
+    for {appServiceName <- propertyVal[String](prf, "service.name")(appProps, configurationInitialise, s)
+         syncParallelism <- propertyVal[Int](prf, "sync.parallelism")
+         } yield ExecutionFlinkEnvironmentProperty(appServiceName, syncParallelism)
 }

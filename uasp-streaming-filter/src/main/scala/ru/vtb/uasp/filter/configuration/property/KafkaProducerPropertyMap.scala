@@ -13,13 +13,21 @@ case class KafkaProducerPropertyMap(topicAlias: Map[String, String]){
 object KafkaProducerPropertyMap extends PropertyCombiner[KafkaProducerPropertyMap] {
 
 
-  override def create[CONFIGURATION](prf: String)(implicit appProps: AllApplicationProperties, configurationInitialise: ConfigurationInitialise[CONFIGURATION]): Either[ReadConfigErrors, KafkaProducerPropertyMap] =
-    for {
-      topicAlias <- mapProperty(prf, { (str, appProps, ci) => {
-        val k = s"$str.topicName"
-        ci.readKey.add(k)
-        appProps.prop(k)
-      } })(appProps, configurationInitialise)
-    } yield KafkaProducerPropertyMap(topicAlias)
+//  override def create[CONFIGURATION](prf: String)(implicit appProps: AllApplicationProperties, configurationInitialise: ConfigurationInitialise[CONFIGURATION]): Either[ReadConfigErrors, KafkaProducerPropertyMap] =
+//    for {
+//      topicAlias <- mapProperty(prf, { (str, appProps, ci) => {
+//        val k = s"$str.topicName"
+//        ci.readKey.add(k)
+//        appProps.prop(k)
+//      } })(appProps, configurationInitialise)
+//    } yield KafkaProducerPropertyMap(topicAlias)
 
+  override protected def createMayBeErr[CONFIGURATION](prf: String)(implicit appProps: AllApplicationProperties, configurationInitialise: ConfigurationInitialise[CONFIGURATION]): Either[ReadConfigErrors, KafkaProducerPropertyMap] =
+      for {
+        topicAlias <- mapProperty(prf, { (str, appProps, ci) => {
+          val k = s"$str.topicName"
+          ci.readKey.add(k)
+          appProps.prop(k)
+        } })(appProps, configurationInitialise)
+      } yield KafkaProducerPropertyMap(topicAlias)
 }
