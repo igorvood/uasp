@@ -1,0 +1,23 @@
+package ru.vtb.uasp.validate;
+
+global org.slf4j.Logger logger
+
+import scala.Some
+import ru.vtb.uasp.common.dto.UaspDto
+import ru.vtb.uasp.validate.entity.ValidateMsg
+import ru.vtb.uasp.mutator.configuration.drools.DrlHelper
+import java.util.Arrays
+import ru.vtb.uasp.mutator.service.dto.*
+
+dialect "mvel"
+
+rule "pos-rule"
+  when
+    UaspDto($actionType:dataString.get("action_type"), $actionType.nonEmpty && $actionType.get == "Authorization")
+    UaspDto($processingResolution:dataString.get("processing_resolution"), $processingResolution.nonEmpty && $processingResolution.get == "Accepted")
+    UaspDto($requestedAmountPaymentDirection:dataString.get("payment_direction"), $requestedAmountPaymentDirection.nonEmpty && $requestedAmountPaymentDirection.get == "Debit")
+    UaspDto($PointOfServiceTerminalType:dataString.get("terminal_type"), $PointOfServiceTerminalType.nonEmpty && Arrays.asList("POS", "ECOMMERCE" ).contains($PointOfServiceTerminalType.get))
+
+  then
+    insert(new UaspOperation(drools.getRule().getName(), new StringMap("way4-case-pos"), "system-uasp-way-classification", new ConcatenateStr(",")))
+end

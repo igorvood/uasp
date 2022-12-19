@@ -1,0 +1,38 @@
+@startuml
+digraph dfd{
+	node[shape=record]
+	
+	"IFT.OUTER.CBR.RATES" [label="<f0> IFT.OUTER.CBR.RATES|<f1> External Kafka"]
+	ift_ivr__uasp_realtime__outer_cbr_rates__json [label="ift_ivr__uasp_realtime__outer_cbr_rates__json" shape=box]
+
+	ift_ivr__uasp_realtime__outer_cbr_rate__status [label="ift_ivr__uasp_realtime__outer_cbr_rate__status" shape=box]
+	ift_ivr__uasp_realtime__outer_cbr_rate__dlq [label="ift_ivr__uasp_realtime__outer_cbr_rate__dlq" shape=box]
+	ift_ivr__uasp_realtime__outer_cbr_rate__ask [label="ift_ivr__uasp_realtime__outer_cbr_rate__ask" shape=box]
+	ift_ivr__uasp_realtime__exchange_rates_status__dlq [label="ift_ivr__uasp_realtime__exchange_rates_status__dlq" shape=box]
+	ift_ivr__uasp_realtime__mdm_enrichment__uaspdto [label="ift_ivr__uasp_realtime__mdm_enrichment__uaspdto" shape=box]
+	ift_ivr__uasp_realtime__mdm_enrichment__dlq [label="ift_ivr__uasp_realtime__mdm_enrichment__dlq" shape=box]
+	"IFT.OUTER.CBR.RATES.ACK" [label="<f0>IFT.OUTER.CBR.RATES.ACK|<f1> External Kafka"]
+	
+    unp_convertor_outer_cbr_rates [label="{<f0> unp_convertor_outer_cbr_rates |<f1> unp_convertor_outer_cbr_rates\n\n\n}" shape=Mrecord];
+    "IFT.OUTER.CBR.RATES" -> unp_convertor_outer_cbr_rates:f0
+    unp_convertor_outer_cbr_rates:f1 -> ift_ivr__uasp_realtime__outer_cbr_rates__json
+
+    uasp_streaming_input_convertor_cbr_rates[label="{<f0> uasp_streaming_input_convertor_cbr_rates |<f1> uasp_streaming_input_convertor_cbr_rates\n\n\n}" shape=Mrecord];
+    ift_ivr__uasp_realtime__outer_cbr_rates__json -> uasp_streaming_input_convertor_cbr_rates:f0
+    uasp_streaming_input_convertor_cbr_rates:f1 -> ift_ivr__uasp_realtime__outer_cbr_rate__status
+    uasp_streaming_input_convertor_cbr_rates:f1 -> ift_ivr__uasp_realtime__outer_cbr_rate__dlq
+
+    uasp_streaming_exchange_rates_status[label="{<f0> uasp_streaming_exchange_rates_status |<f1> uasp_streaming_exchange_rates_status\n\n\n}" shape=Mrecord];
+    ift_ivr__uasp_realtime__outer_cbr_rates__json->uasp_streaming_exchange_rates_status:p0
+    ift_ivr__uasp_realtime__mdm_enrichment__dlq->uasp_streaming_exchange_rates_status:p0
+    ift_ivr__uasp_realtime__outer_cbr_rate__dlq->uasp_streaming_exchange_rates_status:p0
+    ift_ivr__uasp_realtime__outer_cbr_rate__status->uasp_streaming_exchange_rates_status:p0
+    uasp_streaming_exchange_rates_status:p1->ift_ivr__uasp_realtime__exchange_rates_status__dlq
+    uasp_streaming_exchange_rates_status:p1->ift_ivr__uasp_realtime__outer_cbr_rate__ask
+
+    unp_convertor_outer_cbr_ack [label="{<f0> unp_convertor_outer_cbr_ack |<f1> unp_convertor_outer_cbr_ack\n\n\n}" shape=Mrecord];
+    ift_ivr__uasp_realtime__outer_cbr_rate__ask -> unp_convertor_outer_cbr_ack:f0
+    unp_convertor_outer_cbr_ack:f1 -> "IFT.OUTER.CBR.RATES.ACK"
+ 
+}
+@enduml

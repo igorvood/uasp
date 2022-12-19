@@ -1,0 +1,19 @@
+package ru.vtb.uasp.salary;
+
+global org.slf4j.Logger logger
+
+import scala.Some
+import ru.vtb.uasp.common.dto.UaspDto
+import ru.vtb.uasp.validate.entity.ValidateMsg
+import ru.vtb.uasp.mutator.configuration.drools.DrlHelper
+import java.util.Arrays
+import ru.vtb.uasp.mutator.service.dto.*
+
+dialect "mvel"
+
+rule "salary-rule"
+  when
+    UaspDto($serviceTypeExtension:dataString.get("kbo_w4"), $serviceTypeExtension.nonEmpty && Arrays.asList("731500-00", "731500-01", "731500-03").contains($serviceTypeExtension.get))
+  then
+    insert(new UaspOperation(drools.getRule().getName(), new StringMap("way4-case-salary"), "system-uasp-way-classification", new ConcatenateStr(",")))
+end

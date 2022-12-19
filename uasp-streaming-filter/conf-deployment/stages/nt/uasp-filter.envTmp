@@ -1,0 +1,46 @@
+PARALLELISM=8
+MAIN_CLASS=ru.vtb.uasp.filter.FilterJob
+PROGRAMARGS="--filter.kafka.bootstrap.servers ${BOOTSTRAP_SERVERS} "`
+`"--filter.kafka.enable.idempotence true "`
+`"--filter.kafka.retries 1 "`
+`"--filter.kafka.acks all "`
+`"--filter.kafka.transaction.timeout.ms 900000 "`
+`"--filter.kafka.security.protocol SSL "`
+`"--filter.kafka.ssl.truststore.location ${TRUSTSTORE_LOCATION} "`
+`"--filter.kafka.ssl.truststore.password ${NT_KAFKA_SSL_TRUSTSTORE_PASSWORD} "`
+`"--filter.kafka.ssl.keystore.location ${KEYSTORE_LOCATION} "`
+`"--filter.kafka.ssl.keystore.password ${NT_KAFKA_SSL_KEYSTORE_PASSWORD} "`
+`"--filter.kafka.ssl.key.password ${NT_KAFKA_SSL_KEY_PASSWORD} "`
+`"--filter.kafka.ssl.truststore.type PKCS12 "`
+`"--filter.kafka.ssl.keystore.type PKCS12 "`
+`"--filter.kafka.max.block.ms 900000 "`
+`"--filter.app.kafka.consumer.topicName nt_ivr__uasp_realtime__bussiness_rules__uaspdto "`
+`"--filter.app.kafka.consumer.property.bootstrap.servers ${BOOTSTRAP_SERVERS} "`
+`"--filter.app.kafka.consumer.property.session.timeout.ms 10000 "`
+`"--filter.app.kafka.consumer.property.fetch.max.wait.ms 1000 "`
+`"--filter.app.kafka.consumer.property.auto.offset.reset latest "`
+`"--filter.app.kafka.consumer.property.check.crcs true "`
+`"--filter.app.kafka.consumer.property.enable.auto.commit true "`
+`"--filter.app.kafka.consumer.property.group.id UaspDto_Filter "`
+`"--filter.app.kafka.consumer.property.security.protocol SSL "`
+`"--filter.app.kafka.consumer.property.ssl.key.password ${NT_KAFKA_SSL_KEY_PASSWORD} "`
+`"--filter.app.kafka.consumer.property.ssl.keystore.location ${KEYSTORE_LOCATION} "`
+`"--filter.app.kafka.consumer.property.ssl.keystore.password ${NT_KAFKA_SSL_KEYSTORE_PASSWORD} "`
+`"--filter.app.kafka.consumer.property.ssl.truststore.location ${TRUSTSTORE_LOCATION} "`
+`"--filter.app.kafka.consumer.property.ssl.truststore.password ${NT_KAFKA_SSL_TRUSTSTORE_PASSWORD} "`
+`"--filter.app.kafka.consumer.property.ssl.keystore.type JKS "`
+`"--filter.app.kafka.consumer.property.ssl.protocol TLS "`
+`"--filter.app.kafka.consumer.property.ssl.trustmanager.algorithm PKIX "`
+`"--filter.app.kafka.consumer.property.ssl.truststore.type JKS "`
+`"--filter.app.kafka.producers.filterTag-success.topicName nt_ivr__uasp_realtime__filter__uaspdto "`
+`"--filter.app.kafka.producers.filterTag-success.producerSemantic EXACTLY_ONCE "`
+`"--filter.app.flink.job.checkpoint.time.milliseconds 10000 "`
+`"--filter.app.flink.job.checkpoint.CheckpointingMode EXACTLY_ONCE "`
+`"--filter.app.flink.job.checkpoint.max.concurrent.checkpoint 100000 "`
+`"--filter.app.flink.job.checkpoint.savepoint.pref savepointFilterJob "`
+`"--filter.app.flink.job.checkpoint.appServiceName ${SERVICE_NAME} "`
+`"--filter.app.flink.job.checkpoint.syncParallelism 8 "`
+ `"--filter.app.filter.fieldName system-uasp-way-classification "`
+ `"--filter.app.filter.operandClass String "`
+ `"--filter.app.filter.operator notNull "`
+ `"--filter.app.filter.tagPrefix filterTag "

@@ -1,0 +1,125 @@
+@startuml
+digraph dfd{
+	node[shape=record]
+
+	ift_ivr__uasp_realtime__schemas__json [label="ift_ivr__uasp_realtime__schemas__json" shape=box];
+	ift_ivr__uasp_realtime__mortgage_client__uaspdto [label="ift_ivr__uasp_realtime__mortgage_client__uaspdto" shape=box];
+	ift_ivr__pim_batch__mortgage_client__metrics[label="ift_ivr__pim_batch__mortgage_client__metrics" shape=box];
+	ift_ivr__pim_batch__ca_client__metrics[label="ift_ivr__pim_batch__ca_client__metrics" shape=box];
+
+    issuing_operation [label="<f0> DMZ Kafka Way4|<f1> issuing_operation"];
+    unp_convertor_way4_issuing_operation [label="{<f0> uasp-streaming-unp-convertor |<f1> unp-convertor-way4-issuing-operation\n\n\n}" shape=Mrecord];
+	ift_ivr__uasp_realtime__input_converter__way4_issuing_operation__json [label="ift_ivr__uasp_realtime__input_converter__way4_issuing_operation__json" shape=box];
+	ift_ivr__uasp_realtime__schemas__json->unp_convertor_way4_issuing_operation:f0
+	issuing_operation:f1 ->unp_convertor_way4_issuing_operation:f0;
+	unp_convertor_way4_issuing_operation:f1->ift_ivr__uasp_realtime__input_converter__way4_issuing_operation__json;
+
+    uasp_streaming_input_convertor_mdm_cross_link [label="{<f0> uasp-streaming-input-convertor |<f1> uasp-streaming-input-convertor-mdm-cross-link\n\n\n}" shape=Mrecord];
+    ift_ivr__uasp_realtime__input_converter__mdm_cross_link__json [label="<f0> Data Lake|<f1> ift_ivr__uasp_realtime__input_converter__mdm_cross_link__json"];
+    ift_ivr__uasp_realtime__input_converter__mdm_cross_link_remove__json [label="<f0> Data Lake|<f1> ift_ivr__uasp_realtime__input_converter__mdm_cross_link_remove__json"];
+    ift_ivr__uasp_realtime__input_converter__mdm_cross_link__dlq [label="ift_ivr__uasp_realtime__input_converter__mdm_cross_link__dlq" shape=box];
+    ift_ivr__uasp_realtime__input_converter__mdm_cross_link__uaspdto [label="ift_ivr__uasp_realtime__input_converter__mdm_cross_link__uaspdto" shape=box];
+    ift_ivr__uasp_realtime__input_converter__mdm_cross_link_remove__uaspdto [label="ift_ivr__uasp_realtime__input_converter__mdm_cross_link_remove__uaspdto" shape=box];
+    ift_ivr__uasp_realtime__input_converter__mdm_cross_link__json->uasp_streaming_input_convertor_mdm_cross_link:f0
+    ift_ivr__uasp_realtime__input_converter__mdm_cross_link_remove__json->uasp_streaming_input_convertor_mdm_cross_link:f0
+    uasp_streaming_input_convertor_mdm_cross_link:f1->ift_ivr__uasp_realtime__input_converter__mdm_cross_link__dlq
+    uasp_streaming_input_convertor_mdm_cross_link:f1->ift_ivr__uasp_realtime__input_converter__mdm_cross_link__uaspdto
+    uasp_streaming_input_convertor_mdm_cross_link:f1->ift_ivr__uasp_realtime__input_converter__mdm_cross_link_remove__uaspdto
+
+    uasp_streaming_main_input [label="{<f0> uasp_streaming_main_input \r(uasp-streaming-unp-convertor, \r uasp-streaming-input-convertor, \r uasp-streaming-mdm-enrichment) |<f1> uasp_streaming_main_input\n\n\n}" shape=Mrecord];
+    ift_ivr__uasp_realtime__mdm_enrichment__mdm_cross_link__status [label="ift_ivr__uasp_realtime__mdm_enrichment__mdm_cross_link__status" shape=box];
+    ift_ivr__uasp_realtime__mdm_enrichment__for_additional_enrichment__uaspdto [label="ift_ivr__uasp_realtime__mdm_enrichment__for_additional_enrichment__uaspdto" shape=box];
+    ift_ivr__uasp_realtime__mdm_enrichment__uaspdto [label="ift_ivr__uasp_realtime__mdm_enrichment__uaspdto" shape=box];
+    ift_ivr__uasp_realtime__mdm_enrichment__uaspdto__filter [label="ift_ivr__uasp_realtime__mdm_enrichment__uaspdto__filter" shape=box];
+    ift_ivr__uasp_realtime__mdm_enrichment__dlq [label="ift_ivr__uasp_realtime__mdm_enrichment__dlq" shape=box];
+    ift_ivr__uasp_realtime__input_converter__way4_issuing_operation__dlq [label="ift_ivr__uasp_realtime__input_converter__way4_issuing_operation__dlq" shape=box];
+    ift_ivr__uasp_realtime__input_converter__mdm_cross_link__uaspdto->uasp_streaming_main_input:f0
+    issuing_operation:f1 -> uasp_streaming_main_input:f0;
+    ift_ivr__uasp_realtime__schemas__json:f1 -> uasp_streaming_main_input:f0;
+    uasp_streaming_main_input:f1->ift_ivr__uasp_realtime__mdm_enrichment__mdm_cross_link__status
+    uasp_streaming_main_input:f1->ift_ivr__uasp_realtime__mdm_enrichment__for_additional_enrichment__uaspdto
+    uasp_streaming_main_input:f1->ift_ivr__uasp_realtime__mdm_enrichment__uaspdto
+    uasp_streaming_main_input:f1->ift_ivr__uasp_realtime__mdm_enrichment__uaspdto__filter
+    uasp_streaming_main_input:f1->ift_ivr__uasp_realtime__mdm_enrichment__dlq
+    uasp_streaming_main_input:f1->ift_ivr__uasp_realtime__input_converter__way4_issuing_operation__dlq
+    uasp_streaming_main_input:f1->ift_ivr__uasp_realtime__bussiness_rules__uaspdto__dlq
+    uasp_streaming_main_input:f1->ift_ivr__uasp_realtime__filter__uaspdto__filter
+    uasp_streaming_main_input:f1->ift_ivr__uasp_realtime__filter__uaspdto__dlq
+
+    uasp_streaming_main_aggregate [label="{<f0> uasp_streaming_main_aggregate \r(uasp-streaming-aggregate,\r uasp-streaming-ca-ha-aggregate, \r uasp-streaming-model-vector)|<f1> uasp_streaming_main_aggregate\n\n\n}" shape=Mrecord];
+    ift_ivr__uasp_realtime__ca_ha_aggregate__ca__uaspdto [label="<f0> Data Lake Data|<f1> ift__ivr__uasp_realtime__ca_ha_aggregate__ca__uaspdto"];
+    ift_ivr__uasp_realtime__aggregate__filter [label="ift_ivr__uasp_realtime__aggregate__filter" shape=box];
+    ift_ivr__uasp_realtime__aggregate__dlq [label="ift_ivr__uasp_realtime__aggregate__dlq" shape=box];
+    ift_ivr__uasp_realtime__model_vector__json [label="<f0> Input topic for Tarantool|<f1> ift_ivr__uasp_realtime__model_vector__json"];
+    ift_ivr__uasp_realtime__aggregate_qa [label="ift_ivr__uasp_realtime__aggregate_qa" shape=box];
+    ift_ivr__uasp_realtime__operations__json [label="<f0> Input topic for Tarantool|<f1> ift_ivr__uasp_realtime__operations__json"];
+    ift_ivr__uasp_realtime__mdm_enrichment__uaspdto->uasp_streaming_main_aggregate:f0
+    ift_ivr__uasp_realtime__ca_ha_aggregate__ca__uaspdto->uasp_streaming_main_aggregate:f0
+    uasp_streaming_main_aggregate:f1->ift_ivr__uasp_realtime__aggregate__filter
+    uasp_streaming_main_aggregate:f1->ift_ivr__uasp_realtime__aggregate__dlq
+    uasp_streaming_main_aggregate:f1->ift_ivr__uasp_realtime__model_vector__json
+    uasp_streaming_main_aggregate:f1->ift_ivr__uasp_realtime__aggregate_qa
+    uasp_streaming_main_aggregate:f1->ift_ivr__uasp_realtime__operations__json
+
+    uasp_streaming_mdm_additional_enrichment [label="{<f0> uasp_streaming_mdm_additional_enrichment |<f1> uasp-streaming-mdm-additional-enrichment\n\n\n}" shape=Mrecord];
+    ift_ivr__uasp_realtime__mdm_additional_enrichment__dlq [label="ift_ivr__uasp_realtime__mdm_additional_enrichment__dlq" shape=box];
+    ift_ivr__uasp_realtime__mdm_enrichment__for_additional_enrichment__uaspdto->uasp_streaming_mdm_additional_enrichment:f0
+    uasp_streaming_mdm_additional_enrichment:f1->ift_ivr__uasp_realtime__mdm_additional_enrichment__dlq
+    uasp_streaming_mdm_additional_enrichment:f1->ift_ivr__uasp_realtime__input_converter__mdm_cross_link__json
+    uasp_streaming_mdm_additional_enrichment:f1->ift_ivr__uasp_realtime__mdm_enrichment__uaspdto
+
+
+    uasp_streaming_mdm_additional_enrichment_rto_profile [label="{<f0> uasp_streaming_mdm_additional_enrichment_rto_profile |<f1> uasp_streaming_mdm_additional_enrichment_rto_profile\n\n\n}" shape=Mrecord];
+    ift_rto_profile_uasp_realtime__mdm_enrichment__for_additional_enrichment__uaspdto [label="ift_rto_profile_uasp_realtime__mdm_enrichment__for_additional_enrichment__uaspdto" shape=box];
+    ift_rto_profile_uasp_realtime__mdm_enrichment__uaspdto [label="ift_rto_profile_uasp_realtime__mdm_enrichment__uaspdto" shape=box];
+    ift_rto__uasp_realtime__mdm_additional_enrichment__dlq [label="ift_rto__uasp_realtime__mdm_additional_enrichment__dlq" shape=box];
+    ift_rto__uasp_realtime__input_converter_mdm_cross_link__json [label="ift_rto__uasp_realtime__input_converter_mdm_cross_link__json" shape=box];
+    ift_rto_profile_uasp_realtime__mdm_enrichment__for_additional_enrichment__uaspdto->uasp_streaming_mdm_additional_enrichment_rto_profile:f0
+    uasp_streaming_mdm_additional_enrichment_rto_profile:f1->ift_rto__uasp_realtime__mdm_additional_enrichment__dlq
+    uasp_streaming_mdm_additional_enrichment_rto_profile:f1->ift_rto__uasp_realtime__input_converter_mdm_cross_link__json
+    uasp_streaming_mdm_additional_enrichment_rto_profile:f1->ift_rto_profile_uasp_realtime__mdm_enrichment__uaspdto
+
+
+    uasp_streaming_mdm_additional_enrichment_rto_unk [label="{<f0> uasp_streaming_mdm_additional_enrichment_rto_profile |<f1> uasp_streaming_mdm_additional_enrichment_rto_unk\n\n\n}" shape=Mrecord];
+    ift_rto_unk_uasp_realtime__mdm_enrichment__for_additional_enrichment__uaspdto [label="ift_rto_profile_uasp_realtime__mdm_enrichment__for_additional_enrichment__uaspdto" shape=box];
+    ift_rto_unk_uasp_realtime__mdm_enrichment__uaspdto [label="ift_rto_unk_uasp_realtime__mdm_enrichment__uaspdto" shape=box];
+    ift_rto__uasp_realtime__mdm_additional_enrichment__dlq [label="ift_rto__uasp_realtime__mdm_additional_enrichment__dlq" shape=box];
+    ift_rto__uasp_realtime__input_converter_mdm_cross_link__json [label="ift_rto__uasp_realtime__input_converter_mdm_cross_link__json" shape=box];
+    ift_rto_unk_uasp_realtime__mdm_enrichment__for_additional_enrichment__uaspdto->uasp_streaming_mdm_additional_enrichment_rto_unk:f0
+    uasp_streaming_mdm_additional_enrichment_rto_unk:f1->ift_rto__uasp_realtime__mdm_additional_enrichment__dlq
+    uasp_streaming_mdm_additional_enrichment_rto_unk:f1->ift_rto__uasp_realtime__input_converter_mdm_cross_link__json
+    uasp_streaming_mdm_additional_enrichment_rto_unk:f1->ift_rto_unk_uasp_realtime__mdm_enrichment__uaspdto
+
+
+
+	issuing_client [label="<f0> DMZ Kafka Way4|<f1> issuing_client"];
+	unp_convertor_way4_issuing_client [label="{<f0> uasp-streaming-unp-convertor |<f1> unp-convertor-way4-issuing-client\n\n\n}" shape=Mrecord];
+	ift_ivr__uasp_realtime__input_converter__way4_issuing_client__json [label="ift_ivr__uasp_realtime__input_converter__way4_issuing_client__json" shape=box];
+	ift_ivr__uasp_realtime__schemas__json->unp_convertor_way4_issuing_client:f0
+	issuing_client:f1 -> unp_convertor_way4_issuing_client:f0;
+	unp_convertor_way4_issuing_client:f1->ift_ivr__uasp_realtime__input_converter__way4_issuing_client__json;
+
+	issuing_card [label="<f0> DMZ Kafka Way4|<f1> issuing_card"];
+	unp_convertor_way4_issuing_card [label="{<f0> uasp-streaming-unp-convertor |<f1> unp-convertor-way4-issuing-card\n\n\n}" shape=Mrecord];
+	ift_ivr__uasp_realtime__input_converter__way4_issuing_card__json [label="ift_ivr__uasp_realtime__input_converter__way4_issuing_card__json" shape=box];
+	ift_ivr__uasp_realtime__schemas__json->unp_convertor_way4_issuing_card:f0
+	issuing_card:f1 -> unp_convertor_way4_issuing_card:f0;
+	unp_convertor_way4_issuing_card:f1->ift_ivr__uasp_realtime__input_converter__way4_issuing_card__json;
+
+	issuing_account_balance [label="<f0> DMZ Kafka Way4|<f1> issuing_account_balance"];
+	unp_convertor_way4_issuing_account_balance [label="{<f0> uasp-streaming-unp-convertor |<f1> unp-convertor-way4-issuing-account-balance\n\n\n}" shape=Mrecord];
+	ift_ivr__uasp_realtime__input_converter__way4_issuing_account_balance__json [label="ift_ivr__uasp_realtime__input_converter__way4_issuing_account_balance__json" shape=box];
+	ift_ivr__uasp_realtime__schemas__json->unp_convertor_way4_issuing_account_balance:f0
+	issuing_account_balance:f1 -> unp_convertor_way4_issuing_account_balance:f0;
+	unp_convertor_way4_issuing_account_balance:f1->ift_ivr__uasp_realtime__input_converter__way4_issuing_account_balance__json;
+
+	issuing_account [label="<f0> DMZ Kafka Way4|<f1> uasp-streaming-unp-convertor issuing_account"];
+	unp_convertor_way4_issuing_account [label="{<f0> uasp-streaming-unp-convertor |<f1> unp-convertor-way4-issuing-account\n\n\n}" shape=Mrecord];
+	ift_ivr__uasp_realtime__input_converter__way4_issuing_account__json [label="ift_ivr__uasp_realtime__input_converter__way4_issuing_account__json" shape=box];
+	ift_ivr__uasp_realtime__schemas__json->unp_convertor_way4_issuing_account:f0
+	issuing_account:f1 -> unp_convertor_way4_issuing_account:f0;
+	unp_convertor_way4_issuing_account:f1->ift_ivr__uasp_realtime__input_converter__way4_issuing_account__json;
+
+
+}
+@enduml

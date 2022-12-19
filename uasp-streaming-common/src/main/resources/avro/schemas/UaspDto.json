@@ -1,0 +1,73 @@
+{
+  "type": "record",
+  "name": "UaspDto",
+  "namespace": "ru.vtb.uasp.common.dto",
+  "fields": [
+    {
+      "name": "id",
+      "type": "string"
+    },
+    {
+      "name": "dataInt",
+      "type": {
+        "type": "map",
+        "values": "int"
+      }
+    },
+    {
+      "name": "dataLong",
+      "type": {
+        "type": "map",
+        "values": "long"
+      }
+    },
+    {
+      "name": "dataFloat",
+      "type": {
+        "type": "map",
+        "values": "float"
+      }
+    },
+    {
+      "name": "dataDouble",
+      "type": {
+        "type": "map",
+        "values": "double"
+      }
+    },
+    {
+      "name": "dataDecimal",
+      "type": {
+        "type": "map",
+        "values": {
+          "type": "bytes",
+          "logicalType": "decimal",
+          "precision": 23,
+          "scale": 5
+        }
+      }
+    },
+    {
+      "name": "dataString",
+      "type": {
+        "type": "map",
+        "values": "string"
+      }
+    },
+    {
+      "name": "dataBoolean",
+      "type": {
+        "type": "map",
+        "values": "boolean"
+      }
+    },
+    {
+      "name": "uuid",
+      "type": "string"
+    },
+    {
+      "name": "process_timestamp",
+      "type": "long"
+    }
+  ]
+}

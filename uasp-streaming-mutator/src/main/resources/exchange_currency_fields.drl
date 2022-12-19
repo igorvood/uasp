@@ -1,0 +1,307 @@
+package ru.vtb.uasp.validate;
+
+global org.slf4j.Logger logger
+
+import scala.Some
+import ru.vtb.uasp.common.dto.UaspDto
+import ru.vtb.uasp.validate.entity.ValidateMsg
+import ru.vtb.uasp.mutator.configuration.drools.DrlHelper
+import java.util.Arrays
+
+import ru.vtb.uasp.mutator.service.dto.*
+
+dialect "mvel"
+
+rule "Exchange fields name unification from CFT pipeline"
+salience 10
+
+when
+    UaspDto($transactionCurrency:dataString.get("amount_currency_cft"), DrlHelper.isNonEmpty($transactionCurrency) && $transactionCurrency.get != "RUB")
+    and
+    UaspDto($transactionDatetime:dataLong.get("event_dttm_cft"), DrlHelper.isNonEmpty($transactionDatetime))
+
+then
+    long dttm = $transactionDatetime.get
+    String currency = $transactionCurrency.get
+
+    insert(new UaspOperation(drools.getRule().getName(), new StringMap(currency), "exchange_currency", new Add()))
+    insert(new UaspOperation(drools.getRule().getName(), new LongMap(dttm), "exchange_dttm", new Add()))
+end
+
+
+
+rule "Exchange fields name unification from W4  POS"
+salience 10
+when
+    	UaspDto($transactionCurrency:dataString.get("transaction_currency"), DrlHelper.isNonEmpty($transactionCurrency) && $transactionCurrency.get != 'RUB')
+        and
+    	UaspDto($transactionDatetime:dataLong.get("processing_datetime"), DrlHelper.isNonEmpty($transactionDatetime))
+    	and
+        UaspDto($actionType:dataString.get("action_type"), $actionType.nonEmpty && $actionType.get == "Authorization")
+       // and
+       // UaspDto($requestedAmountPaymentDirection:dataString.get("payment_direction"), $requestedAmountPaymentDirection.nonEmpty && $requestedAmountPaymentDirection.get == "Debit")
+        and
+        UaspDto($processingResolution:dataString.get("processing_resolution"), $processingResolution.nonEmpty && $processingResolution.get == "Accepted")
+       // and
+       // UaspDto($PointOfServiceTerminalType:dataString.get("terminal_type"), $PointOfServiceTerminalType.nonEmpty && Arrays.asList("POS", "ECOMMERCE").contains($PointOfServiceTerminalType.get))
+        and
+       ( UaspDto($dataKBO:dataString.get("kbo_w4"), DrlHelper.isNonEmpty($dataKBO) && !Arrays.asList("731500-00", "731500-01", "731500-03", "731500-02", "731500-04").contains($dataKBO.get))
+       or
+        UaspDto($dataKBO:dataString.get("kbo_w4"), DrlHelper.isNone($dataKBO)))
+
+
+
+  then
+  long dttm = $transactionDatetime.get
+  String currency = $transactionCurrency.get
+
+   insert(new UaspOperation(drools.getRule().getName(), new StringMap(currency), "exchange_currency", new Add()))
+   insert(new UaspOperation(drools.getRule().getName(), new LongMap(dttm), "exchange_dttm", new Add()))
+
+end
+
+rule "Exchange fields name unification from W4  68"
+salience 10
+when
+    	UaspDto($transactionCurrency:dataString.get("base_currency_w4"), DrlHelper.isNonEmpty($transactionCurrency) && $transactionCurrency.get != 'RUB')
+        and
+    	UaspDto($transactionDatetime:dataLong.get("processing_datetime"), DrlHelper.isNonEmpty($transactionDatetime))
+    	and
+        UaspDto($actionType:dataString.get("action_type"), $actionType.nonEmpty && $actionType.get == "Presentment")
+        and
+        UaspDto($psFundingSource:dataString.get("card_ps_funding_source"), $psFundingSource.nonEmpty && $psFundingSource.get == "Debit")
+        and
+        UaspDto($requestedAmountPaymentDirection:dataString.get("payment_direction"), $requestedAmountPaymentDirection.nonEmpty && $requestedAmountPaymentDirection.get == "Credit")
+
+  then
+  long dttm = $transactionDatetime.get
+  String currency = $transactionCurrency.get
+
+   insert(new UaspOperation(drools.getRule().getName(), new StringMap(currency), "exchange_currency", new Add()))
+   insert(new UaspOperation(drools.getRule().getName(), new LongMap(dttm), "exchange_dttm", new Add()))
+
+end
+
+rule "Exchange fields name unification from W4 Sal pipeline"
+salience 10
+when
+    	UaspDto($transactionCurrency:dataString.get("base_currency_w4"), DrlHelper.isNonEmpty($transactionCurrency) && $transactionCurrency.get != 'RUB')
+        and
+    	UaspDto($transactionDatetime:dataLong.get("processing_datetime"), DrlHelper.isNonEmpty($transactionDatetime))
+        and
+        UaspDto($dataKBO:dataString.get("kbo_w4"), DrlHelper.isNonEmpty($dataKBO) && Arrays.asList("731500-00", "731500-01",  "731500-03", "731500-02",  "731500-04").contains($dataKBO.get))
+
+  then
+  long dttm = $transactionDatetime.get
+  String currency = $transactionCurrency.get
+
+
+   insert(new UaspOperation(drools.getRule().getName(), new StringMap(currency), "exchange_currency", new Add()))
+   insert(new UaspOperation(drools.getRule().getName(), new LongMap(dttm), "exchange_dttm", new Add()))
+
+end
+
+
+
+
+rule "Exchange fields name unification from CA POS pipeline"
+salience 10
+when
+       UaspDto($transactionDatetime:dataLong.get("transaction_dttm"), DrlHelper.isNonEmpty($transactionDatetime))
+       and
+       UaspDto($source_system_cd:dataString.get("source_system_cd"), DrlHelper.isNonEmpty($source_system_cd))
+       and
+       UaspDto($countPos:dataInt.get("COUNT_POS"), DrlHelper.isNone($countPos) || $countPos.get == 0)
+
+  then
+   long dttm = $transactionDatetime.get
+    String currency = "RUR"
+
+
+     insert(new UaspOperation(drools.getRule().getName(), new StringMap(currency), "exchange_currency", new Add()))
+     insert(new UaspOperation(drools.getRule().getName(), new LongMap(dttm), "exchange_dttm", new Add()))
+
+  end
+
+ rule "Exchange fields name unification from profile pipeline"
+salience 10
+ when
+     	UaspDto($transactionCurrency:dataString.get("currency_code_prf"), DrlHelper.isNonEmpty($transactionCurrency) && $transactionCurrency.get != 'RUB')
+         and
+     	UaspDto($transactionDatetime:dataLong.get("event_dttm_prf"), DrlHelper.isNonEmpty($transactionDatetime))
+
+   then
+   long dttm = $transactionDatetime.get
+   String currency = $transactionCurrency.get
+
+
+    insert(new UaspOperation(drools.getRule().getName(), new StringMap(currency), "exchange_currency", new Add()))
+    insert(new UaspOperation(drools.getRule().getName(), new LongMap(dttm), "exchange_dttm", new Add()))
+
+ end
+rule "Exchange fields name unification from profile pipeline 8 case"
+salience 10
+ when
+     	UaspDto($transactionCurrency:dataString.get("transaction_currency"), DrlHelper.isNonEmpty($transactionCurrency) && $transactionCurrency.get != 'RUB')
+         and
+     	UaspDto($transactionDatetime:dataLong.get("event_dttm_prf"), DrlHelper.isNonEmpty($transactionDatetime))
+
+   then
+   long dttm = $transactionDatetime.get
+   String currency = $transactionCurrency.get
+   System.out.println("8 case exchange")
+
+
+    insert(new UaspOperation(drools.getRule().getName(), new StringMap(currency), "exchange_currency", new Add()))
+    insert(new UaspOperation(drools.getRule().getName(), new LongMap(dttm), "exchange_dttm", new Add()))
+
+ end
+
+ rule "Exchange fields name unification from profile pipeline POS"
+salience 10
+ when
+     	UaspDto($transactionCurrency:dataString.get("currency_alpha_code"), DrlHelper.isNonEmpty($transactionCurrency) && $transactionCurrency.get != 'RUB')
+         and
+     	UaspDto($transactionDatetime:dataLong.get("transmission_dttm"), DrlHelper.isNonEmpty($transactionDatetime))
+
+   then
+   long dttm = $transactionDatetime.get
+   String currency = $transactionCurrency.get
+
+
+    insert(new UaspOperation(drools.getRule().getName(), new StringMap(currency), "exchange_currency", new Add()))
+    insert(new UaspOperation(drools.getRule().getName(), new LongMap(dttm), "exchange_dttm", new Add()))
+
+ end
+
+ rule "Exchange fields name unification for withdraw"
+salience 10
+ when
+     	UaspDto($transactionDatetime:dataLong.get("updatedAt"), DrlHelper.isNonEmpty($transactionDatetime))
+
+   then
+   long dttm = $transactionDatetime.get
+       String currency = "RUR"
+
+
+        insert(new UaspOperation(drools.getRule().getName(), new StringMap(currency), "exchange_currency", new Add()))
+        insert(new UaspOperation(drools.getRule().getName(), new LongMap(dttm), "exchange_dttm", new Add()))
+
+ end
+ ///////////
+
+rule "Exchange fields name unification from CFT pipeline RUR"
+salience 10
+
+when
+    	UaspDto($transactionCurrency:dataString.get("amount_currency_cft"), DrlHelper.isNonEmpty($transactionCurrency) && $transactionCurrency.get == 'RUB')
+        and
+    	UaspDto($transactionDatetime:dataLong.get("event_dttm_cft"), DrlHelper.isNonEmpty($transactionDatetime))
+
+
+  then
+  long dttm = $transactionDatetime.get
+  String currency = 'RUR'
+
+   insert(new UaspOperation(drools.getRule().getName(), new StringMap(currency), "exchange_currency", new Add()))
+   insert(new UaspOperation(drools.getRule().getName(), new LongMap(dttm), "exchange_dttm", new Add()))
+
+end
+
+
+
+rule "Exchange fields name unification from W4  POS  RUR"
+salience 10
+when
+    	UaspDto($transactionCurrency:dataString.get("transaction_currency"), DrlHelper.isNonEmpty($transactionCurrency)  && $transactionCurrency.get == 'RUB')
+        and
+    	UaspDto($transactionDatetime:dataLong.get("processing_datetime"), DrlHelper.isNonEmpty($transactionDatetime))
+        and
+       ( UaspDto($dataKBO:dataString.get("kbo_w4"), DrlHelper.isNonEmpty($dataKBO) && !Arrays.asList("731500-00", "731500-01", "731500-03", "731500-02", "731500-04").contains($dataKBO.get))
+       or
+        UaspDto($dataKBO:dataString.get("kbo_w4"), DrlHelper.isNone($dataKBO)))
+
+
+
+  then
+  long dttm = $transactionDatetime.get
+  String currency = 'RUR'
+
+   insert(new UaspOperation(drools.getRule().getName(), new StringMap(currency), "exchange_currency", new Add()))
+   insert(new UaspOperation(drools.getRule().getName(), new LongMap(dttm), "exchange_dttm", new Add()))
+
+end
+
+rule "Exchange fields name unification from W4 Sal pipeline RUR"
+salience 10
+when
+    	UaspDto($transactionCurrency:dataString.get("base_currency_w4"), DrlHelper.isNonEmpty($transactionCurrency) && $transactionCurrency.get == 'RUB')
+        and
+    	UaspDto($transactionDatetime:dataLong.get("processing_datetime"), DrlHelper.isNonEmpty($transactionDatetime))
+        and
+        UaspDto($dataKBO:dataString.get("kbo_w4"), DrlHelper.isNonEmpty($dataKBO) && Arrays.asList("731500-00", "731500-01",  "731500-03", "731500-02",  "731500-04").contains($dataKBO.get))
+
+  then
+  long dttm = $transactionDatetime.get
+  String currency = 'RUR'
+
+
+   insert(new UaspOperation(drools.getRule().getName(), new StringMap(currency), "exchange_currency", new Add()))
+   insert(new UaspOperation(drools.getRule().getName(), new LongMap(dttm), "exchange_dttm", new Add()))
+
+end
+
+
+
+
+ rule "Exchange fields name unification from profile pipeline RUR"
+salience 10
+ when
+     	UaspDto($transactionCurrency:dataString.get("currency_code_prf"), DrlHelper.isNonEmpty($transactionCurrency) && $transactionCurrency.get == 'RUB')
+         and
+     	UaspDto($transactionDatetime:dataLong.get("event_dttm_prf"), DrlHelper.isNonEmpty($transactionDatetime))
+
+   then
+   long dttm = $transactionDatetime.get
+  String currency = 'RUR'
+
+
+    insert(new UaspOperation(drools.getRule().getName(), new StringMap(currency), "exchange_currency", new Add()))
+    insert(new UaspOperation(drools.getRule().getName(), new LongMap(dttm), "exchange_dttm", new Add()))
+
+ end
+rule "Exchange fields name unification from profile pipeline 8 case RUR"
+salience 10
+ when
+     	UaspDto($transactionCurrency:dataString.get("transaction_currency"), DrlHelper.isNonEmpty($transactionCurrency)  && $transactionCurrency.get == 'RUB')
+         and
+     	UaspDto($transactionDatetime:dataLong.get("event_dttm_prf"), DrlHelper.isNonEmpty($transactionDatetime))
+
+   then
+   long dttm = $transactionDatetime.get
+  String currency = 'RUR'
+   System.out.println("8 case exchange")
+
+
+    insert(new UaspOperation(drools.getRule().getName(), new StringMap(currency), "exchange_currency", new Add()))
+    insert(new UaspOperation(drools.getRule().getName(), new LongMap(dttm), "exchange_dttm", new Add()))
+
+ end
+
+ rule "Exchange fields name unification from profile pipeline POS RUR"
+salience 10
+ when
+     	UaspDto($transactionCurrency:dataString.get("transaction_currency_cd"), DrlHelper.isNonEmpty($transactionCurrency)  && $transactionCurrency.get == 'RUB')
+         and
+     	UaspDto($transactionDatetime:dataLong.get("event_dttm_prf"), DrlHelper.isNonEmpty($transactionDatetime))
+
+   then
+   long dttm = $transactionDatetime.get
+  String currency = 'RUR'
+
+
+    insert(new UaspOperation(drools.getRule().getName(), new StringMap(currency), "exchange_currency", new Add()))
+    insert(new UaspOperation(drools.getRule().getName(), new LongMap(dttm), "exchange_dttm", new Add()))
+
+ end
+

@@ -1,0 +1,27 @@
+{
+    name:    "System-fields",
+    value: { name: "system-stream"
+        prop: {
+         "dataType":"string",
+         "bLogic":"ha",
+         "caFieldName":"system-fields",
+         "haFieldName":"system-stream",
+         "mvFieldName":"system-stream",
+         "caseType":"way4-case-2-3"
+      }
+   }
+
+
+
+
+   "System-fields":{
+      "system-stream":{
+         "dataType":"string",
+         "bLogic":"ha",
+         "caFieldName":"system-fields",
+         "haFieldName":"system-stream",
+         "mvFieldName":"system-stream",
+         "caseType":"way4-case-2-3"
+      }
+   }
+}

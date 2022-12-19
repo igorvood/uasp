@@ -1,0 +1,33 @@
+package ru.vtb.uasp.validate;
+
+global org.slf4j.Logger logger
+
+import scala.Some
+import ru.vtb.uasp.common.dto.UaspDto
+import ru.vtb.uasp.validate.entity.ValidateMsg
+import ru.vtb.uasp.mutator.configuration.drools.DrlHelper
+
+import ru.vtb.uasp.mutator.service.dto.*
+
+dialect "mvel"
+
+rule "2.2"
+  when
+    UaspDto($localId:dataString.get("local_id"), DrlHelper.isNonEmpty($localId))
+    //
+    UaspDto($actionType:dataString.get("action_type"), $actionType.nonEmpty && $actionType.get == "Presentment")
+    //
+    UaspDto($auditRefAuthcode:dataString.get("audit_auth_code"), DrlHelper.isNonEmpty($auditRefAuthcode))
+    UaspDto($auditRefRrn:dataString.get("audit_rrn"), DrlHelper.isNonEmpty($auditRefRrn))
+    UaspDto($auditRefSrn:dataString.get("audit_srn"), DrlHelper.isNonEmpty($auditRefSrn))
+    //
+    UaspDto($transactionAmount:dataDecimal.get("transaction_amount"), DrlHelper.isNonEmpty($transactionAmount))
+    UaspDto($transactionDatetime:dataLong.get("transaction_datetime"), DrlHelper.isNonEmpty($transactionDatetime))
+    //
+    UaspDto($effectiveDate:dataLong.get("effective_date"), DrlHelper.isNonEmpty($effectiveDate))
+    //
+    UaspDto($processingResolution:dataString.get("processing_resolution"), $processingResolution.nonEmpty && $processingResolution.get == "Accepted")
+    UaspDto($paymentDirection:dataString.get("payment_direction"), $paymentDirection.nonEmpty && $paymentDirection.get == "Debit")
+  then
+    insert(new UaspOperation(drools.getRule().getName(), new StringMap("way4-case-2-2"), "system-uasp-way-classification", new ConcatenateStr(",")))
+end

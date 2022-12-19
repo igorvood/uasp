@@ -1,0 +1,42 @@
+SERVICE_NAME=mdm_enrichment_itest
+PARALLELISM=4
+MAIN_CLASS=ru.vtb.uasp.mdm.enrichment.EnrichmentJob
+PROGRAMARGS="--app.service.name ${SERVICE_NAME} "`
+ `"--max.parallelism 4 "`
+ `"--state.checkpoints.dir hdfs://d5uasp-hdfs.corp.dev.vtb:9000/flink/flink-checkpoints/mdm_enrichment_avl "`
+ `"--stream.checkpoint.time.seconds 240000 "`
+ `"--stream.watermark.time.seconds 60 "`
+ `"--stream.window.time.milliseconds  604800000 "`
+ `"--app.ref.topic.name dev_ivr__uasp_realtime__mdm_enrichment__cross_link__itest "`
+ `"--app.ref.status.topic.name dev_ivr__uasp_realtime__mdm_enrichment__cross_link_status__itest "`
+ `"--app.main.topic.name dev_ivr__uasp_realtime__mdm_enrichment__way4_issuing_operation__itest "`
+ `"--app.dlq.topic.name dev_ivr__uasp_realtime__mdm_enrichment__dlq__itest "`
+ `"--app.output.topic.name dev_ivr__uasp_realtime__mdm_enrichment__itest "`
+ `"--app.avro.schema.topic.name streaming_avro-schemas "`
+ `"--bootstrap.servers ${BOOTSTRAP_SERVERS} "`
+ `"--auto.offset.reset latest "`
+ `"--isolation.level read_committed "`
+ `"--enable.idempotence true "`
+# `"--max.in.flight.requests.per.connection 5 "`
+# `"--offsets.commit.timeout.ms 10000 "`
+ `"--retries 1 "`
+ `"--acks all "`
+# `"--session.timeout.ms 120000 "`
+# `"--transaction.max.timeout.ms 120000 "`
+ `"--transaction.timeout.ms 30000 "`
+ `"--group.id mdm_enrichment_avl "`
+ `"--security.protocol SSL "`
+ `"--ssl.truststore.location ${TRUSTSTORE_LOCATION} "`
+ `"--ssl.truststore.password ${KAFKA_PASS} "`
+ `"--ssl.keystore.location ${KEYSTORE_LOCATION} "`
+ `"--ssl.keystore.password ${KAFKA_PASS} "`
+ `"--ssl.key.password ${KAFKA_PASS} "`
+ `"--key.deserializer org.apache.kafka.common.serialization.StringDeserializer "`
+ `"--value.deserializer org.apache.kafka.common.serialization.ByteArrayDeserializer "`
+ `"--key.serializer org.apache.kafka.common.serialization.ByteArraySerializer "`
+ `"--value.serializer org.apache.kafka.common.serialization.ByteArraySerializer "`
+ `"--ssl.truststore.type PKCS12 "`
+ `"--ssl.keystore.type PKCS12 "`
+ `"--transaction.timeout.ms 900000 "`
+ `"--max.block.ms 90000 "`
+ `"--enable.auto.commit true "

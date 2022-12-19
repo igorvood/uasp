@@ -1,0 +1,34 @@
+package ru.vtb.uasp.validate;
+
+global org.slf4j.Logger logger
+
+import scala.Some
+import ru.vtb.uasp.common.dto.UaspDto
+import ru.vtb.uasp.validate.entity.ValidateMsg
+import ru.vtb.uasp.mutator.configuration.drools.DrlHelper
+import java.util.Arrays
+import ru.vtb.uasp.mutator.service.dto.*
+
+dialect "mvel"
+
+rule "5.2"
+  when
+    UaspDto($localId:dataString.get("local_id"), DrlHelper.isNonEmpty($localId))
+    UaspDto($auditRefAuthcode:dataString.get("audit_auth_code"), DrlHelper.isNonEmpty($auditRefAuthcode))
+    UaspDto($auditRefRrn:dataString.get("audit_rrn"), DrlHelper.isNonEmpty($auditRefRrn))
+    UaspDto($auditRefSrn:dataString.get("audit_srn"), DrlHelper.isNonEmpty($auditRefSrn))
+    UaspDto($transactionAmount:dataDecimal.get("transaction_amount"), DrlHelper.isNonEmpty($transactionAmount))
+    UaspDto($transactionDatetime:dataLong.get("transaction_datetime"), DrlHelper.isNonEmpty($transactionDatetime))
+
+    UaspDto($actionType:dataString.get("action_type"), $actionType.nonEmpty && $actionType.get == "Authorization")
+    UaspDto($processingResolution:dataString.get("processing_resolution"), $processingResolution.nonEmpty && $processingResolution.get == "Accepted")
+    UaspDto($requestedAmountPaymentDirection:dataString.get("payment_direction"), $requestedAmountPaymentDirection.nonEmpty && $requestedAmountPaymentDirection.get == "Debit")
+
+    UaspDto($chainServiceType:dataString.get("service_type"), $chainServiceType.nonEmpty && Arrays.asList("I5", "I7").contains($chainServiceType.get))
+
+    UaspDto($PointOfServiceMcc:dataString.get("mcc"), $PointOfServiceMcc.nonEmpty && !Arrays.asList("6538", "6010","6011","6050","6051","6536","6538","4829","6537","6540" ).contains($PointOfServiceMcc.get))
+
+    UaspDto($PointOfServiceTerminalType:dataString.get("terminal_type"), $PointOfServiceTerminalType.nonEmpty && !Arrays.asList("WEB", "ECOMMERCE" ).contains($PointOfServiceTerminalType.get))
+  then
+    insert(new UaspOperation(drools.getRule().getName(), new StringMap("way4-case-5-2"), "system-uasp-way-classification", new ConcatenateStr(",")))
+end
