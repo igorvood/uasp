@@ -6,7 +6,6 @@ import org.scalatest.matchers.should
 import ru.vtb.uasp.common.dto.UaspDto
 import ru.vtb.uasp.filter.configuration.property.FilterRule
 import ru.vtb.uasp.filter.service.FilterStreamServiceTestConfiguration.{dtoNoFields, expectedMap, filterRulesMap, uaspDtoWithFilelds}
-import ru.vtb.uasp.filter.service.OutTag.{outputTagsErrsF, outputTagsF}
 import ru.vtb.uasp.filter.service.dto._
 
 class FilterStreamServiceTest extends org.scalatest.flatspec.AnyFlatSpec with should.Matchers with BeforeAndAfter {
@@ -48,7 +47,7 @@ class FilterStreamServiceTest extends org.scalatest.flatspec.AnyFlatSpec with sh
 
         harness.processElement(dtoNoFields, 1)
         val ok = harness.extractOutputStreamRecords()
-        val err = harness.getSideOutput(filterProcessFunction.outputTagsErrs)
+        val err = harness.getSideOutput(filterProcessFunction.dlqOutPut)
 
         rule._2.operatorClass match {
           case NotNull() => assert(ok.size() == 0 & err.size() == 1)
@@ -74,7 +73,7 @@ class FilterStreamServiceTest extends org.scalatest.flatspec.AnyFlatSpec with sh
           .map(q => q.size())
           .getOrElse(0)
 
-        val actualErr = Option(harness.getSideOutput(outputTagsErrsF(rule._1)))
+        val actualErr = Option(harness.getSideOutput(filterProcessFunction.dlqOutPut))
           .map(q => q.size())
           .getOrElse(0)
         val actualCount = FilteredCount(actualOk, actualErr)

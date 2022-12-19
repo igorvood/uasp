@@ -16,7 +16,7 @@ class ConfigurationTest extends AnyFlatSpec {
 
   behavior of "Create and check Configuration"
 
-  it should " check configuration is ok" in {
+  ignore should " check configuration is ok" in {
     ConfigurationChecker.createConfiguration(
       filePrefix = "generated-filter",
       profiles = profiles,

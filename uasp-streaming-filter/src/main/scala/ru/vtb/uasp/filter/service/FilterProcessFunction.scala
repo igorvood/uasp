@@ -1,34 +1,19 @@
 package ru.vtb.uasp.filter.service
 
-import org.apache.flink.api.scala.createTypeInformation
-import org.apache.flink.streaming.api.functions.ProcessFunction
-import org.apache.flink.streaming.api.scala.{DataStream, OutputTag}
-import org.apache.flink.util.Collector
-import ru.vtb.uasp.common.base.EnrichFlinkDataStream.EnrichFlinkDataStream
+import org.apache.flink.streaming.api.scala.createTypeInformation
+import ru.vtb.uasp.common.abstraction.DlqProcessFunction
 import ru.vtb.uasp.common.dto.UaspDto
+import ru.vtb.uasp.common.service.JsonConvertOutService.IdentityPredef
+import ru.vtb.uasp.common.service.dto.KafkaDto
 import ru.vtb.uasp.filter.configuration.property.FilterRule
 import ru.vtb.uasp.filter.service.FilterPredef.Predef
-import ru.vtb.uasp.filter.service.OutTag.{outputTagsErrsF, outputTagsF}
 
-class FilterProcessFunction(private val filterConfig: FilterRule) extends ProcessFunction[UaspDto, UaspDto] {
+class FilterProcessFunction(private val filterConfig: FilterRule) extends DlqProcessFunction[UaspDto, UaspDto, KafkaDto]{
 
-  val outputTags: OutputTag[UaspDto] = outputTagsF(filterConfig.tagPrefix)
-  val outputTagsErrs: OutputTag[UaspDto] = outputTagsErrsF(filterConfig.tagPrefix)
-
-  override def processElement(value: UaspDto, ctx: ProcessFunction[UaspDto, UaspDto]#Context, out: Collector[UaspDto]): Unit = {
-    val bool = value.filterResult(filterConfig)
-
-    if (bool) {
-      out.collect(value)
+  override def processWithDlq(dto: UaspDto): Either[KafkaDto, UaspDto] =
+    if (dto.filterResult(filterConfig)) {
+      Right(dto)
     } else {
-      ctx.output(outputTagsErrs, value)
+      Left(dto.serializeToBytes)
     }
-  }
-
-  def process(inStr: DataStream[UaspDto]): DataStream[UaspDto] = {
-    inStr.process(processElement)
-      .enrichName(s"${filterConfig.tagPrefix}-filter")
-  }
-
-
 }
