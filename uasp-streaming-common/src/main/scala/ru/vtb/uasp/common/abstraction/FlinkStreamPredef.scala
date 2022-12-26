@@ -49,7 +49,7 @@ object FlinkStreamPredef {
   }
 
   implicit class StreamExecutionEnvironmentPredef(val self: StreamExecutionEnvironment) extends AnyVal {
-    @deprecated
+
     def registerConsumer[O: TypeInformation](name: String,
                                              consumer: FlinkKafkaConsumerBase[Array[Byte]],
                                              dlqProducer: SinkFunction[KafkaDto],
@@ -58,7 +58,7 @@ object FlinkStreamPredef {
       registerConsumer(name, consumer, Some(dlqProducer), serialisationProcessFunction)
     }
 
-    @deprecated
+
     def registerConsumer[O: TypeInformation](name: String,
                                              consumer: FlinkKafkaConsumerBase[Array[Byte]],
                                              serialisationProcessFunction: DlqProcessFunction[Array[Byte], O, KafkaDto]
@@ -66,7 +66,7 @@ object FlinkStreamPredef {
       registerConsumer(name, consumer, None, serialisationProcessFunction)
     }
 
-    @deprecated
+
     def registerConsumer[O: TypeInformation](name: String,
                                              consumer: FlinkKafkaConsumerBase[Array[Byte]],
                                              dlqProducer: Option[SinkFunction[KafkaDto]],
@@ -79,7 +79,7 @@ object FlinkStreamPredef {
         .name(name)
     }
 
-    def registerConsumer[O: TypeInformation](
+    def registerConsumerWithMetric[O: TypeInformation](
                                               consumerProperties: FlinkConsumerProperties,
                                               dlqProducer: Option[FlinkSinkProperties],
                                               serialisationProcessFunction: DlqProcessFunction[Array[Byte], O, KafkaDto]
