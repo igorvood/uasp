@@ -1,6 +1,7 @@
 package ru.vtb.uasp.common.kafka
 
 import org.apache.flink.api.common.serialization.AbstractDeserializationSchema
+import org.apache.flink.metrics.Metric
 import org.apache.flink.streaming.connectors.kafka.FlinkKafkaConsumer
 import ru.vtb.uasp.common.kafka.FlinkConsumerProperties.deserializationSchema
 import ru.vtb.uasp.common.utils.config.PropertyUtil.propertyVal
@@ -9,7 +10,8 @@ import ru.vtb.uasp.common.utils.config.{AllApplicationProperties, ConfigurationI
 
 case class FlinkConsumerProperties(fromTopic: String,
                                    kafkaCnsProperty: KafkaCnsProperty,
-                                  ) {
+                                  ) extends MetricForKafka {
+
 
   def createConsumer(): FlinkKafkaConsumer[Array[Byte]] = ConsumerFactory.getKafkaConsumer(
     fromTopic, deserializationSchema, kafkaCnsProperty.property)

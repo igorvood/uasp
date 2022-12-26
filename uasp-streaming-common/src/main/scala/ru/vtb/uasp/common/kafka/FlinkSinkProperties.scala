@@ -8,11 +8,12 @@ import ru.vtb.uasp.common.utils.config.kafka.KafkaPrdProperty
 import ru.vtb.uasp.common.utils.config.{AllApplicationProperties, ConfigurationInitialise, PropertyCombiner, ReadConfigErrors}
 
 case class FlinkSinkProperties(
-                                appTopicName: String,
+                                toTopicName: String,
                                 producerProps: KafkaPrdProperty,
                                 producerSemantic: Option[FlinkKafkaProducer.Semantic] = None,
                                 kafkaProducerPoolSize: Option[Int] = None
-                              ) {
+                              ) extends MetricForKafka {
+
 
   def createSinkFunction(factory: FlinkSinkProperties => SinkFunction[KafkaDto] ): SinkFunction[KafkaDto] = factory(this)
 
@@ -25,9 +26,9 @@ object FlinkSinkProperties extends PropertyCombiner[FlinkSinkProperties] {
   val producerFactoryDefault: FlinkSinkProperties => SinkFunction[KafkaDto] = { propsModel =>
 
     KafkaProducerService.getKafkaProducer[KafkaDto](
-      topicName = propsModel.appTopicName,
+      topicName = propsModel.toTopicName,
       kafkaProps = propsModel.producerProps.property,
-      serializer = new FlinkKafkaSerializationSchema(propsModel.appTopicName),
+      serializer = new FlinkKafkaSerializationSchema(propsModel.toTopicName),
       producerSemantic = propsModel.producerSemantic.getOrElse(FlinkKafkaProducer.Semantic.NONE),
       kafkaProducerPoolSize = propsModel.kafkaProducerPoolSize.getOrElse(5)
     )
