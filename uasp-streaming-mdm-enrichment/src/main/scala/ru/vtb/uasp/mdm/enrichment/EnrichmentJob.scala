@@ -67,32 +67,26 @@ object EnrichmentJob {
 
   def init(env: StreamExecutionEnvironment, propsModel: MDMEnrichmentPropsModel, sinkFunction: FlinkSinkProperties => SinkFunction[KafkaDto] = producerFactoryDefault): FlinkDataStreams = {
 
-    // получение продьюссеров для ошибок десериализации
-    val producerDlqMain = propsModel.allEnrichProperty.mainEnrichProperty.dlqTopicProp.map(p => sinkFunction(p))
-    val producerDlqCommon = propsModel.flinkSinkPropertiesCommonProducerDLQ.map(p => sinkFunction(p))
-    val producerDlqGlobalId = propsModel.flinkSinkPropertiesGlobalIdProducerDLQ.map(p => sinkFunction(p))
-
     val serialisationProcessFunction = UaspDeserializationProcessFunction()
 
     val serialisationProcessFunctionJsValue = new JsValueConsumer()
 
     val mainDataStream = env
-      .registerConsumer("mainData", propsModel.mainInputStream, producerDlqMain, serialisationProcessFunction)
-    //      .map(u => EnrichmentUaspWithError(u.id, u, propsModel.allEnrichProperty.mainStreamProperty.alias, List()))
+      .registerConsumerWithMetric(propsModel.allEnrichProperty.mainEnrichProperty.fromTopic, propsModel.allEnrichProperty.mainEnrichProperty.dlqTopicProp, serialisationProcessFunction)
 
 
-    val commonStream = propsModel.commonConsumer
+    val commonStream = propsModel.allEnrichProperty.commonEnrichProperty
       .map { cns =>
+        val commonEnrichPropertyDlq = propsModel.allEnrichProperty.commonEnrichProperty.flatMap(a => a.dlqTopicProp)
         env
-          .registerConsumer(s"addSource-commonConsumer", cns, producerDlqCommon, serialisationProcessFunctionJsValue)
-        //          .map(u => EnrichmentUaspWithError(u.id, u, propsModel.allEnrichProperty.commonEnrichPropertyWithAlias.get.alias, List()))
+          .registerConsumerWithMetric( cns.fromTopic, commonEnrichPropertyDlq, serialisationProcessFunctionJsValue)
       }
 
 
-    val globalIdStream = propsModel.globalIdConsumer
+    val globalIdStream = propsModel.allEnrichProperty.globalIdEnrichProperty
       .map { cns =>
-        env.registerConsumer(s"addSource-globalIdConsumer", cns, producerDlqGlobalId, serialisationProcessFunctionJsValue)
-        //          .map(u => EnrichmentUaspWithError(u.id, u, propsModel.allEnrichProperty.globalIdStreamPropertyWithAlias.get.alias, List()))
+        val globalIdEnrichPropertyDlq = propsModel.allEnrichProperty.globalIdEnrichProperty.flatMap(a => a.dlqTopicProp)
+        env.registerConsumerWithMetric( cns.fromTopic, globalIdEnrichPropertyDlq, serialisationProcessFunctionJsValue)
       }
 
     FlinkDataStreams(mainDataStream, commonStream, globalIdStream)

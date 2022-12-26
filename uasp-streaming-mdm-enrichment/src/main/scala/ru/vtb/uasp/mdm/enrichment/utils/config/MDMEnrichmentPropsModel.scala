@@ -29,6 +29,7 @@ case class MDMEnrichmentPropsModel(
     .map { c => new MainStreamExtractKeyFunction(c) }
 
   //консьюмеры
+
   lazy val mainInputStream: FlinkKafkaConsumer[Array[Byte]] = allEnrichProperty.mainEnrichProperty.fromTopic.createConsumer()
 
   lazy val commonConsumer: Option[FlinkKafkaConsumer[Array[Byte]]] = allEnrichProperty.commonEnrichProperty
