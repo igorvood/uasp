@@ -31,7 +31,11 @@ object FlinkStreamPredef {
       myBeDlq
     }
 
-    def processAndDlqSinkWithMetric[O: TypeInformation](process: DlqProcessFunction[T, O, KafkaDto], sinkDlqFunction: Option[FlinkSinkProperties]): DataStream[O] = {
+    def processAndDlqSinkWithMetric[O: TypeInformation](
+                                                         process: DlqProcessFunction[T, O, KafkaDto],
+                                                         sinkDlqFunction: Option[FlinkSinkProperties],
+                                                         producerFactory: FlinkSinkProperties => SinkFunction[KafkaDto]
+                                                       ): DataStream[O] = {
 
       val myBeDlq = self
         .process(process)
@@ -41,7 +45,7 @@ object FlinkStreamPredef {
           myBeDlq
             .getSideOutput(process.dlqOutPut)
             .map(sf.prometheusMetric[KafkaDto])
-            .addSink(sf.createSinkFunction(FlinkSinkProperties.producerFactoryDefault))
+            .addSink(sf.createSinkFunction(producerFactory))
         }
         )
       myBeDlq
@@ -82,13 +86,14 @@ object FlinkStreamPredef {
     def registerConsumerWithMetric[O: TypeInformation](
                                               consumerProperties: FlinkConsumerProperties,
                                               dlqProducer: Option[FlinkSinkProperties],
-                                              serialisationProcessFunction: DlqProcessFunction[Array[Byte], O, KafkaDto]
+                                              serialisationProcessFunction: DlqProcessFunction[Array[Byte], O, KafkaDto],
+                                              producerFactory: FlinkSinkProperties => SinkFunction[KafkaDto]
                                             ): DataStream[O] = {
       val consumer = consumerProperties.createConsumer()
 
       self.addSource(consumer)
         .map(consumerProperties.prometheusMetric[Array[Byte]])
-        .processAndDlqSinkWithMetric(serialisationProcessFunction, dlqProducer)
+        .processAndDlqSinkWithMetric(serialisationProcessFunction, dlqProducer, producerFactory)
     }
 
   }

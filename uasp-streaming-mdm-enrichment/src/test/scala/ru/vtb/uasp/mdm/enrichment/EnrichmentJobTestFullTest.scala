@@ -49,7 +49,7 @@ class EnrichmentJobTestFullTest extends AnyFlatSpec with Matchers {
 
     val streams = FlinkDataStreams(mainStream, Some(hypothecInputDataStream), Some(globalDataStream))
 
-    val value1 = EnrichmentJob.process(streams, model, { pm => CollectByteSink(pm.appTopicName) })
+    val value1 = EnrichmentJob.process(streams, model, { pm => CollectByteSink(pm.toTopicName) })
 
     value1.mainStream.print()
 
@@ -73,7 +73,7 @@ class EnrichmentJobTestFullTest extends AnyFlatSpec with Matchers {
     val emptyStream = env.fromCollection(List[JsValue]())
     val streams = FlinkDataStreams(mainStream, Some(emptyStream), Some(emptyStream))
 
-    val value1 = EnrichmentJob.process(streams, model, { pm => CollectByteSink(pm.appTopicName) }).mainStream
+    val value1 = EnrichmentJob.process(streams, model, { pm => CollectByteSink(pm.toTopicName) }).mainStream
 
     env.execute("executionEnvironmentProperty.appServiceName")
 

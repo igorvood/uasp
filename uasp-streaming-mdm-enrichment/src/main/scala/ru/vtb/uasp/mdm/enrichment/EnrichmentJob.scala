@@ -65,28 +65,28 @@ object EnrichmentJob {
     }
   }
 
-  def init(env: StreamExecutionEnvironment, propsModel: MDMEnrichmentPropsModel, sinkFunction: FlinkSinkProperties => SinkFunction[KafkaDto] = producerFactoryDefault): FlinkDataStreams = {
+  def init(env: StreamExecutionEnvironment, propsModel: MDMEnrichmentPropsModel, producerFabric: FlinkSinkProperties => SinkFunction[KafkaDto] = producerFactoryDefault): FlinkDataStreams = {
 
     val serialisationProcessFunction = UaspDeserializationProcessFunction()
 
     val serialisationProcessFunctionJsValue = new JsValueConsumer()
 
     val mainDataStream = env
-      .registerConsumerWithMetric(propsModel.allEnrichProperty.mainEnrichProperty.fromTopic, propsModel.allEnrichProperty.mainEnrichProperty.dlqTopicProp, serialisationProcessFunction)
+      .registerConsumerWithMetric(propsModel.allEnrichProperty.mainEnrichProperty.fromTopic, propsModel.allEnrichProperty.mainEnrichProperty.dlqTopicProp, serialisationProcessFunction, producerFabric)
 
 
     val commonStream = propsModel.allEnrichProperty.commonEnrichProperty
       .map { cns =>
         val commonEnrichPropertyDlq = propsModel.allEnrichProperty.commonEnrichProperty.flatMap(a => a.dlqTopicProp)
         env
-          .registerConsumerWithMetric( cns.fromTopic, commonEnrichPropertyDlq, serialisationProcessFunctionJsValue)
+          .registerConsumerWithMetric(cns.fromTopic, commonEnrichPropertyDlq, serialisationProcessFunctionJsValue, producerFabric)
       }
 
 
     val globalIdStream = propsModel.allEnrichProperty.globalIdEnrichProperty
       .map { cns =>
         val globalIdEnrichPropertyDlq = propsModel.allEnrichProperty.globalIdEnrichProperty.flatMap(a => a.dlqTopicProp)
-        env.registerConsumerWithMetric( cns.fromTopic, globalIdEnrichPropertyDlq, serialisationProcessFunctionJsValue)
+        env.registerConsumerWithMetric(cns.fromTopic, globalIdEnrichPropertyDlq, serialisationProcessFunctionJsValue, producerFabric)
       }
 
     FlinkDataStreams(mainDataStream, commonStream, globalIdStream)
@@ -100,7 +100,7 @@ object EnrichmentJob {
               producerFabric: FlinkSinkProperties => SinkFunction[KafkaDto] = producerFactoryDefault
              ): OutStreams = {
 
-    val mainDlqSink = mDMEnrichmentPropsModel.allEnrichProperty.mainEnrichProperty.dlqTopicProp.map(p => p.createSinkFunction(producerFabric))
+    val mainDlqProp = mDMEnrichmentPropsModel.allEnrichProperty.mainEnrichProperty.dlqTopicProp
 
     val streamGlobal = flinkDataStreams.mainDataStream
       // если настроено обогащение глобальнымнтификатором, то надо обогатить
@@ -114,17 +114,16 @@ object EnrichmentJob {
         maybeGlobal
           .map { tuple =>
             val (keyedMainStreamSrv, validateGlobalIdService, keyGlobalSrv, globalIdStream) = tuple
-            val dlqGlobalIdSink: Option[SinkFunction[KafkaDto]] = mDMEnrichmentPropsModel.flinkSinkPropertiesCommonProducerDLQ.map(f => producerFabric(f))
-
+            val dlqGlobalIdProp = mDMEnrichmentPropsModel.allEnrichProperty.globalIdEnrichProperty.flatMap(a => a.dlqTopicProp)
             val validatedGlobalIdStream = globalIdStream
-              .processAndDlqSink("validatedGlobalId", validateGlobalIdService, dlqGlobalIdSink)
+              .processAndDlqSinkWithMetric(validateGlobalIdService, dlqGlobalIdProp, producerFabric)
 
             mainDs
-              .processAndDlqSink(keyedMainStreamSrv, mainDlqSink)
+              .processAndDlqSinkWithMetric(keyedMainStreamSrv, mainDlqProp, producerFabric)
               .keyBy(keySelectorMain)
               .connect(validatedGlobalIdStream.keyBy(d => d.key))
               .process(keyGlobalSrv)
-              .processAndDlqSink("globalIdEnrich", mDMEnrichmentPropsModel.throwToDlqService, mainDlqSink)
+              .processAndDlqSinkWithMetric(mDMEnrichmentPropsModel.throwToDlqService, mainDlqProp, producerFabric)
           }.getOrElse(mainDs)
       }
     val streamCommon = streamGlobal
@@ -140,18 +139,17 @@ object EnrichmentJob {
         maybeCommon
           .map { tuple =>
             val (keyedMainStreamSrv, keyCommonEnrichmentMapService, commonValidateProcessFunction, commonStream) = tuple
-            val dlqGlobalIdSink: Option[SinkFunction[KafkaDto]] = keyCommonEnrichmentMapService.commonEnrichProperty.dlqTopicProp.map(prp => producerFabric(prp)
-            )
+            val dlqGlobalIdProp = mDMEnrichmentPropsModel.allEnrichProperty.commonEnrichProperty.flatMap(a => a.dlqTopicProp)
 
             val validatedGlobalIdStream = commonStream
-              .processAndDlqSink("validateCommonEnrich", commonValidateProcessFunction, dlqGlobalIdSink)
+              .processAndDlqSinkWithMetric( commonValidateProcessFunction, dlqGlobalIdProp, producerFabric)
 
             mainDs
-              .processAndDlqSink(keyedMainStreamSrv, mainDlqSink)
+              .processAndDlqSinkWithMetric(keyedMainStreamSrv, mainDlqProp, producerFabric)
               .keyBy(keySelectorMain)
               .connect(validatedGlobalIdStream.keyBy(d => d.key))
               .process(keyCommonEnrichmentMapService)
-              .processAndDlqSink("commonEnrich", mDMEnrichmentPropsModel.throwToDlqService, mainDlqSink)
+              .processAndDlqSinkWithMetric( mDMEnrichmentPropsModel.throwToDlqService, mainDlqProp, producerFabric)
           }.getOrElse(mainDs)
       }
 
