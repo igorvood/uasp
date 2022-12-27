@@ -3,7 +3,7 @@ package ru.vtb.uasp.mdm.enrichment.utils.config.enrich
 import play.api.libs.json.JsValue
 import ru.vtb.uasp.common.dto.UaspDto
 import ru.vtb.uasp.common.kafka.{FlinkConsumerProperties, FlinkSinkProperties}
-import ru.vtb.uasp.common.utils.config.PropertyUtil.{mapProperty, propertyVal, propertyValOptional,createByClassOption }
+import ru.vtb.uasp.common.utils.config.PropertyUtil.{createByClassOption, mapProperty, propertyVal}
 import ru.vtb.uasp.common.utils.config.{AllApplicationProperties, ConfigurationInitialise, PropertyCombiner, ReadConfigErrors}
 import ru.vtb.uasp.mdm.enrichment.dao.UaspDtoPredef.PreDef
 import ru.vtb.uasp.mdm.enrichment.service.dto.KeyedCAData
@@ -77,6 +77,6 @@ object GlobalIdEnrichProperty extends PropertyCombiner[GlobalIdEnrichProperty] {
       fields <- fieldsList
       format <- propertyVal[InputFormatEnum](prf, "inputDataFormat")(appProps, configurationInitialise, { str => InputFormatEnum.withName(str) })
 
-    } yield new GlobalIdEnrichProperty(fromTopic,   dlqTopicProp, globalEnrichFields, keySelectorMain, keySelectorEnrich, fields, format)
+    } yield new GlobalIdEnrichProperty(fromTopic, dlqTopicProp, globalEnrichFields, keySelectorMain, keySelectorEnrich, fields, format)
   }
 }

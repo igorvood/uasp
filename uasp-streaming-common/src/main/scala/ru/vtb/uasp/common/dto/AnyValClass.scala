@@ -2,10 +2,10 @@ package ru.vtb.uasp.common.dto
 
 
 sealed trait AnyValClass {
-//  @deprecated
+  //  @deprecated
   def value: Any
 
- def isNotNull: Boolean = Option(value).isDefined
+  def isNotNull: Boolean = Option(value).isDefined
 }
 
 final case class StringObj(get: String) extends AnyValClass {
@@ -79,9 +79,9 @@ object AnyValClassWriter {
   }
 
   object AnyValSyntax {
-     implicit class anyValOps[A](val v:A) extends AnyVal{
-       def toAnyValClass(implicit ev: AnyValClassWriter[A]):AnyValClass = ev.add(v)
-     }
+    implicit class anyValOps[A](val v: A) extends AnyVal {
+      def toAnyValClass(implicit ev: AnyValClassWriter[A]): AnyValClass = ev.add(v)
+    }
 
     implicit class anyValOpsBoolean(val v: Boolean) extends AnyVal {
       def toAnyValClass: AnyValClass = BooleanObj(v)

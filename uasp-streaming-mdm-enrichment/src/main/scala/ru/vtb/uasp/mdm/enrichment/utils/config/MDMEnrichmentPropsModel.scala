@@ -1,9 +1,7 @@
 package ru.vtb.uasp.mdm.enrichment.utils.config
 
-import org.apache.flink.streaming.connectors.kafka.FlinkKafkaConsumer
 import ru.vtb.uasp.common.kafka.FlinkSinkProperties
 import ru.vtb.uasp.common.utils.config.PropertyUtil._
-import ru.vtb.uasp.common.utils.config.kafka.KafkaPrdProperty
 import ru.vtb.uasp.common.utils.config.{AllApplicationProperties, ConfigurationInitialise, PropertyCombiner, ReadConfigErrors}
 import ru.vtb.uasp.mdm.enrichment.service._
 import ru.vtb.uasp.mdm.enrichment.utils.config.enrich.AllEnrichProperty
@@ -28,20 +26,6 @@ case class MDMEnrichmentPropsModel(
   lazy val commonMainStreamExtractKeyFunction = allEnrichProperty.commonEnrichProperty
     .map { c => new MainStreamExtractKeyFunction(c) }
 
-  //консьюмеры
-
-  lazy val mainInputStream: FlinkKafkaConsumer[Array[Byte]] = allEnrichProperty.mainEnrichProperty.fromTopic.createConsumer()
-
-  lazy val commonConsumer: Option[FlinkKafkaConsumer[Array[Byte]]] = allEnrichProperty.commonEnrichProperty
-    .map { prp =>
-      prp.fromTopic.createConsumer()
-    }
-
-  lazy val globalIdConsumer: Option[FlinkKafkaConsumer[Array[Byte]]] = allEnrichProperty.globalIdEnrichProperty
-    .map { prp =>
-      prp.fromTopic.createConsumer()
-    }
-
   // common services
   lazy val keyCommonEnrichmentMapService: Option[KeyedEnrichCommonCoProcessService] = allEnrichProperty.commonEnrichProperty
     .map(cp =>
@@ -63,12 +47,6 @@ case class MDMEnrichmentPropsModel(
 
 
   lazy val flinkSinkPropertiesMainProducer: FlinkSinkProperties = allEnrichProperty.mainEnrichProperty.toTopicProp
-
-  lazy val flinkSinkPropertiesGlobalIdProducerDLQ: Option[FlinkSinkProperties] = allEnrichProperty.globalIdEnrichProperty
-    .flatMap(alias => alias.dlqTopicProp)
-
-  lazy val flinkSinkPropertiesCommonProducerDLQ: Option[FlinkSinkProperties] = allEnrichProperty.commonEnrichProperty
-    .flatMap(alias => alias.dlqTopicProp)
 
 }
 

@@ -3,8 +3,6 @@ package ru.vtb.uasp.mdm.enrichment.dao
 import ru.vtb.uasp.common.dto.UaspDto
 import ru.vtb.uasp.mdm.enrichment.utils.config.enrich.EnrichFields
 
-import java.time.{LocalDateTime, ZoneId}
-
 object UaspDtoPredef {
 
   implicit class PreDef(val self: UaspDto) extends AnyVal {
@@ -30,7 +28,7 @@ object UaspDtoPredef {
       val dString: Map[String, String] = self.dataString ++
         Map(prop.toFieldName -> globalId)
       self.copy(id = globalId,
-        dataString = dString/*,
+        dataString = dString /*,
         process_timestamp = LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant.toEpochMilli*/)
     }
 

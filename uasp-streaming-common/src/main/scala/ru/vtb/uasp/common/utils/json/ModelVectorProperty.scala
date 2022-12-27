@@ -4,7 +4,7 @@ import play.api.libs.json.{Json, OWrites, Reads}
 
 case class ModelVectorProperty(name: String,
                                atributeProperties: Set[AtributeProperty]
-                     )
+                              )
 
 object ModelVectorProperty {
   implicit val writes: OWrites[ModelVectorProperty] = Json.writes[ModelVectorProperty]

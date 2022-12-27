@@ -1,8 +1,8 @@
 package ru.vtb.uasp.common.kafka
 
 import org.apache.flink.api.common.serialization.SerializationSchema
-import org.apache.flink.streaming.connectors.kafka.{FlinkKafkaProducer, KafkaSerializationSchema}
 import org.apache.flink.streaming.connectors.kafka.FlinkKafkaProducer.Semantic
+import org.apache.flink.streaming.connectors.kafka.{FlinkKafkaProducer, KafkaSerializationSchema}
 
 import java.util.Properties
 

@@ -142,14 +142,14 @@ object EnrichmentJob {
             val dlqGlobalIdProp = mDMEnrichmentPropsModel.allEnrichProperty.commonEnrichProperty.flatMap(a => a.dlqTopicProp)
 
             val validatedGlobalIdStream = commonStream
-              .processAndDlqSinkWithMetric( commonValidateProcessFunction, dlqGlobalIdProp, producerFabric)
+              .processAndDlqSinkWithMetric(commonValidateProcessFunction, dlqGlobalIdProp, producerFabric)
 
             mainDs
               .processAndDlqSinkWithMetric(keyedMainStreamSrv, mainDlqProp, producerFabric)
               .keyBy(keySelectorMain)
               .connect(validatedGlobalIdStream.keyBy(d => d.key))
               .process(keyCommonEnrichmentMapService)
-              .processAndDlqSinkWithMetric( mDMEnrichmentPropsModel.throwToDlqService, mainDlqProp, producerFabric)
+              .processAndDlqSinkWithMetric(mDMEnrichmentPropsModel.throwToDlqService, mainDlqProp, producerFabric)
           }.getOrElse(mainDs)
       }
 
@@ -171,8 +171,10 @@ object EnrichmentJob {
                  ): DataStreamSink[KafkaDto] = {
     val mainProducer = syncProperties.flinkSinkPropertiesMainProducer.createSinkFunction(producerFabric)
 
+
     mainDataStream
       .map(_.serializeToBytes)
+      .map(syncProperties.flinkSinkPropertiesMainProducer.prometheusMetric[KafkaDto])
       .addSink(mainProducer)
       .enrichName(s"MAIN_SINK_outEnrichmentSink")
   }

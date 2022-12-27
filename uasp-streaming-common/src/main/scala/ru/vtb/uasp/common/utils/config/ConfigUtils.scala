@@ -26,7 +26,7 @@ object ConfigUtils {
     }
   }
 
-    @deprecated("use readAllPropsByProfile")
+  @deprecated("use readAllPropsByProfile")
   def getPropsFromResourcesFile(fileName: String): Try[Map[String, String]] = Try {
     val props = ParameterTool.fromPropertiesFile(Thread.currentThread.getContextClassLoader.getResourceAsStream(fileName))
     props.getProperties.toMap.asInstanceOf[Map[String, String]]

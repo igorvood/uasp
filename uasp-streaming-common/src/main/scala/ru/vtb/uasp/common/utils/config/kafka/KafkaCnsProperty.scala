@@ -13,7 +13,7 @@ case class KafkaCnsProperty(property: Properties) extends MandatoryPropertyCheck
   override def requiredProperty: Set[String] =
     Set(
       "bootstrap.servers",
-//      "group.id"
+      //      "group.id"
     )
 
 }
