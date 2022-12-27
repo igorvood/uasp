@@ -15,7 +15,7 @@ class FlinkKafkaSerializationSchemaUasp(topic: String) extends KafkaSerializatio
     val (encoder, writer) = EncodeFactory.getEncode
     val headers = List[Header](new RecordHeader("schema", value.getClass.getSimpleName.getBytes))
     val producerRecord = new ProducerRecord(topic, null, value.id.getBytes,
-        AvroSerializeUtil.encode(value, encoder, writer), headers.asJava)
+      AvroSerializeUtil.encode(value, encoder, writer), headers.asJava)
     producerRecord
   }
 }

@@ -3,16 +3,16 @@ package ru.vtb.uasp.common.utils.json
 import play.api.libs.json.{Json, OWrites, Reads}
 
 case class AttributeMetaDataProperty(
-                      dataType: String,
-                      bLogic: String,
-                      caFieldName: Option[String],
-                      haFieldName: Option[String],
-                      mvFieldName: String,
-                      caseType: Option[String],
-                      caFieldSupplementary: Option[String],
-                      haFieldSupplementary: Option[String],
-                      isAggregateFlg: Option[Boolean]
-                    )
+                                      dataType: String,
+                                      bLogic: String,
+                                      caFieldName: Option[String],
+                                      haFieldName: Option[String],
+                                      mvFieldName: String,
+                                      caseType: Option[String],
+                                      caFieldSupplementary: Option[String],
+                                      haFieldSupplementary: Option[String],
+                                      isAggregateFlg: Option[Boolean]
+                                    )
 
 object AttributeMetaDataProperty {
 

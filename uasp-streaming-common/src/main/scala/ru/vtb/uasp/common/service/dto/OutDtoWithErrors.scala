@@ -4,7 +4,7 @@ import play.api.libs.json.{Json, OWrites, Reads}
 
 case class OutDtoWithErrors(sourceValue: String,
                             errors: List[String]
-                                         )
+                           )
 
 object OutDtoWithErrors {
   implicit val reads: Reads[OutDtoWithErrors] = Json.reads[OutDtoWithErrors]

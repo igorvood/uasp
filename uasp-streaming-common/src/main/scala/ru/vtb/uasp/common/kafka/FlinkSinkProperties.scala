@@ -15,7 +15,7 @@ case class FlinkSinkProperties(
                               ) extends MetricForKafka {
 
 
-  def createSinkFunction(factory: FlinkSinkProperties => SinkFunction[KafkaDto] ): SinkFunction[KafkaDto] = factory(this)
+  def createSinkFunction(factory: FlinkSinkProperties => SinkFunction[KafkaDto]): SinkFunction[KafkaDto] = factory(this)
 
 }
 
@@ -33,9 +33,10 @@ object FlinkSinkProperties extends PropertyCombiner[FlinkSinkProperties] {
       kafkaProducerPoolSize = propsModel.kafkaProducerPoolSize.getOrElse(5)
     )
   }
+
   protected override def createMayBeErr[CONFIGURATION](prf: String)(implicit appProps: AllApplicationProperties, configurationInitialise: ConfigurationInitialise[CONFIGURATION]): Either[ReadConfigErrors, FlinkSinkProperties] =
     for {
-      appTopicName <- propertyVal[String](prf, "toTopic")(appProps,configurationInitialise,s)
+      appTopicName <- propertyVal[String](prf, "toTopic")(appProps, configurationInitialise, s)
       producerProps <- KafkaPrdProperty.create(s"$prf.toTopic.prd")
       producerSemantic <- propertyValOptional[FlinkKafkaProducer.Semantic](prf, "producerSemantic")(appProps, configurationInitialise, { v => FlinkKafkaProducer.Semantic.valueOf(v) })
       kafkaProducerPoolSize <- propertyValOptional[Int](prf, "kafkaProducerPoolSize")

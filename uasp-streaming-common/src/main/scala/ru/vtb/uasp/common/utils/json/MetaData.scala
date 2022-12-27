@@ -4,7 +4,7 @@ import play.api.libs.json.{Json, OWrites, Reads}
 
 case class MetaData(lvl: Set[ModelVectorProperty])
 
-object MetaData{
+object MetaData {
   implicit val writes: OWrites[MetaData] = Json.writes[MetaData]
 
   implicit val reads: Reads[MetaData] = Json.reads[MetaData]

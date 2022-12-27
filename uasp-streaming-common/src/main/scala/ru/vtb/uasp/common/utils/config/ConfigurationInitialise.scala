@@ -1,6 +1,5 @@
 package ru.vtb.uasp.common.utils.config
 
-import ru.vtb.uasp.common.generate.dto.Profile
 import ru.vtb.uasp.common.utils.config.PropertyUtil.extractNamesPlaceholder
 
 import scala.collection.mutable

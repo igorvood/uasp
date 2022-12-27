@@ -1,7 +1,7 @@
 package ru.vtb.uasp.mdm.enrichment.utils.config.enrich
 
 import ru.vtb.uasp.common.kafka.{FlinkConsumerProperties, FlinkSinkProperties}
-import ru.vtb.uasp.common.utils.config.PropertyUtil.{createByClassOption, propertyValOptional, createByClass}
+import ru.vtb.uasp.common.utils.config.PropertyUtil.{createByClass, createByClassOption}
 import ru.vtb.uasp.common.utils.config.{AllApplicationProperties, ConfigurationInitialise, PropertyCombiner, ReadConfigErrors}
 import ru.vtb.uasp.mdm.enrichment.utils.config.enrich.intf.{EnrichProperty, EnrichPropertyOut, EnrichPropertyWithDlq}
 

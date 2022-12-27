@@ -6,8 +6,8 @@ import java.util.Map
 import java.{lang, util}
 
 
-class MapStateMock[A,B] extends MapState[A,B] {
-  val map: util.HashMap[A,B] = new util.HashMap[A,B]()
+class MapStateMock[A, B] extends MapState[A, B] {
+  val map: util.HashMap[A, B] = new util.HashMap[A, B]()
 
   override def get(uk: A): B = map.get(uk)
 

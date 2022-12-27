@@ -141,7 +141,7 @@ object PropertyUtil extends Serializable {
   }
 
   private def getPropsFromMap(props: Map[String, String])(implicit configurationInitialise: ConfigurationInitialise[_]): Properties = {
-    val replacedPh = props.map(kv =>kv._1 -> replaceDifficultPlaceHolders(kv._2))
+    val replacedPh = props.map(kv => kv._1 -> replaceDifficultPlaceHolders(kv._2))
 
     import scala.collection.JavaConverters.mapAsJavaMapConverter
     val properties = new Properties()
@@ -164,16 +164,17 @@ object PropertyUtil extends Serializable {
       extractNamesPlaceholder(propertyName, plus)
     } else inListPlace
   }
+
   @tailrec
   def replaceDifficultPlaceHolders(
                                     propertyValue: String,
-                                    resultSrt: String =""
+                                    resultSrt: String = ""
                                   )(implicit configurationInitialise: ConfigurationInitialise[_]): String = {
 
     val phListForResolve = extractNamesPlaceholder(propertyValue)
 
     if (phListForResolve.isEmpty)
-      resultSrt+propertyValue
+      resultSrt + propertyValue
     else {
       val beginIndex = propertyValue.indexOf("${")
       val endIndex = propertyValue.indexOf("}")
@@ -181,11 +182,11 @@ object PropertyUtil extends Serializable {
       if (beginIndex != -1 && endIndex != -1 && beginIndex < endIndex) {
         val prf = propertyValue.substring(0, beginIndex)
         val newVal = configurationInitialise.resolvablePlaceHolders.getOrElse(phListForResolve.head, s"$${${phListForResolve.head}}")
-        val end = propertyValue.substring(endIndex+1)
+        val end = propertyValue.substring(endIndex + 1)
 
-        val str1 = resultSrt+prf + newVal
+        val str1 = resultSrt + prf + newVal
         replaceDifficultPlaceHolders(end, str1)
-      } else resultSrt+propertyValue
+      } else resultSrt + propertyValue
 
 
     }
