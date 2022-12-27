@@ -1,0 +1,68 @@
+---
+version: '3'
+
+services:
+  job-cluster:
+    build: .
+    container_name: job-cluster
+    ports:
+    - "8081:8081"
+    - "9249:9249"
+    volumes:
+    - state:/state
+    command: standalone-job --job-classname ru.vtb.uasp.mdm.enrichment.EnrichmentJob --job-id 00000000000000000000000000000000
+    environment:
+    - |
+      FLINK_PROPERTIES=
+      jobmanager.rpc.address: job-cluster
+      state.checkpoints.dir: file:///state
+
+  taskmanager1:
+    build: .
+    container_name: taskmanager1
+    ports:
+    - "9250:9249"
+    volumes:
+    - state:/state
+    command: taskmanager
+    environment:
+    - |
+      FLINK_PROPERTIES=
+      jobmanager.rpc.address: job-cluster
+      state.checkpoints.dir: file:///state
+
+  taskmanager2:
+    build: .
+    container_name: taskmanager2
+    ports:
+    - "9251:9249"
+    volumes:
+    - state:/state
+    command: taskmanager
+    environment:
+    - |
+      FLINK_PROPERTIES=
+      jobmanager.rpc.address: job-cluster
+      state.checkpoints.dir: file:///state
+
+  prometheus:
+    image: prom/prometheus:v2.37.1
+    container_name: prometheus
+    ports:
+    - "9090:9090"
+    volumes:
+    - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+    - ./prometheus/flink.rules.yml:/etc/prometheus/flink.rules.yml
+
+  grafana:
+    image: grafana/grafana:8.4.0
+    container_name: grafana
+    ports:
+    - "3000:3000"
+    environment:
+    - GF_SECURITY_ADMIN_PASSWORD=flink
+    volumes:
+    - ./grafana/provisioning/:/etc/grafana/provisioning/
+
+volumes:
+  state:
