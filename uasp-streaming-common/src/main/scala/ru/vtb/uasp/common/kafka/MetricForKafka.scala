@@ -1,13 +1,14 @@
 package ru.vtb.uasp.common.kafka
 
 import ru.vtb.uasp.common.metric.{FlowDirection, PrometheusKafkaMetricsFunction}
+import ru.vtb.uasp.common.service.dto.ServiceDataDto
 
 trait MetricForKafka {
 
-  def prometheusMetric[T] = {
+  def prometheusMetric[T](serviceData: ServiceDataDto): PrometheusKafkaMetricsFunction[T] = {
     this match {
-      case FlinkConsumerProperties(fromTopic, _) => new PrometheusKafkaMetricsFunction[T](fromTopic.replace("dev_", ""), FlowDirection.IN)
-      case FlinkSinkProperties(toTopic, _, _, _) => new PrometheusKafkaMetricsFunction[T](toTopic.replace("dev_", ""), FlowDirection.OUT)
+      case FlinkConsumerProperties(fromTopic, _) => new PrometheusKafkaMetricsFunction[T](serviceData, fromTopic.replace("dev_", ""), FlowDirection.IN)
+      case FlinkSinkProperties(toTopic, _, _, _) => new PrometheusKafkaMetricsFunction[T](serviceData, toTopic.replace("dev_", ""), FlowDirection.OUT)
     }
   }
 }

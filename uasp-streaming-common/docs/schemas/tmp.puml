@@ -2,120 +2,33 @@
 digraph dfd{
 	node[shape=record]
 
-uasp_streaming_mdm_enrichment_case_68 [label="{<f0> uasp_streaming_mdm_enrichment |<f1> case_68\n\n\n}" shape=Mrecord];
-dev_bevents_cft_way4_profile_udds_before_case68_uaspdto [label="dev_bevents_cft_way4_profile_udds_before_case68_uaspdto" shape=box color=Green];
-dev_bevents_udds_mdm_rate_case68_uaspdto_dlq [label="dev_bevents_udds_mdm_rate_case68_uaspdto_dlq" shape=box color=Green];
-dev_input_converter_cardfl_refill_uasp_dlq [label="dev_input_converter_cardfl_refill_uasp_dlq" shape=box color=Green];
-uasp_streaming_mdm_enrichment_case_68_agrement [label="{<f0> uasp_streaming_mdm_enrichment |<f1> case_68_agrement\n\n\n}" shape=Mrecord];
-dev_bevents_cft_way4_profile_udds_before_case68_uaspdto_dlq [label="dev_bevents_cft_way4_profile_udds_before_case68_uaspdto_dlq" shape=box color=Green];
-dev_bevents_udds_mdm_rate_case68_uaspdto [label="dev_bevents_udds_mdm_rate_case68_uaspdto" shape=box color=Green];
-dev_rto_batch_ca_customer_card68_uaspdto_dlq [label="dev_rto_batch_ca_customer_card68_uaspdto_dlq" shape=box color=Green];
-uasp_streaming_mdm_enrichment_prof_auth [label="{<f0> uasp_streaming_mdm_enrichment |<f1> prof_auth\n\n\n}" shape=Mrecord];
-dev_bevents_card_agreement_enrich_dlq [label="dev_bevents_card_agreement_enrich_dlq" shape=box color=Green];
-dev_bevents_card_agreement_enrich_out_uaspdto [label="dev_bevents_card_agreement_enrich_out_uaspdto" shape=box color=Green];
-dev_rto_batch_ca_customer_card_uaspdto__dlq [label="dev_rto_batch_ca_customer_card_uaspdto__dlq" shape=box color=Green];
-uasp_streaming_mdm_enrichment_prof_auth_packNM [label="{<f0> uasp_streaming_mdm_enrichment |<f1> prof_auth_packNM\n\n\n}" shape=Mrecord];
-dev_bevents_package_nm_enrich_dlq [label="dev_bevents_package_nm_enrich_dlq" shape=box color=Green];
-dev_bevents__realtime__enrichment__prof__transactions_first__uaspdto [label="dev_bevents__realtime__enrichment__prof__transactions_first__uaspdto" shape=box color=Green];
-dev_rto_batch_ca_customer_package_dlq [label="dev_rto_batch_ca_customer_package_dlq" shape=box color=Green];
-uasp_streaming_mdm_enrichment_profile_tx_step1 [label="{<f0> uasp_streaming_mdm_enrichment |<f1> profile_tx_step1\n\n\n}" shape=Mrecord];
-dev_bevents__realtime__enrichment__prof__contract_num__uaspdto [label="dev_bevents__realtime__enrichment__prof__contract_num__uaspdto" shape=box color=Green];
-dev_bevents__realtime__enrichment__prof__transactions_with_clientid__dlq [label="dev_bevents__realtime__enrichment__prof__transactions_with_clientid__dlq" shape=box color=Green];
-dev_bevents__realtime__enrichment__prof__transactions_with_contract_num__dlq [label="dev_bevents__realtime__enrichment__prof__transactions_with_contract_num__dlq" shape=box color=Green];
-uasp_streaming_mdm_enrichment_profile_tx_step2 [label="{<f0> uasp_streaming_mdm_enrichment |<f1> profile_tx_step2\n\n\n}" shape=Mrecord];
-dev_bevents__realtime__enrichment__prof__transactions_with_mdm_id__dlq [label="dev_bevents__realtime__enrichment__prof__transactions_with_mdm_id__dlq" shape=box color=Green];
-dev_bevents__realtime__enrichment__prof__transactions_with_partyUId__dlq [label="dev_bevents__realtime__enrichment__prof__transactions_with_partyUId__dlq" shape=box color=Green];
-uasp_streaming_mdm_enrichment_prof_tx_case_71 [label="{<f0> uasp_streaming_mdm_enrichment |<f1> prof_tx_case_71\n\n\n}" shape=Mrecord];
-dev_bevents__realtime__case_71__uaspdto [label="dev_bevents__realtime__case_71__uaspdto" shape=box color=Green];
-dev_bevents__realtime__case_71__uaspdto_dlq [label="dev_bevents__realtime__case_71__uaspdto_dlq" shape=box color=Green];
-dev_rto_batch_ca_deposit_account_case_71_uaspdto__dlq [label="dev_rto_batch_ca_deposit_account_case_71_uaspdto__dlq" shape=box color=Green];
-uasp_streaming_mdm_enrichment_way4 [label="{<f0> uasp_streaming_mdm_enrichment |<f1> way4\n\n\n}" shape=Mrecord];
+uasp_streaming_mdm_enrichment_way4 [label="{<f0> uasp_streaming_mdm_enrichment_way4 |<f1> uasp_streaming_mdm_enrichment_way4\n\n\n}" shape=Mrecord];
 dev_ivr__uasp_realtime__input_converter__mortgage__dlq [label="dev_ivr__uasp_realtime__input_converter__mortgage__dlq" shape=box color=Green];
 dev_ivr__uasp_realtime__mdm_enrichment__for_additional_enrichment__uaspdto [label="dev_ivr__uasp_realtime__mdm_enrichment__for_additional_enrichment__uaspdto" shape=box color=Green];
-dev_bevents_68_after_rate_enrich [label="dev_bevents_68_after_rate_enrich" shape=box color=Green];
-uasp_kriaa_bevents_case_2_main [label="{<f0> uasp_kriaa_bevents_case_2 |<f1> main\n\n\n}" shape=Mrecord];
 dev_ivr__uasp_realtime__mdm_enrichment__mdm_cross_link__status__dlq [label="dev_ivr__uasp_realtime__mdm_enrichment__mdm_cross_link__status__dlq" shape=box color=Green];
 dev_ivr__uasp_realtime_way4_mdm_enrichment__uaspdto [label="dev_ivr__uasp_realtime_way4_mdm_enrichment__uaspdto" shape=box color=Green];
-uasp_streaming_mdm_enrichment_way4_card_agreement [label="{<f0> uasp_streaming_mdm_enrichment |<f1> way4_card_agreement\n\n\n}" shape=Mrecord];
+uasp_streaming_mdm_enrichment_way4_card_agreement [label="{<f0> uasp_streaming_mdm_enrichment_way4_card_agreement |<f1> uasp_streaming_mdm_enrichment_way4_card_agreement\n\n\n}" shape=Mrecord];
+dev_bevents_card_agreement_enrich_out_uaspdto [label="dev_bevents_card_agreement_enrich_out_uaspdto" shape=box color=Green];
 dev_bevents_card_agreement_enrich_way4_dlq [label="dev_bevents_card_agreement_enrich_way4_dlq" shape=box color=Green];
-dev_bevents__batch__ca_regulatory_client_id_of_profile__json_converted [label="dev_bevents__batch__ca_regulatory_client_id_of_profile__json_converted" shape=box color=Green];
-dev_bevents__batch__ca_regulatory_contract_num_of_mdm_id_profile__uaspdto [label="dev_bevents__batch__ca_regulatory_contract_num_of_mdm_id_profile__uaspdto" shape=box color=Green];
-dev_bevents_cft_way4_profile_udds_before_mdm_rate_case68_uaspdto [label="dev_bevents_cft_way4_profile_udds_before_mdm_rate_case68_uaspdto" shape=box color=Green];
-dev_bevents__realtime__input_converter__prof__transactions__uaspdto [label="dev_bevents__realtime__input_converter__prof__transactions__uaspdto" shape=box color=Green];
-dev_bevents_streaming_input_convertor_profile_auth_uaspdto [label="dev_bevents_streaming_input_convertor_profile_auth_uaspdto" shape=box color=Green];
+dev_rto_batch_ca_customer_card_uaspdto__dlq [label="dev_rto_batch_ca_customer_card_uaspdto__dlq" shape=box color=Green];
 dev__dko_uasp__card_agreement_converted [label="dev__dko_uasp__card_agreement_converted" shape=box color=Green];
-dev__dko_uasp__pension_converted [label="dev__dko_uasp__pension_converted" shape=box color=Green];
-dev_input_converter_cardfl_refill_uasp [label="dev_input_converter_cardfl_refill_uasp" shape=box color=Green];
 dev_ivr__uasp_realtime__case_48_concatenate__uaspdto [label="dev_ivr__uasp_realtime__case_48_concatenate__uaspdto" shape=box color=Green];
 dev_ivr__uasp_realtime__input_converter__mdm_cross_link__uaspdto [label="dev_ivr__uasp_realtime__input_converter__mdm_cross_link__uaspdto" shape=box color=Green];
 dev_ivr__uasp_realtime__input_converter__mortgage__uaspdto [label="dev_ivr__uasp_realtime__input_converter__mortgage__uaspdto" shape=box color=Green];
 dev_ivr__uasp_realtime__input_converter__way4_issuing_operation__uaspdto [label="dev_ivr__uasp_realtime__input_converter__way4_issuing_operation__uaspdto" shape=box color=Green];
-dev_rto_batch_ca_deposit_account_case_71_json_converted [label="dev_rto_batch_ca_deposit_account_case_71_json_converted" shape=box color=Green];
-uasp_kriaa_bevents_case_40_main [label="{<f0> uasp_kriaa_bevents_case_40 |<f1> main\n\n\n}" shape=Mrecord];
-dev__rto_uasp__case_40__dlq [label="dev__rto_uasp__case_40__dlq" shape=box color=Green];
-dev__rto_uasp__case_40 [label="dev__rto_uasp__case_40" shape=box color=Green];
-dev_multibonus_partners_program [label="dev_multibonus_partners_program" shape=box color=Green];
-uasp_kriaa_bevents_case_68_main [label="{<f0> uasp_kriaa_bevents_case_68 |<f1> main\n\n\n}" shape=Mrecord];
-dev__rto_uasp__pks [label="dev__rto_uasp__pks" shape=box color=Green];
-dev__rto_uasp__case_2 [label="dev__rto_uasp__case_2" shape=box color=Green];
-dev__rto_uasp__case_2_dlq [label="dev__rto_uasp__case_2_dlq" shape=box color=Green];
-uasp_streaming_mdm_enrichment_case_68 -> dev_bevents_cft_way4_profile_udds_before_case68_uaspdto[label="producer_default"]
-uasp_streaming_mdm_enrichment_case_68 -> dev_bevents_udds_mdm_rate_case68_uaspdto_dlq[label="producer_default"]
-uasp_streaming_mdm_enrichment_case_68 -> dev_input_converter_cardfl_refill_uasp_dlq[label="producer_default"]
-uasp_streaming_mdm_enrichment_case_68_agrement -> dev_bevents_cft_way4_profile_udds_before_case68_uaspdto_dlq[label="producer_default"]
-uasp_streaming_mdm_enrichment_case_68_agrement -> dev_bevents_udds_mdm_rate_case68_uaspdto[label="producer_default"]
-uasp_streaming_mdm_enrichment_case_68_agrement -> dev_rto_batch_ca_customer_card68_uaspdto_dlq[label="producer_default"]
-uasp_streaming_mdm_enrichment_prof_auth -> dev_bevents_card_agreement_enrich_dlq[label="producer_default"]
-uasp_streaming_mdm_enrichment_prof_auth -> dev_bevents_card_agreement_enrich_out_uaspdto[label="producer_default"]
-uasp_streaming_mdm_enrichment_prof_auth -> dev_rto_batch_ca_customer_card_uaspdto__dlq[label="producer_default"]
-uasp_streaming_mdm_enrichment_prof_auth_packNM -> dev_bevents_package_nm_enrich_dlq[label="producer_default"]
-uasp_streaming_mdm_enrichment_prof_auth_packNM -> dev_bevents__realtime__enrichment__prof__transactions_first__uaspdto[label="producer_default"]
-uasp_streaming_mdm_enrichment_prof_auth_packNM -> dev_rto_batch_ca_customer_package_dlq[label="producer_default"]
-uasp_streaming_mdm_enrichment_profile_tx_step1 -> dev_bevents__realtime__enrichment__prof__contract_num__uaspdto[label="producer_default"]
-uasp_streaming_mdm_enrichment_profile_tx_step1 -> dev_bevents__realtime__enrichment__prof__transactions_with_clientid__dlq[label="producer_default"]
-uasp_streaming_mdm_enrichment_profile_tx_step1 -> dev_bevents__realtime__enrichment__prof__transactions_with_contract_num__dlq[label="producer_default"]
-uasp_streaming_mdm_enrichment_profile_tx_step2 -> dev_bevents__realtime__enrichment__prof__transactions_first__uaspdto[label="producer_default"]
-uasp_streaming_mdm_enrichment_profile_tx_step2 -> dev_bevents__realtime__enrichment__prof__transactions_with_mdm_id__dlq[label="producer_default"]
-uasp_streaming_mdm_enrichment_profile_tx_step2 -> dev_bevents__realtime__enrichment__prof__transactions_with_partyUId__dlq[label="producer_default"]
-uasp_streaming_mdm_enrichment_prof_tx_case_71 -> dev_bevents__realtime__case_71__uaspdto[label="producer_default"]
-uasp_streaming_mdm_enrichment_prof_tx_case_71 -> dev_bevents__realtime__case_71__uaspdto_dlq[label="producer_default"]
-uasp_streaming_mdm_enrichment_prof_tx_case_71 -> dev_rto_batch_ca_deposit_account_case_71_uaspdto__dlq[label="producer_default"]
-uasp_streaming_mdm_enrichment_way4 -> dev_ivr__uasp_realtime__input_converter__mortgage__dlq[label="producer_default"]
-uasp_streaming_mdm_enrichment_way4 -> dev_ivr__uasp_realtime__mdm_enrichment__for_additional_enrichment__uaspdto[label="producer_default"]
-dev_bevents_68_after_rate_enrich -> uasp_kriaa_bevents_case_2_main[label="consumer_default"]
-uasp_streaming_mdm_enrichment_way4 -> dev_ivr__uasp_realtime__mdm_enrichment__mdm_cross_link__status__dlq[label="producer_default"]
-uasp_streaming_mdm_enrichment_way4 -> dev_ivr__uasp_realtime_way4_mdm_enrichment__uaspdto[label="producer_default"]
-uasp_streaming_mdm_enrichment_way4_card_agreement -> dev_bevents_card_agreement_enrich_out_uaspdto[label="producer_default"]
-uasp_streaming_mdm_enrichment_way4_card_agreement -> dev_bevents_card_agreement_enrich_way4_dlq[label="producer_default"]
-uasp_streaming_mdm_enrichment_way4_card_agreement -> dev_rto_batch_ca_customer_card_uaspdto__dlq[label="producer_default"]
-dev_bevents__batch__ca_regulatory_client_id_of_profile__json_converted -> uasp_streaming_mdm_enrichment_profile_tx_step1[label="consumer_default"]
-dev_bevents__batch__ca_regulatory_contract_num_of_mdm_id_profile__uaspdto -> uasp_streaming_mdm_enrichment_profile_tx_step2[label="consumer_default"]
-dev_bevents_card_agreement_enrich_out_uaspdto -> uasp_streaming_mdm_enrichment_prof_auth_packNM[label="latest"]
-dev_bevents_cft_way4_profile_udds_before_case68_uaspdto -> uasp_streaming_mdm_enrichment_case_68_agrement[label="latest"]
-dev_bevents_cft_way4_profile_udds_before_mdm_rate_case68_uaspdto -> uasp_streaming_mdm_enrichment_case_68[label="latest"]
-dev_bevents__realtime__case_71__uaspdto -> uasp_streaming_mdm_enrichment_profile_tx_step1[label="latest"]
-dev_bevents__realtime__enrichment__prof__contract_num__uaspdto -> uasp_streaming_mdm_enrichment_profile_tx_step2[label="latest"]
-dev_bevents__realtime__input_converter__prof__transactions__uaspdto -> uasp_streaming_mdm_enrichment_prof_tx_case_71[label="latest"]
-dev_bevents_streaming_input_convertor_profile_auth_uaspdto -> uasp_streaming_mdm_enrichment_prof_auth[label="latest"]
-dev__dko_uasp__card_agreement_converted -> uasp_streaming_mdm_enrichment_case_68_agrement[label="consumer_default"]
-dev__dko_uasp__card_agreement_converted -> uasp_streaming_mdm_enrichment_prof_auth[label="consumer_default"]
-dev__dko_uasp__card_agreement_converted -> uasp_streaming_mdm_enrichment_way4_card_agreement[label="consumer_default"]
-dev__dko_uasp__pension_converted -> uasp_streaming_mdm_enrichment_prof_auth_packNM[label="consumer_default"]
-dev_input_converter_cardfl_refill_uasp -> uasp_streaming_mdm_enrichment_case_68[label="consumer_default"]
-dev_ivr__uasp_realtime__case_48_concatenate__uaspdto -> uasp_streaming_mdm_enrichment_way4_card_agreement[label="latest"]
-dev_ivr__uasp_realtime__input_converter__mdm_cross_link__uaspdto -> uasp_streaming_mdm_enrichment_way4[label="consumer_default"]
-dev_ivr__uasp_realtime__input_converter__mortgage__uaspdto -> uasp_streaming_mdm_enrichment_way4[label="consumer_default"]
-dev_ivr__uasp_realtime__input_converter__way4_issuing_operation__uaspdto -> uasp_streaming_mdm_enrichment_way4[label="latest"]
-dev_rto_batch_ca_deposit_account_case_71_json_converted -> uasp_streaming_mdm_enrichment_prof_tx_case_71[label="consumer_default"]
-uasp_kriaa_bevents_case_40_main -> dev__rto_uasp__case_40__dlq[label="producer_default"]
-uasp_kriaa_bevents_case_40_main -> dev__rto_uasp__case_40[label="producer_default"]
-dev_bevents_68_after_rate_enrich -> uasp_kriaa_bevents_case_40_main[label="consumer_default"]
-dev_multibonus_partners_program -> uasp_kriaa_bevents_case_40_main[label="consumer_default"]
-dev_bevents_68_after_rate_enrich -> uasp_kriaa_bevents_case_68_main[label="consumer_default"]
-uasp_kriaa_bevents_case_68_main -> dev__rto_uasp__pks[label="producer_default"]
-uasp_kriaa_bevents_case_68_main -> dev_bevents_udds_mdm_rate_case68_uaspdto_dlq[label="producer_default"]
-uasp_kriaa_bevents_case_2_main -> dev__rto_uasp__case_2[label="producer_default"]
-uasp_kriaa_bevents_case_2_main -> dev__rto_uasp__case_2_dlq[label="producer_default"]
+
+uasp_streaming_mdm_enrichment_way4 -> dev_ivr__uasp_realtime__input_converter__mortgage__dlq
+uasp_streaming_mdm_enrichment_way4 -> dev_ivr__uasp_realtime__mdm_enrichment__for_additional_enrichment__uaspdto
+uasp_streaming_mdm_enrichment_way4 -> dev_ivr__uasp_realtime__mdm_enrichment__mdm_cross_link__status__dlq
+uasp_streaming_mdm_enrichment_way4 -> dev_ivr__uasp_realtime_way4_mdm_enrichment__uaspdto
+uasp_streaming_mdm_enrichment_way4_card_agreement -> dev_bevents_card_agreement_enrich_out_uaspdto
+uasp_streaming_mdm_enrichment_way4_card_agreement -> dev_bevents_card_agreement_enrich_way4_dlq
+uasp_streaming_mdm_enrichment_way4_card_agreement -> dev_rto_batch_ca_customer_card_uaspdto__dlq
+dev__dko_uasp__card_agreement_converted -> uasp_streaming_mdm_enrichment_way4_card_agreement
+dev_ivr__uasp_realtime__case_48_concatenate__uaspdto -> uasp_streaming_mdm_enrichment_way4_card_agreement
+dev_ivr__uasp_realtime__input_converter__mdm_cross_link__uaspdto -> uasp_streaming_mdm_enrichment_way4
+dev_ivr__uasp_realtime__input_converter__mortgage__uaspdto -> uasp_streaming_mdm_enrichment_way4
+dev_ivr__uasp_realtime__input_converter__way4_issuing_operation__uaspdto -> uasp_streaming_mdm_enrichment_way4
 
 }
 @enduml

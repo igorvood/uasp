@@ -11,7 +11,6 @@ case class FlinkConsumerProperties(fromTopic: String,
                                    kafkaCnsProperty: KafkaCnsProperty,
                                   ) extends MetricForKafka {
 
-
   def createConsumer(): FlinkKafkaConsumer[Array[Byte]] = ConsumerFactory.getKafkaConsumer(
     fromTopic, deserializationSchema, kafkaCnsProperty.property)
 }
