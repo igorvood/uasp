@@ -55,7 +55,7 @@ object EnrichmentJob {
 
       setSinks(mainDataStream, propsModel)
 
-      env.execute(propsModel.appServiceName)
+      env.execute(propsModel.serviceData.fullServiceName)
 
     } catch {
       case e: Exception =>
@@ -72,21 +72,21 @@ object EnrichmentJob {
     val serialisationProcessFunctionJsValue = new JsValueConsumer()
 
     val mainDataStream = env
-      .registerConsumerWithMetric(propsModel.allEnrichProperty.mainEnrichProperty.fromTopic, propsModel.allEnrichProperty.mainEnrichProperty.dlqTopicProp, serialisationProcessFunction, producerFabric)
+      .registerConsumerWithMetric(propsModel.serviceData, propsModel.allEnrichProperty.mainEnrichProperty.fromTopic, propsModel.allEnrichProperty.mainEnrichProperty.dlqTopicProp, serialisationProcessFunction, producerFabric)
 
 
     val commonStream = propsModel.allEnrichProperty.commonEnrichProperty
       .map { cns =>
         val commonEnrichPropertyDlq = propsModel.allEnrichProperty.commonEnrichProperty.flatMap(a => a.dlqTopicProp)
         env
-          .registerConsumerWithMetric(cns.fromTopic, commonEnrichPropertyDlq, serialisationProcessFunctionJsValue, producerFabric)
+          .registerConsumerWithMetric(propsModel.serviceData,cns.fromTopic, commonEnrichPropertyDlq, serialisationProcessFunctionJsValue, producerFabric)
       }
 
 
     val globalIdStream = propsModel.allEnrichProperty.globalIdEnrichProperty
       .map { cns =>
         val globalIdEnrichPropertyDlq = propsModel.allEnrichProperty.globalIdEnrichProperty.flatMap(a => a.dlqTopicProp)
-        env.registerConsumerWithMetric(cns.fromTopic, globalIdEnrichPropertyDlq, serialisationProcessFunctionJsValue, producerFabric)
+        env.registerConsumerWithMetric(propsModel.serviceData,cns.fromTopic, globalIdEnrichPropertyDlq, serialisationProcessFunctionJsValue, producerFabric)
       }
 
     FlinkDataStreams(mainDataStream, commonStream, globalIdStream)
@@ -116,14 +116,14 @@ object EnrichmentJob {
             val (keyedMainStreamSrv, validateGlobalIdService, keyGlobalSrv, globalIdStream) = tuple
             val dlqGlobalIdProp = mDMEnrichmentPropsModel.allEnrichProperty.globalIdEnrichProperty.flatMap(a => a.dlqTopicProp)
             val validatedGlobalIdStream = globalIdStream
-              .processAndDlqSinkWithMetric(validateGlobalIdService, dlqGlobalIdProp, producerFabric)
+              .processAndDlqSinkWithMetric(mDMEnrichmentPropsModel.serviceData,validateGlobalIdService, dlqGlobalIdProp, producerFabric)
 
             mainDs
-              .processAndDlqSinkWithMetric(keyedMainStreamSrv, mainDlqProp, producerFabric)
+              .processAndDlqSinkWithMetric(mDMEnrichmentPropsModel.serviceData,keyedMainStreamSrv, mainDlqProp, producerFabric)
               .keyBy(keySelectorMain)
               .connect(validatedGlobalIdStream.keyBy(d => d.key))
               .process(keyGlobalSrv)
-              .processAndDlqSinkWithMetric(mDMEnrichmentPropsModel.throwToDlqService, mainDlqProp, producerFabric)
+              .processAndDlqSinkWithMetric(mDMEnrichmentPropsModel.serviceData,mDMEnrichmentPropsModel.throwToDlqService, mainDlqProp, producerFabric)
           }.getOrElse(mainDs)
       }
     val streamCommon = streamGlobal
@@ -142,14 +142,14 @@ object EnrichmentJob {
             val dlqGlobalIdProp = mDMEnrichmentPropsModel.allEnrichProperty.commonEnrichProperty.flatMap(a => a.dlqTopicProp)
 
             val validatedGlobalIdStream = commonStream
-              .processAndDlqSinkWithMetric(commonValidateProcessFunction, dlqGlobalIdProp, producerFabric)
+              .processAndDlqSinkWithMetric(mDMEnrichmentPropsModel.serviceData,commonValidateProcessFunction, dlqGlobalIdProp, producerFabric)
 
             mainDs
-              .processAndDlqSinkWithMetric(keyedMainStreamSrv, mainDlqProp, producerFabric)
+              .processAndDlqSinkWithMetric(mDMEnrichmentPropsModel.serviceData,keyedMainStreamSrv, mainDlqProp, producerFabric)
               .keyBy(keySelectorMain)
               .connect(validatedGlobalIdStream.keyBy(d => d.key))
               .process(keyCommonEnrichmentMapService)
-              .processAndDlqSinkWithMetric(mDMEnrichmentPropsModel.throwToDlqService, mainDlqProp, producerFabric)
+              .processAndDlqSinkWithMetric(mDMEnrichmentPropsModel.serviceData,mDMEnrichmentPropsModel.throwToDlqService, mainDlqProp, producerFabric)
           }.getOrElse(mainDs)
       }
 
@@ -174,7 +174,7 @@ object EnrichmentJob {
 
     mainDataStream
       .map(_.serializeToBytes)
-      .map(syncProperties.flinkSinkPropertiesMainProducer.prometheusMetric[KafkaDto])
+      .map(syncProperties.flinkSinkPropertiesMainProducer.prometheusMetric[KafkaDto](syncProperties.serviceData))
       .addSink(mainProducer)
       .enrichName(s"MAIN_SINK_outEnrichmentSink")
   }

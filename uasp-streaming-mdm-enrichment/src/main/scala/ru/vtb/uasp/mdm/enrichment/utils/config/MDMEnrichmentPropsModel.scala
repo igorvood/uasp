@@ -1,6 +1,7 @@
 package ru.vtb.uasp.mdm.enrichment.utils.config
 
 import ru.vtb.uasp.common.kafka.FlinkSinkProperties
+import ru.vtb.uasp.common.service.dto.ServiceDataDto
 import ru.vtb.uasp.common.utils.config.PropertyUtil._
 import ru.vtb.uasp.common.utils.config.{AllApplicationProperties, ConfigurationInitialise, PropertyCombiner, ReadConfigErrors}
 import ru.vtb.uasp.mdm.enrichment.service._
@@ -9,7 +10,7 @@ import ru.vtb.uasp.mdm.enrichment.utils.config.enrich.AllEnrichProperty
 import scala.collection.mutable
 
 case class MDMEnrichmentPropsModel(
-                                    appServiceName: String,
+                                    serviceData: ServiceDataDto,
                                     appSavepointPref: String,
                                     allEnrichProperty: AllEnrichProperty,
                                     appSyncParallelism: Int,
@@ -56,7 +57,7 @@ object MDMEnrichmentPropsModel extends PropertyCombiner[MDMEnrichmentPropsModel]
 
   override protected def createMayBeErr[CONFIGURATION](prf: String)(implicit appProps: AllApplicationProperties, configurationInitialise: ConfigurationInitialise[CONFIGURATION]): Either[ReadConfigErrors, MDMEnrichmentPropsModel] =
     for {
-      appServiceName <- propertyVal[String](s"$prf", "service.name")(appProps, configurationInitialise, s)
+      appServiceName <- ServiceDataDto.create(s"$prf.service")
       appSavepointPref <- propertyVal[String](s"$prf", "savepoint.pref")(appProps, configurationInitialise, s)
       allEnrichProperty <- AllEnrichProperty.create(s"$prf.enrichOne")
       appSyncParallelism <- propertyVal[Int](s"$prf", "sync.parallelism")

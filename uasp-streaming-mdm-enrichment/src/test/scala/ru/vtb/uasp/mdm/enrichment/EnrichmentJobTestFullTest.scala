@@ -8,7 +8,7 @@ import play.api.libs.json.{JsValue, Json}
 import ru.vtb.uasp.common.dto.UaspDto
 import ru.vtb.uasp.common.service.JsonConvertInService
 import ru.vtb.uasp.common.service.JsonConvertOutService.JsonPredef
-import ru.vtb.uasp.common.service.dto.{KafkaDto, OutDtoWithErrors}
+import ru.vtb.uasp.common.service.dto.{KafkaDto, OutDtoWithErrors, ServiceDataDto}
 import ru.vtb.uasp.common.utils.config.kafka.KafkaPrdProperty
 import ru.vtb.uasp.mdm.enrichment.TestConst._
 import ru.vtb.uasp.mdm.enrichment.service.dto.FlinkDataStreams
@@ -21,7 +21,7 @@ import scala.collection.JavaConverters.mapAsScalaMapConverter
 
 class EnrichmentJobTestFullTest extends AnyFlatSpec with Matchers {
 
-
+  private val serviceDataDto = ServiceDataDto("", "", "")
   val sinksMap: Map[String, CollectByteSink] =
     List("dlq__TOPIC",
       "ToGlobal Topic",
@@ -38,7 +38,8 @@ class EnrichmentJobTestFullTest extends AnyFlatSpec with Matchers {
 
     val allEnrichProperty = enrichPropertyMap
 
-    val model = MDMEnrichmentPropsModel("", "", allEnrichProperty, 1)
+
+    val model = MDMEnrichmentPropsModel(serviceDataDto, "", allEnrichProperty, 1)
 
     val env = StreamExecutionEnvironment.getExecutionEnvironment
 
@@ -64,7 +65,7 @@ class EnrichmentJobTestFullTest extends AnyFlatSpec with Matchers {
 
     val allEnrichProperty = enrichPropertyMap
 
-    val model = MDMEnrichmentPropsModel("", "", allEnrichProperty, 1)
+    val model = MDMEnrichmentPropsModel(serviceDataDto, "", allEnrichProperty, 1)
 
     val env = StreamExecutionEnvironment.getExecutionEnvironment
 
