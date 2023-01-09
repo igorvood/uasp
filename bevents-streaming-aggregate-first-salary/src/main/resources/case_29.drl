@@ -1,0 +1,169 @@
+package ru.vtb.uasp.validate;
+
+global org.slf4j.Logger logger
+
+import scala.Some
+import ru.vtb.uasp.common.dto.UaspDto
+import ru.vtb.uasp.validate.entity.ValidateMsg
+import ru.vtb.uasp.mutator.configuration.drools.DrlHelper
+import java.util.Arrays
+
+import ru.vtb.uasp.mutator.service.dto.*
+
+dialect "mvel"
+
+rule "is salary"
+salience 9
+when
+
+    UaspDto($isIncome:dataBoolean.get("is_income"), DrlHelper.isNonEmpty($isIncome) && $isIncome.get == true)
+    and
+    UaspDto($dataKBO:dataString.get("kbo_prf"), DrlHelper.isNonEmpty($dataKBO) && Arrays.asList("731500-00", "731500-01",  "731500-03").contains($dataKBO.get))
+    and
+    UaspDto($spr:dataString.get("spr_prf"), DrlHelper.isNonEmpty($spr))
+
+then
+
+    //для продолжения движения по пайплайну в рамках 29 кейса
+    insert(new UaspOperation(drools.getRule().getName(), new StringMap("RTO_29_case"), "system-classification",  new ConcatenateStr(",")))
+
+    //для добавления поля по 29 кейсу
+    insert(new UaspOperation(drools.getRule().getName(), new StringMap("начисление заработной платы"), "OPERATION_INFO", new Add()))
+    insert(new UaspOperation(drools.getRule().getName(), new StringMap("Успешно"), "OPERATION_STATUS", new Add()))
+    insert(new UaspOperation(drools.getRule().getName(), new StringMap("Profile." + $spr.get), "OPERATION_ID_Case_29", new Add()))
+end
+
+
+rule "29 case and is pension"
+salience 7
+when
+
+    UaspDto($isIncome:dataBoolean.get("is_income"), DrlHelper.isNonEmpty($isIncome) && $isIncome.get == true)
+    and
+    UaspDto($dataKBO:dataString.get("kbo_prf"), DrlHelper.isNonEmpty($dataKBO) && Arrays.asList("731500-02",  "731500-04").contains($dataKBO.get))
+    and
+    UaspDto($spr:dataString.get("spr_prf"), DrlHelper.isNonEmpty($spr))
+
+then
+    insert(new UaspOperation(drools.getRule().getName(), new StringMap("начисление пенсии"), "OPERATION_INFO", new Add()))
+    insert(new UaspOperation(drools.getRule().getName(), new StringMap("RTO_29_case"), "system-classification", new ConcatenateStr(",")))
+    insert(new UaspOperation(drools.getRule().getName(), new StringMap("Profile." + $spr.get), "OPERATION_ID_Case_29", new Add()))
+    insert(new UaspOperation(drools.getRule().getName(), new StringMap("Успешно"), "OPERATION_STATUS", new Add()))
+
+end
+
+rule "29 case and is SWIFT"
+salience 7
+when
+
+    UaspDto($isIncome:dataBoolean.get("is_income"), DrlHelper.isNonEmpty($isIncome) && $isIncome.get == true)
+    and
+    UaspDto($dataKBO:dataString.get("kbo_prf"), DrlHelper.isNonEmpty($dataKBO) && Arrays.asList("711340-01", "711340-02", "711740-00", "711740-01", "711740-02").contains($dataKBO.get))
+    and
+    UaspDto($spr:dataString.get("spr_prf"), DrlHelper.isNonEmpty($spr))
+
+then
+    insert(new UaspOperation(drools.getRule().getName(), new BooleanMap(true), "is_swift", new Add()))
+    insert(new UaspOperation(drools.getRule().getName(), new StringMap("SWIFT-перевод на счет"), "OPERATION_INFO", new Add()))
+    insert(new UaspOperation(drools.getRule().getName(), new StringMap("RTO_29_case"), "system-classification",  new ConcatenateStr(",")))
+    insert(new UaspOperation(drools.getRule().getName(), new StringMap("Profile." + $spr.get), "OPERATION_ID_Case_29", new Add()))
+    insert(new UaspOperation(drools.getRule().getName(), new StringMap("Успешно"), "OPERATION_STATUS", new Add()))
+
+end
+
+rule "is social income"
+salience 7
+when
+
+    UaspDto($isIncome:dataBoolean.get("is_income"), DrlHelper.isNonEmpty($isIncome) && $isIncome.get == true)
+    and
+    UaspDto($dataKBO:dataString.get("kbo_prf"), DrlHelper.isNonEmpty($dataKBO) && Arrays.asList("731560-04", "731560-05").contains($dataKBO.get))
+    and
+    UaspDto($spr:dataString.get("spr_prf"), DrlHelper.isNonEmpty($spr))
+
+then
+    insert(new UaspOperation(drools.getRule().getName(), new BooleanMap(true), "is_social_income", new Add()))
+    insert(new UaspOperation(drools.getRule().getName(), new StringMap("Начисление соц. выплат"), "OPERATION_INFO", new Add()))
+    insert(new UaspOperation(drools.getRule().getName(), new StringMap("RTO_29_case"), "system-classification",  new ConcatenateStr(",")))
+    insert(new UaspOperation(drools.getRule().getName(), new StringMap("Profile." + $spr.get), "OPERATION_ID_Case_29", new Add()))
+    insert(new UaspOperation(drools.getRule().getName(), new StringMap("Успешно"), "OPERATION_STATUS", new Add()))
+
+end
+
+
+rule "is p2p income by pay system"
+salience 7
+when
+
+    UaspDto($isIncome:dataBoolean.get("is_income"), DrlHelper.isNonEmpty($isIncome) && $isIncome.get == true)
+    and
+    UaspDto($dataKBO:dataString.get("kbo_prf"), DrlHelper.isNonEmpty($dataKBO) && Arrays.asList("751700-02", "751700-03").contains($dataKBO.get))
+    and
+    UaspDto($spr:dataString.get("spr_prf"), DrlHelper.isNonEmpty($spr))
+
+then
+
+    insert(new UaspOperation(drools.getRule().getName(), new StringMap("p2p переводы при помощи платежной системы"), "OPERATION_INFO", new Add()))
+    insert(new UaspOperation(drools.getRule().getName(), new StringMap("RTO_29_case"), "system-classification",  new ConcatenateStr(",")))
+    insert(new UaspOperation(drools.getRule().getName(), new StringMap("Profile." + $spr.get), "OPERATION_ID_Case_29", new Add()))
+    insert(new UaspOperation(drools.getRule().getName(), new StringMap("Успешно"), "OPERATION_STATUS", new Add()))
+
+end
+
+
+rule "is p2p income by requisites"
+salience 7
+when
+
+    UaspDto($isIncome:dataBoolean.get("is_income"), DrlHelper.isNonEmpty($isIncome) && $isIncome.get == true)
+    and
+    UaspDto($dataKBO:dataString.get("kbo_prf"), DrlHelper.isNonEmpty($dataKBO) && Arrays.asList("711500-00", "711500-01").contains($dataKBO.get))
+    and
+    UaspDto($spr:dataString.get("spr_prf"), DrlHelper.isNonEmpty($spr))
+
+then
+
+    insert(new UaspOperation(drools.getRule().getName(), new StringMap("Входящие p2p переводы по реквизитам"), "OPERATION_INFO", new Add()))
+    insert(new UaspOperation(drools.getRule().getName(), new StringMap("RTO_29_case"), "system-classification",  new ConcatenateStr(",")))
+    insert(new UaspOperation(drools.getRule().getName(), new StringMap("Profile." + $spr.get), "OPERATION_ID_Case_29", new Add()))
+    insert(new UaspOperation(drools.getRule().getName(), new StringMap("Успешно"), "OPERATION_STATUS", new Add()))
+
+end
+
+rule "is p2p income by SBP"
+salience 7
+when
+
+    UaspDto($isIncome:dataBoolean.get("is_income"), DrlHelper.isNonEmpty($isIncome) && $isIncome.get == true)
+    and
+    UaspDto($dataKBO:dataString.get("kbo_prf"), DrlHelper.isNonEmpty($dataKBO) && $dataKBO.get == "711330-06")
+    and
+    UaspDto($spr:dataString.get("spr_prf"), DrlHelper.isNonEmpty($spr))
+
+then
+
+    insert(new UaspOperation(drools.getRule().getName(), new StringMap("Входящие p2p переводы при помощи СБП"), "OPERATION_INFO", new Add()))
+    insert(new UaspOperation(drools.getRule().getName(), new StringMap("RTO_29_case"), "system-classification",  new ConcatenateStr(",")))
+    insert(new UaspOperation(drools.getRule().getName(), new StringMap("Profile." + $spr.get), "OPERATION_ID_Case_29", new Add()))
+    insert(new UaspOperation(drools.getRule().getName(), new StringMap("Успешно"), "OPERATION_STATUS", new Add()))
+
+end
+
+rule "is p2p income by SBP for yourself"
+salience 7
+when
+
+    UaspDto($isIncome:dataBoolean.get("is_income"), DrlHelper.isNonEmpty($isIncome) && $isIncome.get == true)
+    and
+    UaspDto($dataKBO:dataString.get("kbo_prf"), DrlHelper.isNonEmpty($dataKBO) && Arrays.asList("711330-07", "711330-08").contains($dataKBO.get))
+    and
+    UaspDto($spr:dataString.get("spr_prf"), DrlHelper.isNonEmpty($spr))
+
+then
+
+    insert(new UaspOperation(drools.getRule().getName(), new StringMap("Входящие p2p переводы при помощи СБП самому себе"), "OPERATION_INFO", new Add()))
+    insert(new UaspOperation(drools.getRule().getName(), new StringMap("RTO_29_case"), "system-classification",  new ConcatenateStr(",")))
+    insert(new UaspOperation(drools.getRule().getName(), new StringMap("Profile." + $spr.get), "OPERATION_ID_Case_29", new Add()))
+    insert(new UaspOperation(drools.getRule().getName(), new StringMap("Успешно"), "OPERATION_STATUS", new Add()))
+
+end

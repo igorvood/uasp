@@ -1,0 +1,3 @@
+{
+"type":"record","name":"ModelVector_Avro_Type_2","namespace":"ru.vtb.uasp.common.dto","fields":[{"name":"customer_id","type":"long"},{"name":"dataLong","type":{"type":"map","values":"long"}},{"name":"dataString","type":{"type":"map","values":"string"}},{"name":"dataDouble","type":{"type":"map","values":"double"}},{"name":"dataDecimal","type":{"type":"map","values":{"type":"bytes","logicalType":"decimal","precision":8,"scale":5}}},{"name":"uuid","type":"string"},{"name":"process_timestamp","type":"long"}]
+}

@@ -1,0 +1,23 @@
+package ru.vtb.uasp.validate;
+
+global org.slf4j.Logger logger
+
+import ru.vtb.uasp.common.dto.UaspDto
+import ru.vtb.uasp.validate.entity.ValidateMsg
+import ru.vtb.uasp.validate.entity.ValidateMsg
+import ru.vtb.uasp.pilot.model.vector.Util.Helper
+
+
+dialect "mvel"
+
+
+// проверяем нужен ли короткий json для кейса
+rule "Case contains short json"
+  when
+    UaspDto($caseType:dataString.get("type"),  Helper.isNone($caseType) == false && ($caseType.get == "way4-case-2-2" ||  $caseType.get == "way4-case-2-3"))
+    then
+      insert(new ValidateMsg(drools.getRule().getName()))
+end
+
+
+

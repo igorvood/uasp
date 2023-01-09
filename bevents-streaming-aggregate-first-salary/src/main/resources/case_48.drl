@@ -1,0 +1,34 @@
+package ru.vtb.uasp.validate;
+
+global org.slf4j.Logger logger
+
+import scala.Some
+import ru.vtb.uasp.common.dto.UaspDto
+import ru.vtb.uasp.validate.entity.ValidateMsg
+import ru.vtb.uasp.mutator.configuration.drools.DrlHelper
+import java.util.Arrays
+
+
+import ru.vtb.uasp.mutator.service.dto.*
+
+dialect "mvel"
+
+rule "48 case profile"
+when
+    UaspDto($transaction_cd:dataString.get("transaction_cd"), DrlHelper.isNonEmpty($transaction_cd) && $transaction_cd.get=="188" )
+
+then
+
+    insert(new UaspOperation(drools.getRule().getName(), new StringMap("RTO_48_case"), "system-classification", new Add()))
+    insert(new UaspOperation(drools.getRule().getName(), new StringMap("SUCCESS"), "OPERATION_STATUS", new Add()))
+end
+
+rule "48 case way4"
+when
+    UaspDto($service_type:dataString.get("service_type"), DrlHelper.isNonEmpty($service_type) && $service_type.get=="TKN_TAR" )
+
+then
+
+    insert(new UaspOperation(drools.getRule().getName(), new StringMap("RTO_48_case"), "system-classification", new Add()))
+    insert(new UaspOperation(drools.getRule().getName(), new StringMap("SUCCESS"), "OPERATION_STATUS", new Add()))
+end

@@ -1,0 +1,4 @@
+# Среда для развертывания
+STAGE=ift
+# Префикс для flink job
+JOB_PREFIX=

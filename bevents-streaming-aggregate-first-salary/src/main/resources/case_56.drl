@@ -1,0 +1,73 @@
+package ru.vtb.uasp.validate;
+
+global org.slf4j.Logger logger
+
+import scala.Some
+import ru.vtb.uasp.common.dto.UaspDto
+import ru.vtb.uasp.validate.entity.ValidateMsg
+import ru.vtb.uasp.mutator.configuration.drools.DrlHelper
+import java.util.Arrays
+
+import ru.vtb.uasp.mutator.service.dto.*
+
+dialect "mvel"
+
+rule "salary count < 3"
+when
+
+    UaspDto($isSal:dataBoolean.get("is_salary"), DrlHelper.isNonEmpty($isSal) && $isSal.get==true )
+    and
+    UaspDto($count:dataInt.get("COUNT_SAL"), DrlHelper.isNonEmpty($count) && $count.get<=2)
+    and
+    (
+        (   UaspDto($dttm_last:dataLong.get("DATE_LAST_SAL"), DrlHelper.isNonEmpty($dttm_last) && $dttm_last.get !=0)
+            and
+            UaspDto($dttm:dataLong.get("event_dttm"), DrlHelper.isNonEmpty($dttm) && ($dttm.get-$dttm_last.get)<15552000000L)
+        )
+        or
+        UaspDto($dttm_last:dataLong.get("DATE_LAST_SAL"), DrlHelper.isNonEmpty($dttm_last) && $dttm_last.get ==0)
+    )
+
+then
+  int count = $count.get+1
+
+  insert(new UaspOperation(drools.getRule().getName(), new StringMap("RTO_First_salary_56_case"), "system-classification", new ConcatenateStr(",")))
+  insert(new UaspOperation(drools.getRule().getName(), new IntMap(count), "EVENT_CNT", new Add()))
+  insert(new UaspOperation(drools.getRule().getName(), new BooleanMap(true), "system_is_update_sal", new Add()))
+
+  end
+
+
+   rule "salary count is N and event time less then 6 month"
+   when
+        UaspDto($isSal:dataBoolean.get("is_salary"), DrlHelper.isNonEmpty($isSal) && $isSal.get==true )
+        and
+        UaspDto($count:dataInt.get("COUNT_SAL"), DrlHelper.isNonEmpty($count) && $count.get>2)
+        and
+        UaspDto($dttm_last:dataLong.get("DATE_LAST_SAL"), DrlHelper.isNonEmpty($dttm_last))
+        and
+        UaspDto($dttm:dataLong.get("event_dttm"), ($dttm.get-$dttm_last.get)<15552000000L)
+
+   then
+            insert(new UaspOperation(drools.getRule().getName(), new BooleanMap(true), "system_is_update_sal", new Add()))
+
+   end
+
+
+    rule "salary count is N and event time more then 6 month"
+   when
+        UaspDto($isSal:dataBoolean.get("is_salary"), DrlHelper.isNonEmpty($isSal) && $isSal.get==true )
+        and
+        UaspDto($dttm_last:dataLong.get("DATE_LAST_SAL"), DrlHelper.isNonEmpty($dttm_last) && $dttm_last.get != 0)
+        and
+        UaspDto($dttm:dataLong.get("event_dttm"), ($dttm.get-$dttm_last.get)>=15552000000L)
+
+      then
+            insert(new UaspOperation(drools.getRule().getName(), new StringMap("RTO_First_salary_56_case"), "system-classification", new ConcatenateStr(",")))
+            insert(new UaspOperation(drools.getRule().getName(), new IntMap(1), "EVENT_CNT", new Add()))
+            insert(new UaspOperation(drools.getRule().getName(), new BooleanMap(true), "system_is_update_sal", new Add()))
+
+      end
+
+
+

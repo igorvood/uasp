@@ -1,0 +1,49 @@
+package ru.vtb.uasp.validate;
+
+global org.slf4j.Logger logger
+
+import scala.Some
+import ru.vtb.uasp.common.dto.UaspDto
+import ru.vtb.uasp.validate.entity.ValidateMsg
+import ru.vtb.uasp.mutator.configuration.drools.DrlHelper
+import ru.vtb.bevent.first.salary.aggregate.Util.DrlCaseHelper
+import java.util.Arrays
+
+import ru.vtb.uasp.mutator.service.dto.*
+
+dialect "mvel"
+
+rule "is procent"
+salience 9
+when
+
+    UaspDto($isIncome:dataBoolean.get("is_income"), DrlHelper.isNonEmpty($isIncome) && $isIncome.get == true)
+    and
+    UaspDto($dataKBO:dataString.get("kbo_prf"), DrlHelper.isNonEmpty($dataKBO) && $dataKBO.get == "731720-00")
+
+    //  эту проверку можно не делать, так как она есть в is_income_profile
+    //  and
+    //  UaspDto($drcr_prf:dataString.get("drcr_prf"), DrlHelper.isNonEmpty($drcr_prf) && $drcr_prf.get=="CR")
+    //and
+    //  чтобы было актуально только для потока от профайла
+    //UaspDto($sourceSystem:dataString.get("source_system_prf"), DrlHelper.isNonEmpty($sourceSystem))
+    and
+    UaspDto($cid:dataString.get("account_number_prf"), DrlHelper.isNonEmpty($cid))
+    //and
+    //UaspDto($operationId:dataString.get("OPERATION_ID"), DrlHelper.isNonEmpty($operationId))
+    and
+    UaspDto($spr:dataString.get("spr_prf"), DrlHelper.isNonEmpty($spr))
+    and
+    UaspDto($tranComment:dataString.get("tcmt"), DrlHelper.isNonEmpty($tranComment) && DrlCaseHelper.isCase71($tranComment))
+then
+    String operationId = "Profile." + $spr.get
+    //String DEP_ACCOUNT = $tranComment.get
+    String DEP_ACCOUNT = DrlCaseHelper.getAccNumCase71($tranComment.get.toString)
+
+    insert(new UaspOperation(drools.getRule().getName(), new StringMap("RTO_71_case"), "system-classification",  new ConcatenateStr(",")))
+
+    insert(new UaspOperation(drools.getRule().getName(), new StringMap(operationId), "OPERATION_ID_Case_71", new Add()))
+    insert(new UaspOperation(drools.getRule().getName(), new StringMap("Выплата процентов"), "OPERATION_NM", new Add()))
+    insert(new UaspOperation(drools.getRule().getName(), new StringMap("DEPOSIT"), "PRODUCT_TYPE", new Add()))
+    insert(new UaspOperation(drools.getRule().getName(), new StringMap(DEP_ACCOUNT), "DEP_ACCOUNT", new Add()))
+end

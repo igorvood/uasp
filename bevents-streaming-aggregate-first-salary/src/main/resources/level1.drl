@@ -1,0 +1,385 @@
+package ru.vtb.uasp.validate;
+
+global org.slf4j.Logger logger
+
+import scala.Some
+import ru.vtb.uasp.common.dto.UaspDto
+import ru.vtb.uasp.validate.entity.ValidateMsg
+import ru.vtb.uasp.mutator.configuration.drools.DrlHelper
+import java.util.Arrays
+import java.math.*
+import ru.vtb.bevent.first.salary.aggregate.Util.DrlCaseHelper
+import ru.vtb.bevent.first.salary.aggregate.entity.FieldNamesConst
+
+
+
+import ru.vtb.uasp.mutator.service.dto.*
+
+dialect "mvel"
+
+rule "is income cold"
+salience 10
+when
+
+    UaspDto($dataKBO:dataString.get("kbo_ca"), DrlHelper.isNonEmpty($dataKBO))
+    and
+    UaspDto($event_dttm:dataLong.get("event_dttm_ca"), DrlHelper.isNonEmpty($event_dttm))
+    and
+    UaspDto($amount:dataDecimal.get("trans_amount_ca"), DrlHelper.isNonEmpty($amount))
+    //and
+    //UaspDto($currency_price:dataDecimal.get("currency_price"), DrlHelper.isNonEmpty($currency_price))
+    //and
+    //UaspDto($currencyScale:dataInt.get("currency_scale"), DrlHelper.isNonEmpty($currencyScale))
+
+then
+    long event_dttm = $event_dttm.get
+    String kbo =$dataKBO.get
+    BigDecimal amount = $amount.get
+    //BigDecimal amount = DrlCaseHelper.calculateRubSum($amount.get.toString, $currency_price.get.toString, $currencyScale.get.toString)
+
+    insert(new UaspOperation(drools.getRule().getName(), new BooleanMap(true), "is_income", new Add()))
+    insert(new UaspOperation(drools.getRule().getName(), new StringMap(kbo), "kbo", new Add()))
+    insert(new UaspOperation(drools.getRule().getName(), new LongMap(event_dttm), "event_dttm", new Add()))
+    insert(new UaspOperation(drools.getRule().getName(), new BigDecimalMap(amount), "amount", new Add()))
+end
+
+rule "is income w4"
+salience 9
+when
+    UaspDto($action_type:dataString.get(FieldNamesConst.ACTION_TYPE()), DrlHelper.isNonEmpty($action_type) && $action_type.get=="Presentment")
+    and
+    UaspDto($base_currency_w4:dataString.get(FieldNamesConst.BASE_CURRENCY_W4()), DrlHelper.isNonEmpty($base_currency_w4))
+    and
+    UaspDto($source_account:dataString.get(FieldNamesConst.SOURCE_ACCOUNT_W4()), DrlHelper.isNonEmpty($source_account))
+    and
+    UaspDto($amount:dataDecimal.get(FieldNamesConst.BASE_AMOUNT_W4()), DrlHelper.isNonEmpty($amount))
+    and
+    UaspDto($source_system_w4:dataString.get(FieldNamesConst.SOURCE_SYSTEM_W4()), DrlHelper.isNonEmpty($source_system_w4))
+    and
+    UaspDto($event_dttm:dataLong.get(FieldNamesConst.PROCESSING_DATETIME()), DrlHelper.isNonEmpty($event_dttm))
+    and
+    UaspDto($dataKBO:dataString.get(FieldNamesConst.KBO()), DrlHelper.isNonEmpty($dataKBO))
+     // and
+    // UaspDto($event_dttm:dataLong.get(FieldNamesConst.TRANSACTION_DATETIME), DrlHelper.isNonEmpty($event_dttm))
+    and
+    UaspDto($currency_price:dataDecimal.get(FieldNamesConst.CURRENCY_PRICE()), DrlHelper.isNonEmpty($currency_price))
+    and
+    UaspDto($currencyScale:dataInt.get(FieldNamesConst.CURRENCY_SCALE()), DrlHelper.isNonEmpty($currencyScale))
+
+then
+    long event_dttm = $event_dttm.get
+    String kbo =$dataKBO.get
+    String source_account =$source_account.get
+    BigDecimal amount = DrlCaseHelper.calculateRubSum($amount.get.toString, $currency_price.get.toString, $currencyScale.get.toString)
+
+    insert(new UaspOperation(drools.getRule().getName(), new BooleanMap(true), FieldNamesConst.IS_INCOME(), new Add()))
+    insert(new UaspOperation(drools.getRule().getName(), new StringMap(kbo), FieldNamesConst.COMMON_KBO(), new Add()))
+    insert(new UaspOperation(drools.getRule().getName(), new StringMap("MS"), FieldNamesConst.ACCOUNT_TYPE(), new Add()))
+    insert(new UaspOperation(drools.getRule().getName(), new LongMap(event_dttm), FieldNamesConst.EVENT_DTTM(), new Add()))
+    insert(new UaspOperation(drools.getRule().getName(), new BigDecimalMap(amount), FieldNamesConst.AMOUNT(), new Add()))
+
+end
+
+
+rule "is income CFT"
+salience 9
+when
+
+    UaspDto($dataStatus:dataString.get("data_status"), DrlHelper.isNonEmpty($dataStatus) && $dataStatus.get=="Processed")
+    and
+    UaspDto($account_type_cft:dataString.get("account_type_cft"), DrlHelper.isNonEmpty($account_type_cft))
+    and
+    UaspDto($operation_id_cft:dataString.get("operation_id_cft"), DrlHelper.isNonEmpty($operation_id_cft))
+    and
+    UaspDto($amount:dataDecimal.get("amount_sum_cft"), DrlHelper.isNonEmpty($amount))
+    and
+    UaspDto($source_system_cft:dataString.get("source_system_cft"), DrlHelper.isNonEmpty($source_system_cft))
+    and
+    UaspDto($currency:dataString.get("amount_currency_cft"), DrlHelper.isNonEmpty($currency))
+    and
+    UaspDto($event_dttm:dataLong.get("event_dttm_cft"), DrlHelper.isNonEmpty($event_dttm))
+    and
+    UaspDto($dataKBO:dataString.get("kbo_cft"), DrlHelper.isNonEmpty($dataKBO) && Arrays.asList("731500-00", "731500-01",  "731500-03", "731500-02",  "731500-04").contains($dataKBO.get))
+    and
+    UaspDto($currency_price:dataDecimal.get("currency_price"), DrlHelper.isNonEmpty($currency_price))
+    and
+    UaspDto($currencyScale:dataInt.get("currency_scale"), DrlHelper.isNonEmpty($currencyScale))
+then
+    long event_dttm = $event_dttm.get
+    String kbo =$dataKBO.get
+    BigDecimal amount = DrlCaseHelper.calculateRubSum($amount.get.toString, $currency_price.get.toString, $currencyScale.get.toString)
+
+    insert(new UaspOperation(drools.getRule().getName(), new BooleanMap(true), "is_income", new Add()))
+    insert(new UaspOperation(drools.getRule().getName(), new StringMap(kbo), "kbo", new Add()))
+    insert(new UaspOperation(drools.getRule().getName(), new LongMap(event_dttm), "event_dttm", new Add()))
+    insert(new UaspOperation(drools.getRule().getName(), new BigDecimalMap(amount), "amount", new Add()))
+
+end
+
+rule "is NS CFT"
+salience 9
+when
+
+    UaspDto($operationId:dataString.get("operation_id_cft"), DrlHelper.isNonEmpty($operationId))
+    and
+    UaspDto($firstAdd:dataBoolean.get("first_add_cft"), DrlHelper.isNonEmpty($firstAdd))
+    and
+    UaspDto($account_name_cft:dataString.get("account_name_cft"), DrlHelper.isNonEmpty($account_name_cft))
+    and
+    UaspDto($source_account:dataString.get("source_account_cft"), DrlHelper.isNonEmpty($source_account))
+    and
+    UaspDto($event_dttm:dataLong.get("event_dttm_cft"), DrlHelper.isNonEmpty($event_dttm))
+    and
+    UaspDto($amount:dataDecimal.get("amount_sum_cft"), DrlHelper.isNonEmpty($amount))
+    and
+    UaspDto($dataKBO:dataString.get("kbo_cft"), DrlHelper.isNonEmpty($dataKBO) && !Arrays.asList("731500-00", "731500-01",  "731500-03", "731500-02",  "731500-04").contains($dataKBO.get))
+    and
+    UaspDto($currency_price:dataDecimal.get("currency_price"), DrlHelper.isNonEmpty($currency_price))
+    and
+    UaspDto($currencyScale:dataInt.get("currency_scale"), DrlHelper.isNonEmpty($currencyScale))
+
+then
+    long event_dttm = $event_dttm.get
+    BigDecimal amount = DrlCaseHelper.calculateRubSum($amount.get.toString, $currency_price.get.toString, $currencyScale.get.toString)
+
+    insert(new UaspOperation(drools.getRule().getName(), new BooleanMap(true), "is_ns", new Add()))
+    insert(new UaspOperation(drools.getRule().getName(), new LongMap(event_dttm), "event_dttm", new Add()))
+    insert(new UaspOperation(drools.getRule().getName(), new BigDecimalMap(amount), "amount", new Add()))
+    // insert(new UaspOperation(drools.getRule().getName(), new StringMap($source_account.get.toString()), "source_account", new Add()))
+
+end
+
+
+rule "is POS w4"
+salience 9
+when
+    UaspDto($serviceType:dataString.get("service_type"), DrlHelper.isNonEmpty($serviceType) && $serviceType.get != "TKN_TAR")
+    and
+    UaspDto($actionType:dataString.get("action_type"), $actionType.nonEmpty && $actionType.get == "Authorization")
+    and
+    UaspDto($transactionCurrency:dataString.get("transaction_currency"), DrlHelper.isNonEmpty($transactionCurrency))
+    and
+    UaspDto($requestedAmountPaymentDirection:dataString.get("payment_direction"), $requestedAmountPaymentDirection.nonEmpty && $requestedAmountPaymentDirection.get == "Debit")
+    and
+    UaspDto($event_dttm:dataLong.get("processing_datetime"), DrlHelper.isNonEmpty($event_dttm))
+    and
+    UaspDto($processingResolution:dataString.get("processing_resolution"), $processingResolution.nonEmpty && $processingResolution.get == "Accepted")
+    and
+    UaspDto($PointOfServiceTerminalType:dataString.get("terminal_type"), $PointOfServiceTerminalType.nonEmpty && Arrays.asList("POS", "ECOMMERCE").contains($PointOfServiceTerminalType.get))
+    and
+    UaspDto($maskedPan:dataString.get("card_masked_pan"), DrlHelper.isNonEmpty($maskedPan))
+    and
+   // UaspDto($psFundingSource:dataString.get("card_ps_funding_source"), DrlHelper.isNonEmpty($psFundingSource) && Arrays.asList("Prepaid", "Debit", "Credit", "Charge", "DeferredDebit").contains($psFundingSource.get))
+   // and
+    UaspDto($amount:dataDecimal.get("transaction_amount"), DrlHelper.isNonEmpty($amount))
+    and
+    UaspDto($currency_price:dataDecimal.get("currency_price"), DrlHelper.isNonEmpty($currency_price))
+    and
+    UaspDto($currencyScale:dataInt.get("currency_scale"), DrlHelper.isNonEmpty($currencyScale))
+
+then
+    long event_dttm = $event_dttm.get
+    BigDecimal amount = DrlCaseHelper.calculateRubSum($amount.get.toString, $currency_price.get.toString, $currencyScale.get.toString)
+
+    insert(new UaspOperation(drools.getRule().getName(), new BooleanMap(true), "is_pos", new Add()))
+    insert(new UaspOperation(drools.getRule().getName(), new LongMap(event_dttm), "event_dttm", new Add()))
+    insert(new UaspOperation(drools.getRule().getName(), new BigDecimalMap(amount), "amount", new Add()))
+    insert(new UaspOperation(drools.getRule().getName(), new StringMap("Y"), "POS_FLG", new Add()))
+
+end
+
+
+rule "is POS profile"
+salience 9
+when
+
+    //UaspDto($msgid:dataString.get("msgid"), DrlHelper.isNonEmpty($msgid))
+    //and
+    //UaspDto($cardNumber:dataString.get("card_number"), DrlHelper.isNonEmpty($cardNumber))
+    //and
+    UaspDto($amount:dataDecimal.get("transaction_amt"), DrlHelper.isNonEmpty($amount))
+    and
+    UaspDto($transaction_currency_cd:dataInt.get("transaction_currency_cd"), DrlHelper.isNonEmpty($transaction_currency_cd))
+    and
+    UaspDto($transaction_cd:dataString.get("transaction_cd"), DrlHelper.isNonEmpty($transaction_cd) && Arrays.asList("110", "111", "112", "113", "115", "118", "124", "132", "010", "050", "063").contains($transaction_cd.get))
+    and
+    UaspDto($message_type:dataString.get("message_type"), DrlHelper.isNonEmpty($message_type) && $message_type.get == "0100")
+    //and
+    //UaspDto($response_code:dataString.get("response_code"), DrlHelper.isNonEmpty($response_code))
+    and
+    UaspDto($terminal_class:dataString.get("terminal_class"), DrlHelper.isNonEmpty($terminal_class) && Arrays.asList("002", "004").contains($terminal_class.get))
+    and
+    UaspDto($event_dttm:dataLong.get("transmission_dttm"), DrlHelper.isNonEmpty($event_dttm))
+    and
+    UaspDto($currency_price:dataDecimal.get("currency_price"), DrlHelper.isNonEmpty($currency_price))
+    and
+    UaspDto($currencyScale:dataInt.get("currency_scale"), DrlHelper.isNonEmpty($currencyScale))
+
+then
+    long event_dttm = $event_dttm.get
+    BigDecimal amount = DrlCaseHelper.calculateRubSum($amount.get.toString, $currency_price.get.toString, $currencyScale.get.toString)
+
+    insert(new UaspOperation(drools.getRule().getName(), new BooleanMap(true), "is_pos", new Add()))
+    insert(new UaspOperation(drools.getRule().getName(), new LongMap(event_dttm), "event_dttm", new Add()))
+    insert(new UaspOperation(drools.getRule().getName(), new BigDecimalMap(amount), "amount", new Add()))
+    insert(new UaspOperation(drools.getRule().getName(), new StringMap("Y"), "POS_FLG", new Add()))
+    insert(new UaspOperation(drools.getRule().getName(), new StringMap("PROFILE"), "SOURCE_SYSTEM", new Add()))
+
+end
+
+
+
+rule "is POS ca"
+salience 9
+when
+    UaspDto($event_dttm:dataLong.get("transaction_dttm"), DrlHelper.isNonEmpty($event_dttm))
+    and
+    UaspDto($source_system_cd:dataString.get("source_system_cd"), DrlHelper.isNonEmpty($source_system_cd))
+    and
+    UaspDto($amount:dataDecimal.get("transaction_amount"), DrlHelper.isNonEmpty($amount))
+    and
+    UaspDto($currency_price:dataDecimal.get("currency_price"), DrlHelper.isNonEmpty($currency_price))
+    and
+    UaspDto($currencyScale:dataInt.get("currency_scale"), DrlHelper.isNonEmpty($currencyScale))
+
+then
+    long event_dttm = $event_dttm.get
+    BigDecimal amount = DrlCaseHelper.calculateRubSum($amount.get.toString, $currency_price.get.toString, $currencyScale.get.toString)
+
+    insert(new UaspOperation(drools.getRule().getName(), new BooleanMap(true), "is_pos", new Add()))
+    insert(new UaspOperation(drools.getRule().getName(), new LongMap(event_dttm), "event_dttm", new Add()))
+    insert(new UaspOperation(drools.getRule().getName(), new BigDecimalMap(amount), "amount", new Add()))
+
+end
+
+
+rule "is income profile"
+salience 9
+when
+
+    UaspDto($cid:dataString.get("account_number_prf"), DrlHelper.isNonEmpty($cid))
+    and
+    UaspDto($contract_num:dataString.get("contract_num"), DrlHelper.isNonEmpty($contract_num))
+    and
+    UaspDto($drcr:dataString.get("drcr_prf"), DrlHelper.isNonEmpty($drcr) && $drcr.get == 'CR')
+    and
+    UaspDto($event_dttm:dataLong.get("event_dttm_prf"), DrlHelper.isNonEmpty($event_dttm))
+    and
+    UaspDto($dataKBO:dataString.get("kbo_prf"), DrlHelper.isNonEmpty($dataKBO))
+    and
+    UaspDto($spr:dataString.get("spr_prf"), DrlHelper.isNonEmpty($spr))
+    and
+    UaspDto($amount:dataDecimal.get("transaction_amount_prf"), DrlHelper.isNonEmpty($amount))
+    and
+    UaspDto($source:dataString.get("source_system_prf"), DrlHelper.isNonEmpty($source))
+    and
+    UaspDto($currency_price:dataDecimal.get("currency_price"), DrlHelper.isNonEmpty($currency_price))
+    and
+    UaspDto($currencyScale:dataInt.get("currency_scale"), DrlHelper.isNonEmpty($currencyScale))
+
+then
+    long event_dttm = $event_dttm.get
+    String kbo =$dataKBO.get
+    BigDecimal amount = DrlCaseHelper.calculateRubSum($amount.get.toString, $currency_price.get.toString, $currencyScale.get.toString)
+
+    insert(new UaspOperation(drools.getRule().getName(), new BooleanMap(true), "is_income", new Add()))
+    insert(new UaspOperation(drools.getRule().getName(), new StringMap(kbo), "kbo", new Add()))
+    insert(new UaspOperation(drools.getRule().getName(), new StringMap($spr.get.toString + $cid.get.toString), "OPERATION_ID", new Add()))
+    insert(new UaspOperation(drools.getRule().getName(), new StringMap("MS"), "account_type", new Add()))
+    insert(new UaspOperation(drools.getRule().getName(), new StringMap("PROFILE"), "SOURCE_SYSTEM", new Add()))
+    insert(new UaspOperation(drools.getRule().getName(), new LongMap(event_dttm), "event_dttm", new Add()))
+    insert(new UaspOperation(drools.getRule().getName(), new BigDecimalMap(amount), "amount", new Add()))
+
+end
+
+
+rule "is withdraw profile"
+salience 9
+when
+
+    UaspDto($cid:dataString.get("account_number_prf"), DrlHelper.isNonEmpty($cid))
+    and
+    UaspDto($drcr:dataString.get("drcr_prf"), DrlHelper.isNonEmpty($drcr) && $drcr.get == 'DR')
+    and
+    UaspDto($event_dttm:dataLong.get("event_dttm_prf"), DrlHelper.isNonEmpty($event_dttm))
+    and
+    UaspDto($dataKBO:dataString.get("kbo_prf"), DrlHelper.isNonEmpty($dataKBO))
+    and
+    UaspDto($spr:dataString.get("spr_prf"), DrlHelper.isNonEmpty($spr))
+    and
+    UaspDto($amount:dataDecimal.get("transaction_amount_prf"), DrlHelper.isNonEmpty($amount))
+    and
+    UaspDto($endbal:dataDecimal.get("endbal_prf"), DrlHelper.isNonEmpty($endbal))
+    and
+    UaspDto($currency_price:dataDecimal.get("currency_price"), DrlHelper.isNonEmpty($currency_price))
+    and
+    UaspDto($currencyScale:dataInt.get("currency_scale"), DrlHelper.isNonEmpty($currencyScale))
+
+then
+    long event_dttm = $event_dttm.get
+    BigDecimal amount = DrlCaseHelper.calculateRubSum($amount.get.toString,
+        $currency_price.get.toString,
+        $currencyScale.get.toString)
+
+    BigDecimal balanceRur = DrlCaseHelper.calculateRubSum(
+                              $endbal.get.toString,
+                              $currency_price.get.toString,
+                              $currencyScale.get.toString)
+
+
+    insert(new UaspOperation(drools.getRule().getName(), new BooleanMap(true), "is_withdraw_profile", new Add()))
+    insert(new UaspOperation(drools.getRule().getName(), new LongMap(event_dttm), "event_dttm", new Add()))
+    insert(new UaspOperation(drools.getRule().getName(), new BigDecimalMap(amount), "amount", new Add()))
+    insert(new UaspOperation(drools.getRule().getName(), new BigDecimalMap(balanceRur), "BALANCE_RUR", new Add()))
+    insert(new UaspOperation(drools.getRule().getName(), new StringMap("PROFILE"), "SOURCE_SYSTEM", new Add()))
+
+end
+
+rule "is withdraw"
+salience 9
+when
+
+    UaspDto($transferOrderId:dataString.get("transferOrderId"), DrlHelper.isNonEmpty($transferOrderId))
+    //   and
+    //UaspDto($targetMaskedPan:dataString.get("targetMaskedPan"), DrlHelper.isNonEmpty($targetMaskedPan))
+    //    and
+    // UaspDto($targetAccount:dataString.get("targetAccount"), DrlHelper.isNonEmpty($targetAccount))
+    //   and
+    //UaspDto($targetBankRussianName:dataString.get("targetBankRussianName"), DrlHelper.isNonEmpty($targetBankRussianName))
+    //   and
+    //UaspDto($sourceMaskedPan:dataString.get("sourceMaskedPan"), DrlHelper.isNonEmpty($sourceMaskedPan))
+    //    and
+    // UaspDto($sourceAccount:dataString.get("sourceAccount"), DrlHelper.isNonEmpty($sourceAccount))
+    //    and
+    // UaspDto($receiverFpsBankId:dataString.get("receiverFpsBankId"), DrlHelper.isNonEmpty($receiverFpsBankId))
+    //    and
+    // UaspDto($receiverName:dataString.get("receiverName"), DrlHelper.isNonEmpty($receiverName))
+    //   and
+    // UaspDto($senderName:dataString.get("senderName"), DrlHelper.isNonEmpty($senderName))
+    //    and
+    // UaspDto($interactionChannel:dataString.get("interactionChannel"), DrlHelper.isNonEmpty($interactionChannel))
+    and
+    UaspDto($operationCode:dataString.get("operationCode"), DrlHelper.isNonEmpty($operationCode))
+    and
+    UaspDto($eventType:dataString.get("eventType"), DrlHelper.isNonEmpty($eventType))
+    and
+    UaspDto($event_dttm:dataLong.get("updatedAt"), DrlHelper.isNonEmpty($event_dttm))
+    and
+    UaspDto($amount:dataDecimal.get("sourceSumRub"), DrlHelper.isNonEmpty($amount))
+    and
+    UaspDto($currency_price:dataDecimal.get("currency_price"), DrlHelper.isNonEmpty($currency_price))
+    and
+    UaspDto($currencyScale:dataInt.get("currency_scale"), DrlHelper.isNonEmpty($currencyScale))
+
+then
+    long event_dttm = $event_dttm.get
+    BigDecimal amount = DrlCaseHelper.calculateRubSum(
+        $amount.get.toString,
+        $currency_price.get.toString,
+        $currencyScale.get.toString)
+
+    insert(new UaspOperation(drools.getRule().getName(), new BooleanMap(true), "is_withdraw", new Add()))
+    insert(new UaspOperation(drools.getRule().getName(), new LongMap(event_dttm), "event_dttm", new Add()))
+    insert(new UaspOperation(drools.getRule().getName(), new BigDecimalMap(amount), "amount", new Add()))
+
+end
