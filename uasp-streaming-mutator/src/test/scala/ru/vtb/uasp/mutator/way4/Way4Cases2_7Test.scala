@@ -3,14 +3,12 @@ package ru.vtb.uasp.mutator.way4
 import io.qameta.allure.Feature
 import ru.vtb.uasp.common.dto.UaspDto
 import ru.vtb.uasp.mutator.ValidUaspDtoGenerator.createValidUaspDto
-import ru.vtb.uasp.mutator.service.BusinessRulesService
 import ru.vtb.uasp.mutator.service.BusinessRulesService.errFieldName
 import ru.vtb.uasp.mutator.service.dto.{ConcatenateStr, StringMap, UaspOperation}
 import ru.vtb.uasp.mutator.way4.ConstTest.{addKey, drlFileListConst, someValue}
 import ru.vtb.uasp.mutator.way4.Way4Cases2_7Test._
-import ru.vtb.uasp.mutator.way4.abstraction.{AbstractDroolsTestCase, AddTestAction, DeleteTestAction, TestBigDecimal, TestCaseData, TestLong, TestString}
+import ru.vtb.uasp.mutator.way4.abstraction._
 
-import java.util.UUID
 import scala.util.Try
 
 
@@ -38,12 +36,13 @@ class Way4Cases2_7Test extends AbstractDroolsTestCase {
     val triedAssertions = testData().map { test =>
       test -> Try {
         val testDto = modifyListTestData(validUaspDto2_7, test)
-        val mutatingDto = businessRulesService.map(testDto)
+        val mutatingDto = businessRulesService.processWithDlq(testDto)
+        val rightUasp = mutatingDto.right.get
         test.head.expecped.map { q =>
-          val caseNameActual = mutatingDto.dataString.get(addKey)
+          val caseNameActual = rightUasp.dataString.get(addKey)
           assertResult(typeOfCase2_7)(caseNameActual)
-          assertResult(testDto)(mutatingDto.copy(dataString = mutatingDto.dataString - addKey, process_timestamp = testDto.process_timestamp))
-        }.getOrElse(assertResult(testDto)(mutatingDto.copy(dataString = mutatingDto.dataString, process_timestamp = testDto.process_timestamp)))
+          assertResult(testDto)(rightUasp.copy(dataString = rightUasp.dataString - addKey, process_timestamp = testDto.process_timestamp))
+        }.getOrElse(assertResult(testDto)(rightUasp.copy(dataString = rightUasp.dataString, process_timestamp = testDto.process_timestamp)))
       }
     }
     assertTry(triedAssertions)
@@ -56,14 +55,15 @@ class Way4Cases2_7Test extends AbstractDroolsTestCase {
         val dtoWithClassification = validUaspDto2_7.copy(dataString = validUaspDto2_7.dataString + (addKey -> "someValue"))
         val testDto = modifyListTestData(dtoWithClassification, test)
         val triedBoolean = Try {
-          val mutatingDto = businessRulesService.map(testDto)
+          val mutatingDto = businessRulesService.processWithDlq(testDto)
+          val rightUasp = mutatingDto.right.get
 
           test.head.expecped.map { q =>
             val dto = testDto.copy(dataString = testDto.dataString + (addKey -> (someValue + "," + typeOfCase2_7.value)))
-            assertResult(dto)(mutatingDto.copy(dataString = mutatingDto.dataString - errFieldName, process_timestamp = dto.process_timestamp))
-            assertResult(None)(mutatingDto.dataString.get(errFieldName))
+            assertResult(dto)(rightUasp.copy(dataString = rightUasp.dataString - errFieldName, process_timestamp = dto.process_timestamp))
+            assertResult(None)(rightUasp.dataString.get(errFieldName))
           }.getOrElse({
-            assertResult(testDto)(mutatingDto.copy(dataString = mutatingDto.dataString, process_timestamp = testDto.process_timestamp))
+            assertResult(testDto)(rightUasp.copy(dataString = rightUasp.dataString, process_timestamp = testDto.process_timestamp))
           })
         }
         test -> triedBoolean
@@ -91,11 +91,11 @@ object Way4Cases2_7Test {
     List(TestLong("effective_date", DeleteTestAction())),
     List(TestString("processing_resolution", DeleteTestAction())),
     List(TestBigDecimal("fee_amount", DeleteTestAction())),
-//
+    //
     List(TestString("action_type", AddTestAction("!Presentment"))),
     List(TestString("service_type", AddTestAction("!F7"))),
     List(TestString("processing_resolution", AddTestAction("!Accepted"))),
-//    List(TestBigDecimal("fee_amount", AddTestAction(BigDecimal.valueOf(2).toString())))
+    //    List(TestBigDecimal("fee_amount", AddTestAction(BigDecimal.valueOf(2).toString())))
 
   )
 

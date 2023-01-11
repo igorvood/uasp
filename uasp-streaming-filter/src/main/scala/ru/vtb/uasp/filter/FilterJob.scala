@@ -39,13 +39,12 @@ object FilterJob {
               filterConfiguration: FilterConfiguration,
               producerFabric: FlinkSinkProperties => SinkFunction[KafkaDto] = producerFactoryDefault
              ): DataStream[UaspDto] = {
-    val dlqSink = filterConfiguration.flinkSinkPropertiesErr.map(_.createSinkFunction(producerFabric))
-
     dataStream
-      .processAndDlqSink(
-        name = s"${filterConfiguration.filterRule.tagPrefix}-filter",
+      .processAndDlqSinkWithMetric(
         process = filterConfiguration.filterProcessFunction,
-        sinkFunction = dlqSink)
+        sinkDlqFunction = filterConfiguration.flinkSinkPropertiesErr,
+        producerFactory = producerFabric
+      )
 
   }
 
@@ -62,6 +61,7 @@ object FilterJob {
     val mainSink = configuration.flinkSinkPropertiesOk.createSinkFunction(producerFabric)
     mainDataStream
       .map(_.serializeToBytes)
+      .map(configuration.flinkSinkPropertiesOk.prometheusMetric[KafkaDto])
       .addSink(mainSink)
   }
 
@@ -69,12 +69,12 @@ object FilterJob {
                    filterConfiguration: FilterConfiguration,
                    producerFabric: FlinkSinkProperties => SinkFunction[KafkaDto] = producerFactoryDefault
                   ): DataStream[UaspDto] = {
-    val dlqSink = filterConfiguration.flinkSinkPropertiesErr.map(_.createSinkFunction(producerFabric))
     env
-      .registerConsumer(name = "input",
-        consumer = filterConfiguration.kafkaSource,
-        dlqProducer = dlqSink,
-        serialisationProcessFunction = filterConfiguration.deserializationProcessFunction
+      .registerConsumerWithMetric(
+        consumerProperties = filterConfiguration.consumerPropperty,
+        dlqProducer = filterConfiguration.flinkSinkPropertiesErr,
+        serialisationProcessFunction = filterConfiguration.deserializationProcessFunction,
+        producerFactory = producerFabric
       )
   }
 

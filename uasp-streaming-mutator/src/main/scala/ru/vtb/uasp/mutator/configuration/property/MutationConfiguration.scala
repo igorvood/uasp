@@ -1,61 +1,59 @@
 package ru.vtb.uasp.mutator.configuration.property
 
-import org.apache.flink.streaming.connectors.kafka.FlinkKafkaConsumer
-import ru.vtb.uasp.common.kafka.FlinkConsumerProperties
-import ru.vtb.uasp.common.service.JsonConvertInService
-import ru.vtb.uasp.common.utils.config.PropertyUtil._
-import ru.vtb.uasp.common.utils.config.kafka.{KafkaCnsProperty, KafkaPrdProperty}
+import ru.vtb.uasp.common.kafka.{FlinkConsumerProperties, FlinkSinkProperties}
+import ru.vtb.uasp.common.service.UaspDeserializationProcessFunction
+import ru.vtb.uasp.common.utils.config.PropertyUtil.createByClassOption
 import ru.vtb.uasp.common.utils.config.{AllApplicationProperties, ConfigurationInitialise, ReadConfigErrors}
-import ru.vtb.uasp.filter.configuration.property.{ExecutionFlinkEnvironmentProperty, FilterRule, KafkaProducerPropertyMap}
-import ru.vtb.uasp.filter.service.{FilterProcessFunction, KafkaSinksService}
+import ru.vtb.uasp.filter.configuration.property.{ExecutionFlinkEnvironmentProperty, FilterConfiguration, FilterRule}
 import ru.vtb.uasp.mutator.service.BusinessRulesService
 
 import scala.collection.mutable
 
-case class MutationConfiguration(consumerTopicName: String,
-                                 kafkaCnsProperty: KafkaCnsProperty,
+case class MutationConfiguration(consumerPropperty: FlinkConsumerProperties,
                                  businessExecutionEnvironmentProperty: ExecutionFlinkEnvironmentProperty,
-                                 kafkaProducerPropsMap: KafkaProducerPropertyMap,
-                                 businessDroolsList: List[String],
                                  filterRule: FilterRule,
-                                 kafkaPrdProperty: KafkaPrdProperty,
+                                 businessDroolsList: List[String],
+                                 flinkSinkPropertiesOk: FlinkSinkProperties,
+                                 flinkSinkPropertiesErr: Option[FlinkSinkProperties],
                                 ) {
-  lazy val kafkaUaspDto: FlinkKafkaConsumer[Array[Byte]] = FlinkConsumerProperties(consumerTopicName, kafkaCnsProperty).createConsumer()
 
-  lazy val convertInMapService = JsonConvertInService
-  lazy val mutateService: BusinessRulesService = BusinessRulesService(businessDroolsList)
 
-  lazy val filterProcessFunction = new FilterProcessFunction(filterRule)
-  lazy val kafkaSinksService: KafkaSinksService = ru.vtb.uasp.filter.service.KafkaSinksService(filterRule, businessExecutionEnvironmentProperty, producersMap)
+  lazy val newMutateService: BusinessRulesService = BusinessRulesService(businessDroolsList)
 
-  private def producersMap = ru.vtb.uasp.filter.configuration.service.OutputFlinkSources().kafkaSource(kafkaPrdProperty, kafkaProducerPropsMap)
+  val deserializationProcessFunction = new UaspDeserializationProcessFunction
+
+   val filterConfiguration = new FilterConfiguration(businessExecutionEnvironmentProperty, null, consumerPropperty, flinkSinkPropertiesOk, flinkSinkPropertiesErr)
+
 }
 
 object MutationConfiguration extends ConfigurationInitialise[MutationConfiguration] {
 
-  val appPrefixDefaultName = "bussines"
+  val appPrefixDefaultName = "uasp-streaming-business-rules"
 
   override def defaultConfiguration(prf: String)(implicit allProps: AllApplicationProperties, readKey: mutable.Set[String]): MutationConfiguration = MutationConfiguration(appPrefixDefaultName)(allProps, MutationConfiguration)
 
-  override def create[CONFIGURATION](prf: String)(implicit appProps: AllApplicationProperties, configurationInitialise: ConfigurationInitialise[CONFIGURATION]): Either[ReadConfigErrors, MutationConfiguration] = {
+  import ru.vtb.uasp.common.utils.config.PropertyUtil.{propertyVal, s}
+
+  override protected def createMayBeErr[CONFIGURATION](prf: String)(implicit appProps: AllApplicationProperties, configurationInitialise: ConfigurationInitialise[CONFIGURATION]): Either[ReadConfigErrors, MutationConfiguration] = {
     for {
+      consumerTopicName <- FlinkConsumerProperties.create(s"$prf.kafka.consumer")
+      executionEnvironmentProperty <- ExecutionFlinkEnvironmentProperty.create(s"$prf.flink.job")
+      filterRule <- FilterRule.create(s"$prf.filter")
+      businessDroolsList <- propertyVal[String](s"$prf.rulles.drools", "list")(appProps, configurationInitialise, s).map(s => s.split(",").toList)
+      flinkSinkPropertiesOk <- FlinkSinkProperties.create(s"$prf.kafka.producer.filterTag-success")
+      flinkSinkPropertiesErr <- createByClassOption(s"$prf.kafka.producer.filterTag-error", FlinkSinkProperties.getClass, { p =>
+        FlinkSinkProperties.create(p)
+      })
 
-
-      consumerTopicName <- propertyVal[String](s"$prf.rulles.kafka.consumer", "topicName")
-      kafkaCnsProperty <- KafkaCnsProperty.create(s"$prf.rulles.kafka.consumer.property")
-      executionEnvironmentProperty <- ExecutionFlinkEnvironmentProperty.create(s"$prf.rulles.flink.job.checkpoint")
-      kafkaProducerPropsMap <- KafkaProducerPropertyMap.create(s"$prf.rulles.kafka.producers")
-      businessDroolsList <- propertyVal[String](s"$prf.rulles.drools", "list").map(s => s.split(",").toList)
-      filterRule <- FilterRule.create(s"$prf.rulles.filter")
-      kafkaPrdProperty <- KafkaPrdProperty.create(s"$prf.rulles.kafka.producer")
-
-    } yield new MutationConfiguration(consumerTopicName, kafkaCnsProperty, executionEnvironmentProperty, kafkaProducerPropsMap, businessDroolsList, filterRule, kafkaPrdProperty)
+    } yield new MutationConfiguration(
+      consumerTopicName,
+      executionEnvironmentProperty,
+      filterRule,
+      businessDroolsList,
+      flinkSinkPropertiesOk,
+      flinkSinkPropertiesErr
+    )
   }
-
-  private val prefixProducerProp = "bussines.rulles.kafka.producer"
-
-  val bootstrapServers = "bootstrap.servers"
-  val prefixConsumerProp = "bussines.rulles.kafka.consumer"
 
 
 }

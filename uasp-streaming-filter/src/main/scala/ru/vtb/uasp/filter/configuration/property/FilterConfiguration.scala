@@ -17,8 +17,6 @@ case class FilterConfiguration(
                                 flinkSinkPropertiesErr: Option[FlinkSinkProperties],
                               ) {
 
-  lazy val kafkaSource: FlinkKafkaConsumer[Array[Byte]] = consumerPropperty.createConsumer()
-
   lazy val filterProcessFunction = new FilterProcessFunction(filterRule)
 
   val deserializationProcessFunction = new UaspDeserializationProcessFunction

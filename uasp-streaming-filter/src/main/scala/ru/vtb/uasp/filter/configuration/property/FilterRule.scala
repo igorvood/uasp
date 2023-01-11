@@ -4,15 +4,11 @@ import ru.vtb.uasp.common.utils.config.{AllApplicationProperties, ConfigurationI
 import ru.vtb.uasp.filter.service.dto._
 
 case class FilterRule(
-                       tagPrefix: String,
                        fieldName: String,
-                       //                       compareWith: String,
                        operandClass: OperandClass,
                        operator: String
                      ) {
-  require(tagPrefix.nonEmpty, "tagPrefix must be not empty")
   require(fieldName.nonEmpty, "fieldName must be not empty")
-  //  require(compareWith.nonEmpty, "compareWith must be not empty")
   require(operator.nonEmpty, "operator must be not empty")
   require(operandClass != null, "operator must be not null")
 
@@ -28,14 +24,6 @@ case class FilterRule(
     case x => throw new IllegalStateException(s"unsupported operator '$x' ")
   }
 
-
-  override def toString: String =
-    s"""FilterRule{
-       |  fieldName = $fieldName
-       |  tagPrefix = $tagPrefix
-       |  operatorClass = ${operatorClass.getClass}
-       |  operandClass = ${operandClass.getClass}
-       |}""".stripMargin
 
 }
 
@@ -55,20 +43,17 @@ object FilterRule extends PropertyCombiner[FilterRule] {
     }
 
 
-  import ru.vtb.uasp.common.utils.config.PropertyUtil._
+  import ru.vtb.uasp.common.utils.config.PropertyUtil.{propertyVal, propertyValOptional, s}
 
   override protected def createMayBeErr[CONFIGURATION](prf: String)(implicit appProps: AllApplicationProperties, configurationInitialise: ConfigurationInitialise[CONFIGURATION]): Either[ReadConfigErrors, FilterRule] =
     for {
-      tagPrefix <- propertyVal[String](prf, "tagPrefix")(appProps, configurationInitialise, s)
       fieldName <- propertyVal[String](prf, "fieldName")(appProps, configurationInitialise, s)
       operandClass <- propertyVal[String](prf, "operandClass")(appProps, configurationInitialise, s)
       compareWith <- propertyValOptional[String](prf, "compareWith")(appProps, configurationInitialise, s)
-      operator <- propertyVal(prf, "operator")(appProps, configurationInitialise, s)
+      operator <- propertyVal[String](prf, "operator")(appProps, configurationInitialise, s)
     } yield new FilterRule(
-      tagPrefix = tagPrefix,
       fieldName = fieldName,
       operandClass = getOperatorClass(operandClass, compareWith),
       operator = operator
-
     )
 }

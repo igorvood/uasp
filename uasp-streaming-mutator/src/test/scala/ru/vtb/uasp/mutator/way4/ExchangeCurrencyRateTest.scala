@@ -23,7 +23,7 @@ class ExchangeCurrencyRateTest extends AbstractDroolsTestCase {
         val result = runDrools(validUaspDtoCFT, test).toList
         test.expecped.map { q =>
           assertResult(2)(result.size)
-//          result.foreach(d => assertResult("Exchange fields name unification from CFT pipeline")(d.droolsName))
+          //          result.foreach(d => assertResult("Exchange fields name unification from CFT pipeline")(d.droolsName))
           result.foreach(d => assertResult(Add())(d.typeOperation))
           assertResult(List("exchange_currency", "exchange_dttm").sorted)(result.map(d => d.nameField).sorted)
           assertResult(2)(result.count(d => d.typeField == StringMap("RUR") || d.typeField == StringMap("EUR") || d.typeField == LongMap(1512)))

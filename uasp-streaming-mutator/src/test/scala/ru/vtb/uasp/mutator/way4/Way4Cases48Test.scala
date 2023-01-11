@@ -2,11 +2,8 @@ package ru.vtb.uasp.mutator.way4
 
 import io.qameta.allure.Feature
 import ru.vtb.uasp.common.dto.UaspDto
-import ru.vtb.uasp.mutator.service.BusinessRulesService
-import ru.vtb.uasp.mutator.service.BusinessRulesService.errFieldName
-import ru.vtb.uasp.mutator.service.dto.{Add, ConcatenateStr, StringMap, UaspOperation}
-
-import ru.vtb.uasp.mutator.way4.Way4Cases48Test.{caseNumber, testData, typeOfCase48, validUaspDto48}
+import ru.vtb.uasp.mutator.service.dto.{Add, StringMap, UaspOperation}
+import ru.vtb.uasp.mutator.way4.Way4Cases48Test.{caseNumber, testData, validUaspDto48}
 import ru.vtb.uasp.mutator.way4.abstraction._
 
 import scala.util.Try

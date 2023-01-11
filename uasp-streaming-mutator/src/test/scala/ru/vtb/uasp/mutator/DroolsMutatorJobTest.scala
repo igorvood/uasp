@@ -26,7 +26,7 @@ class DroolsMutatorJobTest extends AnyFlatSpec {
       "way4-case-2_4.drl", "way4-case-2_10.drl", "way4-case-5_2.drl", "way4-case-5_3.drl", "way4-case-11_2.drl"))
 
     val value = preparedStream
-      .map(new BusinessRulesService({ q =>
+      .process(new BusinessRulesService({ q =>
         DroolsRunner(validator.kBase)
           .apply(q, { case x: UaspOperation => x })
       }))

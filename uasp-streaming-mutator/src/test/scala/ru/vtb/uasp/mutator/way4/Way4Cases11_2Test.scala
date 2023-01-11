@@ -2,12 +2,11 @@ package ru.vtb.uasp.mutator.way4
 
 import io.qameta.allure.Feature
 import ru.vtb.uasp.common.dto.UaspDto
-import ru.vtb.uasp.mutator.service.BusinessRulesService
 import ru.vtb.uasp.mutator.service.BusinessRulesService.errFieldName
 import ru.vtb.uasp.mutator.service.dto.{ConcatenateStr, StringMap, UaspOperation}
 import ru.vtb.uasp.mutator.way4.ConstTest.{addKey, drlFileListConst, someValue}
 import ru.vtb.uasp.mutator.way4.Way4Cases11_2Test.{caseNumber, testData, typeOfCase11_2, validUaspDto11_2}
-import ru.vtb.uasp.mutator.way4.abstraction.{AbstractDroolsTestCase, AddTestAction, DeleteTestAction, NoneTestAction, TestBoolean, TestCaseData, TestLong, TestString}
+import ru.vtb.uasp.mutator.way4.abstraction._
 
 import scala.util.Try
 
@@ -31,17 +30,16 @@ class Way4Cases11_2Test extends AbstractDroolsTestCase {
 
   "Way4Cases " + caseNumber should " be ok, no field " + addKey + " check all BusinessRulesService" in {
 
-    val businessRulesService = BusinessRulesService(List("way4-case-2_2.drl", "way4-case-2_3.drl", "way4-case-2_4.drl", "way4-case-2_10.drl", "way4-case-5_2.drl", "way4-case-5_3.drl", "way4-case-11_2.drl"))
     val triedAssertions = testData().map { test =>
       test -> Try {
         val testDto = modifyTestData(validUaspDto11_2, test)
-        val mutatingDto = businessRulesService.map(testDto)
-
+        val mutatingDto = businessRulesService.processWithDlq(testDto)
+        val rightUasp = mutatingDto.right.get
         val assertion = test.expecped.map { q =>
-          val caseName = mutatingDto.dataString.get(addKey)
+          val caseName = rightUasp.dataString.get(addKey)
           assertResult(typeOfCase11_2)(caseName)
-          assertResult(testDto)(mutatingDto.copy(dataString = mutatingDto.dataString - addKey, process_timestamp = testDto.process_timestamp))
-        }.getOrElse(assertResult(testDto)(mutatingDto.copy(dataString = mutatingDto.dataString, process_timestamp = testDto.process_timestamp)))
+          assertResult(testDto)(rightUasp.copy(dataString = rightUasp.dataString - addKey, process_timestamp = testDto.process_timestamp))
+        }.getOrElse(assertResult(testDto)(rightUasp.copy(dataString = rightUasp.dataString, process_timestamp = testDto.process_timestamp)))
         assertion
       }
     }
@@ -50,18 +48,18 @@ class Way4Cases11_2Test extends AbstractDroolsTestCase {
 
   "Way4Cases " + caseNumber should " be some times error, with field " + addKey + " check all BusinessRulesService" in {
 
-    val businessRulesService = BusinessRulesService(List("way4-case-2_2.drl", "way4-case-2_3.drl", "way4-case-2_4.drl", "way4-case-2_10.drl", "way4-case-5_2.drl", "way4-case-5_3.drl", "way4-case-11_2.drl"))
     val triedAssertions = testData()
       .map { test =>
         val dtoWithClassification = validUaspDto11_2.copy(dataString = validUaspDto11_2.dataString + (addKey -> someValue))
         val testDto = modifyTestData(dtoWithClassification, test)
         val triedBoolean = Try {
-          val mutatingDto = businessRulesService.map(testDto)
+          val mutatingDto = businessRulesService.processWithDlq(testDto)
+          val rightUasp = mutatingDto.right.get
           test.expecped.map { q =>
-            assertResult(testDto.copy(dataString = testDto.dataString + (addKey -> (someValue + "," + typeOfCase11_2.value))))(mutatingDto.copy(dataString = mutatingDto.dataString - errFieldName))
-            assertResult(None)(mutatingDto.dataString.get(errFieldName))
+            assertResult(testDto.copy(dataString = testDto.dataString + (addKey -> (someValue + "," + typeOfCase11_2.value))))(rightUasp.copy(dataString = rightUasp.dataString - errFieldName))
+            assertResult(None)(rightUasp.dataString.get(errFieldName))
           }.getOrElse({
-            assertResult(testDto)(mutatingDto.copy(dataString = mutatingDto.dataString, process_timestamp = testDto.process_timestamp))
+            assertResult(testDto)(rightUasp.copy(dataString = rightUasp.dataString, process_timestamp = testDto.process_timestamp))
           })
         }
         test -> triedBoolean

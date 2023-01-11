@@ -8,7 +8,7 @@ import ru.vtb.uasp.common.dto.UaspDto
 import ru.vtb.uasp.common.extension.CommonExtension.Also
 import ru.vtb.uasp.mutator.configuration.drools.KieBaseService
 import ru.vtb.uasp.mutator.service.drools.DroolsRunner
-import ru.vtb.uasp.mutator.service.dto.{Add, ConcatenateStr, StringMap, UaspOperation}
+import ru.vtb.uasp.mutator.service.dto.{ConcatenateStr, StringMap, UaspOperation}
 import ru.vtb.uasp.mutator.way4.ConstTest.addKey
 
 @Feature("Way4CasesTest")
