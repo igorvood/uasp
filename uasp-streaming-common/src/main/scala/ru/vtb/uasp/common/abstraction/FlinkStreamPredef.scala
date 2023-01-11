@@ -1,6 +1,7 @@
 package ru.vtb.uasp.common.abstraction
 
 import org.apache.flink.api.common.typeinfo.TypeInformation
+import org.apache.flink.streaming.api.datastream.DataStreamSink
 import org.apache.flink.streaming.api.functions.sink.SinkFunction
 import org.apache.flink.streaming.api.scala.{DataStream, StreamExecutionEnvironment, createTypeInformation}
 import org.apache.flink.streaming.connectors.kafka.FlinkKafkaConsumerBase
@@ -9,9 +10,18 @@ import ru.vtb.uasp.common.service.dto.{KafkaDto, ServiceDataDto}
 
 object FlinkStreamPredef {
 
+  def createProducerWithMetric[T: TypeInformation](self: DataStream[T],
+                                                   serviceData: ServiceDataDto,
+                                                   sinkProperty: FlinkSinkProperties,
+                                                   producerFactory: FlinkSinkProperties => SinkFunction[T]
+                                                  ): DataStreamSink[T] = {
+    val value = self
+      .map[T](o => sinkProperty.prometheusMetric[T](serviceData).map(o))
+      .addSink(sinkProperty.createSinkFunction(producerFactory))
+    value
+  }
 
   implicit class StreamFactory[T](val self: DataStream[T]) extends AnyVal {
-
 
     def processAndDlqSink[O: TypeInformation, DLQ: TypeInformation](process: DlqProcessFunction[T, O, DLQ], sinkDlqFunction: Option[SinkFunction[DLQ]]): DataStream[O] = {
       processAndDlqSink(process.getClass.getSimpleName, process, sinkDlqFunction)
@@ -32,9 +42,9 @@ object FlinkStreamPredef {
     }
 
     def processAndDlqSinkWithMetric[O: TypeInformation](serviceData: ServiceDataDto,
-                                                         process: DlqProcessFunction[T, O, KafkaDto],
-                                                         sinkDlqFunction: Option[FlinkSinkProperties],
-                                                         producerFactory: FlinkSinkProperties => SinkFunction[KafkaDto]
+                                                        process: DlqProcessFunction[T, O, KafkaDto],
+                                                        sinkDlqFunction: Option[FlinkSinkProperties],
+                                                        producerFactory: FlinkSinkProperties => SinkFunction[KafkaDto]
                                                        ): DataStream[O] = {
 
       val myBeDlq = self

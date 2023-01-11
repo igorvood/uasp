@@ -15,7 +15,7 @@ case class FlinkSinkProperties(
                               ) extends MetricForKafka {
 
 
-  def createSinkFunction(factory: FlinkSinkProperties => SinkFunction[KafkaDto]): SinkFunction[KafkaDto] = factory(this)
+  def createSinkFunction[T](factory: FlinkSinkProperties => SinkFunction[T]): SinkFunction[T] = factory(this)
 
 }
 

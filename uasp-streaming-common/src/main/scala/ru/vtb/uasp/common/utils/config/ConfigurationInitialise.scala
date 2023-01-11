@@ -34,8 +34,8 @@ trait ConfigurationInitialise[CONFIGURATION] extends PropertyCombiner[CONFIGURAT
     ).toList
 
     if (keysNotRead.nonEmpty) {
-      val value = keysNotRead.mkString("\n")
-      val reads = combiner.readKey.mkString("\n")
+      val value = keysNotRead.sorted.mkString("\n")
+      val reads = combiner.readKey.toList.sorted.mkString("\n")
       throw new IllegalStateException(s"Not used ${keysNotRead.size} key for \n$value\n READS VALUE:\n$reads")
     }
   }
