@@ -12,13 +12,7 @@ object ModelVector {
 
   val CLASSIFICATION: String = fields.getString("CLASSIFICATION")
 
-
-
   val FULL_VECTOR: String = vectors.getString("FULL_VECTOR")
-
-  val FIRST_SALARY: String = vectors.getString("FIRST_SALARY")
-  val FIRST_PENSION: String = vectors.getString("FIRST_PENSION")
-  val FIRST_POS: String = vectors.getString("FIRST_POS")
 
   val TYPE: String = fieldsMetaData.getString("TYPE")
   val DTTM_FORMAT: String = fieldsMetaData.getString("DTTM_FORMAT")
@@ -36,7 +30,7 @@ object ModelVector {
   val BOOLEAN: String = valueTypes.getString("BOOLEAN")
   val BIG_DECIMAL: String = valueTypes.getString("BIG_DECIMAL")
 
- val CASE_8: String = case_classification.getString("CASE_8")
+  val CASE_8: String = case_classification.getString("CASE_8")
   val CASE_29: String = case_classification.getString("CASE_29")
   val CASE_38: String = case_classification.getString("CASE_38")
   val CASE_39: String = case_classification.getString("CASE_39")

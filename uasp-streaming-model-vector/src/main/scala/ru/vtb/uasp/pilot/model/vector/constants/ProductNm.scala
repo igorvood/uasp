@@ -13,14 +13,14 @@ object ProductNm {
   val rowsList: List[String] = FileUtils.getRows
 
   rowsList.forEach(r => {
-    val row =  r.split(";")
-    ProductNmMap.put(row(0),row(1))
+    val row = r.split(";")
+    ProductNmMap.put(row(0), row(1))
 
   })
 
   def returnProductNm(contract_card_type_cd: String): String = {
-    if(ProductNmMap.contains(contract_card_type_cd))
-    ProductNmMap(contract_card_type_cd) else ""
+    if (ProductNmMap.contains(contract_card_type_cd))
+      ProductNmMap(contract_card_type_cd) else ""
   }
 
 }

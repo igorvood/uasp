@@ -35,25 +35,25 @@ class ModelVectorDao extends Serializable {
             inMsg.dataString.getOrElse(caFieldName,
               inMsg.dataString.getOrElse(w4FieldName,
                 inMsg.dataString.getOrElse(pfFieldName,
-                inMsg.dataString.getOrElse(pfFieldName,
-                inMsg.dataString.getOrElse(wdFieldName,
-                  null)))))))
+                  inMsg.dataString.getOrElse(pfFieldName,
+                    inMsg.dataString.getOrElse(wdFieldName,
+                      null)))))))
         case INT => mapInt += (modelVectorFieldName ->
           inMsg.dataInt.getOrElse(cftFieldName,
             inMsg.dataInt.getOrElse(caFieldName,
               inMsg.dataInt.getOrElse(w4FieldName,
                 inMsg.dataInt.getOrElse(pfFieldName,
-                inMsg.dataInt.getOrElse(wdFieldName,
-                  1))))))
-          //TODO refactor date with date format
+                  inMsg.dataInt.getOrElse(wdFieldName,
+                    1))))))
+        //TODO refactor date with date format
         case LONG => if (dttmFormat.nonEmpty) {
           mapString += (modelVectorFieldName -> (Instant.ofEpochMilli(
             inMsg.dataLong.getOrElse(cftFieldName,
               inMsg.dataLong.getOrElse(caFieldName,
                 inMsg.dataLong.getOrElse(w4FieldName,
                   inMsg.dataLong.getOrElse(pfFieldName,
-                  inMsg.dataLong.getOrElse(wdFieldName,
-                    System.currentTimeMillis())))))+3*60*60*1000.toLong))
+                    inMsg.dataLong.getOrElse(wdFieldName,
+                      System.currentTimeMillis()))))) + 3 * 60 * 60 * 1000.toLong))
             .toString.replaceAll("T", " ").substring(0, 19))
         }
 
@@ -62,37 +62,37 @@ class ModelVectorDao extends Serializable {
             inMsg.dataLong.getOrElse(caFieldName,
               inMsg.dataLong.getOrElse(pfFieldName,
                 inMsg.dataLong.getOrElse(w4FieldName,
-                inMsg.dataLong.getOrElse(wdFieldName,
-                  0))))))
+                  inMsg.dataLong.getOrElse(wdFieldName,
+                    0))))))
 
         case FLOAT => mapFloat += (modelVectorFieldName ->
           inMsg.dataFloat.getOrElse(cftFieldName,
             inMsg.dataFloat.getOrElse(caFieldName,
               inMsg.dataFloat.getOrElse(w4FieldName,
                 inMsg.dataFloat.getOrElse(pfFieldName,
-                inMsg.dataFloat.getOrElse(wdFieldName,
-                  0.0f))))))
+                  inMsg.dataFloat.getOrElse(wdFieldName,
+                    0.0f))))))
         case DOUBLE => mapDouble += (modelVectorFieldName ->
           inMsg.dataDouble.getOrElse(cftFieldName,
             inMsg.dataDouble.getOrElse(caFieldName,
               inMsg.dataDouble.getOrElse(w4FieldName,
                 inMsg.dataDouble.getOrElse(pfFieldName,
-                inMsg.dataDouble.getOrElse(wdFieldName,
-                  0.0))))))
+                  inMsg.dataDouble.getOrElse(wdFieldName,
+                    0.0))))))
         case BOOLEAN => mapBoolean += (modelVectorFieldName ->
           inMsg.dataBoolean.getOrElse(cftFieldName,
             inMsg.dataBoolean.getOrElse(caFieldName,
               inMsg.dataBoolean.getOrElse(w4FieldName,
                 inMsg.dataBoolean.getOrElse(pfFieldName,
-                inMsg.dataBoolean.getOrElse(wdFieldName,
-                  false))))))
+                  inMsg.dataBoolean.getOrElse(wdFieldName,
+                    false))))))
         case BIG_DECIMAL => mapDecimal += (modelVectorFieldName ->
           inMsg.dataDecimal.getOrElse(cftFieldName,
             inMsg.dataDecimal.getOrElse(caFieldName,
               inMsg.dataDecimal.getOrElse(w4FieldName,
                 inMsg.dataDecimal.getOrElse(pfFieldName,
-                inMsg.dataDecimal.getOrElse(wdFieldName,
-                  BigDecimal(0.0)))))))
+                  inMsg.dataDecimal.getOrElse(wdFieldName,
+                    BigDecimal(0.0)))))))
       }
     }
     )

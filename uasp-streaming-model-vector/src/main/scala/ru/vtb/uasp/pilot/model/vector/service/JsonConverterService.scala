@@ -8,7 +8,6 @@ import ru.vtb.uasp.common.dto.UaspDto
 class JsonConverterService(mapFields: Array[String]) extends RichMapFunction[UaspDto, JsObject] {
   override def map(inMsg: UaspDto): JsObject = {
     modelToJson(inMsg)
-
   }
 
   def modelToJson(inMsg: UaspDto): JsObject = {
@@ -20,9 +19,7 @@ class JsonConverterService(mapFields: Array[String]) extends RichMapFunction[Uas
       .-("id")
       .-("process_timestamp")
       .-("system-classification")
-
       .fields
-//      .sortBy(_._1)
     )
 
   }

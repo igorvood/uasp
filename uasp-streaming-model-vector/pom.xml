@@ -2,7 +2,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>ru.vtb.uasp.pilot.model.vector</groupId>
     <artifactId>uasp-streaming-model-vector</artifactId>
-    <version>1.3.3</version>
+    <version>1.3.4</version>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -200,7 +200,7 @@
         <dependency>
             <groupId>ru.vtb.uasp.common</groupId>
             <artifactId>uasp-streaming-common</artifactId>
-            <version>1.3.18</version>
+            <version>1.3.41</version>
         </dependency>
 
         <dependency>

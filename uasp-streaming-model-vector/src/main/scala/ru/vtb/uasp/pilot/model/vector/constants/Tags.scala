@@ -6,9 +6,7 @@ import ru.vtb.uasp.common.dto.UaspDto
 
 object Tags {
   val qAOutputTag: OutputTag[UaspDto] = OutputTag[UaspDto]("test")
-  val dlqOutputTag: OutputTag[UaspDto] = OutputTag[UaspDto]("dlq")
   val case8OutputTag: OutputTag[UaspDto] = OutputTag[UaspDto]("case8OutputTag")
-  val case29OutputTag: OutputTag[UaspDto] = OutputTag[UaspDto]("case29OutputTag")
   val case38OutputTag: OutputTag[UaspDto] = OutputTag[UaspDto]("case38OutputTag")
   val case39OutputTag: OutputTag[UaspDto] = OutputTag[UaspDto]("case39OutputTag")
   val case39NewOutputTag: OutputTag[UaspDto] = OutputTag[UaspDto]("case39NewOutputTag")

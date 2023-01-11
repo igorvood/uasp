@@ -57,7 +57,6 @@ object Generator {
       process_time
     )
 
-    println(JsonConverter.modelToJson(modelVectorData))
     modelVectorData
   }
 

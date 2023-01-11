@@ -27,7 +27,7 @@ class AggregateMapService(case29: String = "") extends RichMapFunction[UaspDto, 
           inMsg.dataString.getOrElse("source_account",
             inMsg.dataString.getOrElse("contract_num",
               inMsg.dataString.getOrElse("account_num",
-              inMsg.dataString.getOrElse("sourceAccount", "********************"))))))
+                inMsg.dataString.getOrElse("sourceAccount", "********************"))))))
       val sourceAccMasked = sourceAcc.substring(0, Math.min(10, sourceAcc.length)) + "******" + sourceAcc.substring(Math.min(16, sourceAcc.length))
 
 

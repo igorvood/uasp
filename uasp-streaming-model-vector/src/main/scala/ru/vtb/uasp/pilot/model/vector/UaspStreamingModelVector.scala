@@ -1,37 +1,30 @@
 package ru.vtb.uasp.pilot.model.vector
 
-import com.sksamuel.avro4s.{AvroSchema, ScalePrecision}
-import org.apache.flink.api.common.serialization.AbstractDeserializationSchema
 import org.apache.flink.api.java.functions.KeySelector
 import org.apache.flink.api.scala.createTypeInformation
 import org.apache.flink.streaming.api.CheckpointingMode
 import org.apache.flink.streaming.api.datastream.DataStreamSink
 import org.apache.flink.streaming.api.functions.ProcessFunction
-import org.apache.flink.streaming.api.scala.{DataStream, StreamExecutionEnvironment}
-import org.apache.flink.streaming.connectors.kafka.FlinkKafkaProducer.Semantic
-import org.apache.flink.streaming.connectors.kafka.{FlinkKafkaConsumer, FlinkKafkaProducer}
+import org.apache.flink.streaming.api.functions.sink.SinkFunction
+import org.apache.flink.streaming.api.scala.{DataStream, OutputTag, StreamExecutionEnvironment}
 import org.apache.flink.util.Collector
 import org.slf4j.{Logger, LoggerFactory}
-import play.api.libs.json.JsObject
-import ru.vtb.uasp.common.constants.BigDecimalConst.{PRECISION, SCALE}
+import ru.vtb.uasp.common.abstraction.FlinkStreamPredef.{StreamExecutionEnvironmentPredef, createProducerWithMetric}
 import ru.vtb.uasp.common.dto.UaspDto
 import ru.vtb.uasp.common.dto.entity.utils.ModelVectorPropsModel
-import ru.vtb.uasp.common.kafka.ConsumerFactory
-import ru.vtb.uasp.common.service.JsonConvertInService
-import ru.vtb.uasp.common.utils.config.ConfigUtils.{getAllProps, getPropsFromResourcesFile}
-import ru.vtb.uasp.common.utils.json.JsonConverter.mapFields
+import ru.vtb.uasp.common.dto.entity.utils.ModelVectorPropsModel.appPrefixDefaultName
+import ru.vtb.uasp.common.kafka.FlinkSinkProperties
+import ru.vtb.uasp.common.kafka.FlinkSinkProperties.producerFactoryDefault
+import ru.vtb.uasp.common.service.UaspDeserializationProcessFunction
+import ru.vtb.uasp.common.service.dto.{KafkaDto, ServiceDataDto}
 import ru.vtb.uasp.pilot.model.vector.constants.ModelVector._
 import ru.vtb.uasp.pilot.model.vector.constants.Tags._
-import ru.vtb.uasp.pilot.model.vector.dao.kafka.FlinkKafkaSerializationSchema
+import ru.vtb.uasp.pilot.model.vector.dao.kafka.KafkaDtoSerializationService
 import ru.vtb.uasp.pilot.model.vector.service._
-
-import java.util.Properties
-import scala.util.{Failure, Random, Success}
 
 
 object UaspStreamingModelVector {
   private val logger: Logger = LoggerFactory.getLogger(getClass.getName)
-  private val transactionIdKey = "transactional.id"
 
   def main(args: Array[String]): Unit = {
     logger.info("Start app" + this.getClass.getName)
@@ -52,7 +45,7 @@ object UaspStreamingModelVector {
       val streamProcessed = process(stream, propsModel)
       setSink(streamProcessed, propsModel)
 
-      env.execute(propsModel.appServiceName)
+      env.execute(propsModel.appServiceName.fullServiceName)
 
     } catch {
       case e: Throwable => e match {
@@ -66,26 +59,21 @@ object UaspStreamingModelVector {
     }
   }
 
-  def initProps(args: Array[String], appPrefix: String = ""): ModelVectorPropsModel = {
-    val stringToString = getAllProps(args)
-    val appPropsLocal: Map[String, String] = scala.util.Try(getPropsFromResourcesFile("application-local.properties").get) match {
-      case Success(x) => if (appPrefix.nonEmpty) x.updated("model-vector.instance.conf.name", appPrefix) else x
-      case Failure(_) => Map()
-    }
+  def initProps(args: Array[String]): ModelVectorPropsModel =
+    ModelVectorPropsModel.configApp(appPrefixDefaultName, args)
 
-    ModelVectorPropsModel(appPropsLocal ++ stringToString, appPrefix)
-  }
-
-  def init(env: StreamExecutionEnvironment, propsModel: ModelVectorPropsModel): DataStream[UaspDto] = {
-    val consumer: FlinkKafkaConsumer[Array[Byte]] = ConsumerFactory.getKafkaConsumer(
-      propsModel.consumerTopicName, new AbstractDeserializationSchema[Array[Byte]]() {
-        override def deserialize(bytes: Array[Byte]): Array[Byte] = bytes
-      }, propsModel.commonKafkaProps)
-
+  def init(env: StreamExecutionEnvironment,
+           propsModel: ModelVectorPropsModel,
+           producerFabric: FlinkSinkProperties => SinkFunction[KafkaDto] = producerFactoryDefault
+          ): DataStream[UaspDto] = {
+    val serialisationProcessFunction = UaspDeserializationProcessFunction()
     env
-      .addSource(consumer)
-      //      .setParallelism(1)
-      .map(d => JsonConvertInService.deselialize[UaspDto](d).right.get)
+      .registerConsumerWithMetric(
+        propsModel.appServiceName,
+        propsModel.consumerTopicName,
+        None,
+        serialisationProcessFunction,
+        producerFabric)
       .name("Convert in map service")
       .uid(propsModel.transactionalId + "_ConvertInMapService")
   }
@@ -97,11 +85,7 @@ object UaspStreamingModelVector {
     val qaEnabled = propsModel.enableQaStream
     val preffix = propsModel.prefixQaStream
 
-
-    implicit val sp: ScalePrecision = ScalePrecision(SCALE, PRECISION)
-    val schema = AvroSchema[UaspDto]
     val aggregatorDefault: AggregateMapService = new AggregateMapService()
-    val aggregator: AggregateMapService = new AggregateMapService(CASE_29)
 
     val streamDefault =
       stream
@@ -113,7 +97,6 @@ object UaspStreamingModelVector {
           println("Classification : " + msg.dataString.getOrElse(CLASSIFICATION, ""))
           val isQa = qaEnabled && msg.id.startsWith(preffix)
           val isCase8 = msg.dataString.getOrElse(CLASSIFICATION, "").contains(CASE_8)
-          // val isCase29 = msg.dataString.getOrElse(CLASSIFICATION, "").contains(CASE_29)
           val isCase38 = msg.dataString.getOrElse(CLASSIFICATION, "").contains(CASE_38)
           val isCase39 = msg.dataString.getOrElse(CLASSIFICATION, "").contains(CASE_39)
           val isCase39New = msg.dataString.getOrElse(CLASSIFICATION, "").contains(CASE_39_NEW)
@@ -178,8 +161,7 @@ object UaspStreamingModelVector {
 
   }
 
-  def setSink(streams: (DataStream[UaspDto], DataStream[UaspDto]), propsModel: ModelVectorPropsModel): DataStreamSink[JsObject] = {
-    //        setMainSink(streamProcessed, propsModel)
+  def setSink(streams: (DataStream[UaspDto], DataStream[UaspDto]), propsModel: ModelVectorPropsModel): DataStreamSink[KafkaDto] = {
     setCase56Sink(streams._1, propsModel)
     setCase39Sink(streams._1, propsModel)
     setCase39NewSink(streams._1, propsModel)
@@ -196,261 +178,247 @@ object UaspStreamingModelVector {
   }
 
 
-  def setQASink(streamProcessed: DataStream[UaspDto], propsModel: ModelVectorPropsModel): DataStreamSink[JsObject] = {
-    val kafkaSerializationSchemaQA = new FlinkKafkaSerializationSchema(propsModel.producerQaTopicName)
-    val producerQA = new FlinkKafkaProducer(
+  def setQASink(streamProcessed: DataStream[UaspDto],
+                propsModel: ModelVectorPropsModel,
+                producerFabric: FlinkSinkProperties => SinkFunction[KafkaDto] = producerFactoryDefault
+               ): DataStreamSink[KafkaDto] = {
+    setCaseSink(streamProcessed,
+      propsModel.transactionalId,
+      producerFabric,
+      "QA",
+      Some(qAOutputTag),
       propsModel.producerQaTopicName,
-      kafkaSerializationSchemaQA,
-      setTransactionIdInProperties(propsModel.producerQaTopicName, propsModel.commonKafkaProps),
-      Semantic.EXACTLY_ONCE,
-      propsModel.kafkaProducerPoolSize)
-
-    streamProcessed
-      .getSideOutput(qAOutputTag)
-      .map(new JsonConverterService(mapFields))
-      .name("jsonConverter")
-      .uid(propsModel.transactionalId + "_QA" + "_JsonConverterService")
-      .addSink(producerQA)
+      propsModel.flatJsonConverter,
+      propsModel.kafkaDtoSerializationService,
+      propsModel.appServiceName)
   }
 
-  def setMainSink(streamProcessed: DataStream[JsObject], propsModel: ModelVectorPropsModel): DataStreamSink[JsObject] = {
-    val kafkaSerializationSchema = new FlinkKafkaSerializationSchema(propsModel.producerTopicName)
-    val producer = new FlinkKafkaProducer(
-      propsModel.producerTopicName,
-      kafkaSerializationSchema,
-      setTransactionIdInProperties(propsModel.producerTopicName, propsModel.commonKafkaProps),
-      Semantic.EXACTLY_ONCE,
-      propsModel.kafkaProducerPoolSize)
-
-    streamProcessed
-      .addSink(producer)
-  }
-
-  //
-  //
-  def setCase57Sink(streamProcessed: DataStream[UaspDto], propsModel: ModelVectorPropsModel): DataStreamSink[JsObject] = {
-    val kafkaSerializationSchemaQA = new FlinkKafkaSerializationSchema(propsModel.producerPensTopicName)
-    val producerPens = new FlinkKafkaProducer(
+  def setCase57Sink(streamProcessed: DataStream[UaspDto],
+                    propsModel: ModelVectorPropsModel,
+                    producerFabric: FlinkSinkProperties => SinkFunction[KafkaDto] = producerFactoryDefault
+                   ): DataStreamSink[KafkaDto] = {
+    setCaseSink(streamProcessed,
+      propsModel.transactionalId,
+      producerFabric,
+      "57_case",
+      Some(case57OutputTag),
       propsModel.producerPensTopicName,
-      kafkaSerializationSchemaQA,
-      setTransactionIdInProperties(propsModel.producerPensTopicName, propsModel.commonKafkaProps),
-      Semantic.EXACTLY_ONCE,
-      propsModel.kafkaProducerPoolSize)
+      propsModel.flatJsonConverter,
+      propsModel.kafkaDtoSerializationService,
+      propsModel.appServiceName
+    )
 
-    streamProcessed
-      .getSideOutput(case57OutputTag)
-      .map(new JsonConverterService(mapFields))
-      .name("jsonConverter")
-      .uid(propsModel.transactionalId + "_57_case" + "_JsonConverterService")
-      .addSink(producerPens)
   }
 
-  def setCase56Sink(streamProcessed: DataStream[UaspDto], propsModel: ModelVectorPropsModel): DataStreamSink[JsObject] = {
-    val kafkaSerializationSchemaFS = new FlinkKafkaSerializationSchema(propsModel.producerFSTopicName)
-    val producerFS = new FlinkKafkaProducer(
+  def setCase56Sink(streamProcessed: DataStream[UaspDto],
+                    propsModel: ModelVectorPropsModel,
+                    producerFabric: FlinkSinkProperties => SinkFunction[KafkaDto] = producerFactoryDefault
+                   ): DataStreamSink[KafkaDto] = {
+    setCaseSink(streamProcessed,
+      propsModel.transactionalId,
+      producerFabric,
+      "56_case",
+      Some(case56OutputTag),
       propsModel.producerFSTopicName,
-      kafkaSerializationSchemaFS,
-      setTransactionIdInProperties(propsModel.producerFSTopicName, propsModel.commonKafkaProps),
-      Semantic.EXACTLY_ONCE,
-      propsModel.kafkaProducerPoolSize)
-    val flatJsonConverter = new JsonConverterService(mapFields)
-
-    streamProcessed
-      .getSideOutput(case56OutputTag)
-      .map(flatJsonConverter)
-      .name("jsonConverter")
-      .uid(propsModel.transactionalId + "_56_case" + "_JsonConverterService")
-      .addSink(producerFS)
+      propsModel.flatJsonConverter,
+      propsModel.kafkaDtoSerializationService,
+      propsModel.appServiceName
+    )
   }
 
-  def setCase39Sink(streamProcessed: DataStream[UaspDto], propsModel: ModelVectorPropsModel): DataStreamSink[JsObject] = {
-    val kafkaSerializationSchemaFS = new FlinkKafkaSerializationSchema(propsModel.producerPosTopicName)
-    val producerFS = new FlinkKafkaProducer(
+  def setCase39Sink(streamProcessed: DataStream[UaspDto],
+                    propsModel: ModelVectorPropsModel,
+                    producerFabric: FlinkSinkProperties => SinkFunction[KafkaDto] = producerFactoryDefault
+                   ): DataStreamSink[KafkaDto] = {
+
+    setCaseSink(streamProcessed,
+      propsModel.transactionalId,
+      producerFabric,
+      "39_case",
+      Some(case39OutputTag),
       propsModel.producerPosTopicName,
-      kafkaSerializationSchemaFS,
-      setTransactionIdInProperties(propsModel.producerPosTopicName, propsModel.commonKafkaProps),
-      Semantic.EXACTLY_ONCE,
-      propsModel.kafkaProducerPoolSize)
-    val flatJsonConverter = new JsonConverterService(mapFields)
+      propsModel.flatJsonConverter,
+      propsModel.kafkaDtoSerializationService,
+      propsModel.appServiceName)
 
-    streamProcessed
-      .getSideOutput(case39OutputTag)
-      .map(flatJsonConverter)
-      .name("jsonConverter")
-      .uid(propsModel.transactionalId + "_39_case" + "_JsonConverterService")
-      .addSink(producerFS)
   }
 
-  def setCase39NewSink(streamProcessed: DataStream[UaspDto], propsModel: ModelVectorPropsModel): DataStreamSink[JsObject] = {
-    val kafkaSerializationSchemaFS = new FlinkKafkaSerializationSchema(propsModel.producerPosNewTopicName)
-    val producerFS = new FlinkKafkaProducer(
+  def setCase39NewSink(streamProcessed: DataStream[UaspDto],
+                       propsModel: ModelVectorPropsModel,
+                       producerFabric: FlinkSinkProperties => SinkFunction[KafkaDto] = producerFactoryDefault
+                      ): DataStreamSink[KafkaDto] = {
+
+    setCaseSink(streamProcessed,
+      propsModel.transactionalId,
+      producerFabric,
+      "39New_case",
+      Some(case39NewOutputTag),
       propsModel.producerPosNewTopicName,
-      kafkaSerializationSchemaFS,
-      setTransactionIdInProperties(propsModel.producerPosNewTopicName, propsModel.commonKafkaProps),
-      Semantic.EXACTLY_ONCE,
-      propsModel.kafkaProducerPoolSize)
-    val flatJsonConverter = new JsonConverterService(mapFields)
+      propsModel.flatJsonConverter,
+      propsModel.kafkaDtoSerializationService,
+      propsModel.appServiceName)
 
-    streamProcessed
-      .getSideOutput(case39NewOutputTag)
-      .map(flatJsonConverter)
-      .name("jsonConverter")
-      .uid(propsModel.transactionalId + "_39New_case" + "_JsonConverterService")
-      .addSink(producerFS)
   }
 
 
-  def setCase38Sink(streamProcessed: DataStream[UaspDto], propsModel: ModelVectorPropsModel): DataStreamSink[JsObject] = {
-    val kafkaSerializationSchemaFS = new FlinkKafkaSerializationSchema(propsModel.producerNSTopicName)
-    val producer = new FlinkKafkaProducer(
+  def setCase38Sink(streamProcessed: DataStream[UaspDto],
+                    propsModel: ModelVectorPropsModel,
+                    producerFabric: FlinkSinkProperties => SinkFunction[KafkaDto] = producerFactoryDefault
+                   ): DataStreamSink[KafkaDto] = {
+    setCaseSink(streamProcessed,
+      propsModel.transactionalId,
+      producerFabric,
+      "38_case",
+      Some(case38OutputTag),
       propsModel.producerNSTopicName,
-      kafkaSerializationSchemaFS,
-      setTransactionIdInProperties(propsModel.producerNSTopicName, propsModel.commonKafkaProps),
-      Semantic.EXACTLY_ONCE,
-      propsModel.kafkaProducerPoolSize)
-    val flatJsonConverter = new JsonConverterService(mapFields)
+      propsModel.flatJsonConverter,
+      propsModel.kafkaDtoSerializationService,
+      propsModel.appServiceName)
 
-    streamProcessed
-      .getSideOutput(case38OutputTag)
-      .map(flatJsonConverter)
-      .name("jsonConverter")
-      .uid(propsModel.transactionalId + "_38_case" + "_JsonConverterService")
-      .addSink(producer)
   }
 
-  def setCase8Sink(streamProcessed: DataStream[UaspDto], propsModel: ModelVectorPropsModel): DataStreamSink[JsObject] = {
-    val kafkaSerializationSchemaFS = new FlinkKafkaSerializationSchema(propsModel.producerCase8TopicName)
-    val producer = new FlinkKafkaProducer(
+  def setCase8Sink(streamProcessed: DataStream[UaspDto],
+                   propsModel: ModelVectorPropsModel,
+                   producerFabric: FlinkSinkProperties => SinkFunction[KafkaDto] = producerFactoryDefault
+                  ): DataStreamSink[KafkaDto] = {
+    setCaseSink(streamProcessed,
+      propsModel.transactionalId,
+      producerFabric,
+      "8_case",
+      Some(case8OutputTag),
       propsModel.producerCase8TopicName,
-      kafkaSerializationSchemaFS,
-      setTransactionIdInProperties(propsModel.producerCase8TopicName, propsModel.commonKafkaProps),
-      Semantic.EXACTLY_ONCE,
-      propsModel.kafkaProducerPoolSize)
-    val flatJsonConverter = new JsonConverterService(mapFields)
+      propsModel.flatJsonConverter,
+      propsModel.kafkaDtoSerializationService,
+      propsModel.appServiceName)
 
-    streamProcessed
-      .getSideOutput(case8OutputTag)
-      .map(flatJsonConverter)
-      .name("jsonConverter")
-      .uid(propsModel.transactionalId + "_8_case" + "_JsonConverterService")
-      .addSink(producer)
   }
 
-  def setCase29Sink(streamProcessed: DataStream[UaspDto], propsModel: ModelVectorPropsModel): DataStreamSink[JsObject] = {
-    val kafkaSerializationSchemaFS = new FlinkKafkaSerializationSchema(propsModel.producerCase29TopicName)
-    val producer = new FlinkKafkaProducer(
+  def setCase29Sink(streamProcessed: DataStream[UaspDto],
+                    propsModel: ModelVectorPropsModel,
+                    producerFabric: FlinkSinkProperties => SinkFunction[KafkaDto] = producerFactoryDefault
+                   ): DataStreamSink[KafkaDto] = {
+
+
+    setCaseSink(streamProcessed,
+      propsModel.transactionalId,
+      producerFabric,
+      "29_case",
+      None,
       propsModel.producerCase29TopicName,
-      kafkaSerializationSchemaFS,
-      setTransactionIdInProperties(propsModel.producerCase29TopicName, propsModel.commonKafkaProps),
-      Semantic.EXACTLY_ONCE,
-      propsModel.kafkaProducerPoolSize)
-    val flatJsonConverter = new JsonConverterService(mapFields)
-
-    streamProcessed
-      //      .name("29CaseAggregate")
-      //      .uid(propsModel.transactionalId + "_29_case" + "_AggregateService")
-      //      .map(new AggregateMapService())
-      .map(flatJsonConverter)
-      .name("jsonConverter")
-      .uid(propsModel.transactionalId + "_29_case" + "_JsonConverterService")
-      .addSink(producer)
+      propsModel.flatJsonConverter,
+      propsModel.kafkaDtoSerializationService,
+      propsModel.appServiceName)
   }
 
-
-  def setCase44Sink(streamProcessed: DataStream[UaspDto], propsModel: ModelVectorPropsModel): DataStreamSink[JsObject] = {
-    val kafkaSerializationSchemaFS = new FlinkKafkaSerializationSchema(propsModel.producerCase44TopicName)
-    val producer = new FlinkKafkaProducer(
+  def setCase44Sink(streamProcessed: DataStream[UaspDto],
+                    propsModel: ModelVectorPropsModel,
+                    producerFabric: FlinkSinkProperties => SinkFunction[KafkaDto] = producerFactoryDefault
+                   ): DataStreamSink[KafkaDto] = {
+    setCaseSink(streamProcessed,
+      propsModel.transactionalId,
+      producerFabric,
+      "44_case",
+      Some(case44OutputTag),
       propsModel.producerCase44TopicName,
-      kafkaSerializationSchemaFS,
-      setTransactionIdInProperties(propsModel.producerCase44TopicName, propsModel.commonKafkaProps),
-      Semantic.EXACTLY_ONCE,
-      propsModel.kafkaProducerPoolSize)
-    val flatJsonConverter = new JsonConverterService(mapFields)
+      propsModel.flatJsonConverter,
+      propsModel.kafkaDtoSerializationService,
+      propsModel.appServiceName)
 
-    streamProcessed
-      .getSideOutput(case44OutputTag)
-      .map(flatJsonConverter)
-      .name("jsonConverter")
-      .uid(propsModel.transactionalId + "_44_case" + "_JsonConverterService")
-      .addSink(producer)
   }
 
-  def setCase71Sink(streamProcessed: DataStream[UaspDto], propsModel: ModelVectorPropsModel): DataStreamSink[JsObject] = {
-    val kafkaSerializationSchemaFS = new FlinkKafkaSerializationSchema(propsModel.producerCase71TopicName)
-    val producer = new FlinkKafkaProducer(
+  def setCase71Sink(streamProcessed: DataStream[UaspDto],
+                    propsModel: ModelVectorPropsModel,
+                    producerFabric: FlinkSinkProperties => SinkFunction[KafkaDto] = producerFactoryDefault
+                   ): DataStreamSink[KafkaDto] = {
+
+    setCaseSink(streamProcessed,
+      propsModel.transactionalId,
+      producerFabric,
+      "71_case",
+      Some(case71OutputTag),
       propsModel.producerCase71TopicName,
-      kafkaSerializationSchemaFS,
-      setTransactionIdInProperties(propsModel.producerCase71TopicName, propsModel.commonKafkaProps),
-      Semantic.EXACTLY_ONCE,
-      propsModel.kafkaProducerPoolSize)
-    val flatJsonConverter = new JsonConverterService(mapFields)
+      propsModel.flatJsonConverter,
+      propsModel.kafkaDtoSerializationService,
+      propsModel.appServiceName)
 
-    streamProcessed
-      .getSideOutput(case71OutputTag)
-      .map(flatJsonConverter)
-      .name("jsonConverter")
-      .uid(propsModel.transactionalId + "_71_case" + "_JsonConverterService")
-      .addSink(producer)
   }
 
-  def setCase51Sink(streamProcessed: DataStream[UaspDto], propsModel: ModelVectorPropsModel): DataStreamSink[JsObject] = {
-    val kafkaSerializationSchemaFS = new FlinkKafkaSerializationSchema(propsModel.producerCase51TopicName)
-    val producer = new FlinkKafkaProducer(
+  def setCase51Sink(streamProcessed: DataStream[UaspDto],
+                    propsModel: ModelVectorPropsModel,
+                    producerFabric: FlinkSinkProperties => SinkFunction[KafkaDto] = producerFactoryDefault
+                   ): DataStreamSink[KafkaDto] = {
+
+    setCaseSink(streamProcessed,
+      propsModel.transactionalId,
+      producerFabric,
+      "51_case",
+      Some(case51OutputTag),
       propsModel.producerCase51TopicName,
-      kafkaSerializationSchemaFS,
-      setTransactionIdInProperties(propsModel.producerCase51TopicName, propsModel.commonKafkaProps),
-      Semantic.EXACTLY_ONCE,
-      propsModel.kafkaProducerPoolSize)
-    val flatJsonConverter = new JsonConverterService(mapFields)
+      propsModel.flatJsonConverter,
+      propsModel.kafkaDtoSerializationService,
+      propsModel.appServiceName)
 
-    streamProcessed
-      .getSideOutput(case51OutputTag)
-      .map(flatJsonConverter)
-      .name("jsonConverter")
-      .uid(propsModel.transactionalId + "_51_case" + "_JsonConverterService")
-      .addSink(producer)
   }
 
-  def setCase48Sink(streamProcessed: DataStream[UaspDto], propsModel: ModelVectorPropsModel): DataStreamSink[JsObject] = {
-    val kafkaSerializationSchemaFS = new FlinkKafkaSerializationSchema(propsModel.producerCase48TopicName)
-    val producer = new FlinkKafkaProducer(
+  def setCase48Sink(streamProcessed: DataStream[UaspDto],
+                    propsModel: ModelVectorPropsModel,
+                    producerFabric: FlinkSinkProperties => SinkFunction[KafkaDto] = producerFactoryDefault
+                   ): DataStreamSink[KafkaDto] = {
+    setCaseSink(streamProcessed,
+      propsModel.transactionalId,
+      producerFabric,
+      "48_case",
+      Some(case48OutputTag),
       propsModel.producerCase48TopicName,
-      kafkaSerializationSchemaFS,
-      setTransactionIdInProperties(propsModel.producerCase48TopicName, propsModel.commonKafkaProps),
-      Semantic.EXACTLY_ONCE,
-      propsModel.kafkaProducerPoolSize)
-    val flatJsonConverter = new JsonConverterService(mapFields)
+      propsModel.flatJsonConverter,
+      propsModel.kafkaDtoSerializationService,
+      propsModel.appServiceName)
 
-    streamProcessed
-      .getSideOutput(case48OutputTag)
-      .map(flatJsonConverter)
-      .name("jsonConverter")
-      .uid(propsModel.transactionalId + "_48_case" + "_JsonConverterService")
-      .addSink(producer)
   }
 
-  def setCase68Sink(streamProcessed: DataStream[UaspDto], propsModel: ModelVectorPropsModel): DataStreamSink[JsObject] = {
-    val kafkaSerializationSchemaFS = new FlinkKafkaSerializationSchema(propsModel.producerCase68TopicName)
-    val producer = new FlinkKafkaProducer(
+  def setCase68Sink(streamProcessed: DataStream[UaspDto],
+                    propsModel: ModelVectorPropsModel,
+                    producerFabric: FlinkSinkProperties => SinkFunction[KafkaDto] = producerFactoryDefault
+                   ): DataStreamSink[KafkaDto] = {
+
+    setCaseSink(streamProcessed,
+      propsModel.transactionalId,
+      producerFabric,
+      "68_case",
+      Some(case68OutputTag),
       propsModel.producerCase68TopicName,
-      kafkaSerializationSchemaFS,
-      setTransactionIdInProperties(propsModel.producerCase68TopicName, propsModel.commonKafkaProps),
-      Semantic.EXACTLY_ONCE,
-      propsModel.kafkaProducerPoolSize)
-    val flatJsonConverter = new JsonConverterService(mapFields)
+      propsModel.flatJsonConverter,
+      propsModel.kafkaDtoSerializationService,
+      propsModel.appServiceName
+    )
 
-    streamProcessed
-      .getSideOutput(case68OutputTag)
-      .map(flatJsonConverter)
-      .name("jsonConverter")
-      .uid(propsModel.transactionalId + "_68_case" + "_JsonConverterService")
-      .addSink(producer)
   }
 
-  def setTransactionIdInProperties(topicName: String, props: Properties): Properties = {
-    val localKafkaProps = props.clone.asInstanceOf[Properties]
-    localKafkaProps.setProperty("transactional.id", topicName + "-id-" + Random.nextInt(999999999).toString)
-    localKafkaProps
+  private def setCaseSink(streamProcessed: DataStream[UaspDto],
+                          transactionalId: String,
+                          producerFabric: FlinkSinkProperties => SinkFunction[KafkaDto],
+                          caseName: String,
+                          outputTag: Option[OutputTag[UaspDto]],
+                          flinkSinkProperties: FlinkSinkProperties,
+                          flatJsonConverter: JsonConverterService,
+                          kafkaDtoSerializationService: KafkaDtoSerializationService,
+                          serviceData: ServiceDataDto,
+                         ): DataStreamSink[KafkaDto] = {
+
+    val stream: DataStream[KafkaDto] = outputTag
+      .map(tag =>
+        streamProcessed
+          .getSideOutput(tag)
+      ).getOrElse(streamProcessed)
+      .map(flatJsonConverter)
+      .name("jsonConverter")
+      .uid(s"${transactionalId}_${caseName}_JsonConverterService")
+      .map(kafkaDtoSerializationService)
+
+
+    createProducerWithMetric(stream, serviceData, flinkSinkProperties, producerFabric)
+
+
   }
 
 }

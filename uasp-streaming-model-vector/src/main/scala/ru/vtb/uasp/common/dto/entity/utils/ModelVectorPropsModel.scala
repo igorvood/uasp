@@ -1,53 +1,105 @@
 package ru.vtb.uasp.common.dto.entity.utils
 
-import ru.vtb.uasp.common.utils.config.ConfigUtils.getPropsFromMap
+import ru.vtb.uasp.common.kafka.{FlinkConsumerProperties, FlinkSinkProperties}
+import ru.vtb.uasp.common.service.dto.ServiceDataDto
+import ru.vtb.uasp.common.utils.config.PropertyUtil.{createByClass, i, l, propertyVal, s}
+import ru.vtb.uasp.common.utils.config.{AllApplicationProperties, ConfigurationInitialise, ReadConfigErrors}
+import ru.vtb.uasp.common.utils.json.JsonConverter.mapFields
+import ru.vtb.uasp.pilot.model.vector.dao.kafka.KafkaDtoSerializationService
+import ru.vtb.uasp.pilot.model.vector.service.JsonConverterService
 
-import java.util.Properties
+import scala.collection.mutable
+
+case class ModelVectorPropsModel(
+                                  maxParallelism: Int, //, = config.getOrElse(s"$sysPrefixName.max.parallelism", "8").toInt,
+
+                                  appServiceName: ServiceDataDto, //= config.getOrElse (s"$appPrefixName.service.name", "model-vector-d")
+
+                                  consumerTopicName: FlinkConsumerProperties, //= config.getOrElse (s"$appPrefixName.consumer.topic.name", "mock1")
+                                  producerQaTopicName: FlinkSinkProperties, //= config.getOrElse (s"$appPrefixName.producer.qa.topic.name", "mock3")
+                                  producerFSTopicName: FlinkSinkProperties, // = config.getOrElse (s"$appPrefixName.producer.fs.topic.name", "mock4")
+                                  producerPosTopicName: FlinkSinkProperties, //= config.getOrElse (s"$appPrefixName.producer.pos.topic.name", "mock5")
+                                  producerPosNewTopicName: FlinkSinkProperties, // = config.getOrElse (s"$appPrefixName.producer.posNew.topic.name", "mock15")
+                                  producerPensTopicName: FlinkSinkProperties, //= config.getOrElse (s"$appPrefixName.producer.pens.topic.name", "mock6")
+                                  producerNSTopicName: FlinkSinkProperties, //= config.getOrElse (s"$appPrefixName.producer.ns.topic.name", "mock7")
+
+                                  producerCase8TopicName: FlinkSinkProperties, //= config.getOrElse (s"$appPrefixName.producer.case8.topic.name", "mock8")
+                                  producerCase29TopicName: FlinkSinkProperties, //= config.getOrElse (s"$appPrefixName.producer.case29.topic.name", "mock9")
+                                  producerCase44TopicName: FlinkSinkProperties, // = config.getOrElse (s"$appPrefixName.producer.case44.topic.name", "mock10")
+                                  producerCase71TopicName: FlinkSinkProperties, // = config.getOrElse (s"$appPrefixName.producer.case71.topic.name", "mock11")
+                                  producerCase51TopicName: FlinkSinkProperties, //= config.getOrElse (s"$appPrefixName.producer.case51.topic.name", "mock12")
+                                  producerCase48TopicName: FlinkSinkProperties, //= config.getOrElse (s"$appPrefixName.producer.case48.topic.name", "mock13")
+                                  producerCase68TopicName: FlinkSinkProperties, // = config.getOrElse (s"$appPrefixName.producer.case69.topic.name", "mock14")
+
+                                  appStreamCheckpointTimeSeconds: Long, //= config.getOrElse (s"$sysPrefixName.stream.checkpoint.time.seconds", "120000").toLong
+                                  appStateCheckpointsNumRetained: Int, // = config.getOrElse (s"$sysPrefixName.state.checkpoints.num-retained", "4").toInt
+
+                                  enableQaStream: Boolean, //= config.getOrElse (s"$appPrefixName.enable.qa.stream", "false").toBoolean
+                                  prefixQaStream: String, // = config.getOrElse (s"$appPrefixName.prefix.qa.stream", "test")
+                                  transactionalId: String, //= config.getOrElse (s"$sysPrefixName.transactional.id", uidPrefix + "_transactionId")
+                                ) {
+  val kafkaDtoSerializationService = new KafkaDtoSerializationService()
+
+  val flatJsonConverter = new JsonConverterService(mapFields)
+
+}
 
 
-case class ModelVectorPropsModel(config: Map[String, String], appPrefix: String = "") {
-  val SERVICE_TYPE: String = "model-vector"
-  val SERVICE_TYPE_SYS: String = "model-vector-sys"
+object ModelVectorPropsModel extends ConfigurationInitialise[ModelVectorPropsModel] {
 
-  val instanceConfName: String = if (appPrefix.equals("")) config.getOrElse(SERVICE_TYPE + ".instance.conf.name", "") else appPrefix
-  val appPrefixName: String = if (instanceConfName.isEmpty) SERVICE_TYPE else SERVICE_TYPE + "." + instanceConfName
-  val sysPrefixName: String = SERVICE_TYPE_SYS + "." + instanceConfName
+  val appPrefixDefaultName: String = "uasp-streaming-model-vector"
 
-  val maxParallelism: Int = config.getOrElse(s"$sysPrefixName.max.parallelism", "8").toInt
-  val appServiceName: String = config.getOrElse(s"$appPrefixName.service.name", "model-vector-d")
+  override def defaultConfiguration(prf: String)(implicit allProps: AllApplicationProperties, readKey: mutable.Set[String]): ModelVectorPropsModel =
+    ModelVectorPropsModel(prf)(allProps, ModelVectorPropsModel)
 
-  val consumerTopicName: String = config.getOrElse(s"$appPrefixName.consumer.topic.name", "mock1")
-  val producerTopicName: String = config.getOrElse(s"$appPrefixName.producer.topic.name", "mock2")
-  val producerQaTopicName: String = config.getOrElse(s"$appPrefixName.producer.qa.topic.name", "mock3")
-  val producerFSTopicName: String = config.getOrElse(s"$appPrefixName.producer.fs.topic.name", "mock4")
-  val producerPosTopicName: String = config.getOrElse(s"$appPrefixName.producer.pos.topic.name", "mock5")
-  val producerPosNewTopicName: String = config.getOrElse(s"$appPrefixName.producer.posNew.topic.name", "mock15")
-  val producerPensTopicName: String = config.getOrElse(s"$appPrefixName.producer.pens.topic.name", "mock6")
-  val producerNSTopicName: String = config.getOrElse(s"$appPrefixName.producer.ns.topic.name", "mock7")
+  override protected def createMayBeErr[CONFIGURATION](prf: String)(implicit appProps: AllApplicationProperties, configurationInitialise: ConfigurationInitialise[CONFIGURATION]): Either[ReadConfigErrors, ModelVectorPropsModel] =
+    for {
+      maxParallelism <- propertyVal[Int](s"$prf", "mv.max.parallelism")
+      appServiceName <- ServiceDataDto.create(s"$prf.service")
+      consumerTopicName <- FlinkConsumerProperties.create(s"$prf.consumer")
 
-  val producerCase8TopicName: String = config.getOrElse(s"$appPrefixName.producer.case8.topic.name", "mock8")
-  val producerCase29TopicName: String = config.getOrElse(s"$appPrefixName.producer.case29.topic.name", "mock9")
-  val producerCase44TopicName: String = config.getOrElse(s"$appPrefixName.producer.case44.topic.name", "mock10")
-  val producerCase71TopicName: String = config.getOrElse(s"$appPrefixName.producer.case71.topic.name", "mock11")
-  val producerCase51TopicName: String = config.getOrElse(s"$appPrefixName.producer.case51.topic.name", "mock12")
-  val producerCase48TopicName: String = config.getOrElse(s"$appPrefixName.producer.case48.topic.name", "mock13")
-  val producerCase68TopicName: String = config.getOrElse(s"$appPrefixName.producer.case69.topic.name", "mock14")
+      producerQaTopicName <- createByClass(s"$prf.producer.qa", FlinkSinkProperties.getClass, { p => FlinkSinkProperties.create(p) })
+      producerFSTopicName <- createByClass(s"$prf.producer.fs", FlinkSinkProperties.getClass, { p => FlinkSinkProperties.create(p) })
+      producerPosTopicName <- createByClass(s"$prf.producer.pos", FlinkSinkProperties.getClass, { p => FlinkSinkProperties.create(p) })
+      producerPosNewTopicName <- createByClass(s"$prf.producer.posNew", FlinkSinkProperties.getClass, { p => FlinkSinkProperties.create(p) })
+      producerPensTopicName <- createByClass(s"$prf.producer.pens", FlinkSinkProperties.getClass, { p => FlinkSinkProperties.create(p) })
+      producerNSTopicName <- createByClass(s"$prf.producer.ns", FlinkSinkProperties.getClass, { p => FlinkSinkProperties.create(p) })
+      producerCase8TopicName <- createByClass(s"$prf.producer.case8", FlinkSinkProperties.getClass, { p => FlinkSinkProperties.create(p) })
+      producerCase29TopicName <- createByClass(s"$prf.producer.case29", FlinkSinkProperties.getClass, { p => FlinkSinkProperties.create(p) })
+      producerCase44TopicName <- createByClass(s"$prf.producer.case44", FlinkSinkProperties.getClass, { p => FlinkSinkProperties.create(p) })
+      producerCase71TopicName <- createByClass(s"$prf.producer.case71", FlinkSinkProperties.getClass, { p => FlinkSinkProperties.create(p) })
+      producerCase51TopicName <- createByClass(s"$prf.producer.case51", FlinkSinkProperties.getClass, { p => FlinkSinkProperties.create(p) })
+      producerCase48TopicName <- createByClass(s"$prf.producer.case48", FlinkSinkProperties.getClass, { p => FlinkSinkProperties.create(p) })
+      producerCase68TopicName <- createByClass(s"$prf.producer.case69", FlinkSinkProperties.getClass, { p => FlinkSinkProperties.create(p) })
 
-  val appStreamCheckpointTimeMilliseconds: String = config.getOrElse(s"$sysPrefixName.stream.checkpoint.time.milliseconds", "10000")
-  val appStreamCheckpointTimeSeconds: Long = config.getOrElse(s"$sysPrefixName.stream.checkpoint.time.seconds", "120000").toLong
-  val appStateCheckpointsNumRetained: Int = config.getOrElse(s"$sysPrefixName.state.checkpoints.num-retained", "4").toInt
-  val kafkaProducerPoolSize: Int = config.getOrElse(s"$appPrefixName.kafka.producer.pool.size", "5").toInt
+      appStreamCheckpointTimeSeconds <- propertyVal[Long](s"$prf", "mv.stream.checkpoint.time.seconds")
+      appStateCheckpointsNumRetained <- propertyVal[Int](s"$prf", "mv.state.checkpoints.num-retained")
 
-  val enableQaStream: Boolean = config.getOrElse(s"$appPrefixName.enable.qa.stream", "false").toBoolean
-  val prefixQaStream: String = config.getOrElse(s"$appPrefixName.prefix.qa.stream", "test")
-  val uidPrefix: String = config.getOrElse(s"$appPrefixName.uid-prefix", "model-vector")
-  val transactionalId: String = config.getOrElse(s"$sysPrefixName.transactional.id", uidPrefix + "_transactionId")
+      enableQaStream <- propertyVal[Boolean](s"$prf", "mv.enable.qa.stream")
+      prefixQaStream <- propertyVal[String](s"$prf", "mv.prefix.qa.stream")(appProps, configurationInitialise, s)
+      transactionalId <- propertyVal[String](s"$prf", "transactional.id")(appProps, configurationInitialise, s)
 
-  val commonKafkaProps: Properties = getPropsFromMap(
-    config.filterKeys(key => key.startsWith(sysPrefixName))
-      .map {
-        case (k, v) => (k.replace(s"$sysPrefixName.", ""), v)
-      }
-  )
-
+    } yield new ModelVectorPropsModel(
+      maxParallelism = maxParallelism,
+      appServiceName = appServiceName,
+      consumerTopicName = consumerTopicName,
+      producerQaTopicName = producerQaTopicName,
+      producerFSTopicName = producerFSTopicName,
+      producerPosTopicName = producerPosTopicName,
+      producerPosNewTopicName = producerPosNewTopicName,
+      producerPensTopicName = producerPensTopicName,
+      producerNSTopicName = producerNSTopicName,
+      producerCase8TopicName = producerCase8TopicName,
+      producerCase29TopicName = producerCase29TopicName,
+      producerCase44TopicName = producerCase44TopicName,
+      producerCase71TopicName = producerCase71TopicName,
+      producerCase51TopicName = producerCase51TopicName,
+      producerCase48TopicName = producerCase48TopicName,
+      producerCase68TopicName = producerCase68TopicName,
+      appStreamCheckpointTimeSeconds = appStreamCheckpointTimeSeconds,
+      appStateCheckpointsNumRetained = appStateCheckpointsNumRetained,
+      enableQaStream = enableQaStream,
+      prefixQaStream = prefixQaStream,
+      transactionalId = transactionalId
+    )
 }
