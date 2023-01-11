@@ -235,14 +235,16 @@
             <plugin>
                 <groupId>net.alchim31.maven</groupId>
                 <artifactId>scala-maven-plugin</artifactId>
-                <version>3.2.2</version>
+                <version>4.8.0</version>
                 <executions>
                     <execution>
                         <goals>
                             <goal>compile</goal>
+                            <goal>testCompile</goal>
                         </goals>
                     </execution>
                 </executions>
+                <configuration><addArgs>-opt:l:inline</addArgs></configuration>
             </plugin>
 
 
@@ -269,9 +271,15 @@
                             <goal>shade</goal>
                         </goals>
                         <configuration>
+                            <artifactSet>
+                                <excludes>
+                                    <exclude>org.apache.flink:force-shading</exclude>
+                                    <exclude>com.google.code.findbugs:jsr305</exclude>
+                                </excludes>
+                            </artifactSet>
                             <transformers>
                                 <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                                    <mainClass>io.gatling.app.Gatling</mainClass>
+                                    <mainClass>ru.vtb.uasp.pilot.model.vector.UaspStreamingModelVector</mainClass>
                                 </transformer>
                                 <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
                                     <resource>reference.conf</resource>
@@ -311,21 +319,6 @@
                 </executions>
             </plugin>
 
-
-            <plugin>
-                <groupId>ru.vtb.tests.tms</groupId>
-                <artifactId>test-it-maven-plugin</artifactId>
-                <version>1.17</version>
-                <configuration>
-                    <url>https://testit.corp.dev.vtb/</url>
-                    <projectId>284981</projectId>
-                    <!--suppress UnresolvedMavenProperty -->
-                    <apiToken>${myCoolToken}</apiToken>
-                    <namespace>TestIT Streaming model vector</namespace>
-                    <testPlanName>Функциональные тесты uasp-streaming-model-vector</testPlanName>
-                    <debug>true</debug>
-                </configuration>
-            </plugin>
 
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
