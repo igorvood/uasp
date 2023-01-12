@@ -1,21 +1,21 @@
 package ru.vtb.bevent.first.salary.aggregate
 
-import org.apache.flink.api.common.serialization.AbstractDeserializationSchema
 import org.apache.flink.api.java.functions.KeySelector
 import org.apache.flink.api.scala.createTypeInformation
 import org.apache.flink.streaming.api.CheckpointingMode
 import org.apache.flink.streaming.api.datastream.DataStreamSink
+import org.apache.flink.streaming.api.functions.sink.SinkFunction
 import org.apache.flink.streaming.api.scala.{DataStream, OutputTag, StreamExecutionEnvironment}
-import org.apache.flink.streaming.connectors.kafka.FlinkKafkaProducer.Semantic
-import org.apache.flink.streaming.connectors.kafka.{FlinkKafkaConsumer, FlinkKafkaProducer}
 import org.slf4j.{Logger, LoggerFactory}
-import ru.vtb.bevent.first.salary.aggregate.Util.FlinkKafkaSerializationSchemaUaspJson
 import ru.vtb.bevent.first.salary.aggregate.constants.ConfirmedPropsModel
-import ru.vtb.bevent.first.salary.aggregate.service.AggregateFirstSalaryRichMapFunction
+import ru.vtb.bevent.first.salary.aggregate.constants.ConfirmedPropsModel.appPrefixDefaultName
+import ru.vtb.uasp.common.abstraction.FlinkStreamPredef.StreamExecutionEnvironmentPredef
 import ru.vtb.uasp.common.dto.UaspDto
-import ru.vtb.uasp.common.kafka.ConsumerFactory
-import ru.vtb.uasp.common.service.JsonConvertInService
-import ru.vtb.uasp.common.utils.config.ConfigUtils.getAllProps
+import ru.vtb.uasp.common.kafka.FlinkSinkProperties
+import ru.vtb.uasp.common.kafka.FlinkSinkProperties.producerFactoryDefault
+import ru.vtb.uasp.common.service.JsonConvertOutService.IdentityPredef
+import ru.vtb.uasp.common.service.UaspDeserializationProcessFunction
+import ru.vtb.uasp.common.service.dto.KafkaDto
 
 import java.util.Properties
 import scala.util.Random
@@ -33,14 +33,16 @@ object UaspStreamingAggregateFirstSalary {
     logger.info("Start app" + this.getClass.getName)
 
     try {
-      val env = StreamExecutionEnvironment.getExecutionEnvironment
 
       val props = initProps(args)
+
+      val env = StreamExecutionEnvironment.getExecutionEnvironment
+
       val dataStream = init(env, props)
       val mainStream = process(dataStream, props)
 
       setSink(mainStream, props)
-      env.execute(props.appServiceName)
+      env.execute(props.appServiceName.fullServiceName)
     } catch {
       case e: Throwable => e match {
         case _ =>
@@ -52,7 +54,7 @@ object UaspStreamingAggregateFirstSalary {
   }
 
   def initProps(args: Array[String]): ConfirmedPropsModel = {
-    ConfirmedPropsModel(getAllProps(args))
+    ConfirmedPropsModel.configApp(appPrefixDefaultName, args)
   }
 
 
@@ -68,16 +70,14 @@ object UaspStreamingAggregateFirstSalary {
 
   def initHA(env: StreamExecutionEnvironment, propsModel: ConfirmedPropsModel): DataStream[UaspDto] = {
 
-    val consumerHA: FlinkKafkaConsumer[Array[Byte]] = ConsumerFactory.getKafkaConsumer(
-      propsModel.topicHA, new AbstractDeserializationSchema[Array[Byte]]() {
-        override def deserialize(bytes: Array[Byte]): Array[Byte] = bytes
-      }, propsModel.commonKafkaProps)
-
-    consumerHA.setStartFromLatest()
-
     env
-      .addSource(consumerHA)
-      .map(d => JsonConvertInService.deselialize[UaspDto](d).right.get)
+      .registerConsumerWithMetric(
+        propsModel.appServiceName,
+        propsModel.topicHA,
+        None,
+        UaspDeserializationProcessFunction(),
+        producerFactoryDefault
+      )
       .name("HA Convertor")
   }
 
@@ -85,7 +85,7 @@ object UaspStreamingAggregateFirstSalary {
 
     dataStream
       .keyBy(keySlector)
-      .process(new AggregateFirstSalaryRichMapFunction(propsModel))
+      .process(propsModel.aggregateFirstSalaryRichMapFunction)
   }
 
   //  private val transactionIdKey = "transactional.id"
@@ -100,34 +100,33 @@ object UaspStreamingAggregateFirstSalary {
     props
   }
 
-  def setOutsideSink(mainDataStream: DataStream[UaspDto], propsModel: ConfirmedPropsModel): DataStreamSink[UaspDto] = {
-    val producerHADlq = new FlinkKafkaProducer(
-      propsModel.topicDlqName,
-      new FlinkKafkaSerializationSchemaUaspJson(propsModel.topicDlqName),
-      addRandomTransactionId(propsModel.topicDlqName, propsModel.commonKafkaProps),
-      Semantic.EXACTLY_ONCE,
-      propsModel.kafkaProducerPoolSize)
+  def setOutsideSink(mainDataStream: DataStream[UaspDto],
+                     propsModel: ConfirmedPropsModel,
+                     producerFactory: FlinkSinkProperties => SinkFunction[KafkaDto] = producerFactoryDefault
+                    ): DataStreamSink[KafkaDto] = {
+
+    val producerHADlq = propsModel.topicDlqName.createSinkFunction(producerFactory)
+
 
     mainDataStream
       .getSideOutput(dlqOutputTag)
+      .map(d => d.serializeToBytes)
       .addSink(producerHADlq)
       .name("DLQ : " + propsModel.topicDlqName)
   }
 
-  def setMainSink(mainDataStream: DataStream[UaspDto], propsModel: ConfirmedPropsModel): DataStreamSink[UaspDto] = {
-    val producerCommon = new FlinkKafkaProducer(
-      propsModel.topicOutputName,
-      new FlinkKafkaSerializationSchemaUaspJson(propsModel.topicOutputName),
-      addRandomTransactionId(propsModel.topicOutputName, propsModel.commonKafkaProps),
-      Semantic.EXACTLY_ONCE,
-      propsModel.kafkaProducerPoolSize
-    )
+  def setMainSink(mainDataStream: DataStream[UaspDto],
+                  propsModel: ConfirmedPropsModel,
+                  producerFactory: FlinkSinkProperties => SinkFunction[KafkaDto] = producerFactoryDefault
+                 ): DataStreamSink[KafkaDto] = {
+    val producerCommon = propsModel.topicOutputName.createSinkFunction(producerFactory)
 
     mainDataStream
+      .map(d => d.serializeToBytes)
       .addSink(producerCommon)
   }
 
-  def setSink(mainDataStream: DataStream[UaspDto], propsModel: ConfirmedPropsModel): DataStreamSink[UaspDto] = {
+  def setSink(mainDataStream: DataStream[UaspDto], propsModel: ConfirmedPropsModel): DataStreamSink[KafkaDto] = {
     setOutsideSink(mainDataStream, propsModel)
     setMainSink(mainDataStream, propsModel)
   }

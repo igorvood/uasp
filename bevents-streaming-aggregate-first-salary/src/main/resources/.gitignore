@@ -1,0 +1,3 @@
+*.pfx
+*.env
+application-local.properties

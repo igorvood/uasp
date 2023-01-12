@@ -3,7 +3,6 @@ package ru.vtb.bevent.first.salary.aggregate.Util
 import ru.vtb.uasp.common.constants.BigDecimalConst
 
 import java.math.MathContext
-import java.nio.charset.StandardCharsets
 import scala.util.matching.Regex
 
 
@@ -14,10 +13,10 @@ object DrlCaseHelper {
   def isCase8(withDraw: String, endBal: String): Boolean = {
     val endBalDouble = endBal.toDouble
     val withDrawDouble = withDraw.toDouble
- //TODO вынести в проперти
+    //TODO вынести в проперти
     val limit: Double = 10000.0
 
-    if ( (endBalDouble + withDrawDouble) >= limit
+    if ((endBalDouble + withDrawDouble) >= limit
 
       && endBalDouble < limit)
       true
@@ -41,10 +40,10 @@ object DrlCaseHelper {
     getValueByPattern(tranComment, "\\d{20}".r)
 
   def getValueByPattern(in: String, pattern: Regex): String = pattern
-      .findFirstMatchIn(in)
-      .map(_.toString())
-      .map(_.replaceAll("\"", ""))
-      .getOrElse("0*******************0")
+    .findFirstMatchIn(in)
+    .map(_.toString())
+    .map(_.replaceAll("\"", ""))
+    .getOrElse("0*******************0")
 
   //Fixme string to decimal
   def calculateCase44(withDraw: String, amountAll: String): Double = {
@@ -58,12 +57,12 @@ object DrlCaseHelper {
     val amountTmp = setScaleToBigDecimal(BigDecimal(amount.toDouble, mc))
     val priceTmp = setScaleToBigDecimal(BigDecimal(price.toDouble, mc))
     val scaleTmp = if (!"0".equals(scale)) setScaleToBigDecimal(BigDecimal(scale.toDouble, mc)) else setScaleToBigDecimal(BigDecimal(1, mc))
-  //TODO для 71 кейса округлить до 3х знаков после запятой
+    //TODO для 71 кейса округлить до 3х знаков после запятой
     setScaleToBigDecimal(amountTmp * priceTmp / scaleTmp)
   }
 
-  def millisToHour(millis:Long): Long =
-    millis/1000/60/60.toLong
+  def millisToHour(millis: Long): Long =
+    millis / 1000 / 60 / 60.toLong
 
   def setScaleToBigDecimal(number: BigDecimal): BigDecimal =
     number.setScale(BigDecimalConst.SCALE, BigDecimal.RoundingMode.HALF_UP)

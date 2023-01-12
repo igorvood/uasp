@@ -4,25 +4,25 @@ import org.apache.flink.api.common.ExecutionConfig
 import org.apache.flink.api.common.state.{MapState, MapStateDescriptor}
 import org.apache.flink.api.common.typeinfo.{TypeHint, TypeInformation}
 import org.apache.flink.configuration.Configuration
-import org.apache.flink.streaming.api.functions.{KeyedProcessFunction, ProcessFunction}
+import org.apache.flink.streaming.api.functions.KeyedProcessFunction
 import org.apache.flink.util.Collector
 import ru.vtb.bevent.first.salary.aggregate.UaspStreamingAggregateFirstSalary.dlqOutputTag
-import ru.vtb.bevent.first.salary.aggregate.constants.ConfirmedPropsModel
 import ru.vtb.bevent.first.salary.aggregate.dao.AggregateDao
 import ru.vtb.bevent.first.salary.aggregate.dao.AggregateDao.fullStateUpdate
 import ru.vtb.bevent.first.salary.aggregate.entity.CountsAggregate
-import ru.vtb.bevent.first.salary.aggregate.factory.{BusinessRules, BusinessRulesFactory}
+import ru.vtb.bevent.first.salary.aggregate.factory.BusinessRules
 import ru.vtb.uasp.common.dto.UaspDto
 import ru.vtb.uasp.mutator.service.BusinessRulesService.errFieldName
 
-class AggregateFirstSalaryRichMapFunction(props: ConfirmedPropsModel) extends KeyedProcessFunction[String,UaspDto,UaspDto] {
+class AggregateFirstSalaryRichMapFunction(
+                                           businessRules: BusinessRules,
+                                           nameStateFirstSalaryAggregates: String
+                                         ) extends KeyedProcessFunction[String, UaspDto, UaspDto] {
 
   private var salaryCountAggregateState: MapState[String, CountsAggregate] = _
-  private val businessRules: BusinessRules = BusinessRulesFactory.getBusinessRules(props)
-
 
   override def processElement(inMsg: UaspDto, ctx: KeyedProcessFunction[String, UaspDto, UaspDto]#Context, out: Collector[UaspDto]): Unit = {
-    val sourceClassifiedUasp = businessRules.level0.map(inMsg)
+    val sourceClassifiedUasp = businessRules.level0.processWithDlq(inMsg).right.get
     if (sourceClassifiedUasp.dataString.contains(errFieldName)) {
       ctx.output(dlqOutputTag, sourceClassifiedUasp)
     } else {
@@ -56,9 +56,9 @@ class AggregateFirstSalaryRichMapFunction(props: ConfirmedPropsModel) extends Ke
   }
 
   private def runBusinessRules(businessRules: BusinessRules, data: UaspDto): UaspDto = {
-    val uaspDtoProccessedLevel1 = businessRules.level1.map(data) // BusinessRulesService(props.listOfBusinessRuleLevel1).map(data)
-    val uaspDtoProccessedLevel2 = businessRules.level2.map(uaspDtoProccessedLevel1) // BusinessRulesService(props.listOfBusinessRuleLevel2).map(uaspDtoProccessedLevel1)
-    val uaspDtoProccessed = businessRules.cases.map(uaspDtoProccessedLevel2) // BusinessRulesService(props.listOfBusinessRule).map(uaspDtoProccessedLevel2)
+    val uaspDtoProccessedLevel1 = businessRules.level1.processWithDlq(data).right.get // BusinessRulesService(props.listOfBusinessRuleLevel1).map(data)
+    val uaspDtoProccessedLevel2 = businessRules.level2.processWithDlq(uaspDtoProccessedLevel1).right.get // BusinessRulesService(props.listOfBusinessRuleLevel2).map(uaspDtoProccessedLevel1)
+    val uaspDtoProccessed = businessRules.cases.processWithDlq(uaspDtoProccessedLevel2).right.get // BusinessRulesService(props.listOfBusinessRule).map(uaspDtoProccessedLevel2)
     uaspDtoProccessed
   }
 
@@ -72,7 +72,7 @@ class AggregateFirstSalaryRichMapFunction(props: ConfirmedPropsModel) extends Ke
       .createSerializer(new ExecutionConfig())
 
     salaryCountAggregateState = getRuntimeContext.getMapState(new MapStateDescriptor[String, CountsAggregate](
-      props.nameStateFirstSalaryAggregates,
+      nameStateFirstSalaryAggregates,
       keyDayHourAggregatesTypeInfo,
       valueDayHourAggregatesTypeInfo))
   }

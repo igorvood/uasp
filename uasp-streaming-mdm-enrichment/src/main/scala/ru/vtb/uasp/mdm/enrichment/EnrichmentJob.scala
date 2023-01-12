@@ -39,9 +39,6 @@ object EnrichmentJob {
     try {
       val propsModel = MDMEnrichmentPropsModel.configApp(appPrefixDefaultName, args)
 
-      val topic = propsModel.allEnrichProperty.commonEnrichProperty.get.dlqTopicProp
-      val value = topic.get
-
       val env = StreamExecutionEnvironment.getExecutionEnvironment
       env.setParallelism(propsModel.appSyncParallelism)
       //      env.enableCheckpointing(propsModel.initProperty.appStreamCheckpointTimeMilliseconds.value, CheckpointingMode.EXACTLY_ONCE)

@@ -28,7 +28,7 @@ class BigCurrencyRateTest extends AbstractDroolsTestCase {
 
     println(validUaspDtoAccount)
 
-    val dto = businessRules.level0.map(validUaspDtoAccount)
+    val dto = businessRules.level0.processWithDlq(validUaspDtoAccount).right.get
 
     val dto1 = runBusinessRules(businessRules, dto)
 
@@ -40,11 +40,11 @@ class BigCurrencyRateTest extends AbstractDroolsTestCase {
 
 
   def runBusinessRules(businessRules: BusinessRules, data: UaspDto): UaspDto = {
-    val uaspDtoProccessedLevel1 = businessRules.level1.map(data) // BusinessRulesService(props.listOfBusinessRuleLevel1).map(data)
+    val uaspDtoProccessedLevel1 = businessRules.level1.processWithDlq(data).right.get // BusinessRulesService(props.listOfBusinessRuleLevel1).map(data)
     println(uaspDtoProccessedLevel1)
-    val uaspDtoProccessedLevel2 = businessRules.level2.map(uaspDtoProccessedLevel1) // BusinessRulesService(props.listOfBusinessRuleLevel2).map(uaspDtoProccessedLevel1)
+    val uaspDtoProccessedLevel2 = businessRules.level2.processWithDlq(uaspDtoProccessedLevel1).right.get // BusinessRulesService(props.listOfBusinessRuleLevel2).map(uaspDtoProccessedLevel1)
     println(uaspDtoProccessedLevel2)
-    val uaspDtoProccessed = businessRules.cases.map(uaspDtoProccessedLevel2) // BusinessRulesService(props.listOfBusinessRule).map(uaspDtoProccessedLevel2)
+    val uaspDtoProccessed = businessRules.cases.processWithDlq(uaspDtoProccessedLevel2).right.get // BusinessRulesService(props.listOfBusinessRule).map(uaspDtoProccessedLevel2)
     uaspDtoProccessed
   }
 

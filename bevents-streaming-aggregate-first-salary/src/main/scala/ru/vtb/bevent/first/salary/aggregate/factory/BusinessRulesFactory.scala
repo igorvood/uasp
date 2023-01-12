@@ -1,16 +1,18 @@
 package ru.vtb.bevent.first.salary.aggregate.factory
 
-import ru.vtb.bevent.first.salary.aggregate.constants.ConfirmedPropsModel
 import ru.vtb.bevent.first.salary.aggregate.factory
 import ru.vtb.uasp.mutator.service.BusinessRulesService
 
 object BusinessRulesFactory {
-  def getBusinessRules(props: ConfirmedPropsModel): BusinessRules = {
+  def getBusinessRules(listOfBusinessRuleLevel0: List[String],
+                       listOfBusinessRuleLevel1: List[String],
+                       listOfBusinessRuleLevel2: List[String],
+                       listOfBusinessRule: List[String]): BusinessRules = {
     factory.BusinessRules(
-        BusinessRulesService(props.listOfBusinessRuleLevel0),
-        BusinessRulesService(props.listOfBusinessRuleLevel1),
-        BusinessRulesService(props.listOfBusinessRuleLevel2),
-        BusinessRulesService(props.listOfBusinessRule)
+      BusinessRulesService(listOfBusinessRuleLevel0),
+      BusinessRulesService(listOfBusinessRuleLevel1),
+      BusinessRulesService(listOfBusinessRuleLevel2),
+      BusinessRulesService(listOfBusinessRule)
     )
   }
 }

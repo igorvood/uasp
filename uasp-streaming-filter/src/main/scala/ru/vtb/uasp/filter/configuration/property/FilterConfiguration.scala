@@ -1,6 +1,5 @@
 package ru.vtb.uasp.filter.configuration.property
 
-import org.apache.flink.streaming.connectors.kafka.FlinkKafkaConsumer
 import ru.vtb.uasp.common.kafka.{FlinkConsumerProperties, FlinkSinkProperties}
 import ru.vtb.uasp.common.service.UaspDeserializationProcessFunction
 import ru.vtb.uasp.common.utils.config.PropertyUtil._

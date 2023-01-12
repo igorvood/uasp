@@ -32,7 +32,7 @@ object FilterJob {
 
     setSink(filteredStream, filterConfiguration)
 
-    env.execute(filterConfiguration.executionEnvironmentProperty.appServiceName)
+    env.execute(filterConfiguration.executionEnvironmentProperty.serviceDto.fullServiceName)
   }
 
   def process(dataStream: DataStream[UaspDto],
@@ -41,6 +41,7 @@ object FilterJob {
              ): DataStream[UaspDto] = {
     dataStream
       .processAndDlqSinkWithMetric(
+        serviceData = filterConfiguration.executionEnvironmentProperty.serviceDto,
         process = filterConfiguration.filterProcessFunction,
         sinkDlqFunction = filterConfiguration.flinkSinkPropertiesErr,
         producerFactory = producerFabric
@@ -61,7 +62,7 @@ object FilterJob {
     val mainSink = configuration.flinkSinkPropertiesOk.createSinkFunction(producerFabric)
     mainDataStream
       .map(_.serializeToBytes)
-      .map(configuration.flinkSinkPropertiesOk.prometheusMetric[KafkaDto])
+      .map(configuration.flinkSinkPropertiesOk.prometheusMetric[KafkaDto](configuration.executionEnvironmentProperty.serviceDto))
       .addSink(mainSink)
   }
 
@@ -71,6 +72,7 @@ object FilterJob {
                   ): DataStream[UaspDto] = {
     env
       .registerConsumerWithMetric(
+        serviceData = filterConfiguration.executionEnvironmentProperty.serviceDto,
         consumerProperties = filterConfiguration.consumerPropperty,
         dlqProducer = filterConfiguration.flinkSinkPropertiesErr,
         serialisationProcessFunction = filterConfiguration.deserializationProcessFunction,
