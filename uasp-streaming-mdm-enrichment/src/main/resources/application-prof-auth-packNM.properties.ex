@@ -45,6 +45,11 @@ mdm-enrichment.enrichOne.CommonEnrichProperty$.fieldsList.a02.fromFieldType=Stri
 mdm-enrichment.enrichOne.CommonEnrichProperty$.fieldsList.a02.toFieldName=multibonus_flg
 mdm-enrichment.enrichOne.CommonEnrichProperty$.fieldsList.a02.isOptionalEnrichValue=true
 
+mdm-enrichment.enrichOne.CommonEnrichProperty$.fieldsList.a02.fromFieldName=multibonus_flg
+mdm-enrichment.enrichOne.CommonEnrichProperty$.fieldsList.a02.fromFieldType=String
+mdm-enrichment.enrichOne.CommonEnrichProperty$.fieldsList.a02.toFieldName=multibonus_flg
+mdm-enrichment.enrichOne.CommonEnrichProperty$.fieldsList.a02.isOptionalEnrichValue=true
+
 mdm-enrichment.enrichOne.CommonEnrichProperty$.cns.auto.offset.reset=earliest
 mdm-enrichment.enrichOne.CommonEnrichProperty$.cns.bootstrap.servers=172.20.219.153:9092,172.20.219.153:9091
 mdm-enrichment.enrichOne.CommonEnrichProperty$.cns.security.protocol=PLAINTEXT

@@ -5,7 +5,7 @@
 
     <groupId>ru.vtb.mdm.enrichment</groupId>
     <artifactId>uasp-streaming-mdm-enrichment</artifactId>
-    <version>1.7.12</version>
+    <version>1.7.13</version>
     <packaging>jar</packaging>
     <name>${project.artifactId}</name>
 
