@@ -1,0 +1,168 @@
+{
+  "caseName": "RTO_8_case",
+  "outputTopicName": "case8",
+  "fields": [
+    {
+      "name": "MdmIdRule",
+      "description": "",
+      "mapping": {
+        "profile": {
+          "requirement": true,
+          "sourceName": "",
+          "sourceType": "ID",
+          "destinationName": "MDM_ID",
+          "destinationType": "STRING",
+          "transformFunction": "None"
+        }
+      }
+    },
+
+    {
+      "name": "OperationIdRule",
+      "description": "",
+      "mapping": {
+        "profile": {
+          "requirement": true,
+          "sourceName": "OPERATION_ID",
+          "sourceType": "STRING",
+          "destinationName": "OPERATION_ID",
+          "destinationType": "STRING",
+          "transformFunction": "None"
+        }
+      }
+    },
+
+    {
+      "name": "EventDttmRule",
+      "description": "",
+      "mapping": {
+        "profile": {
+          "requirement": true,
+          "sourceName": "event_dttm",
+          "sourceType": "LONG",
+          "destinationName": "EVENT_DTTM",
+          "destinationType": "STRING",
+          "transformFunction": "toTimeFormat(YYYY-MM-DD hh:mm:ss)"
+        }
+      }
+    },
+
+    {
+      "name": "KafkaDttmRule",
+      "description": "",
+      "mapping": {
+        "profile": {
+          "requirement": true,
+          "sourceName": "",
+          "sourceType": "",
+          "destinationName": "KAFKA_DTTM",
+          "destinationType": "STRING",
+          "transformFunction": "toTimeFormat(YYYY-MM-DD hh:mm:ss.SSS)"
+        }
+      }
+    },
+
+    {
+      "name": "ACCOUNT_NUMBER",
+      "description": "",
+      "mapping": {
+        "profile": {
+          "requirement": true,
+          "sourceName": "source_account",
+          "sourceType": "STRING",
+          "destinationName": "ACCOUNT_NUMBER",
+          "destinationType": "STRING",
+          "transformFunction": "maskedFunction"
+        }
+      }
+    },
+
+    {
+      "name": "ACCOUNT_NM",
+      "description": "",
+      "mapping": {
+        "profile": {
+          "requirement": true,
+          "sourceName": "ACCOUNT_NM",
+          "sourceType": "STRING",
+          "destinationName": "ACCOUNT_NM",
+          "destinationType": "STRING",
+          "transformFunction": "None"
+        }
+      }
+    },
+    {
+      "name": "OPERATION_RUR_AMOUNT",
+      "description": "",
+      "mapping": {
+        "profile": {
+          "requirement": true,
+          "sourceName": "amount",
+          "sourceType": "DECIMAL",
+          "destinationName": "OPERATION_RUR_AMOUNT",
+          "destinationType": "DECIMAL",
+          "transformFunction": "None"
+        }
+      }
+    },
+
+    {
+      "name": "BALANCE",
+      "description": "",
+      "mapping": {
+        "profile": {
+          "requirement": true,
+          "sourceName": "endbal_prf",
+          "sourceType": "DECIMAL",
+          "destinationName": "BALANCE",
+          "destinationType": "DECIMAL",
+          "transformFunction": "None"
+        }
+      }
+    },
+    {
+      "name": "BALANCE_RUR",
+      "description": "",
+      "mapping": {
+        "profile": {
+          "requirement": true,
+          "sourceName": "BALANCE_RUR",
+          "sourceType": "DECIMAL",
+          "destinationName": "BALANCE_RUR",
+          "destinationType": "DECIMAL",
+          "transformFunction": "None"
+        }
+      }
+    },
+
+    {
+      "name": "CurrencyIsoRule",
+      "description": "",
+      "mapping": {
+        "profile": {
+          "requirement": true,
+          "sourceName": "exchange_currency",
+          "sourceType": "STRING",
+          "destinationName": "CURRENCY_ISO",
+          "destinationType": "STRING",
+          "transformFunction": "None"
+        }
+      }
+    },
+
+    {
+      "name": "OPERATION_STATUS",
+      "description": "",
+      "mapping": {
+        "profile": {
+          "requirement": true,
+          "sourceName": "OPERATION_STATUS",
+          "sourceType": "STRING",
+          "destinationName": "OPERATION_STATUS",
+          "destinationType": "STRING",
+          "transformFunction": "None"
+        }
+      }
+    }
+  ]
+}

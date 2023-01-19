@@ -1,0 +1,328 @@
+{
+  "caseName": "RTO_51_case",
+  "outputTopicName": "case51",
+  "fields": [
+    {
+      "name": "MdmIdRule",
+      "description": "",
+      "mapping": {
+        "way4": {
+          "requirement": true,
+          "sourceName": "",
+          "sourceType": "ID",
+          "destinationName": "MDM_ID",
+          "destinationType": "STRING",
+          "transformFunction": "None"
+        },
+        "profile": {
+          "requirement": true,
+          "sourceName": "",
+          "sourceType": "ID",
+          "destinationName": "MDM_ID",
+          "destinationType": "STRING",
+          "transformFunction": "None"
+        }
+      }
+    },
+
+    {
+      "name": "OperationIdRule",
+      "description": "",
+      "mapping": {
+        "way4": {
+          "requirement": true,
+          "sourceName": "operation_id",
+          "sourceType": "STRING",
+          "destinationName": "OPERATION_ID",
+          "destinationType": "STRING",
+          "transformFunction": "None"
+        },
+        "profile": {
+          "requirement": true,
+          "sourceName": "msgid",
+          "sourceType": "STRING",
+          "destinationName": "OPERATION_ID",
+          "destinationType": "STRING",
+          "transformFunction": "None"
+        }
+      }
+    },
+
+    {
+      "name": "EventDttmRule",
+      "description": "",
+      "mapping": {
+        "way4": {
+          "requirement": true,
+          "sourceName": "processing_datetime",
+          "sourceType": "LONG",
+          "destinationName": "EVENT_DTTM",
+          "destinationType": "STRING",
+          "transformFunction": "toTimeFormat(YYYY-MM-DD hh:mm:ss)"
+        },
+        "profile": {
+          "requirement": true,
+          "sourceName": "transmission_dttm",
+          "sourceType": "LONG",
+          "destinationName": "EVENT_DTTM",
+          "destinationType": "STRING",
+          "transformFunction": "toTimeFormat(YYYY-MM-DD hh:mm:ss)"
+        }
+      }
+    },
+
+    {
+      "name": "KafkaDttmRule",
+      "description": "",
+      "mapping": {
+        "way4": {
+          "requirement": true,
+          "sourceName": "",
+          "sourceType": "",
+          "destinationName": "KAFKA_DTTM",
+          "destinationType": "STRING",
+          "transformFunction": "toTimeFormat(YYYY-MM-DD hh:mm:ss.SSS)"
+        },
+        "profile": {
+          "requirement": true,
+          "sourceName": "",
+          "sourceType": "",
+          "destinationName": "KAFKA_DTTM",
+          "destinationType": "STRING",
+          "transformFunction": "toTimeFormat(YYYY-MM-DD hh:mm:ss.SSS)"
+        }
+      }
+    },
+
+    {
+      "name": "SERVICE_NAME",
+      "description": "",
+      "mapping": {
+        "way4": {
+          "requirement": true,
+          "sourceName": "merchant_name_w4",
+          "sourceType": "STRING",
+          "destinationName": "SERVICE_NAME",
+          "destinationType": "STRING",
+          "transformFunction": "None"
+        },
+        "profile": {
+          "requirement": true,
+          "sourceName": "terminal_owner",
+          "sourceType": "STRING",
+          "destinationName": "SERVICE_NAME",
+          "destinationType": "STRING",
+          "transformFunction": "None"
+        }
+      }
+    },
+
+    {
+      "name": "GROUP_SERVICE_NAME",
+      "description": "",
+      "mapping": {
+        "way4": {
+          "requirement": true,
+          "sourceName": "TRANSACTION_INFO",
+          "sourceType": "STRING",
+          "destinationName": "GROUP_SERVICE_NAME",
+          "destinationType": "STRING",
+          "transformFunction": "None"
+        },
+        "profile": {
+          "requirement": true,
+          "sourceName": "TRANSACTION_INFO",
+          "sourceType": "STRING",
+          "destinationName": "GROUP_SERVICE_NAME",
+          "destinationType": "STRING",
+          "transformFunction": "None"
+        }
+      }
+    },
+
+    {
+      "name": "SOURCE_CARD_NUMBER",
+      "description": "",
+      "mapping": {
+        "way4": {
+          "requirement": true,
+          "sourceName": "card_masked_pan",
+          "sourceType": "STRING",
+          "destinationName": "SOURCE_CARD_NUMBER",
+          "destinationType": "STRING",
+          "transformFunction": "None"
+        },
+        "profile": {
+          "requirement": true,
+          "sourceName": "card_number",
+          "sourceType": "STRING",
+          "destinationName": "SOURCE_CARD_NUMBER",
+          "destinationType": "STRING",
+          "transformFunction": "None"
+        }
+      }
+    },
+
+    {
+      "name": "SOURCE_ACCOUNT",
+      "description": "",
+      "mapping": {
+        "way4": {
+          "requirement": true,
+          "sourceName": "source_account_w4",
+          "sourceType": "STRING",
+          "destinationName": "SOURCE_ACCOUNT",
+          "destinationType": "STRING",
+          "transformFunction": "maskedFunction"
+        },
+        "profile": {
+          "requirement": true,
+          "sourceName": "account_num",
+          "sourceType": "STRING",
+          "destinationName": "SOURCE_ACCOUNT",
+          "destinationType": "STRING",
+          "transformFunction": "maskedFunction"
+        }
+      }
+    },
+
+    {
+      "name": "CARD_TYPE",
+      "description": "",
+      "mapping": {
+        "way4": {
+          "requirement": true,
+          "sourceName": "is_virtual_card_flg",
+          "sourceType": "STRING",
+          "destinationName": "CARD_TYPE",
+          "destinationType": "STRING",
+          "transformFunction": "cardFormCalculate"
+        },
+        "profile": {
+          "requirement": true,
+          "sourceName": "is_virtual_card_flg",
+          "sourceType": "STRING",
+          "destinationName": "CARD_TYPE",
+          "destinationType": "STRING",
+          "transformFunction": "cardFormCalculate"
+        }
+      }
+    },
+
+    {
+      "name": "PRODUCT_NAME",
+      "description": "",
+      "mapping": {
+        "way4": {
+          "requirement": true,
+          "sourceName": "contract_card_type_cd",
+          "sourceType": "STRING",
+          "destinationName": "PRODUCT_NAME",
+          "destinationType": "STRING",
+          "transformFunction": "returnProductNm"
+        },
+        "profile": {
+          "requirement": true,
+          "sourceName": "contract_card_type_cd",
+          "sourceType": "STRING",
+          "destinationName": "PRODUCT_NAME",
+          "destinationType": "STRING",
+          "transformFunction": "returnProductNm"
+        }
+      }
+    },
+
+    {
+      "name": "SERV_PACK",
+      "description": "",
+      "mapping": {
+        "way4": {
+          "requirement": true,
+          "sourceName": "package_nm",
+          "sourceType": "STRING",
+          "destinationName": "SERV_PACK",
+          "destinationType": "STRING",
+          "transformFunction": "None"
+        },
+        "profile": {
+          "requirement": true,
+          "sourceName": "package_nm",
+          "sourceType": "STRING",
+          "destinationName": "SERV_PACK",
+          "destinationType": "STRING",
+          "transformFunction": "None"
+        }
+      }
+    },
+
+    {
+      "name": "VALIDITY",
+      "description": "",
+      "mapping": {
+        "way4": {
+          "requirement": true,
+          "sourceName": "card_expiration_dt",
+          "sourceType": "STRING",
+          "destinationName": "VALIDITY",
+          "destinationType": "STRING",
+          "transformFunction": "validityCalculate"
+        },
+        "profile": {
+          "requirement": true,
+          "sourceName": "card_expiration_dt",
+          "sourceType": "STRING",
+          "destinationName": "VALIDITY",
+          "destinationType": "STRING",
+          "transformFunction": "validityCalculate"
+        }
+      }
+    },
+
+    {
+      "name": "OS_DEVICE",
+      "description": "",
+      "mapping": {
+        "way4": {
+          "requirement": true,
+          "sourceName": "",
+          "sourceType": "",
+          "destinationName": "OS_DEVICE",
+          "destinationType": "STRING",
+          "transformFunction": "None"
+        },
+        "profile": {
+          "requirement": true,
+          "sourceName": "",
+          "sourceType": "",
+          "destinationName": "OS_DEVICE",
+          "destinationType": "STRING",
+          "transformFunction": "None"
+        }
+      }
+    },
+
+    {
+      "name": "PAYMENT_SYSTEM",
+      "description": "",
+      "mapping": {
+        "way4": {
+          "requirement": true,
+          "sourceName": "payment_scheme_w4",
+          "sourceType": "STRING",
+          "destinationName": "PAYMENT_SYSTEM",
+          "destinationType": "STRING",
+          "transformFunction": "None"
+        },
+        "profile": {
+          "requirement": true,
+          "sourceName": "payment_system_desc",
+          "sourceType": "STRING",
+          "destinationName": "PAYMENT_SYSTEM",
+          "destinationType": "STRING",
+          "transformFunction": "None"
+        }
+      }
+    }
+
+  ]
+}

@@ -1,0 +1,156 @@
+{
+  "caseName": "RTO_First_NS_38_case",
+  "outputTopicName": "ns",
+  "fields": [
+    {
+      "name": "MdmIdRule",
+      "description": "",
+      "mapping": {
+        "cft": {
+          "requirement": true,
+          "sourceName": "",
+          "sourceType": "ID",
+          "destinationName": "MDM_ID",
+          "destinationType": "STRING",
+          "transformFunction": "None"
+        }
+      }
+    },
+
+    {
+      "name": "OperationIdRule",
+      "description": "",
+      "mapping": {
+        "cft": {
+          "requirement": true,
+          "sourceName": "operation_id_cft",
+          "sourceType": "STRING",
+          "destinationName": "OPERATION_ID",
+          "destinationType": "STRING",
+          "transformFunction": "None"
+        }
+      }
+    },
+
+    {
+      "name": "EventDttmRule",
+      "description": "",
+      "mapping": {
+        "cft": {
+          "requirement": true,
+          "sourceName": "event_dttm",
+          "sourceType": "LONG",
+          "destinationName": "EVENT_DTTM",
+          "destinationType": "STRING",
+          "transformFunction": "toTimeFormat(YYYY-MM-DD hh:mm:ss)"
+        }
+      }
+    },
+
+    {
+      "name": "KafkaDttmRule",
+      "description": "",
+      "mapping": {
+        "cft": {
+          "requirement": true,
+          "sourceName": "",
+          "sourceType": "",
+          "destinationName": "KAFKA_DTTM",
+          "destinationType": "STRING",
+          "transformFunction": "toTimeFormat(YYYY-MM-DD hh:mm:ss.SSS)"
+        }
+      }
+    },
+
+    {
+      "name": "EventCNTRule",
+      "description": "",
+      "mapping": {
+        "cft": {
+          "requirement": true,
+          "sourceName": "EVENT_CNT",
+          "sourceType": "INTEGER",
+          "destinationName": "EVENT_CNT",
+          "destinationType": "INTEGER",
+          "transformFunction": "None"
+        }
+      }
+    },
+
+    {
+      "name": "PRODUCT_TYPE_CD",
+      "description": "",
+      "mapping": {
+        "cft": {
+          "requirement": true,
+          "sourceName": "account_dep_cft",
+          "sourceType": "STRING",
+          "destinationName": "PRODUCT_TYPE_CD",
+          "destinationType": "STRING",
+          "transformFunction": "None"
+        }
+      }
+    },
+
+    {
+      "name": "ACCOUNT_NAME",
+      "description": "",
+      "mapping": {
+        "cft": {
+          "requirement": true,
+          "sourceName": "account_name_cft",
+          "sourceType": "STRING",
+          "destinationName": "ACCOUNT_NAME",
+          "destinationType": "STRING",
+          "transformFunction": "None"
+        }
+      }
+    },
+
+    {
+      "name": "OPERATION_AMT",
+      "description": "",
+      "mapping": {
+        "cft": {
+          "requirement": true,
+          "sourceName": "amount_sum_cft",
+          "sourceType": "DECIMAL",
+          "destinationName": "OPERATION_AMT",
+          "destinationType": "DECIMAL",
+          "transformFunction": "None"
+        }
+      }
+    },
+
+    {
+      "name": "ACCOUNT_CURRENCY",
+      "description": "",
+      "mapping": {
+        "cft": {
+          "requirement": true,
+          "sourceName": "exchange_currency",
+          "sourceType": "STRING",
+          "destinationName": "ACCOUNT_CURRENCY",
+          "destinationType": "STRING",
+          "transformFunction": "None"
+        }
+      }
+    },
+
+    {
+      "name": "OPERATION_RUR_AMT",
+      "description": "",
+      "mapping": {
+        "cft": {
+          "requirement": true,
+          "sourceName": "amount",
+          "sourceType": "DECIMAL",
+          "destinationName": "OPERATION_RUR_AMT",
+          "destinationType": "DECIMAL",
+          "transformFunction": "None"
+        }
+      }
+    }
+
+  ]
+}

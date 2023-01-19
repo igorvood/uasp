@@ -1,0 +1,231 @@
+{
+  "caseName": "RTO_71_case",
+  "outputTopicName": "case71",
+  "fields": [
+    {
+      "name": "MdmIdRule",
+      "description": "",
+      "mapping": {
+        "profile": {
+          "requirement": true,
+          "sourceName": "",
+          "sourceType": "ID",
+          "destinationName": "MDM_ID",
+          "destinationType": "STRING",
+          "transformFunction": "None"
+        }
+      }
+    },
+
+    {
+      "name": "OperationIdRule",
+      "description": "",
+      "mapping": {
+        "profile": {
+          "requirement": true,
+          "sourceName": "OPERATION_ID_Case_71",
+          "sourceType": "STRING",
+          "destinationName": "OPERATION_ID",
+          "destinationType": "STRING",
+          "transformFunction": "None"
+        }
+      }
+    },
+
+    {
+      "name": "EventDttmRule",
+      "description": "",
+      "mapping": {
+        "profile": {
+          "requirement": true,
+          "sourceName": "event_dttm",
+          "sourceType": "LONG",
+          "destinationName": "EVENT_DTTM",
+          "destinationType": "STRING",
+          "transformFunction": "toTimeFormat(YYYY-MM-DD hh:mm:ss)"
+        }
+      }
+    },
+
+    {
+      "name": "KafkaDttmRule",
+      "description": "",
+      "mapping": {
+        "profile": {
+          "requirement": true,
+          "sourceName": "",
+          "sourceType": "",
+          "destinationName": "KAFKA_DTTM",
+          "destinationType": "STRING",
+          "transformFunction": "toTimeFormat(YYYY-MM-DD hh:mm:ss.SSS)"
+        }
+      }
+    },
+
+    {
+      "name": "PRODUCT_TYPE",
+      "description": "",
+      "mapping": {
+        "profile": {
+          "requirement": true,
+          "sourceName": "PRODUCT_TYPE",
+          "sourceType": "STRING",
+          "destinationName": "PRODUCT_TYPE",
+          "destinationType": "STRING",
+          "transformFunction": "None"
+        }
+      }
+    },
+
+    {
+      "name": "PRODUCT_TYPE",
+      "description": "",
+      "mapping": {
+        "profile": {
+          "requirement": true,
+          "sourceName": "PRODUCT_TYPE",
+          "sourceType": "STRING",
+          "destinationName": "PRODUCT_TYPE",
+          "destinationType": "STRING",
+          "transformFunction": "None"
+        }
+      }
+    },
+
+    {
+      "name": "PRODUCT_NM",
+      "description": "",
+      "mapping": {
+        "profile": {
+          "requirement": true,
+          "sourceName": "product_nm",
+          "sourceType": "STRING",
+          "destinationName": "PRODUCT_NM",
+          "destinationType": "STRING",
+          "transformFunction": "None"
+        }
+      }
+    },
+
+    {
+      "name": "PRODUCT_RATE",
+      "description": "",
+      "mapping": {
+        "profile": {
+          "requirement": true,
+          "sourceName": "product_rate",
+          "sourceType": "DECIMAL",
+          "destinationName": "PRODUCT_RATE",
+          "destinationType": "DECIMAL",
+          "transformFunction": "None"
+        }
+      }
+    },
+
+    {
+      "name": "OPERATION_NM",
+      "description": "",
+      "mapping": {
+        "profile": {
+          "requirement": true,
+          "sourceName": "OPERATION_NM",
+          "sourceType": "STRING",
+          "destinationName": "OPERATION_NM",
+          "destinationType": "STRING",
+          "transformFunction": "None"
+        }
+      }
+    },
+
+    {
+      "name": "RUR_AMOUNT",
+      "description": "",
+      "mapping": {
+        "profile": {
+          "requirement": true,
+          "sourceName": "amount",
+          "sourceType": "DECIMAL",
+          "destinationName": "RUR_AMOUNT",
+          "destinationType": "DECIMAL",
+          "transformFunction": "None"
+        }
+      }
+    },
+
+    {
+      "name": "AMOUNT",
+      "description": "",
+      "mapping": {
+        "profile": {
+          "requirement": true,
+          "sourceName": "transaction_amount_prf",
+          "sourceType": "DECIMAL",
+          "destinationName": "AMOUNT",
+          "destinationType": "DECIMAL",
+          "transformFunction": "None"
+        }
+      }
+    },
+
+    {
+      "name": "CurrencyIsoRule",
+      "description": "",
+      "mapping": {
+        "profile": {
+          "requirement": true,
+          "sourceName": "exchange_currency",
+          "sourceType": "STRING",
+          "destinationName": "CURRENCY_ISO",
+          "destinationType": "STRING",
+          "transformFunction": "None"
+        }
+      }
+    },
+
+    {
+      "name": "PERIOD",
+      "description": "",
+      "mapping": {
+        "profile": {
+          "requirement": true,
+          "sourceName": "period",
+          "sourceType": "INTEGER",
+          "destinationName": "PERIOD",
+          "destinationType": "INTEGER",
+          "transformFunction": "None"
+        }
+      }
+    },
+
+    {
+      "name": "DEP_ACCOUNT",
+      "description": "",
+      "mapping": {
+        "profile": {
+          "requirement": true,
+          "sourceName": "DEP_ACCOUNT",
+          "sourceType": "STRING",
+          "destinationName": "DEP_ACCOUNT",
+          "destinationType": "STRING",
+          "transformFunction": "maskedFunction"
+        }
+      }
+    },
+
+    {
+      "name": "MC_ACCOUNT",
+      "description": "",
+      "mapping": {
+        "profile": {
+          "requirement": true,
+          "sourceName": "source_account",
+          "sourceType": "STRING",
+          "destinationName": "MC_ACCOUNT",
+          "destinationType": "STRING",
+          "transformFunction": "maskedFunction"
+        }
+      }
+    }
+
+  ]
+}

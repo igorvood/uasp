@@ -1,0 +1,156 @@
+{
+  "caseName": "RTO_29_case",
+  "outputTopicName": "case29",
+  "fields": [
+    {
+      "name": "MdmIdRule",
+      "description": "",
+      "mapping": {
+        "profile": {
+          "requirement": true,
+          "sourceName": "",
+          "sourceType": "ID",
+          "destinationName": "MDM_ID",
+          "destinationType": "STRING",
+          "transformFunction": "None"
+        }
+      }
+    },
+
+    {
+      "name": "OperationIdRule",
+      "description": "",
+      "mapping": {
+        "profile": {
+          "requirement": true,
+          "sourceName": "OPERATION_ID_Case_29",
+          "sourceType": "STRING",
+          "destinationName": "OPERATION_ID",
+          "destinationType": "STRING",
+          "transformFunction": "None"
+        }
+      }
+    },
+
+    {
+      "name": "EventDttmRule",
+      "description": "",
+      "mapping": {
+        "profile": {
+          "requirement": true,
+          "sourceName": "event_dttm",
+          "sourceType": "LONG",
+          "destinationName": "EVENT_DTTM",
+          "destinationType": "STRING",
+          "transformFunction": "toTimeFormat(YYYY-MM-DD hh:mm:ss)"
+        }
+      }
+    },
+
+    {
+      "name": "KafkaDttmRule",
+      "description": "",
+      "mapping": {
+        "profile": {
+          "requirement": true,
+          "sourceName": "",
+          "sourceType": "",
+          "destinationName": "KAFKA_DTTM",
+          "destinationType": "STRING",
+          "transformFunction": "toTimeFormat(YYYY-MM-DD hh:mm:ss.SSS)"
+        }
+      }
+    },
+
+    {
+      "name": "ACCOUNT_NUMBER",
+      "description": "",
+      "mapping": {
+        "profile": {
+          "requirement": true,
+          "sourceName": "source_account",
+          "sourceType": "STRING",
+          "destinationName": "ACCOUNT_NUMBER",
+          "destinationType": "STRING",
+          "transformFunction": "maskedFunction"
+        }
+      }
+    },
+
+    {
+      "name": "OPERATION_CODE",
+      "description": "",
+      "mapping": {
+        "profile": {
+          "requirement": true,
+          "sourceName": "kbo",
+          "sourceType": "STRING",
+          "destinationName": "OPERATION_CODE",
+          "destinationType": "STRING",
+          "transformFunction": "None"
+        }
+      }
+    },
+
+    {
+      "name": "OPERATION_INFO",
+      "description": "",
+      "mapping": {
+        "profile": {
+          "requirement": true,
+          "sourceName": "OPERATION_INFO",
+          "sourceType": "STRING",
+          "destinationName": "OPERATION_INFO",
+          "destinationType": "STRING",
+          "transformFunction": "None"
+        }
+      }
+    },
+
+    {
+      "name": "OPERATION_RUR_AMOUNT",
+      "description": "",
+      "mapping": {
+        "profile": {
+          "requirement": true,
+          "sourceName": "amount",
+          "sourceType": "DECIMAL",
+          "destinationName": "OPERATION_RUR_AMOUNT",
+          "destinationType": "DECIMAL",
+          "transformFunction": "None"
+        }
+      }
+    },
+
+    {
+      "name": "CURRENCY_NM",
+      "description": "",
+      "mapping": {
+        "profile": {
+          "requirement": true,
+          "sourceName": "exchange_currency",
+          "sourceType": "STRING",
+          "destinationName": "CURRENCY_NM",
+          "destinationType": "STRING",
+          "transformFunction": "None"
+        }
+      }
+    },
+
+    {
+      "name": "OPERATION_STATUS",
+      "description": "",
+      "mapping": {
+        "profile": {
+          "requirement": true,
+          "sourceName": "OPERATION_STATUS",
+          "sourceType": "STRING",
+          "destinationName": "OPERATION_STATUS",
+          "destinationType": "STRING",
+          "transformFunction": "None"
+        }
+      }
+    }
+
+  ]
+}

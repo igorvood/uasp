@@ -1,0 +1,351 @@
+{
+  "caseName": "RTO_First_POS_39New_case",
+  "outputTopicName": "posNew",
+  "fields": [
+    {
+      "name": "MdmIdRule",
+      "description": "",
+      "mapping": {
+        "way4": {
+          "requirement": true,
+          "sourceName": "",
+          "sourceType": "ID",
+          "destinationName": "MDM_ID",
+          "destinationType": "STRING",
+          "transformFunction": "None"
+        },
+        "profile": {
+          "requirement": true,
+          "sourceName": "",
+          "sourceType": "ID",
+          "destinationName": "MDM_ID",
+          "destinationType": "STRING",
+          "transformFunction": "None"
+        }
+      }
+    },
+
+    {
+      "name": "OperationIdRule",
+      "description": "",
+      "mapping": {
+        "way4": {
+          "requirement": true,
+          "sourceName": "operation_id",
+          "sourceType": "STRING",
+          "destinationName": "OPERATION_ID",
+          "destinationType": "STRING",
+          "transformFunction": "None"
+        },
+        "profile": {
+          "requirement": true,
+          "sourceName": "msgid",
+          "sourceType": "STRING",
+          "destinationName": "OPERATION_ID",
+          "destinationType": "STRING",
+          "transformFunction": "None"
+        }
+      }
+    },
+
+    {
+      "name": "EventDttmRule",
+      "description": "",
+      "mapping": {
+        "way4": {
+          "requirement": true,
+          "sourceName": "event_dttm",
+          "sourceType": "LONG",
+          "destinationName": "EVENT_DTTM",
+          "destinationType": "STRING",
+          "transformFunction": "toTimeFormat(YYYY-MM-DD hh:mm:ss)"
+        },
+        "profile": {
+          "requirement": true,
+          "sourceName": "event_dttm",
+          "sourceType": "LONG",
+          "destinationName": "EVENT_DTTM",
+          "destinationType": "STRING",
+          "transformFunction": "toTimeFormat(YYYY-MM-DD hh:mm:ss)"
+        }
+      }
+    },
+
+    {
+      "name": "KafkaDttmRule",
+      "description": "",
+      "mapping": {
+        "way4": {
+          "requirement": true,
+          "sourceName": "",
+          "sourceType": "",
+          "destinationName": "KAFKA_DTTM",
+          "destinationType": "STRING",
+          "transformFunction": "toTimeFormat(YYYY-MM-DD hh:mm:ss.SSS)"
+        },
+        "profile": {
+          "requirement": true,
+          "sourceName": "",
+          "sourceType": "",
+          "destinationName": "KAFKA_DTTM",
+          "destinationType": "STRING",
+          "transformFunction": "toTimeFormat(YYYY-MM-DD hh:mm:ss.SSS)"
+        }
+      }
+    },
+
+    {
+      "name": "cardNumberRule",
+      "description": "",
+      "mapping": {
+        "way4": {
+          "requirement": true,
+          "sourceName": "card_masked_pan",
+          "sourceType": "STRING",
+          "destinationName": "CARD_NUMBER",
+          "destinationType": "STRING",
+          "transformFunction": "None"
+        },
+        "profile": {
+          "requirement": true,
+          "sourceName": "card_number",
+          "sourceType": "STRING",
+          "destinationName": "CARD_NUMBER",
+          "destinationType": "STRING",
+          "transformFunction": "None"
+        }
+      }
+    },
+
+    {
+      "name": "AmountRule",
+      "description": "",
+      "mapping": {
+        "way4": {
+          "requirement": true,
+          "sourceName": "transaction_amount",
+          "sourceType": "DECIMAL",
+          "destinationName": "AMOUNT",
+          "destinationType": "DECIMAL",
+          "transformFunction": "None"
+        },
+        "profile": {
+          "requirement": true,
+          "sourceName": "transaction_amt",
+          "sourceType": "DECIMAL",
+          "destinationName": "AMOUNT",
+          "destinationType": "DECIMAL",
+          "transformFunction": "None"
+        }
+      }
+    },
+
+    {
+      "name": "CurrencyIsoRule",
+      "description": "",
+      "mapping": {
+        "way4": {
+          "requirement": true,
+          "sourceName": "exchange_currency",
+          "sourceType": "STRING",
+          "destinationName": "CURRENCY_ISO",
+          "destinationType": "STRING",
+          "transformFunction": "None"
+        },
+        "profile": {
+          "requirement": true,
+          "sourceName": "exchange_currency",
+          "sourceType": "STRING",
+          "destinationName": "CURRENCY_ISO",
+          "destinationType": "STRING",
+          "transformFunction": "None"
+        }
+      }
+    },
+
+    {
+      "name": "TransferAmountRur",
+      "description": "",
+      "mapping": {
+        "way4": {
+          "requirement": true,
+          "sourceName": "amount",
+          "sourceType": "DECIMAL",
+          "destinationName": "RUR_AMOUNT",
+          "destinationType": "DECIMAL",
+          "transformFunction": "None"
+        },
+        "profile": {
+          "requirement": true,
+          "sourceName": "amount",
+          "sourceType": "DECIMAL",
+          "destinationName": "RUR_AMOUNT",
+          "destinationType": "DECIMAL",
+          "transformFunction": "None"
+        }
+      }
+    },
+
+    {
+      "name": "StatusCDRule",
+      "description": "",
+      "mapping": {
+        "way4": {
+          "requirement": true,
+          "sourceName": "processing_resolution",
+          "sourceType": "STRING",
+          "destinationName": "STATUS_CD",
+          "destinationType": "STRING",
+          "transformFunction": "None"
+        },
+        "profile": {
+          "requirement": true,
+          "sourceName": "response_code",
+          "sourceType": "STRING",
+          "destinationName": "STATUS_CD",
+          "destinationType": "STRING",
+          "transformFunction": "None"
+        }
+      }
+    },
+
+    {
+      "name": "PosFlagRule",
+      "description": "",
+      "mapping": {
+        "way4": {
+          "requirement": true,
+          "sourceName": "POS_FLG",
+          "sourceType": "STRING",
+          "destinationName": "POS_FLG",
+          "destinationType": "STRING",
+          "transformFunction": "None"
+        },
+        "profile": {
+          "requirement": true,
+          "sourceName": "POS_FLG",
+          "sourceType": "STRING",
+          "destinationName": "POS_FLG",
+          "destinationType": "STRING",
+          "transformFunction": "None"
+        }
+      }
+    },
+
+    {
+      "name": "CardTypeRule",
+      "description": "",
+      "mapping": {
+        "way4": {
+          "requirement": true,
+          "sourceName": "card_ps_funding_source",
+          "sourceType": "STRING",
+          "destinationName": "CARD_TYPE",
+          "destinationType": "STRING",
+          "transformFunction": "None"
+        },
+        "profile": {
+          "requirement": true,
+          "sourceName": "card_type_cd",
+          "sourceType": "STRING",
+          "destinationName": "CARD_TYPE",
+          "destinationType": "STRING",
+          "transformFunction": "toUpperCase"
+        }
+      }
+    },
+
+    {
+      "name": "SALARY_FLG",
+      "description": "",
+      "mapping": {
+        "way4": {
+          "requirement": true,
+          "sourceName": "salary_card_type_flg",
+          "sourceType": "STRING",
+          "destinationName": "SALARY_FLG",
+          "destinationType": "STRING",
+          "transformFunction": "salaryFlagCalculate"
+        },
+        "profile": {
+          "requirement": true,
+          "sourceName": "salary_card_type_flg",
+          "sourceType": "STRING",
+          "destinationName": "SALARY_FLG",
+          "destinationType": "STRING",
+          "transformFunction": "salaryFlagCalculate"
+        }
+      }
+    },
+
+    {
+      "name": "CARD_FORM",
+      "description": "",
+      "mapping": {
+        "way4": {
+          "requirement": true,
+          "sourceName": "is_virtual_card_flg",
+          "sourceType": "STRING",
+          "destinationName": "CARD_FORM",
+          "destinationType": "STRING",
+          "transformFunction": "cardFormCalculate"
+        },
+        "profile": {
+          "requirement": true,
+          "sourceName": "is_virtual_card_flg",
+          "sourceType": "STRING",
+          "destinationName": "CARD_FORM",
+          "destinationType": "STRING",
+          "transformFunction": "cardFormCalculate"
+        }
+      }
+    },
+
+    {
+      "name": "PACKAGE_NM",
+      "description": "",
+      "mapping": {
+        "way4": {
+          "requirement": true,
+          "sourceName": "package_nm",
+          "sourceType": "STRING",
+          "destinationName": "PACKAGE_NM",
+          "destinationType": "STRING",
+          "transformFunction": "None"
+        },
+        "profile": {
+          "requirement": true,
+          "sourceName": "package_nm",
+          "sourceType": "STRING",
+          "destinationName": "PACKAGE_NM",
+          "destinationType": "STRING",
+          "transformFunction": "None"
+        }
+      }
+    },
+
+    {
+      "name": "FIRST_CLIENT_POS_FLG",
+      "description": "",
+      "mapping": {
+        "way4": {
+          "requirement": true,
+          "sourceName": "FIRST_CLIENT_POS_FLG",
+          "sourceType": "STRING",
+          "destinationName": "FIRST_CLIENT_POS_FLG",
+          "destinationType": "STRING",
+          "transformFunction": "None"
+        },
+        "profile": {
+          "requirement": true,
+          "sourceName": "FIRST_CLIENT_POS_FLG",
+          "sourceType": "STRING",
+          "destinationName": "FIRST_CLIENT_POS_FLG",
+          "destinationType": "STRING",
+          "transformFunction": "None"
+        }
+      }
+    }
+
+  ]
+}

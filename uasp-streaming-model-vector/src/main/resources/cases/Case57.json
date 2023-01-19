@@ -1,0 +1,315 @@
+{
+  "caseName": "RTO_First_pension_57_case",
+  "outputTopicName": "pens",
+  "fields": [
+    {
+      "name": "MdmIdRule",
+      "description": "",
+      "mapping": {
+        "cft": {
+          "requirement": true,
+          "sourceName": "",
+          "sourceType": "ID",
+          "destinationName": "MDM_ID",
+          "destinationType": "STRING",
+          "transformFunction": "None"
+        },
+        "way4": {
+          "requirement": true,
+          "sourceName": "",
+          "sourceType": "ID",
+          "destinationName": "MDM_ID",
+          "destinationType": "STRING",
+          "transformFunction": "None"
+        },
+        "profile": {
+          "requirement": true,
+          "sourceName": "",
+          "sourceType": "ID",
+          "destinationName": "MDM_ID",
+          "destinationType": "STRING",
+          "transformFunction": "None"
+        }
+      }
+    },
+
+    {
+      "name": "OperationIdRule",
+      "description": "",
+      "mapping": {
+        "cft": {
+          "requirement": true,
+          "sourceName": "operation_id_cft",
+          "sourceType": "STRING",
+          "destinationName": "OPERATION_ID",
+          "destinationType": "STRING",
+          "transformFunction": "None"
+        },
+        "way4": {
+          "requirement": true,
+          "sourceName": "operation_id",
+          "sourceType": "STRING",
+          "destinationName": "OPERATION_ID",
+          "destinationType": "STRING",
+          "transformFunction": "None"
+        },
+        "profile": {
+          "requirement": true,
+          "sourceName": "OPERATION_ID",
+          "sourceType": "STRING",
+          "destinationName": "OPERATION_ID",
+          "destinationType": "STRING",
+          "transformFunction": "None"
+        }
+      }
+    },
+
+    {
+      "name": "EventDttmRule",
+      "description": "",
+      "mapping": {
+        "cft": {
+          "requirement": true,
+          "sourceName": "event_dttm",
+          "sourceType": "LONG",
+          "destinationName": "EVENT_DTTM",
+          "destinationType": "STRING",
+          "transformFunction": "toTimeFormat(YYYY-MM-DD hh:mm:ss)"
+        },
+        "way4": {
+          "requirement": true,
+          "sourceName": "event_dttm",
+          "sourceType": "LONG",
+          "destinationName": "EVENT_DTTM",
+          "destinationType": "STRING",
+          "transformFunction": "toTimeFormat(YYYY-MM-DD hh:mm:ss)"
+        },
+        "profile": {
+          "requirement": true,
+          "sourceName": "event_dttm",
+          "sourceType": "LONG",
+          "destinationName": "EVENT_DTTM",
+          "destinationType": "STRING",
+          "transformFunction": "toTimeFormat(YYYY-MM-DD hh:mm:ss)"
+        }
+      }
+    },
+
+    {
+      "name": "KafkaDttmRule",
+      "description": "",
+      "mapping": {
+        "cft": {
+          "requirement": true,
+          "sourceName": "",
+          "sourceType": "",
+          "destinationName": "KAFKA_DTTM",
+          "destinationType": "STRING",
+          "transformFunction": "toTimeFormat(YYYY-MM-DD hh:mm:ss.SSS)"
+        },
+        "way4": {
+          "requirement": true,
+          "sourceName": "",
+          "sourceType": "",
+          "destinationName": "KAFKA_DTTM",
+          "destinationType": "STRING",
+          "transformFunction": "toTimeFormat(YYYY-MM-DD hh:mm:ss.SSS)"
+        },
+        "profile": {
+          "requirement": true,
+          "sourceName": "",
+          "sourceType": "",
+          "destinationName": "KAFKA_DTTM",
+          "destinationType": "STRING",
+          "transformFunction": "toTimeFormat(YYYY-MM-DD hh:mm:ss.SSS)"
+        }
+      }
+    },
+
+    {
+      "name": "TransAmountRule",
+      "description": "",
+      "mapping": {
+        "cft": {
+          "requirement": true,
+          "sourceName": "amount",
+          "sourceType": "DECIMAL",
+          "destinationName": "TRANS_AMOUNT",
+          "destinationType": "DECIMAL",
+          "transformFunction": "None"
+        },
+        "way4": {
+          "requirement": true,
+          "sourceName": "amount",
+          "sourceType": "DECIMAL",
+          "destinationName": "TRANS_AMOUNT",
+          "destinationType": "DECIMAL",
+          "transformFunction": "None"
+        },
+        "profile": {
+          "requirement": true,
+          "sourceName": "amount",
+          "sourceType": "DECIMAL",
+          "destinationName": "TRANS_AMOUNT",
+          "destinationType": "DECIMAL",
+          "transformFunction": "None"
+        }
+      }
+    },
+
+    {
+      "name": "KBORule",
+      "description": "",
+      "mapping": {
+        "cft": {
+          "requirement": true,
+          "sourceName": "kbo",
+          "sourceType": "STRING",
+          "destinationName": "KBO",
+          "destinationType": "STRING",
+          "transformFunction": "None"
+        },
+        "way4": {
+          "requirement": true,
+          "sourceName": "kbo",
+          "sourceType": "STRING",
+          "destinationName": "KBO",
+          "destinationType": "STRING",
+          "transformFunction": "None"
+        },
+        "profile": {
+          "requirement": true,
+          "sourceName": "kbo",
+          "sourceType": "STRING",
+          "destinationName": "KBO",
+          "destinationType": "STRING",
+          "transformFunction": "None"
+        }
+      }
+    },
+
+    {
+      "name": "EventCNTRule",
+      "description": "",
+      "mapping": {
+        "cft": {
+          "requirement": true,
+          "sourceName": "EVENT_CNT",
+          "sourceType": "INTEGER",
+          "destinationName": "EVENT_CNT",
+          "destinationType": "INTEGER",
+          "transformFunction": "None"
+        },
+        "way4": {
+          "requirement": true,
+          "sourceName": "EVENT_CNT",
+          "sourceType": "INTEGER",
+          "destinationName": "EVENT_CNT",
+          "destinationType": "INTEGER",
+          "transformFunction": "None"
+        },
+        "profile": {
+          "requirement": true,
+          "sourceName": "EVENT_CNT",
+          "sourceType": "INTEGER",
+          "destinationName": "EVENT_CNT",
+          "destinationType": "INTEGER",
+          "transformFunction": "None"
+        }
+      }
+    },
+
+    {
+      "name": "SourceAccountRule",
+      "description": "",
+      "mapping": {
+        "cft": {
+          "requirement": true,
+          "sourceName": "source_account",
+          "sourceType": "STRING",
+          "destinationName": "SOURCE_ACCOUNT",
+          "destinationType": "STRING",
+          "transformFunction": "maskedFunction"
+        },
+        "way4": {
+          "requirement": true,
+          "sourceName": "source_account",
+          "sourceType": "STRING",
+          "destinationName": "SOURCE_ACCOUNT",
+          "destinationType": "STRING",
+          "transformFunction": "maskedFunction"
+        },
+        "profile": {
+          "requirement": true,
+          "sourceName": "source_account",
+          "sourceType": "STRING",
+          "destinationName": "SOURCE_ACCOUNT",
+          "destinationType": "STRING",
+          "transformFunction": "maskedFunction"
+        }
+      }
+    },
+
+    {
+      "name": "SourceSystemRule",
+      "description": "",
+      "mapping": {
+        "cft": {
+          "requirement": true,
+          "sourceName": "source_system_cft",
+          "sourceType": "STRING",
+          "destinationName": "SOURCE_SYSTEM",
+          "destinationType": "STRING",
+          "transformFunction": "None"
+        },
+        "way4": {
+          "requirement": true,
+          "sourceName": "source_system_w4",
+          "sourceType": "STRING",
+          "destinationName": "SOURCE_SYSTEM",
+          "destinationType": "STRING",
+          "transformFunction": "None"
+        },
+        "profile": {
+          "requirement": true,
+          "sourceName": "SOURCE_SYSTEM",
+          "sourceType": "STRING",
+          "destinationName": "SOURCE_SYSTEM",
+          "destinationType": "STRING",
+          "transformFunction": "None"
+        }
+      }
+    },
+
+    {
+      "name": "AccountTypeRule",
+      "description": "",
+      "mapping": {
+        "cft": {
+          "requirement": true,
+          "sourceName": "account_type_cft",
+          "sourceType": "STRING",
+          "destinationName": "ACCOUNT_TYPE",
+          "destinationType": "STRING",
+          "transformFunction": "None"
+        },
+        "way4": {
+          "requirement": true,
+          "sourceName": "account_type",
+          "sourceType": "STRING",
+          "destinationName": "ACCOUNT_TYPE",
+          "destinationType": "STRING",
+          "transformFunction": "None"
+        },
+        "profile": {
+          "requirement": true,
+          "sourceName": "account_type_prf",
+          "sourceType": "STRING",
+          "destinationName": "ACCOUNT_TYPE",
+          "destinationType": "STRING",
+          "transformFunction": "None"
+        }
+      }
+    }
+  ]
+}

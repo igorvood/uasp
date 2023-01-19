@@ -1,0 +1,276 @@
+{
+  "caseName": "RTO_44_case",
+  "outputTopicName": "case44",
+  "fields": [
+    {
+      "name": "MdmIdRule",
+      "description": "",
+      "mapping": {
+        "withdraw": {
+          "requirement": true,
+          "sourceName": "",
+          "sourceType": "ID",
+          "destinationName": "MDM_ID",
+          "destinationType": "STRING",
+          "transformFunction": "None"
+        }
+      }
+    },
+
+    {
+      "name": "OperationIdRule",
+      "description": "",
+      "mapping": {
+        "withdraw": {
+          "requirement": true,
+          "sourceName": "transferOrderId",
+          "sourceType": "STRING",
+          "destinationName": "OPERATION_ID",
+          "destinationType": "STRING",
+          "transformFunction": "None"
+        }
+      }
+    },
+
+    {
+      "name": "EventDttmRule",
+      "description": "",
+      "mapping": {
+        "withdraw": {
+          "requirement": true,
+          "sourceName": "event_dttm",
+          "sourceType": "LONG",
+          "destinationName": "EVENT_DTTM",
+          "destinationType": "STRING",
+          "transformFunction": "toTimeFormat(YYYY-MM-DD hh:mm:ss)"
+        }
+      }
+    },
+
+    {
+      "name": "KafkaDttmRule",
+      "description": "",
+      "mapping": {
+        "withdraw": {
+          "requirement": true,
+          "sourceName": "",
+          "sourceType": "",
+          "destinationName": "KAFKA_DTTM",
+          "destinationType": "STRING",
+          "transformFunction": "toTimeFormat(YYYY-MM-DD hh:mm:ss.SSS)"
+        }
+      }
+    },
+
+    {
+      "name": "KBO",
+      "description": "",
+      "mapping": {
+        "withdraw": {
+          "requirement": true,
+          "sourceName": "kbo",
+          "sourceType": "STRING",
+          "destinationName": "KBO",
+          "destinationType": "STRING",
+          "transformFunction": "None"
+        }
+      }
+    },
+
+    {
+      "name": "AMOUNT",
+      "description": "",
+      "mapping": {
+        "withdraw": {
+          "requirement": true,
+          "sourceName": "AMOUNT_ALL",
+          "sourceType": "DECIMAL",
+          "destinationName": "AMOUNT",
+          "destinationType": "DECIMAL",
+          "transformFunction": "None"
+        }
+      }
+    },
+
+    {
+      "name": "DELAY_TIME",
+      "description": "",
+      "mapping": {
+        "withdraw": {
+          "requirement": true,
+          "sourceName": "DELAY_TIME",
+          "sourceType": "LONG",
+          "destinationName": "DELAY_TIME",
+          "destinationType": "LONG",
+          "transformFunction": "None"
+        }
+      }
+    },
+
+    {
+      "name": "PART_SUMM",
+      "description": "",
+      "mapping": {
+        "withdraw": {
+          "requirement": true,
+          "sourceName": "PART_SUMM",
+          "sourceType": "DOUBLE",
+          "destinationName": "PART_SUMM",
+          "destinationType": "DECIMAL",
+          "transformFunction": "None"
+        }
+      }
+    },
+
+    {
+      "name": "TRANSFER_SUM",
+      "description": "",
+      "mapping": {
+        "withdraw": {
+          "requirement": false,
+          "sourceName": "amount",
+          "sourceType": "DECIMAL",
+          "destinationName": "TRANSFER_SUM",
+          "destinationType": "DECIMAL",
+          "transformFunction": "None"
+        }
+      }
+    },
+
+    {
+      "name": "TARGET_CARD_NUMBER",
+      "description": "",
+      "mapping": {
+        "withdraw": {
+          "requirement": false,
+          "sourceName": "targetMaskedPan",
+          "sourceType": "STRING",
+          "destinationName": "TARGET_CARD_NUMBER",
+          "destinationType": "STRING",
+          "transformFunction": "None"
+        }
+      }
+    },
+
+    {
+      "name": "TARGET_ACCOUNT",
+      "description": "",
+      "mapping": {
+        "withdraw": {
+          "requirement": false,
+          "sourceName": "targetAccount",
+          "sourceType": "STRING",
+          "destinationName": "TARGET_ACCOUNT",
+          "destinationType": "STRING",
+          "transformFunction": "None"
+        }
+      }
+    },
+
+    {
+      "name": "BANK_NAME",
+      "description": "",
+      "mapping": {
+        "withdraw": {
+          "requirement": false,
+          "sourceName": "targetBankRussianName",
+          "sourceType": "STRING",
+          "destinationName": "BANK_NAME",
+          "destinationType": "STRING",
+          "transformFunction": "None"
+        }
+      }
+    },
+
+    {
+      "name": "SOURCE_CARD_NUMBER",
+      "description": "",
+      "mapping": {
+        "withdraw": {
+          "requirement": false,
+          "sourceName": "sourceMaskedPan",
+          "sourceType": "STRING",
+          "destinationName": "SOURCE_CARD_NUMBER",
+          "destinationType": "STRING",
+          "transformFunction": "None"
+        }
+      }
+    },
+
+    {
+      "name": "SOURCE_ACCOUNT",
+      "description": "",
+      "mapping": {
+        "withdraw": {
+          "requirement": false,
+          "sourceName": "sourceAccount",
+          "sourceType": "STRING",
+          "destinationName": "SOURCE_ACCOUNT",
+          "destinationType": "STRING",
+          "transformFunction": "None"
+        }
+      }
+    },
+
+    {
+      "name": "RECEIVER_BANK_SBP_ID",
+      "description": "",
+      "mapping": {
+        "withdraw": {
+          "requirement": false,
+          "sourceName": "receiverFpsBankId",
+          "sourceType": "STRING",
+          "destinationName": "RECEIVER_BANK_SBP_ID",
+          "destinationType": "STRING",
+          "transformFunction": "None"
+        }
+      }
+    },
+
+    {
+      "name": "RECEIVER_NAME",
+      "description": "",
+      "mapping": {
+        "withdraw": {
+          "requirement": false,
+          "sourceName": "receiverName",
+          "sourceType": "STRING",
+          "destinationName": "RECEIVER_NAME",
+          "destinationType": "STRING",
+          "transformFunction": "None"
+        }
+      }
+    },
+
+    {
+      "name": "TARGET_NAME",
+      "description": "",
+      "mapping": {
+        "withdraw": {
+          "requirement": false,
+          "sourceName": "senderName",
+          "sourceType": "STRING",
+          "destinationName": "TARGET_NAME",
+          "destinationType": "STRING",
+          "transformFunction": "None"
+        }
+      }
+    },
+
+    {
+      "name": "TRANSFER_WAY",
+      "description": "",
+      "mapping": {
+        "withdraw": {
+          "requirement": false,
+          "sourceName": "interactionChannel",
+          "sourceType": "STRING",
+          "destinationName": "TRANSFER_WAY",
+          "destinationType": "STRING",
+          "transformFunction": "None"
+        }
+      }
+    }
+
+  ]
+}
