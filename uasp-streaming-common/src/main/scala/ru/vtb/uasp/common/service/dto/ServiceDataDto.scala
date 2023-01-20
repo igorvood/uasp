@@ -8,6 +8,10 @@ case class ServiceDataDto(serviceName: String,
                           serviceProfile: String,
                           serviceVersion: String,
                          ){
+  require(serviceName!=null && serviceName.nonEmpty, {"serviceName is empty"})
+  require(serviceProfile!=null && serviceProfile.nonEmpty, {"serviceProfile is empty"})
+  require(serviceVersion!=null && serviceVersion.nonEmpty, {"serviceVersion is empty"})
+
   lazy val serviceNameNoVersion: String = s"${serviceName}_$serviceProfile"
   lazy val fullServiceName: String = s"${serviceName}_${serviceProfile}_$serviceVersion"
 }
