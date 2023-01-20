@@ -26,7 +26,7 @@ class DroolsValidator(kbPaths: List[String]) extends Serializable {
       model.foreach(session.insert)
       session.fireAllRules()
       session.getObjects()
-    }.asScala.collect{ case x:ValidateMsg => x }.toList
+    }.asScala.collect { case x: ValidateMsg => x }.toList
   }
 
   private def createKBase: KieBase = {

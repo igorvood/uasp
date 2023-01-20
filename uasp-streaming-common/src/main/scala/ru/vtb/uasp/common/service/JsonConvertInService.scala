@@ -1,7 +1,6 @@
 package ru.vtb.uasp.common.service
 
 import play.api.libs.json._
-import ru.vtb.uasp.common.service.JsonConvertInService.extractJsValue
 import ru.vtb.uasp.common.service.dto.OutDtoWithErrors
 
 import java.nio.charset.StandardCharsets
