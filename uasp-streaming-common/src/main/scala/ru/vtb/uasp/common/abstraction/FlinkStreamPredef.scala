@@ -15,8 +15,9 @@ object FlinkStreamPredef {
                                                    sinkProperty: FlinkSinkProperties,
                                                    producerFactory: FlinkSinkProperties => SinkFunction[T]
                                                   ): DataStreamSink[T] = {
+    val metricsFunction = sinkProperty.prometheusMetric[T](serviceData)
     val value = self
-      .map[T](o => sinkProperty.prometheusMetric[T](serviceData).map(o))
+      .map[T](metricsFunction)
       .addSink(sinkProperty.createSinkFunction(producerFactory))
     value
   }

@@ -9,6 +9,13 @@ class PrometheusMetricsFunction[T](private val serviceData: ServiceDataDto,
                                    private val nameGrp: String,
                                   ) extends RichMapFunction[T, T] {
 
+  require(serviceData != null, {
+    "serviceData is null"
+  })
+  require(nameGrp != null, {
+    "nameGrp is null"
+  })
+
   @transient private var meter: Meter = _
 
   private lazy val nameMetric = s"${serviceData.serviceNameNoVersion}_$nameGrp"

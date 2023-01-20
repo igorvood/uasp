@@ -216,7 +216,7 @@
             <plugin>
                 <groupId>net.alchim31.maven</groupId>
                 <artifactId>scala-maven-plugin</artifactId>
-                <version>3.4.0</version>
+                <version>4.8.0</version>
                 <executions>
                     <execution>
                         <goals>
@@ -292,22 +292,6 @@
                         </configuration>
                     </execution>
                 </executions>
-            </plugin>
-
-            <plugin>
-                <groupId>ru.vtb.tests.tms</groupId>
-                <artifactId>test-it-maven-plugin</artifactId>
-                <version>1.17</version>
-                <configuration>
-                    <url>https://testit.corp.dev.vtb/</url>
-                    <projectId>284981</projectId>
-                    <!--suppress UnresolvedMavenProperty -->
-                    <apiToken>${myCoolToken}</apiToken>
-                    <namespace>TestIT Streaming mdm enrichment</namespace>
-                    <testRunName>Mdm Enrichment test run</testRunName>
-                    <testPlanName>Функциональные тесты uasp-streaming-mdm-enrichment</testPlanName>
-                    <debug>true</debug>
-                </configuration>
             </plugin>
 
             <plugin>

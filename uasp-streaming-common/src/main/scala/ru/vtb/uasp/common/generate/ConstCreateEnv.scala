@@ -5,7 +5,6 @@ import ru.vtb.uasp.common.generate.dto.{CreationEnvProp, PlaceholderDto, Profile
 import scala.collection.immutable
 
 
-
 object ConstCreateEnv {
 
   val placeholders: Map[String, PlaceholderDto] = Map(
@@ -26,9 +25,9 @@ object ConstCreateEnv {
 
 
   private def headConst(clazz: Class[_]) =
-    s"""MAIN_CLASS=${clazz.getName.replace("$","")}
-      |
-      |PROGRAMARGS=""".stripMargin
+    s"""MAIN_CLASS=${clazz.getName.replace("$", "")}
+       |
+       |PROGRAMARGS=""".stripMargin
 
   private val standsList: List[StandDTO] = List(
     StandDTO("dso", "dev_", "dev_", "DSO", "DSO"),
@@ -39,9 +38,9 @@ object ConstCreateEnv {
     StandDTO("future", "dev_", "dev_future_", "DSO", "DSO"),
   )
 
-//  val serviceName = "generated-mdm-enrichment"
+  //  val serviceName = "generated-mdm-enrichment"
 
-  def generatorPropList(implicit prfList: List[Profile], clazz: Class[_]): immutable.Seq[GeneratorProp] = List( CreationEnvProp(prefix = "\"--", postFix = " \"", propertyDelimer = "`\n`", keyValueDelimer = " ", headConst(clazz), "env"))
+  def generatorPropList(implicit prfList: List[Profile], clazz: Class[_]): immutable.Seq[GeneratorProp] = List(CreationEnvProp(prefix = "\"--", postFix = " \"", propertyDelimer = "`\n`", keyValueDelimer = " ", headConst(clazz), "env"))
     .flatMap(crProp => standsList.map(stand => stand -> crProp))
     .flatMap(tr => prfList.map(prf => GeneratorProp(tr._2, tr._1, prf)))
 
