@@ -36,6 +36,11 @@ object DrlCaseHelper {
     case _ => false
   }
 
+  def isCase57(value: Option[Any]): Boolean = value match {
+    case Some(s: String) => s.contains("пенс") || s.contains("PFR") || s.contains("ветеран") || s.contains("инвал")
+    case _ => false
+  }
+
   def getAccNumCase71(tranComment: String): String =
     getValueByPattern(tranComment, "\\d{20}".r)
 

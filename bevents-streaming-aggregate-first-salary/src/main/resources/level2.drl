@@ -6,6 +6,7 @@ import scala.Some
 import ru.vtb.uasp.common.dto.UaspDto
 import ru.vtb.uasp.validate.entity.ValidateMsg
 import ru.vtb.uasp.mutator.configuration.drools.DrlHelper
+import ru.vtb.bevent.first.salary.aggregate.Util.DrlCaseHelper
 import java.util.Arrays
 
 import ru.vtb.uasp.mutator.service.dto.*
@@ -36,6 +37,16 @@ when
     UaspDto($isIncome:dataBoolean.get("is_income"), DrlHelper.isNonEmpty($isIncome) && $isIncome.get == true)
     and
     UaspDto($dataKBO:dataString.get("kbo"), DrlHelper.isNonEmpty($dataKBO) && Arrays.asList("731500-02",  "731500-04").contains($dataKBO.get))
+    and
+    UaspDto($pensionFlg:dataString.get("pension_flg"), DrlHelper.isNonEmpty($pensionFlg) && $pensionFlg.get == "Y")
+    and
+    (
+    UaspDto($tranComment:dataString.get("tcmt"), DrlHelper.isNonEmpty($tranComment) && DrlCaseHelper.isCase57($tranComment))
+    or
+    UaspDto($dataKBOCft:dataString.get("kbo_cft"), DrlHelper.isNonEmpty($dataKBOCft))
+    or
+    UaspDto($dataKBOw4:dataString.get("kbo_w4"), DrlHelper.isNonEmpty($dataKBOw4))
+    )
 then
 
     insert(new UaspOperation(drools.getRule().getName(), new BooleanMap(true), "is_pension", new Add()))

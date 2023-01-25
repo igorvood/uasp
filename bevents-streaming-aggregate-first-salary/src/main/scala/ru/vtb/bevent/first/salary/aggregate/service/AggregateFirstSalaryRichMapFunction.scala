@@ -12,7 +12,12 @@ import ru.vtb.bevent.first.salary.aggregate.dao.AggregateDao.fullStateUpdate
 import ru.vtb.bevent.first.salary.aggregate.entity.CountsAggregate
 import ru.vtb.bevent.first.salary.aggregate.factory.BusinessRules
 import ru.vtb.uasp.common.dto.UaspDto
+import ru.vtb.uasp.common.service.JsonConvertInService
+import ru.vtb.uasp.common.service.JsonConvertOutService.IdentityPredef
+import ru.vtb.uasp.common.service.dto.KafkaDto
 import ru.vtb.uasp.mutator.service.BusinessRulesService.errFieldName
+
+import scala.util.{Failure, Success, Try}
 
 class AggregateFirstSalaryRichMapFunction(
                                            businessRules: BusinessRules,
@@ -22,44 +27,51 @@ class AggregateFirstSalaryRichMapFunction(
   private var salaryCountAggregateState: MapState[String, CountsAggregate] = _
 
   override def processElement(inMsg: UaspDto, ctx: KeyedProcessFunction[String, UaspDto, UaspDto]#Context, out: Collector[UaspDto]): Unit = {
-    val sourceClassifiedUasp = businessRules.level0.processWithDlq(inMsg).right.get
-    if (sourceClassifiedUasp.dataString.contains(errFieldName)) {
-      ctx.output(dlqOutputTag, sourceClassifiedUasp)
-    } else {
-      val (accountNumber: String, result: UaspDto) = AggregateDao.enrichState(salaryCountAggregateState, sourceClassifiedUasp)
-      val uaspDtoProccessed = runBusinessRules(businessRules, result)
-      if (sourceClassifiedUasp.dataString.contains(errFieldName)) {
-        ctx.output(dlqOutputTag, sourceClassifiedUasp)
-      } else {
-        try {
-          out.collect(uaspDtoProccessed)
-          fullStateUpdate(salaryCountAggregateState, accountNumber, uaspDtoProccessed)
-        } catch {
-          case e: Exception =>
-            val uaspWithErrorMessage = UaspDto(
-              uaspDtoProccessed.id,
-              Map.empty,
-              Map.empty,
-              Map.empty,
-              Map.empty,
-              Map.empty,
-              Map("uaspDtoString" -> uaspDtoProccessed.toString, "errorMessage" -> e.getMessage),
-              Map("isUaspDtoInString" -> true),
-              uaspDtoProccessed.id,
-              System.currentTimeMillis())
 
-            ctx.output(dlqOutputTag, uaspWithErrorMessage)
+    val either: Either[KafkaDto, UaspDto] = businessRules.level0.processWithDlq(inMsg)
+      .flatMap(sourceClassifiedUasp =>
+        if (sourceClassifiedUasp.dataString.contains(errFieldName)) {
+          Left(sourceClassifiedUasp.serializeToBytes)
+        } else Right(sourceClassifiedUasp)
+      )
+      .map(sourceClassifiedUasp => AggregateDao.enrichState(salaryCountAggregateState, sourceClassifiedUasp))
+      .flatMap(result => runBusinessRules(businessRules, result._2).map(r => result._1 -> r))
+      .flatMap(r => {
+        Try {
+          fullStateUpdate(salaryCountAggregateState, r._1, r._2)
+          r._2
+        } match {
+          case Success(value) => Right(value)
+          case Failure(e) => Left(UaspDto(
+            r._2.id,
+            Map.empty,
+            Map.empty,
+            Map.empty,
+            Map.empty,
+            Map.empty,
+            Map("uaspDtoString" -> r._2.toString, "errorMessage" -> e.getMessage),
+            Map("isUaspDtoInString" -> true),
+            r._2.uuid,
+            System.currentTimeMillis()).serializeToBytes)
         }
       }
+      )
+
+    either
+    match {
+      case Right(uaspDtoProccessed) => out.collect(uaspDtoProccessed)
+      case Left(uaspDtoProccessed) =>
+        JsonConvertInService.deserialize[UaspDto](uaspDtoProccessed.value)
+          .map(ctx.output(dlqOutputTag, _))
+          .getOrElse(throw new IllegalArgumentException("Сюда дойти никогда не должно " + uaspDtoProccessed))
     }
 
   }
 
-  private def runBusinessRules(businessRules: BusinessRules, data: UaspDto): UaspDto = {
-    val uaspDtoProccessedLevel1 = businessRules.level1.processWithDlq(data).right.get // BusinessRulesService(props.listOfBusinessRuleLevel1).map(data)
-    val uaspDtoProccessedLevel2 = businessRules.level2.processWithDlq(uaspDtoProccessedLevel1).right.get // BusinessRulesService(props.listOfBusinessRuleLevel2).map(uaspDtoProccessedLevel1)
-    val uaspDtoProccessed = businessRules.cases.processWithDlq(uaspDtoProccessedLevel2).right.get // BusinessRulesService(props.listOfBusinessRule).map(uaspDtoProccessedLevel2)
-    uaspDtoProccessed
+  private def runBusinessRules(businessRules: BusinessRules, data: UaspDto): Either[KafkaDto, UaspDto] = {
+    businessRules.level1.processWithDlq(data)
+      .flatMap(u => businessRules.level2.processWithDlq(u))
+      .flatMap(u => businessRules.cases.processWithDlq(u))
   }
 
   override def open(parameters: Configuration): Unit = {
