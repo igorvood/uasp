@@ -74,7 +74,7 @@ object UaspStreamingAggregateFirstSalary {
       .registerConsumerWithMetric(
         propsModel.appServiceName,
         propsModel.topicHA,
-        None,
+        Some(propsModel.topicDlqName),
         UaspDeserializationProcessFunction(),
         producerFactoryDefault
       )
