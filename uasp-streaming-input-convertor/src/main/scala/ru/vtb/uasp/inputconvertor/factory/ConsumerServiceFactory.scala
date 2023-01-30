@@ -7,11 +7,11 @@ import java.util.Properties
 import scala.collection.JavaConverters.asJavaCollectionConverter
 
 object ConsumerServiceFactory {
-   def getAvroSchemaConsumerService(consumerKafkaProperties: Properties, topic:String, maxIteration: Long = Long.MaxValue):
-   ConsumerService[Array[Byte], Array[Byte], String, String] = {
-     val avroShchemaAccumulator: StringAccumulator = new StringAccumulator
-     val avroSchemaConsumerService = new ConsumerService(consumerKafkaProperties, Seq(topic).asJavaCollection, avroShchemaAccumulator, maxIteration)
-     avroSchemaConsumerService
+  def getAvroSchemaConsumerService(consumerKafkaProperties: Properties, topic: String, maxIteration: Long = Long.MaxValue):
+  ConsumerService[Array[Byte], Array[Byte], String, String] = {
+    val avroShchemaAccumulator: StringAccumulator = new StringAccumulator
+    val avroSchemaConsumerService = new ConsumerService(consumerKafkaProperties, Seq(topic).asJavaCollection, avroShchemaAccumulator, maxIteration)
+    avroSchemaConsumerService
 
-   }
+  }
 }

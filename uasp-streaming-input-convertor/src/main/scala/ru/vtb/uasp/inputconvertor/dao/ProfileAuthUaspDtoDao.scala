@@ -22,15 +22,15 @@ object ProfileAuthUaspDtoDao {
     lazy val msgid: String = (inMessage \ "msgid").extract[String]
     lazy val unMaskCardNumber = (inMessage \ "card_number").extract[String]
     lazy val card_number = findAndMaskNumber(unMaskCardNumber)
-    lazy val hashCardNumber = HashUtils.getHashSHA256PrependingSalt(unMaskCardNumber,propsModel.SHA256salt)
-    lazy val hashCardNumberSha256Md5 = HashUtils.getHashSHA256AppendingSalt(HashUtils.getMD5Hash(unMaskCardNumber),propsModel.SHA256salt)
+    lazy val hashCardNumber = HashUtils.getHashSHA256PrependingSalt(unMaskCardNumber, propsModel.SHA256salt)
+    lazy val hashCardNumberSha256Md5 = HashUtils.getHashSHA256AppendingSalt(HashUtils.getMD5Hash(unMaskCardNumber), propsModel.SHA256salt)
     lazy val transaction_amt = BigDecimal((inMessage \ "transaction_amt").extract[String])
     lazy val transaction_currency_cd = (inMessage \ "transaction_currency_cd").extract[String].toInt
     lazy val currency_alpha_code = returnAlphaCode(transaction_currency_cd.toString)
     lazy val typ = (inMessage \ "typ").extract[String].toInt
     lazy val date = (inMessage \ "local_transaction_dt").extract[String]
     lazy val time = (inMessage \ "local_transaction_ts").extract[String]
-    lazy val merchant_category_cd  = (inMessage \ "merchant_category_cd").extract[String]
+    lazy val merchant_category_cd = (inMessage \ "merchant_category_cd").extract[String]
     lazy val transmission_dttm = (inMessage \ "transmission_dttm").extract[String]
     lazy val replacement_amt = (inMessage \ "replacement_amt").extract[String]
     //FIXME дата приходит без года?
@@ -69,11 +69,11 @@ object ProfileAuthUaspDtoDao {
       getMap[String](dtoMap("app.uaspdto.fields.profile.auth.response_code")(0), response_code) ++
       getMap[String](dtoMap("app.uaspdto.fields.profile.auth.currency_alpha_code")(0), currency_alpha_code) ++
       getMap[String](dtoMap("app.uaspdto.fields.profile.auth.card_numberHashSHA256")(0), hashCardNumber) ++
-      getMap[String](dtoMap("app.uaspdto.fields.profile.auth.card_numberHashSHA256MD5")(0), hashCardNumberSha256Md5)++
+      getMap[String](dtoMap("app.uaspdto.fields.profile.auth.card_numberHashSHA256MD5")(0), hashCardNumberSha256Md5) ++
       getMap[String](dtoMap("app.uaspdto.fields.profile.auth.terminal_class")(0), terminal_class) ++
       getMap[String](dtoMap("app.uaspdto.fields.profile.auth.date_time_string")(0), transmission_dttm) ++
       getMap[String](dtoMap("app.uaspdto.fields.profile.auth.card_acceptor_terminal_ident")(0), card_acceptor_terminal_ident) ++
-      getMap[String](dtoMap("app.uaspdto.fields.profile.auth.merchant_category_cd")(0), merchant_category_cd ) ++
+      getMap[String](dtoMap("app.uaspdto.fields.profile.auth.merchant_category_cd")(0), merchant_category_cd) ++
       getMap[String](dtoMap("app.uaspdto.fields.profile.auth.replacement_amt")(0), replacement_amt)
 
     val dataBoolean = Map[String, Boolean]()

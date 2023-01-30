@@ -8,8 +8,7 @@ import org.slf4j.{Logger, LoggerFactory}
 import ru.vtb.uasp.inputconvertor.entity.{CommonMessageType, InputSchemaType}
 
 
-
-class UpdatableSchemaFunction(defaultJsonSchemaKey: String, staticJsonSchema: String) extends BroadcastProcessFunction[CommonMessageType, InputSchemaType, CommonMessageType]{
+class UpdatableSchemaFunction(defaultJsonSchemaKey: String, staticJsonSchema: String) extends BroadcastProcessFunction[CommonMessageType, InputSchemaType, CommonMessageType] {
   val logger: Logger = LoggerFactory.getLogger(getClass)
   private lazy val schemasStateDescriptor =
     new MapStateDescriptor[String, String]("issuing-operation", BasicTypeInfo.STRING_TYPE_INFO, BasicTypeInfo.STRING_TYPE_INFO)
@@ -17,13 +16,13 @@ class UpdatableSchemaFunction(defaultJsonSchemaKey: String, staticJsonSchema: St
   override def processElement(message: CommonMessageType,
                               readOnlyCtx: BroadcastProcessFunction[CommonMessageType, InputSchemaType, CommonMessageType]#ReadOnlyContext,
                               out: Collector[CommonMessageType]): Unit = {
-      val collectResult: CommonMessageType =
+    val collectResult: CommonMessageType =
       if (!message.valid) message
       else {
-        val schemas = readOnlyCtx.getBroadcastState ( schemasStateDescriptor )
+        val schemas = readOnlyCtx.getBroadcastState(schemasStateDescriptor)
         val schemaKey = message.json_schemakey.get
-        if (schemas.contains ( schemaKey )) {
-          val currentSchema = schemas.get ( schemaKey )
+        if (schemas.contains(schemaKey)) {
+          val currentSchema = schemas.get(schemaKey)
           message.copy(json_schema = Some(currentSchema))
         } else {
           logger.info("Waiting broadcast stream ...")

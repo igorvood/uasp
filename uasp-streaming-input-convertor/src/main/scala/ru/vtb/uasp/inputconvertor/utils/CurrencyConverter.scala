@@ -1,6 +1,7 @@
 package ru.vtb.uasp.inputconvertor.utils
 
 import ru.vtb.uasp.inputconvertor.utils.file.FileUtils
+
 import scala.collection.JavaConversions.asJavaCollection
 import scala.collection.mutable
 

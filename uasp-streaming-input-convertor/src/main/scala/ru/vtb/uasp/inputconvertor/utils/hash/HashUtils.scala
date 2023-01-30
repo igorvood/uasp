@@ -26,11 +26,11 @@ object HashUtils {
 
   }
 
-  def getHashSHA256AppendingSalt(string: String, salt: String):String = {
-    DigestUtils.sha256Hex( string + salt )
+  def getHashSHA256AppendingSalt(string: String, salt: String): String = {
+    DigestUtils.sha256Hex(string + salt)
   }
 
-  def getMD5Hash ( string:String): String = {
+  def getMD5Hash(string: String): String = {
     DigestUtils.md5Hex(string)
   }
 

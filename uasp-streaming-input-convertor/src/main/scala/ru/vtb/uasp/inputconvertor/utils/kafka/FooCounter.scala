@@ -4,9 +4,13 @@ import java.util.concurrent.atomic.AtomicLong
 
 class FooCounter {
   val counter = new AtomicLong(0)
-  def get():Long = counter.get()
+
+  def get(): Long = counter.get()
+
   def set(v: Long): Unit = counter.set(v)
+
   def inc(): Long = counter.incrementAndGet()
+
   def modify(f: Long => Long): Unit = {
     var done = false
     var oldVal: Long = 0

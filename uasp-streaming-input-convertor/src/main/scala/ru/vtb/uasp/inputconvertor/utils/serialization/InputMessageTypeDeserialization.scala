@@ -14,9 +14,9 @@ class InputMessageTypeDeserialization() extends KafkaDeserializationSchema[Input
   override def deserialize(record: ConsumerRecord[Array[Byte], Array[Byte]]): InputMessageType = {
     val outKey = if (record.key() != null) new String(record.key(), Config.charset) else ""
     val outHeaders: Map[String, String] = if (record.headers() != null) {
-      record.headers().toArray.map{h => h.key()->new String(h.value(), Config.charset)}.toMap
+      record.headers().toArray.map { h => h.key() -> new String(h.value(), Config.charset) }.toMap
     }
-      else Map.empty[String, String]
+    else Map.empty[String, String]
     InputMessageType(outKey, record.value(), outHeaders)
   }
 

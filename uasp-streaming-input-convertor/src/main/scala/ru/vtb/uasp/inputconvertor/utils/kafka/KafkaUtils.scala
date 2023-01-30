@@ -18,7 +18,7 @@ object KafkaUtils {
     avroSchemaConsumerService.run()
     val staticJsonSchema = avroSchemaConsumerService.get(jsonSchemaKey)
     avroSchemaConsumerService.finish()
-    if (staticJsonSchema == null ) throw new RuntimeException("Null static Json schema for jsonSchemaKey: '"
+    if (staticJsonSchema == null) throw new RuntimeException("Null static Json schema for jsonSchemaKey: '"
       + jsonSchemaKey + "'")
     staticJsonSchema
   }

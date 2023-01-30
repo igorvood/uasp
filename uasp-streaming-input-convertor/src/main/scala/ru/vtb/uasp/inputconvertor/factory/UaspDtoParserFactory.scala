@@ -53,7 +53,7 @@ private class FirstSalaryUaspDtoParser(propsModel: NewInputPropsModel) extends U
 
 private class CAFirstSalaryUaspDtoParser extends UaspDtoParser {
   override def fromJValue(mes: JValue, dtoMap: Map[String, Array[String]]): UaspDto =
-    CAFirstSalaryUaspDtoDao.fromJValue(mes,  dtoMap)
+    CAFirstSalaryUaspDtoDao.fromJValue(mes, dtoMap)
 }
 
 private class ProfileUaspDtoParser(propsModel: NewInputPropsModel) extends UaspDtoParser {

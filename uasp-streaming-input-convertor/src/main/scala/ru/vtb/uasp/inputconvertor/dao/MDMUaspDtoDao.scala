@@ -1,9 +1,8 @@
 package ru.vtb.uasp.inputconvertor.dao
 
 import com.eatthepath.uuid.FastUUID
-import ru.vtb.uasp.common.dto.UaspDto
 import org.json4s._
-import org.json4s.jackson.JsonMethods._
+import ru.vtb.uasp.common.dto.UaspDto
 import ru.vtb.uasp.inputconvertor.dao.CommonDao.getMap
 
 import java.time.{LocalDateTime, ZoneId}

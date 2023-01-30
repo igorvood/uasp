@@ -26,8 +26,8 @@ object TransformHelper {
           val payloadMessage: String = payloadMessageJV.extract[String]
           parse(payloadMessage)
         }
-      )
-      .getOrElse(parsedValue)
+        )
+        .getOrElse(parsedValue)
     }
 
     def splitMessage(cm: CommonMessageType) = {
@@ -79,7 +79,7 @@ object TransformHelper {
             + e.getMessage
             + ", with allProps: "
 
-//            + allProps.filterKeys(key => !key.contains("password"))
+            //            + allProps.filterKeys(key => !key.contains("password"))
           )
           )
         )

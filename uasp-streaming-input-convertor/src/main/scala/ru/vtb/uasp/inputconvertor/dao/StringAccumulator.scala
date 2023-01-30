@@ -5,7 +5,7 @@ import ru.vtb.uasp.inputconvertor.utils.kafka.ConsumerRecordAccumulator
 
 import java.util.concurrent.ConcurrentHashMap
 
-class StringAccumulator extends ConsumerRecordAccumulator[Array[Byte], Array[Byte], String, String]{
+class StringAccumulator extends ConsumerRecordAccumulator[Array[Byte], Array[Byte], String, String] {
   val records: ConcurrentHashMap[String, String] = new ConcurrentHashMap[String, String]()
 
   override def addRecord(consumerRecord: ConsumerRecord[Array[Byte], Array[Byte]]): Unit = {

@@ -6,7 +6,6 @@ import org.apache.flink.streaming.api.datastream.DataStreamSink
 import org.apache.flink.streaming.api.functions.ProcessFunction
 import org.apache.flink.streaming.api.functions.sink.SinkFunction
 import org.apache.flink.streaming.api.scala._
-import org.apache.flink.streaming.connectors.kafka.FlinkKafkaProducer.Semantic
 import org.apache.flink.util.Collector
 import ru.vtb.uasp.common.dto.UaspDto
 import ru.vtb.uasp.common.kafka.FlinkSinkProperties

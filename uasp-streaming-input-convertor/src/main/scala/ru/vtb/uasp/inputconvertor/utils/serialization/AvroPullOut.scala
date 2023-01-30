@@ -2,7 +2,6 @@ package ru.vtb.uasp.inputconvertor.utils.serialization
 
 import org.apache.flink.streaming.connectors.kafka.KafkaSerializationSchema
 import org.apache.kafka.clients.producer.ProducerRecord
-import org.apache.kafka.common.header.internals.RecordHeader
 import ru.vtb.uasp.inputconvertor.constants.Config
 import ru.vtb.uasp.inputconvertor.entity.CommonMessageType
 

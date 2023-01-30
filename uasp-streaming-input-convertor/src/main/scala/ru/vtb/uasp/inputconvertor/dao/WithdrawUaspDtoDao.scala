@@ -3,11 +3,10 @@ package ru.vtb.uasp.inputconvertor.dao
 import com.eatthepath.uuid.FastUUID
 import org.json4s._
 import ru.vtb.uasp.common.dto.UaspDto
-import ru.vtb.uasp.inputconvertor.dao.CommonDao.{dtStringToLong, getMap}
+import ru.vtb.uasp.inputconvertor.dao.CommonDao.getMap
 
-import java.text.SimpleDateFormat
 import java.time.{LocalDateTime, ZoneId}
-import java.util.{TimeZone, UUID}
+import java.util.UUID
 
 object WithdrawUaspDtoDao {
   def fromJValue(inMessage: JValue, dtoMap: Map[String, Array[String]]): UaspDto = {
@@ -22,7 +21,7 @@ object WithdrawUaspDtoDao {
     lazy val operationCode = (inMessage \ "operationCode").extract[String]
     lazy val transferOrderId = (inMessage \ "transferOrderId").extract[String]
     lazy val senderMdmId = (inMessage \ "senderMdmId").extract[String]
-    lazy val updatedAt = ((inMessage \ "updatedAt").extract[Double] * 1000 ).toLong
+    lazy val updatedAt = ((inMessage \ "updatedAt").extract[Double] * 1000).toLong
     lazy val targetMaskedPan = (inMessage \ "fields" \ "targetMaskedPan").extract[String]
     lazy val targetAccount = (inMessage \ "fields" \ "targetAccount").extract[String]
     lazy val targetBankRussianName = (inMessage \ "fields" \ "targetBankRussianName").extract[String]
@@ -35,7 +34,7 @@ object WithdrawUaspDtoDao {
 
 
     val dataInt = Map[String, Int]()
-    val dataLong = Map[String, Long]()  ++
+    val dataLong = Map[String, Long]() ++
       getMap[Long](dtoMap("app.uaspdto.updatedAt")(0), updatedAt.toLong)
     val dataFloat = Map[String, Float]()
     val dataDouble = Map[String, Double]()
@@ -58,7 +57,7 @@ object WithdrawUaspDtoDao {
 
     val dataBoolean = Map[String, Boolean]()
 
-   val result = UaspDto(
+    val result = UaspDto(
       id = senderMdmId,
       uuid = FastUUID.toString(UUID.randomUUID),
       process_timestamp = LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant.toEpochMilli,

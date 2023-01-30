@@ -27,8 +27,8 @@ object Way4UaspDtoDao {
     lazy val expire: String = (inMessage \ "card" \ "plastic" \ "expire").extract[String]
     lazy val actionType: String = (inMessage \ "actionType").extract[String]
     lazy val transactionAmount: BigDecimal = BigDecimal((inMessage \ "requestedAmount" \ "transaction" \ "amount").extract[String])
-    lazy val transactionDatetime: Long = dtStringToLong((inMessage \ "chain" \ "serviceDateTime").extract[String], "yyyy-MM-dd'T'HH:mm:ss", "GMT+0000")//TODO must be MSK
-    lazy val processingDatetime: Long = dtStringToLong((inMessage \ "processing" \ "processedAt").extract[String], "yyyy-MM-dd'T'HH:mm:ss","GMT+0000")
+    lazy val transactionDatetime: Long = dtStringToLong((inMessage \ "chain" \ "serviceDateTime").extract[String], "yyyy-MM-dd'T'HH:mm:ss", "GMT+0000") //TODO must be MSK
+    lazy val processingDatetime: Long = dtStringToLong((inMessage \ "processing" \ "processedAt").extract[String], "yyyy-MM-dd'T'HH:mm:ss", "GMT+0000")
     lazy val effectiveDate: Long = dtStringToLong((inMessage \ "processing" \ "effectiveDate").extract[String], "yyyy-MM-dd", "GMT+0000") // проверить чтобы были нули в времени
     lazy val processingResolution: String = (inMessage \ "processing" \ "resolution").extract[String]
     lazy val paymentDirection: String = (inMessage \ "requestedAmount" \ "paymentDirection").extract[String]
@@ -36,7 +36,7 @@ object Way4UaspDtoDao {
     lazy val mcc: String = (inMessage \ "pointOfService" \ "mcc").extract[String]
     lazy val terminalType: String = (inMessage \ "pointOfService" \ "terminalType").extract[String]
     lazy val merchantName: String = (inMessage \ "pointOfService" \ "merchantName").extract[String]
-    lazy val terminalId : String = (inMessage \ "pointOfService" \ "terminalId").extract[String]
+    lazy val terminalId: String = (inMessage \ "pointOfService" \ "terminalId").extract[String]
     lazy val processedAtInString = (inMessage \ "processing" \ "processedAt").extract[String]
     //POS transaction   https://wiki.corp.dev.vtb/pages/viewpage.action?pageId=1760826766
 
@@ -58,7 +58,7 @@ object Way4UaspDtoDao {
     lazy val taggedDataKDO: String = (inMessage \ "taggedData" \ "KBO").extract[String]
     lazy val taggedDataSourcePay: String = (inMessage \ "taggedData" \ "SORCE_PAY").extract[String]
     lazy val taggedDataWalletPay: String = (inMessage \ "taggedData" \ "WALLET_TYPE").extract[String]
-//    lazy val comment: String = (inMessage \ "comment").extract[String]
+    //    lazy val comment: String = (inMessage \ "comment").extract[String]
 
 
     val dataInt = Map[String, Int]()
@@ -104,7 +104,7 @@ object Way4UaspDtoDao {
       getMap[String](dtoMap("app.uaspdto.fields.terminal_id")(0), terminalId) ++
       getMap[String](dtoMap("app.uaspdto.fields.counterpartyAccountNumber")(0), counterpartyAccountNumber) ++
       getMap[String](dtoMap("app.uaspdto.fields.taggedData.WALLET_TYPE")(0), taggedDataWalletPay)
-//      getMap[String](dtoMap("app.uaspdto.comment")(0), comment)
+    //      getMap[String](dtoMap("app.uaspdto.comment")(0), comment)
 
 
     val dataBoolean = Map[String, Boolean]()

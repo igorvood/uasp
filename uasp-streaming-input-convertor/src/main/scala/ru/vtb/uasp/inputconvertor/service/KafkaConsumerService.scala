@@ -6,9 +6,9 @@ import java.util.Properties
 
 object KafkaConsumerService {
   def getKafkaConsumer[T](topicName: String, kafkaProps: Properties,
-                          deserializer:  KafkaDeserializationSchema[T],
+                          deserializer: KafkaDeserializationSchema[T],
                           groupID: String,
-                          startFromBeginning: Boolean = false) : FlinkKafkaConsumerBase [ T ] = {
+                          startFromBeginning: Boolean = false): FlinkKafkaConsumerBase[T] = {
     val localKafkaProps = kafkaProps.clone.asInstanceOf[Properties]
     localKafkaProps.setProperty("group.id", groupID)
 

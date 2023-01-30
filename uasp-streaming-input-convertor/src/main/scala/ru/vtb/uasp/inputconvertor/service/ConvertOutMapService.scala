@@ -11,12 +11,12 @@ import java.io.ByteArrayOutputStream
 import java.math.RoundingMode
 import java.nio.ByteBuffer
 
-class ConvertOutMapService extends RichMapFunction [UaspDto, (Array[Byte],Array[Byte])] {
+class ConvertOutMapService extends RichMapFunction[UaspDto, (Array[Byte], Array[Byte])] {
   private val logger: Logger = LoggerFactory.getLogger(getClass.getName)
 
   implicit val sp: ScalePrecision = ScalePrecision(BigDecimalConst.SCALE, BigDecimalConst.PRECISION)
 
-  def serialize(data: UaspDto): (Array[Byte],Array[Byte]) = {
+  def serialize(data: UaspDto): (Array[Byte], Array[Byte]) = {
     var baos: ByteArrayOutputStream = null
     var output: AvroOutputStream[UaspDto] = null
     try {
@@ -37,7 +37,7 @@ class ConvertOutMapService extends RichMapFunction [UaspDto, (Array[Byte],Array[
     (data.id.getBytes(), baos.toByteArray)
   }
 
-  override def map(data: UaspDto): (Array[Byte],Array[Byte]) = {
+  override def map(data: UaspDto): (Array[Byte], Array[Byte]) = {
     try {
       val s = serialize(data)
       s
@@ -53,7 +53,7 @@ class ConvertOutMapService extends RichMapFunction [UaspDto, (Array[Byte],Array[
   def bigDecimalToLogicalTypeByteBuffer(scalaBigDecimal: scala.BigDecimal): java.nio.ByteBuffer = {
     val bigDecimal = scalaBigDecimal.bigDecimal.setScale(BigDecimalConst.SCALE, RoundingMode.HALF_UP)
     logger.debug("bigDecimal: " + bigDecimal)
-    val newBigDecimal =  new Conversions.DecimalConversion().toBytes(bigDecimal, null,
+    val newBigDecimal = new Conversions.DecimalConversion().toBytes(bigDecimal, null,
       LogicalTypes.decimal(BigDecimalConst.PRECISION, BigDecimalConst.SCALE))
     logger.debug("newBigDecimal: " + newBigDecimal)
 
@@ -65,7 +65,7 @@ class ConvertOutMapService extends RichMapFunction [UaspDto, (Array[Byte],Array[
     ByteBuffer.wrap(value.underlying.unscaledValue.toByteArray)
   }
 
-  def convertBigDecimalToBytes(mapBigDecimal: Map[String, BigDecimal]): java.util.Map[String, java.nio.ByteBuffer]  = {
+  def convertBigDecimalToBytes(mapBigDecimal: Map[String, BigDecimal]): java.util.Map[String, java.nio.ByteBuffer] = {
     if (mapBigDecimal == null) Map[String, BigDecimal]()
 
     val convertMap: java.util.Map[String, java.nio.ByteBuffer] = new java.util.HashMap[String, java.nio.ByteBuffer]
