@@ -8,7 +8,6 @@ import ru.vtb.uasp.inputconvertor.UaspDtostandardFactory
 import ru.vtb.uasp.inputconvertor.dao.MDMProfileUaspDtoDaoTest.getCommonMessageAndProps
 import ru.vtb.uasp.inputconvertor.entity.{CommonMessageType, InputMessageType}
 import ru.vtb.uasp.inputconvertor.factory.UaspDtoParserFactory
-import ru.vtb.uasp.inputconvertor.service.MsgCollector
 import ru.vtb.uasp.inputconvertor.service.TransformHelper.extractJson
 import ru.vtb.uasp.inputconvertor.utils.config.NewInputPropsModel
 import ru.vtb.uasp.validate.DroolsValidator
@@ -31,7 +30,19 @@ class MDMProfileUaspDtoDaoTest extends AnyFlatSpec with should.Matchers {
 object MDMProfileUaspDtoDaoTest {
   def getCommonMessageAndProps(args: Array[String] = Array[String]()): (CommonMessageType, NewInputPropsModel, String, Map[String, Array[String]], DroolsValidator) = {
     //    val allProps = getAllProps(args, "application-mdm-profile.properties")
-    val allProps: NewInputPropsModel = null
+    val allProps: NewInputPropsModel = new NewInputPropsModel(
+      null,
+      "mdm-profile",
+      null,
+      null,
+      null,
+      false,
+      null,
+      null,
+      false,
+      null,
+      null,
+      null)
     println(allProps)
     val uaspDtoType = allProps.appUaspdtoType //("app.uaspdto.type")
     println("uaspDtoType: " + uaspDtoType)

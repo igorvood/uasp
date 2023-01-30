@@ -10,7 +10,6 @@ import ru.vtb.uasp.inputconvertor.UaspDtostandardFactory
 import ru.vtb.uasp.inputconvertor.dao.CaFirstSalaryUaspDtoDaoTest.getCommonMessageAndProps
 import ru.vtb.uasp.inputconvertor.entity.{CommonMessageType, InputMessageType}
 import ru.vtb.uasp.inputconvertor.factory.UaspDtoParserFactory
-import ru.vtb.uasp.inputconvertor.service.MsgCollector
 import ru.vtb.uasp.inputconvertor.service.TransformHelper.extractJson
 import ru.vtb.uasp.inputconvertor.utils.config.NewInputPropsModel
 import ru.vtb.uasp.validate.DroolsValidator

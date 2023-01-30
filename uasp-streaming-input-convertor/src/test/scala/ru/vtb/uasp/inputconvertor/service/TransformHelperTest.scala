@@ -5,6 +5,7 @@ import org.json4s.jackson.JsonMethods.{compact, pretty, render}
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should
 import ru.vtb.uasp.common.utils.config.ConfigUtils.getStringFromResourceFile
+import ru.vtb.uasp.inputconvertor.dao.MsgCollector
 import ru.vtb.uasp.inputconvertor.entity.InputMessageType
 import ru.vtb.uasp.inputconvertor.utils.config.NewInputPropsModel
 

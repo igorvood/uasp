@@ -1,4 +1,4 @@
-package ru.vtb.uasp.inputconvertor.service
+package ru.vtb.uasp.inputconvertor.dao
 
 import org.apache.flink.util.Collector
 import ru.vtb.uasp.inputconvertor.entity.CommonMessageType
