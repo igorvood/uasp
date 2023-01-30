@@ -13,6 +13,13 @@ case class FlinkConsumerProperties(fromTopic: String,
 
   def createConsumer(): FlinkKafkaConsumer[Array[Byte]] = ConsumerFactory.getKafkaConsumer(
     fromTopic, deserializationSchema, kafkaCnsProperty.property)
+
+  def createConsumer[T](deserializationSchema: AbstractDeserializationSchema[T]): FlinkKafkaConsumer[T] =
+    ConsumerFactory.getKafkaConsumer(
+      topic = fromTopic,
+      des = deserializationSchema,
+      properties = kafkaCnsProperty.property)
+
 }
 
 object FlinkConsumerProperties extends PropertyCombiner[FlinkConsumerProperties] {
