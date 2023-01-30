@@ -1,7 +1,7 @@
 package ru.vtb.uasp.common.kafka
 
-import org.apache.flink.api.common.serialization.AbstractDeserializationSchema
-import org.apache.flink.streaming.connectors.kafka.FlinkKafkaConsumer
+import org.apache.flink.api.common.serialization.{AbstractDeserializationSchema, DeserializationSchema}
+import org.apache.flink.streaming.connectors.kafka.{FlinkKafkaConsumer, KafkaDeserializationSchema}
 import ru.vtb.uasp.common.kafka.FlinkConsumerProperties.deserializationSchema
 import ru.vtb.uasp.common.utils.config.PropertyUtil.propertyVal
 import ru.vtb.uasp.common.utils.config.kafka.KafkaCnsProperty
@@ -14,16 +14,22 @@ case class FlinkConsumerProperties(fromTopic: String,
   def createConsumer(): FlinkKafkaConsumer[Array[Byte]] = ConsumerFactory.getKafkaConsumer(
     fromTopic, deserializationSchema, kafkaCnsProperty.property)
 
-  def createConsumer[T](deserializationSchema: AbstractDeserializationSchema[T]): FlinkKafkaConsumer[T] =
+  def createConsumer[T](deserializationSchema: DeserializationSchema[T]): FlinkKafkaConsumer[T] =
     ConsumerFactory.getKafkaConsumer(
       topic = fromTopic,
       des = deserializationSchema,
       properties = kafkaCnsProperty.property)
 
+  def createConsumer[T](deserializationSchema: KafkaDeserializationSchema[T]): FlinkKafkaConsumer[T] =
+    ConsumerFactory.getKafkaConsumer(
+      topic = fromTopic,
+       deserializationSchema,
+      properties = kafkaCnsProperty.property)
+
 }
 
 object FlinkConsumerProperties extends PropertyCombiner[FlinkConsumerProperties] {
-  val deserializationSchema: AbstractDeserializationSchema[Array[Byte]] = new AbstractDeserializationSchema[Array[Byte]]() {
+  val deserializationSchema: DeserializationSchema[Array[Byte]] = new AbstractDeserializationSchema[Array[Byte]]() {
     override def deserialize(bytes: Array[Byte]): Array[Byte] = bytes
   }
 
