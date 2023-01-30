@@ -1,0 +1,43 @@
+{
+  "messageResponse": {
+    "contact": [
+      {
+        "partyUId": "10324",
+        "cifcontactReference": [
+          {
+            "externalId": "123",
+            "systemNumber": "IVR"
+          }
+        ]
+      },
+      {
+        "partyUId": "10324",
+        "cifcontactReference": [
+          {
+            "externalId": "324",
+            "systemNumber": "OW4"
+          }
+        ]
+      },
+      {
+        "partyUId": "10324",
+        "cifcontactReference": [
+          {
+            "externalId": "456",
+            "systemNumber": "95000"
+          }
+        ]
+      } ,
+      {
+        "partyUId": "10324",
+        "cifcontactReference": [
+          {
+            "externalId": "46",
+            "systemNumber": " OW4"
+          }
+        ]
+      }
+
+    ]
+  }
+}

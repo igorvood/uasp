@@ -1,0 +1,30 @@
+{
+  "id": "560896180",
+  "iban": "40111810900009001503",
+  "accountNumber": "40111810900009001503",
+  "contractNumber": "00000-P-263006",
+  "currency": "RUR",
+  "openingDate": "2021-06-14",
+  "client": {
+    "id": "1457133420",
+    "externalId": "Test Client 1157006120",
+    "clientCategory": "Private"
+  },
+  "institution": {
+    "bank": "00000",
+    "branch": "00000",
+    "country": "RUS",
+    "office": "0000"
+  },
+  "product": {
+    "code": "DEBIT_ACC_RUR"
+  },
+  "status": {
+    "value": "00",
+    "valueGroup": "Valid"
+  },
+  "stateBankDate": "2021-10-01",
+  "taggedData": {
+    "ACC_MARK": "MASTER"
+  }
+}

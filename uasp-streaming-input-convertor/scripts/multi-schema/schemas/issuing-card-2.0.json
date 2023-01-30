@@ -1,0 +1,299 @@
+{
+  "$schema" : "http://json-schema.org/draft-07/schema#",
+  "title" : "Issuing Card",
+  "type" : "object",
+  "additionalProperties" : true,
+  "description" : "card state",
+  "properties" : {
+    "id" : {
+      "type" : "string"
+    },
+    "originalCardId" : {
+      "type" : "string",
+      "description" : "first of lost card id if it is instead lost"
+    },
+    "pan" : {
+      "type" : "string"
+    },
+    "openingDate" : {
+      "type" : "string",
+      "format" : "date"
+    },
+    "closingDate" : {
+      "type" : "string",
+      "format" : "date"
+    },
+    "plannedClosingDate" : {
+      "type" : "string",
+      "format" : "date"
+    },
+    "expirationDate" : {
+      "type" : "string",
+      "format" : "date"
+    },
+    "client" : {
+      "$ref" : "#/definitions/ClientRef"
+    },
+    "account" : {
+      "$ref" : "#/definitions/IssuingAccountRef"
+    },
+    "relatedAccounts" : {
+      "type" : "array",
+      "items" : {
+        "$ref" : "#/definitions/RelatedAccount"
+      }
+    },
+    "product" : {
+      "$ref" : "#/definitions/ProductRef"
+    },
+    "cardProduct" : {
+      "$ref" : "#/definitions/CardProduct"
+    },
+    "isSupplementary" : {
+      "type" : "boolean"
+    },
+    "status" : {
+      "$ref" : "#/definitions/ObjectStatus"
+    },
+    "pinTriesStatus" : {
+      "type" : "string",
+      "enum" : [ "OK", "Exceeded" ]
+    },
+    "stateBankDate" : {
+      "type" : "string",
+      "format" : "date"
+    },
+    "taggedData" : {
+      "type" : "object",
+      "additionalProperties" : {
+        "type" : "string"
+      }
+    },
+    "additionalAttributes" : {
+      "type" : "array",
+      "items" : {
+        "$ref" : "#/definitions/AdditionalAttribute"
+      }
+    },
+    "additionalData" : {
+      "type" : "object",
+      "additionalProperties" : { },
+      "description" : "additional custom data"
+    }
+  },
+  "required" : [ "id", "pan", "openingDate", "expirationDate", "client", "account", "relatedAccounts", "product", "cardProduct", "status", "taggedData" ],
+  "definitions" : {
+    "ClientRef" : {
+      "type" : "object",
+      "additionalProperties" : true,
+      "description" : "owner details",
+      "properties" : {
+        "id" : {
+          "type" : "string"
+        },
+        "externalId" : {
+          "type" : "string",
+          "description" : "in terms of bank numeration"
+        },
+        "clientCategory" : {
+          "type" : "string",
+          "enum" : [ "Private", "Corporate" ]
+        },
+        "additionalData" : {
+          "type" : "object",
+          "additionalProperties" : { },
+          "description" : "additional custom data"
+        }
+      },
+      "required" : [ "id" ]
+    },
+    "IssuingAccountRef" : {
+      "type" : "object",
+      "additionalProperties" : true,
+      "properties" : {
+        "id" : {
+          "type" : "string"
+        },
+        "iban" : {
+          "type" : "string",
+          "description" : "International bank account number (IBAN)"
+        },
+        "bic" : {
+          "type" : "string",
+          "description" : "Bank Identifier Code (BIC)"
+        },
+        "accountNumber" : {
+          "type" : "string",
+          "description" : "Account Number"
+        },
+        "contractNumber" : {
+          "type" : "string",
+          "description" : "Contract Number"
+        },
+        "client" : {
+          "$ref" : "#/definitions/ClientRef"
+        },
+        "additionalData" : {
+          "type" : "object",
+          "additionalProperties" : { },
+          "description" : "additional custom data"
+        }
+      },
+      "required" : [ "id" ]
+    },
+    "RelatedAccount" : {
+      "type" : "object",
+      "additionalProperties" : true,
+      "properties" : {
+        "relation" : {
+          "type" : "string"
+        },
+        "account" : {
+          "$ref" : "#/definitions/IssuingAccountRef"
+        },
+        "additionalData" : {
+          "type" : "object",
+          "additionalProperties" : { },
+          "description" : "additional custom data"
+        }
+      },
+      "required" : [ "relation", "account" ]
+    },
+    "ProductRef" : {
+      "type" : "object",
+      "additionalProperties" : true,
+      "description" : "product public properties",
+      "properties" : {
+        "code" : {
+          "type" : "string",
+          "description" : "external product code. Generated according to mapping logics"
+        },
+        "additionalData" : {
+          "type" : "object",
+          "additionalProperties" : { },
+          "description" : "additional custom data"
+        }
+      },
+      "required" : [ "code" ]
+    },
+    "CardProduct" : {
+      "type" : "object",
+      "additionalProperties" : true,
+      "description" : "card properties, based on bin table and service code",
+      "properties" : {
+        "paymentScheme" : {
+          "type" : "string",
+          "description" : "payment scheme 'name'. e.g.: VISA, MC ..."
+        },
+        "memberId" : {
+          "type" : "string"
+        },
+        "bin" : {
+          "type" : "string"
+        },
+        "country" : {
+          "type" : "string",
+          "description" : "alfa(3) iso code"
+        },
+        "region" : {
+          "type" : "string"
+        },
+        "serviceCode" : {
+          "type" : "string",
+          "description" : "available for on us only"
+        },
+        "isChip" : {
+          "type" : "boolean",
+          "description" : "convolution of service code"
+        },
+        "isLocal" : {
+          "type" : "boolean",
+          "description" : "convolution of service code"
+        },
+        "isContactless" : {
+          "type" : "boolean",
+          "description" : "convolution of service code"
+        },
+        "psProduct" : {
+          "type" : "string"
+        },
+        "psCardBrand" : {
+          "type" : "string"
+        },
+        "psFundingSource" : {
+          "type" : "string",
+          "enum" : [ "Prepaid", "Debit", "Credit", "Charge", "DeferredDebit" ],
+          "description" : "card product funding source in terms of payment scheme"
+        },
+        "fundingSource" : {
+          "type" : "string",
+          "enum" : [ "Prepaid", "Debit", "Credit", "Charge", "DeferredDebit" ],
+          "description" : "card product funding source in terms of accounting scheme"
+        },
+        "coBadges" : {
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          }
+        },
+        "additionalData" : {
+          "type" : "object",
+          "additionalProperties" : { },
+          "description" : "additional custom data"
+        }
+      },
+      "required" : [ "paymentScheme", "memberId", "bin" ]
+    },
+    "ObjectStatus" : {
+      "type" : "object",
+      "additionalProperties" : true,
+      "description" : "Object (client, contract ...) base and additional statuses",
+      "properties" : {
+        "value" : {
+          "type" : "string"
+        },
+        "valueGroup" : {
+          "type" : "string",
+          "enum" : [ "Valid", "Decline", "Invalid" ],
+          "description" : "convolution (group code) of value"
+        },
+        "additionalData" : {
+          "type" : "object",
+          "additionalProperties" : { },
+          "description" : "additional custom data"
+        }
+      },
+      "required" : [ "value", "valueGroup" ]
+    },
+    "AdditionalAttribute" : {
+      "type" : "object",
+      "additionalProperties" : true,
+      "description" : "additional contract / client attribute",
+      "properties" : {
+        "code" : {
+          "type" : "string"
+        },
+        "value" : {
+          "type" : "string"
+        },
+        "prevValue" : {
+          "type" : "string"
+        },
+        "changeBankDate" : {
+          "type" : "string",
+          "format" : "date"
+        },
+        "changedAt" : {
+          "type" : "string",
+          "format" : "date-time"
+        },
+        "additionalData" : {
+          "type" : "object",
+          "additionalProperties" : { },
+          "description" : "additional custom data"
+        }
+      },
+      "required" : [ "code" ]
+    }
+  }
+}

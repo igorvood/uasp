@@ -1,0 +1,20 @@
+MAIN_CLASS=ru.vtb.uasp.inputconvertor.Convertor
+PARALLELISM=4
+PROGRAMARGS="--input-convertor.service.name ${SERVICE_NAME} "`
+ `"--input-convertor.uaspdto.type issiung-client "`
+ `"--input-convertor.use.avro.serialization y "`
+ `"--input-convertor.input.topic.name dev_ivr__uasp_realtime__input_converter__way4_issuing_client__json_itest "`
+ `"--input-convertor.output.topic.name dev_ivr__uasp_realtime__input_converter__way4_issuing_client__uaspdto_itest "`
+ `"--input-convertor.dlq.topic.name dev_ivr__uasp_realtime__input_converter__way4_issuing_client__dlq "`
+ `"--input-convertor.json.schema.topic.name streaming_json-schemas "`
+ `"--input-convertor.json.schema.topic.group.id streaming_json-schemas-group "`
+ `"--input-convertor.input.topic.group.id dev_ivr__uasp_realtime__input_converter__way4_issuing_client__json-group "`
+ `"--input-convertor.schema.name issuing-client "`
+ `"--input-convertor.schema.start.version 1.3 "`
+ `"--input-convertor-sys.bootstrap.servers ${BOOTSTRAP_SERVERS} "`
+ `"--input-convertor-sys.security.protocol SSL "`
+ `"--input-convertor-sys.ssl.truststore.location ${TRUSTSTORE_LOCATION} "`
+ `"--input-convertor-sys.ssl.truststore.password ${DSO_KAFKA_SSL_TRUSTSTORE_PASSWORD} "`
+ `"--input-convertor-sys.ssl.keystore.location ${KEYSTORE_LOCATION} "`
+ `"--input-convertor-sys.ssl.keystore.password ${DSO_KAFKA_SSL_KEYSTORE_PASSWORD} "`
+ `"--input-convertor-sys.ssl.key.password ${DSO_KAFKA_SSL_KEY_PASSWORD} "

@@ -1,0 +1,64 @@
+{
+  "definitions": {},
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://example.com/object1665522973.json",
+  "title": "Root",
+  "type": "object",
+  "required": [
+    "customer_id",
+    "transaction_dttm",
+    "transaction_amt",
+    "kbo",
+    "source_system_cd"
+  ],
+  "properties": {
+    "customer_id": {
+      "$id": "#root/customer_id",
+      "title": "Customer_id",
+      "type": "string",
+      "default": "",
+      "examples": [
+        "123"
+      ],
+      "pattern": "^.*$"
+    },
+    "transaction_dttm": {
+      "$id": "#root/transaction_dttm",
+      "title": "Transaction_dttm",
+      "type": "integer",
+      "examples": [
+        1664093471000
+      ],
+      "default": 0
+    },
+    "transaction_amt": {
+      "$id": "#root/transaction_amt",
+      "title": "Transaction_amt",
+      "type": "number",
+      "examples": [
+        10.1
+      ],
+      "default": 0.0
+    },
+    "kbo": {
+      "$id": "#root/kbo",
+      "title": "Kbo",
+      "type": "string",
+      "default": "",
+      "examples": [
+        "qwerty"
+      ],
+      "pattern": "^.*$"
+    },
+    "source_system_cd": {
+      "$id": "#root/source_system_cd",
+      "title": "Source_system_cd",
+      "type": "string",
+      "default": "",
+      "examples": [
+        "CA"
+      ],
+      "pattern": "^.*$"
+    }
+  }
+}

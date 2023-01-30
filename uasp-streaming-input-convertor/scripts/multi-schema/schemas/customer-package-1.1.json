@@ -1,0 +1,44 @@
+{
+  "definitions": {},
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://example.com/object1655467337.json",
+  "title": "Root",
+  "type": "object",
+  "required": [
+    "mdm_id",
+    "package_nm",
+    "pension_flg"
+  ],
+  "properties": {
+    "mdm_id": {
+      "$id": "#root/mdm_id",
+      "title": "mdm_id",
+      "type": "string",
+      "default": "",
+      "examples": [
+        "1538541282"
+      ],
+      "pattern": "^.*$"
+    },
+    "package_nm": {
+      "$id": "#root/package_nm",
+      "title": "package_nm",
+      "type": "string",
+      "default": "",
+      "examples": [
+        "1538541282"
+      ],
+      "pattern": "^.*$"
+    },
+    "pension_flg": {
+      "$id": "#root/pension_flg",
+      "title": "pension_flg",
+      "type": "string",
+      "default": "",
+      "examples": [
+        "Y"
+      ],
+      "pattern": "^.*$"
+    }
+  }
+}

@@ -1,0 +1,141 @@
+{
+  "id": "494110",
+  "chain": {
+    "id": "494110",
+    "ref": {
+      "rrn": "118312163001",
+      "srn": "L1831207N65A"
+    },
+    "auth": {
+      "conditions": [
+        "POS",
+        "TERM",
+        "TERM_CHIP",
+        "TERM_TRACK",
+        "TERM_KEY_ENTRY",
+        "TERM_PIN",
+        "AUTHENTICATED",
+        "AUTH_MERCH",
+        "TRANS_AUTH",
+        "SBT",
+        "SBT_MAN",
+        "CARD",
+        "CARDHOLDER",
+        "MERCH",
+        "KEY_ENTRY",
+        "TERM_MSV",
+        "TERM_NO_CC",
+        "TERM_TRACK_WRITE",
+        "TERM_PRINT",
+        "TERM_DISPLAY",
+        "TERM_ONP_CA",
+        "TERM_4_PIN"
+      ],
+      "isContactless": false,
+      "isPinBased": false,
+      "isRecurring": false,
+      "isEcom": false,
+      "is3DS": false
+    },
+    "serviceType": "I5",
+    "serviceDateTime": "2021-07-02T15:16:23"
+  },
+  "actionType": "Authorization",
+  "card": {
+    "id": "1084687030",
+    "externalId": "40914810200009000369",
+    "pan": "529938******8812",
+    "cardType": {
+      "paymentScheme": "Mastercard",
+      "memberId": "007703",
+      "bin": "529938",
+      "country": "RUS",
+      "region": "Europe",
+      "serviceCode": "101",
+      "isChip": false,
+      "isLocal": false,
+      "psProduct": "MCS",
+      "psCardBrand": "MCC",
+      "psFundingSource": "Credit"
+    },
+    "plastic": {
+      "expire": "2607"
+    },
+    "client": {
+      "id": "2157291480",
+      "externalId": "ClientNum 681030",
+      "clientCategory": "Private"
+    }
+  },
+  "account": {
+    "id": "1084687020",
+    "iban": "40914810200009000369",
+    "accountNumber": "40914810200009000369",
+    "contractNumber": "9800-P-311661",
+    "client": {
+      "id": "2157291480",
+      "externalId": "ClientNum 681030",
+      "clientCategory": "Private"
+    }
+  },
+  "requestedAmount": {
+    "paymentDirection": "Debit",
+    "transaction": {
+      "amount": "100020.00",
+      "currency": "RUR"
+    },
+    "billing": {
+      "amount": "100020.00",
+      "currency": "RUR"
+    }
+  },
+  "routing": {
+    "direction": "Incoming",
+    "routingType": "OnUs"
+  },
+  "pointOfService": {
+    "country": "RUS",
+    "region": "10",
+    "city": "MOSCOW",
+    "merchantName": "Address1",
+    "mcc": "5193",
+    "merchantId": "999999999900000",
+    "terminalId": "99999999",
+    "terminalType": "POS",
+    "institution": {
+      "bank": "9800",
+      "branch": "9800",
+      "country": "RUS"
+    }
+  },
+  "processing": {
+    "billingDate": "2021-07-01",
+    "availableAmount": {
+      "amount": "17000.00",
+      "currency": "RUR"
+    },
+    "baseAmount": {
+      "amount": "-100020.00",
+      "currency": "RUR"
+    },
+    "resolution": "Rejected",
+    "resultCode": "54",
+    "chainStage": "Rejected",
+    "processedAt": "2021-07-02T12:16:24Z",
+    "effectiveDate": "2021-04-10",
+    "fxRateId": "371860000001"
+  },
+  "taggedData": {
+    "BCURR": "UNKNOWN",
+    "DE19": "643",
+    "VPD": "05",
+    "TGTCC": "RUS",
+    "PRODUCT_ID": "MCS",
+    "APRPD_IND": "N",
+    "CARD_AFS": "C",
+    "SRCCC": "RUS",
+    "T_USG": "KOR",
+    "ISS_FMS_RQ": "",
+    "FMS_NEXT_BERTLV": "F022F51EC10BT2156729200C20BT2157291480"
+  }
+}

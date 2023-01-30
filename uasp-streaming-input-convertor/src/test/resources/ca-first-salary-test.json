@@ -1,0 +1,7 @@
+{
+  "customer_id": "123",
+  "transaction_dttm": 1664093471000,
+  "transaction_amt": 10.10,
+  "kbo": "qwerty",
+  "source_system_cd": "CA"
+}

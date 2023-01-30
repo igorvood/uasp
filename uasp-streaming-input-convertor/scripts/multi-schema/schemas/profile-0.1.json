@@ -1,0 +1,99 @@
+{
+  "definitions": {},
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://example.com/object1658730698.json",
+  "title": "Root",
+  "type": "object",
+  "required": [
+    "cid",
+    "drcr",
+    "cdt",
+    "tim",
+    "prin",
+    "crcd",
+    "ztsotrntype",
+    "spr"
+  ],
+  "properties": {
+    "cid": {
+      "$id": "#root/cid",
+      "title": "Cid",
+      "type": "string",
+      "default": "",
+      "examples": [
+        "AAABBBB111"
+      ],
+      "pattern": "^.*$"
+    },
+    "drcr": {
+      "$id": "#root/drcr",
+      "title": "Drcr",
+      "type": "string",
+      "default": "",
+      "examples": [
+        "Left"
+      ],
+      "pattern": "^.*$"
+    },
+    "cdt": {
+      "$id": "#root/cdt",
+      "title": "Cdt",
+      "type": "string",
+      "default": "",
+      "examples": [
+        "2022-06-21"
+      ],
+      "pattern": "^.*$"
+    },
+    "tim": {
+      "$id": "#root/tim",
+      "title": "Tim",
+      "type": "string",
+      "default": "",
+      "examples": [
+        "12:21:54"
+      ],
+      "pattern": "^.*$"
+    },
+    "prin": {
+      "$id": "#root/prin",
+      "title": "Prin",
+      "type": "string",
+      "default": "",
+      "examples": [
+        "1000.99"
+      ],
+      "pattern": "^.*$"
+    },
+    "crcd": {
+      "$id": "#root/crcd",
+      "title": "Crcd",
+      "type": "string",
+      "default": "",
+      "examples": [
+        "RUR"
+      ],
+      "pattern": "^.*$"
+    },
+    "ztsotrntype": {
+      "$id": "#root/ztsotrntype",
+      "title": "Ztsotrntype",
+      "type": "string",
+      "default": "",
+      "examples": [
+        "A"
+      ],
+      "pattern": "^.*$"
+    },
+    "spr": {
+      "$id": "#root/spr",
+      "title": "Spr",
+      "type": "string",
+      "default": "",
+      "examples": [
+        "R"
+      ],
+      "pattern": "^.*$"
+    }
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "hash_card_number": "2f3c6cc09cf42cf759851b468a468c7e324e0a5d1a360103176d1c6778d88455",
+  "hash_sha256md5_card_number": "bd023dda2c1be7fe141cd71edaa7b345c0e0183d5160700f9dabde5f9605cb44",
+  "mask_card_number": "554386******2889",
+  "customer_id": "16450092",
+  "customer_id_and_masked_card_number": "16450092;554386******2889",
+  "source_system_cd": "99000",
+  "is_virtual_card_flg": "N",
+  "card_type_cd": "CREDIT",
+  "card_expiration_dt": "2024-03-31",
+  "payment_system_desc": "���������� (MasterCard Int.)",
+  "contract_card_type_cd": "31",
+  "salary_serv_pack_flg": "Y",
+  "salary_project_flg": "Y",
+  "salary_account_scheme_flg": "Y",
+  "salary_card_type_flg": "N",
+  "pos_flg": "Y",
+  "loan_insurance_flg": "N",
+  "mdm_id": "1080822208"
+}

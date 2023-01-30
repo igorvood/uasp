@@ -1,0 +1,51 @@
+package ru.vtb.uasp.validate;
+
+global org.slf4j.Logger logger
+
+import ru.vtb.uasp.common.dto.UaspDto
+import ru.vtb.uasp.validate.entity.ValidateMsg
+
+dialect "mvel"
+
+
+// Идентификатор клиента должен быть обязательно
+rule "The client ID must be mandatory"
+  when
+    UaspDto(id.isEmpty)
+  then
+    insert(new ValidateMsg(drools.getRule().getName()))
+end
+
+// UUID должен быть обязательно
+rule "The UUID must be mandatory"
+  when
+    UaspDto(uuid.isEmpty)
+  then
+    insert(new ValidateMsg(drools.getRule().getName()))
+end
+
+
+// Поле local_id должно быть обязательно
+rule "The local_id field must be mandatory"
+  when
+    $uaspDto: UaspDto($localID: dataString.get("local_id"), $localID.get == "")
+  then
+    insert(new ValidateMsg(drools.getRule().getName() + " local_id: " + $localID + ", uaspDto: " + $uaspDto))
+end
+
+// Поле global_id должно быть обязательно
+rule "The global_id field must be mandatory"
+  when
+    $uaspDto: UaspDto($globalID: dataString.get("global_id"), $globalID.get == "")
+  then
+    insert(new ValidateMsg(drools.getRule().getName() + " global_id: " + $globalID + ", uaspDto: " + $uaspDto))
+end
+
+// Поле system_number должно быть обязательно
+rule "The system_number field must be mandatory"
+  when
+    $uaspDto: UaspDto($systemNumber: dataString.get("system_number"), $systemNumber.get == "")
+  then
+    insert(new ValidateMsg(drools.getRule().getName() + " system_number: " + $systemNumber + ", uaspDto: " + $uaspDto))
+end
+

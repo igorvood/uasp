@@ -1,0 +1,140 @@
+{
+  "definitions": {},
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://example.com/object1655467337.json",
+  "title": "Root",
+  "type": "object",
+  "required": [
+    "clientId",
+    "data",
+    "eventTime",
+    "internalId",
+    "operationDate",
+    "systemId",
+    "vidDepType"
+  ],
+  "properties": {
+    "clientId": {
+      "$id": "#root/clientId",
+      "title": "Clientid",
+      "type": "string",
+      "default": "",
+      "examples": [
+        "1538541282"
+      ],
+      "pattern": "^.*$"
+    },
+    "data": {
+      "$id": "#root/data",
+      "title": "Data",
+      "type": "object",
+      "required": [
+        "KBO",
+        "account",
+        "operationAmount"
+      ],
+      "properties": {
+        "KBO": {
+          "$id": "#root/data/KBO",
+          "title": "Kbo",
+          "type": "string",
+          "default": "",
+          "examples": [
+            "731820-01"
+          ],
+          "pattern": "^.*$"
+        },
+        "account": {
+          "$id": "#root/data/account",
+          "title": "Account",
+          "type": "string",
+          "default": "",
+          "examples": [
+            "42304840********0037"
+          ],
+          "pattern": "^.*$"
+        },
+        "operationAmount": {
+          "$id": "#root/data/operationAmount",
+          "title": "Operationamount",
+          "type": "object",
+          "required": [
+            "currency",
+            "sum"
+          ],
+          "properties": {
+            "currency": {
+              "$id": "#root/data/operationAmount/currency",
+              "title": "Currency",
+              "type": "string",
+              "default": "",
+              "examples": [
+                "USD"
+              ],
+              "pattern": "^.*$"
+            },
+            "sum": {
+              "$id": "#root/data/operationAmount/sum",
+              "title": "Sum",
+              "type": "integer",
+              "examples": [
+                500
+              ],
+              "default": 0
+            }
+          }
+        }
+      }
+    },
+    "eventTime": {
+      "$id": "#root/eventTime",
+      "title": "Eventtime",
+      "type": "string",
+      "default": "",
+      "examples": [
+        "2022-05-18T12:32:18.4513818"
+      ],
+      "pattern": "^.*$"
+    },
+    "internalId": {
+      "$id": "#root/internalId",
+      "title": "Internalid",
+      "type": "string",
+      "default": "",
+      "examples": [
+        "CFT2RS.10000033307567"
+      ],
+      "pattern": "^.*$"
+    },
+    "operationDate": {
+      "$id": "#root/operationDate",
+      "title": "Operationdate",
+      "type": "string",
+      "default": "",
+      "examples": [
+        "2022-05-18T12:32:18.4513818"
+      ],
+      "pattern": "^.*$"
+    },
+    "systemId": {
+      "$id": "#root/systemId",
+      "title": "Systemid",
+      "type": "string",
+      "default": "",
+      "examples": [
+        "CFT2RS"
+      ],
+      "pattern": "^.*$"
+    },
+    "vidDepType": {
+      "$id": "#root/vidDepType",
+      "title": "Viddeptype",
+      "type": "string",
+      "default": "",
+      "examples": [
+        "VKL"
+      ],
+      "pattern": "^.*$"
+    }
+  }
+}

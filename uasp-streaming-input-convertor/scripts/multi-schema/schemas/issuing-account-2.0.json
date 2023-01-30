@@ -1,0 +1,197 @@
+{
+  "$schema" : "http://json-schema.org/draft-07/schema#",
+  "title" : "Issuing Account",
+  "type" : "object",
+  "additionalProperties" : true,
+  "description" : "issuing account state",
+  "properties" : {
+    "id" : {
+      "type" : "string"
+    },
+    "iban" : {
+      "type" : "string",
+      "description" : "International bank account number (IBAN)"
+    },
+    "bic" : {
+      "type" : "string",
+      "description" : "Bank Identifier Code (BIC)"
+    },
+    "accountNumber" : {
+      "type" : "string",
+      "description" : "Account Number"
+    },
+    "contractNumber" : {
+      "type" : "string",
+      "description" : "Contract Number"
+    },
+    "currency" : {
+      "type" : "string"
+    },
+    "openingDate" : {
+      "type" : "string",
+      "format" : "date"
+    },
+    "closingDate" : {
+      "type" : "string",
+      "format" : "date"
+    },
+    "plannedClosingDate" : {
+      "type" : "string",
+      "format" : "date"
+    },
+    "client" : {
+      "$ref" : "#/definitions/ClientRef"
+    },
+    "institution" : {
+      "$ref" : "#/definitions/FinancialInstitution"
+    },
+    "product" : {
+      "$ref" : "#/definitions/ProductRef"
+    },
+    "status" : {
+      "$ref" : "#/definitions/ObjectStatus"
+    },
+    "stateBankDate" : {
+      "type" : "string",
+      "format" : "date"
+    },
+    "taggedData" : {
+      "type" : "object",
+      "additionalProperties" : {
+        "type" : "string"
+      }
+    },
+    "additionalAttributes" : {
+      "type" : "array",
+      "items" : {
+        "$ref" : "#/definitions/AdditionalAttribute"
+      }
+    },
+    "additionalData" : {
+      "type" : "object",
+      "additionalProperties" : { },
+      "description" : "additional custom data"
+    }
+  },
+  "required" : [ "id", "openingDate", "client", "institution", "product", "status", "taggedData" ],
+  "definitions" : {
+    "ClientRef" : {
+      "type" : "object",
+      "additionalProperties" : true,
+      "description" : "owner details",
+      "properties" : {
+        "id" : {
+          "type" : "string"
+        },
+        "externalId" : {
+          "type" : "string",
+          "description" : "in terms of bank numeration"
+        },
+        "clientCategory" : {
+          "type" : "string",
+          "enum" : [ "Private", "Corporate" ]
+        },
+        "additionalData" : {
+          "type" : "object",
+          "additionalProperties" : { },
+          "description" : "additional custom data"
+        }
+      },
+      "required" : [ "id" ]
+    },
+    "FinancialInstitution" : {
+      "type" : "object",
+      "additionalProperties" : true,
+      "description" : "financial institution identification",
+      "properties" : {
+        "bank" : {
+          "type" : "string"
+        },
+        "branch" : {
+          "type" : "string"
+        },
+        "country" : {
+          "type" : "string",
+          "description" : "ISO 3166 Alfa(3) country code"
+        },
+        "office" : {
+          "type" : "string"
+        },
+        "additionalData" : {
+          "type" : "object",
+          "additionalProperties" : { },
+          "description" : "additional custom data"
+        }
+      },
+      "required" : [ "bank", "branch", "country" ]
+    },
+    "ProductRef" : {
+      "type" : "object",
+      "additionalProperties" : true,
+      "description" : "product public properties",
+      "properties" : {
+        "code" : {
+          "type" : "string",
+          "description" : "external product code. Generated according to mapping logics"
+        },
+        "additionalData" : {
+          "type" : "object",
+          "additionalProperties" : { },
+          "description" : "additional custom data"
+        }
+      },
+      "required" : [ "code" ]
+    },
+    "ObjectStatus" : {
+      "type" : "object",
+      "additionalProperties" : true,
+      "description" : "Object (client, contract ...) base and additional statuses",
+      "properties" : {
+        "value" : {
+          "type" : "string"
+        },
+        "valueGroup" : {
+          "type" : "string",
+          "enum" : [ "Valid", "Decline", "Invalid" ],
+          "description" : "convolution (group code) of value"
+        },
+        "additionalData" : {
+          "type" : "object",
+          "additionalProperties" : { },
+          "description" : "additional custom data"
+        }
+      },
+      "required" : [ "value", "valueGroup" ]
+    },
+    "AdditionalAttribute" : {
+      "type" : "object",
+      "additionalProperties" : true,
+      "description" : "additional contract / client attribute",
+      "properties" : {
+        "code" : {
+          "type" : "string"
+        },
+        "value" : {
+          "type" : "string"
+        },
+        "prevValue" : {
+          "type" : "string"
+        },
+        "changeBankDate" : {
+          "type" : "string",
+          "format" : "date"
+        },
+        "changedAt" : {
+          "type" : "string",
+          "format" : "date-time"
+        },
+        "additionalData" : {
+          "type" : "object",
+          "additionalProperties" : { },
+          "description" : "additional custom data"
+        }
+      },
+      "required" : [ "code" ]
+    }
+  }
+}

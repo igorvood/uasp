@@ -1,0 +1,79 @@
+{
+  "id": "1457163490",
+  "externalId": "V20094807",
+  "openingDate": "2021-08-11",
+  "institution": {
+    "bank": "00000",
+    "branch": "00000",
+    "country": "RUS"
+  },
+  "clientType": "PR",
+  "name": {
+    "givenName": "Васильс",
+    "familyName": "Селедкин",
+    "middleName": "Гарьевич"
+  },
+  "identityDoc": {
+    "type": "ПаспортРФ",
+    "number": "51 03110689",
+    "details": "Дата выдачи=2021-06-17;Код подразделения=145-854;Кем выдан=РОВД 89;"
+  },
+  "demographics": {
+    "birthDate": "2000-03-01"
+  },
+  "embossingData": {
+    "givenName": "VASILS",
+    "familyName": "SELEDKIN"
+  },
+  "tax": {
+    "isResident": true
+  },
+  "contacts": {
+    "phoneNumbers": [
+      {
+        "number": "76062919627"
+      },
+      {
+        "role": "SMS",
+        "number": "6062919627"
+      },
+      {
+        "role": "SMS",
+        "number": "76062919627"
+      }
+    ],
+    "emails": [],
+    "postalAddresses": [
+      {
+        "addressLines": [
+          "SMS Notif. Phone"
+        ]
+      },
+      {
+        "addressLines": [
+          "SMS"
+        ]
+      }
+    ]
+  },
+  "stateBankDate": "2021-09-22",
+  "taggedData": {
+    "NEW_CLIENT": "Y",
+    "DKO": "N",
+    "PUBLIC_PERSON": "NotPublicOfficial",
+    "RES": "N",
+    "STAFF": "N",
+    "VIP": "N",
+    "PENS": "N",
+    "APPROVAL_SBP": "N"
+  },
+  "additionalAttributes": [
+    {
+      "code": "CL_IDENTIFICATION",
+      "value": "SIMPLE",
+      "prevValue": "NO",
+      "changeBankDate": "2021-08-11",
+      "changedAt": "2021-08-11T07:19:34Z"
+    }
+  ]
+}

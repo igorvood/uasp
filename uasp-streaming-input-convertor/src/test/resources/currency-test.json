@@ -1,0 +1,195 @@
+{
+  "id":"78a3b0e4-4221-3020-8bad-080de84de4c6",
+  "date":"2022-05-24",
+  "rates":[
+    {
+      "currency":{
+        "name":"Австралийский доллар",
+        "numericCode":"036",
+        "alphaCode":"AUD"
+      },
+      "price":41.398000,
+      "scale":1
+    },
+    {
+      "currency":{
+        "name":"Южноафриканский рэнд",
+        "numericCode":"710",
+        "alphaCode":"ZAR"
+      },
+      "price":36.758100,
+      "scale":10
+    },
+    {
+      "currency":{
+        "name":"Швейцарский франк",
+        "numericCode":"756",
+        "alphaCode":"CHF"
+      },
+      "price":60.058500,
+      "scale":1
+    },
+    {
+      "currency":{
+        "name":"Шведская крона",
+        "numericCode":"752",
+        "alphaCode":"SEK"
+      },
+      "price":58.918700,
+      "scale":10
+    },
+    {
+      "currency":{
+        "name":"Чешская крона",
+        "numericCode":"203",
+        "alphaCode":"CZK"
+      },
+      "price":24.960800,
+      "scale":10
+    },
+    {
+      "currency":{
+        "name":"Украинская гривна",
+        "numericCode":"980",
+        "alphaCode":"UAH"
+      },
+      "price":19.798900,
+      "scale":10
+    },
+    {
+      "currency":{
+        "name":"Узбекский сум",
+        "numericCode":"860",
+        "alphaCode":"UZS"
+      },
+      "price":52.463500,
+      "scale":10000
+    },
+    {
+      "currency":{
+        "name":"Новый туркменский манат",
+        "numericCode":"934",
+        "alphaCode":"TMT"
+      },
+      "price":16.631100,
+      "scale":1
+    },
+    {
+      "currency":{
+        "name":"Турецкая лира",
+        "numericCode":"949",
+        "alphaCode":"TRY"
+      },
+      "price":36.519200,
+      "scale":10
+    },
+    {
+      "currency":{
+        "name":"Таджикский сомони",
+        "numericCode":"972",
+        "alphaCode":"TJS"
+      },
+      "price":48.106400,
+      "scale":10
+    },
+    {
+      "currency":{
+        "name":"Сингапурский доллар",
+        "numericCode":"702",
+        "alphaCode":"SGD"
+      },
+      "price":42.327400,
+      "scale":1
+    },
+    {
+      "currency":{
+        "name":"СДР (специальные права заимствования)",
+        "numericCode":"960",
+        "alphaCode":"XDR"
+      },
+      "price":78.257500,
+      "scale":1
+    },
+    {
+      "currency":{
+        "name":"Румынский лей",
+        "numericCode":"946",
+        "alphaCode":"RON"
+      },
+      "price":12.566100,
+      "scale":1
+    },
+    {
+      "currency":{
+        "name":"Польский злотый",
+        "numericCode":"985",
+        "alphaCode":"PLN"
+      },
+      "price":13.430100,
+      "scale":1
+    },
+    {
+      "currency":{
+        "name":"Норвежская крона",
+        "numericCode":"578",
+        "alphaCode":"NOK"
+      },
+      "price":59.995400,
+      "scale":10
+    },
+    {
+      "currency":{
+        "name":"Молдавский лей",
+        "numericCode":"498",
+        "alphaCode":"MDL"
+      },
+      "price":30.369700,
+      "scale":10
+    },
+    {
+      "currency":{
+        "name":"Китайский юань",
+        "numericCode":"156",
+        "alphaCode":"CNY"
+      },
+      "price":87.985400,
+      "scale":10
+    },
+    {
+      "currency":{
+        "name":"Киргизский сом",
+        "numericCode":"417",
+        "alphaCode":"KGS"
+      },
+      "price":73.218500,
+      "scale":100
+    },
+    {
+      "currency":{
+        "name":"Азербайджанский манат",
+        "numericCode":"944",
+        "alphaCode":"AZN"
+      },
+      "price":34.240400,
+      "scale":1
+    },
+    {
+      "currency":{
+        "name":"Фунт стерлингов Соединенного королевства",
+        "numericCode":"826",
+        "alphaCode":"GBP"
+      },
+      "price":72.563000,
+      "scale":1
+    },
+    {
+      "currency":{
+        "name":"Армянский драм",
+        "numericCode":"051",
+        "alphaCode":"AMD"
+      },
+      "price":12.772600,
+      "scale":100
+    }
+  ]
+}

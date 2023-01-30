@@ -1,0 +1,352 @@
+{
+  "$schema" : "http://json-schema.org/draft-07/schema#",
+  "title" : "Issuing Client",
+  "type" : "object",
+  "additionalProperties" : true,
+  "description" : "issuing client state",
+  "properties" : {
+    "id" : {
+      "type" : "string"
+    },
+    "externalId" : {
+      "type" : "string",
+      "description" : "in terms of bank numeration"
+    },
+    "openingDate" : {
+      "type" : "string",
+      "format" : "date"
+    },
+    "closingDate" : {
+      "type" : "string",
+      "format" : "date"
+    },
+    "institution" : {
+      "$ref" : "#/definitions/FinancialInstitution"
+    },
+    "clientType" : {
+      "type" : "string"
+    },
+    "name" : {
+      "$ref" : "#/definitions/ClientFullName"
+    },
+    "identityDoc" : {
+      "$ref" : "#/definitions/IdentityDocument"
+    },
+    "demographics" : {
+      "$ref" : "#/definitions/Demographics"
+    },
+    "embossingData" : {
+      "$ref" : "#/definitions/EmbossingData"
+    },
+    "tax" : {
+      "$ref" : "#/definitions/ClientTax"
+    },
+    "contacts" : {
+      "$ref" : "#/definitions/ClientContact"
+    },
+    "stateBankDate" : {
+      "type" : "string",
+      "format" : "date"
+    },
+    "taggedData" : {
+      "type" : "object",
+      "additionalProperties" : {
+        "type" : "string"
+      }
+    },
+    "additionalAttributes" : {
+      "type" : "array",
+      "items" : {
+        "$ref" : "#/definitions/AdditionalAttribute"
+      }
+    },
+    "additionalData" : {
+      "type" : "object",
+      "additionalProperties" : { },
+      "description" : "additional custom data"
+    }
+  },
+  "required" : [ "id", "openingDate", "institution", "name", "demographics", "embossingData", "tax", "contacts", "taggedData" ],
+  "definitions" : {
+    "FinancialInstitution" : {
+      "type" : "object",
+      "additionalProperties" : true,
+      "description" : "financial institution identification",
+      "properties" : {
+        "bank" : {
+          "type" : "string"
+        },
+        "branch" : {
+          "type" : "string"
+        },
+        "country" : {
+          "type" : "string",
+          "description" : "ISO 3166 Alfa(3) country code"
+        },
+        "office" : {
+          "type" : "string"
+        },
+        "additionalData" : {
+          "type" : "object",
+          "additionalProperties" : { },
+          "description" : "additional custom data"
+        }
+      },
+      "required" : [ "bank", "branch", "country" ]
+    },
+    "ClientFullName" : {
+      "type" : "object",
+      "additionalProperties" : true,
+      "description" : "Client full name that includes given, family and optionally middle name",
+      "properties" : {
+        "salutation" : {
+          "type" : "string"
+        },
+        "givenName" : {
+          "type" : "string",
+          "description" : "Given name also known as first name"
+        },
+        "familyName" : {
+          "type" : "string",
+          "description" : "Family name also known as last name or surname"
+        },
+        "middleName" : {
+          "type" : "string",
+          "description" : "Middle name (portion of a personal name that is written between the person's given name and surname)"
+        },
+        "birthName" : {
+          "type" : "string"
+        },
+        "additionalData" : {
+          "type" : "object",
+          "additionalProperties" : { },
+          "description" : "additional custom data"
+        }
+      }
+    },
+    "IdentityDocument" : {
+      "type" : "object",
+      "additionalProperties" : true,
+      "description" : "Identity document of a private person",
+      "properties" : {
+        "type" : {
+          "type" : "string",
+          "description" : "Type of the client's identity document"
+        },
+        "number" : {
+          "type" : "string",
+          "description" : "Number of the client's identity document"
+        },
+        "details" : {
+          "type" : "string",
+          "description" : "Identity document details (e.g. date of issue)"
+        },
+        "additionalData" : {
+          "type" : "object",
+          "additionalProperties" : { },
+          "description" : "additional custom data"
+        }
+      },
+      "required" : [ "number" ]
+    },
+    "Demographics" : {
+      "type" : "object",
+      "additionalProperties" : true,
+      "description" : "demographic parameters of a bank client",
+      "properties" : {
+        "gender" : {
+          "type" : "string",
+          "enum" : [ "Male", "Female" ]
+        },
+        "birthDate" : {
+          "type" : "string",
+          "format" : "date"
+        },
+        "maritalStatus" : {
+          "type" : "string"
+        },
+        "additionalData" : {
+          "type" : "object",
+          "additionalProperties" : { },
+          "description" : "additional custom data"
+        }
+      }
+    },
+    "EmbossingData" : {
+      "type" : "object",
+      "additionalProperties" : true,
+      "description" : "client embossing attributes",
+      "properties" : {
+        "title" : {
+          "type" : "string"
+        },
+        "givenName" : {
+          "type" : "string"
+        },
+        "familyName" : {
+          "type" : "string"
+        },
+        "additionalData" : {
+          "type" : "object",
+          "additionalProperties" : { },
+          "description" : "additional custom data"
+        }
+      }
+    },
+    "ClientTax" : {
+      "type" : "object",
+      "additionalProperties" : true,
+      "properties" : {
+        "id" : {
+          "type" : "string"
+        },
+        "status" : {
+          "type" : "string"
+        },
+        "socialSecurityNumber" : {
+          "type" : "string"
+        },
+        "isResident" : {
+          "type" : "boolean"
+        },
+        "additionalData" : {
+          "type" : "object",
+          "additionalProperties" : { },
+          "description" : "additional custom data"
+        }
+      }
+    },
+    "ClientContact" : {
+      "type" : "object",
+      "additionalProperties" : true,
+      "description" : "Contact information of a bank client. role ~ address type",
+      "properties" : {
+        "phoneNumbers" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/ClientPhoneNumber"
+          }
+        },
+        "emails" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/ClientEmail"
+          }
+        },
+        "postalAddresses" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/PostalAddress"
+          }
+        },
+        "additionalData" : {
+          "type" : "object",
+          "additionalProperties" : { },
+          "description" : "additional custom data"
+        }
+      },
+      "required" : [ "phoneNumbers", "emails", "postalAddresses" ]
+    },
+    "ClientPhoneNumber" : {
+      "type" : "object",
+      "additionalProperties" : true,
+      "properties" : {
+        "role" : {
+          "type" : "string"
+        },
+        "number" : {
+          "type" : "string"
+        },
+        "additionalData" : {
+          "type" : "object",
+          "additionalProperties" : { },
+          "description" : "additional custom data"
+        }
+      },
+      "required" : [ "number" ]
+    },
+    "ClientEmail" : {
+      "type" : "object",
+      "additionalProperties" : true,
+      "properties" : {
+        "role" : {
+          "type" : "string"
+        },
+        "email" : {
+          "type" : "string"
+        },
+        "additionalData" : {
+          "type" : "object",
+          "additionalProperties" : { },
+          "description" : "additional custom data"
+        }
+      },
+      "required" : [ "email" ]
+    },
+    "PostalAddress" : {
+      "type" : "object",
+      "additionalProperties" : true,
+      "description" : "postal address for specific role",
+      "properties" : {
+        "country" : {
+          "type" : "string"
+        },
+        "state" : {
+          "type" : "string",
+          "description" : "state / province"
+        },
+        "municipalityCode" : {
+          "type" : "string"
+        },
+        "city" : {
+          "type" : "string"
+        },
+        "zipCode" : {
+          "type" : "string"
+        },
+        "addressLines" : {
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          }
+        },
+        "additionalData" : {
+          "type" : "object",
+          "additionalProperties" : { },
+          "description" : "additional custom data"
+        }
+      },
+      "required" : [ "addressLines" ]
+    },
+    "AdditionalAttribute" : {
+      "type" : "object",
+      "additionalProperties" : true,
+      "description" : "additional contract / client attribute",
+      "properties" : {
+        "code" : {
+          "type" : "string"
+        },
+        "value" : {
+          "type" : "string"
+        },
+        "prevValue" : {
+          "type" : "string"
+        },
+        "changeBankDate" : {
+          "type" : "string",
+          "format" : "date"
+        },
+        "changedAt" : {
+          "type" : "string",
+          "format" : "date-time"
+        },
+        "additionalData" : {
+          "type" : "object",
+          "additionalProperties" : { },
+          "description" : "additional custom data"
+        }
+      },
+      "required" : [ "code" ]
+    }
+  }
+}

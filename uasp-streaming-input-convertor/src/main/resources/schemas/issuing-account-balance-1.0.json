@@ -1,0 +1,138 @@
+{
+  "$schema" : "http://json-schema.org/draft-07/schema#",
+  "title" : "Issuing Account Balance",
+  "type" : "object",
+  "additionalProperties" : true,
+  "description" : "Changing of account contract balances",
+  "properties" : {
+    "account" : {
+      "$ref" : "#/definitions/IssuingAccountRef"
+    },
+    "changedAt" : {
+      "type" : "string",
+      "format" : "date-time"
+    },
+    "effectiveDate" : {
+      "type" : "string",
+      "format" : "date"
+    },
+    "balanceUpdates" : {
+      "type" : "array",
+      "items" : {
+        "$ref" : "#/definitions/BalanceUpdate"
+      }
+    },
+    "additionalData" : {
+      "type" : "object",
+      "additionalProperties" : { },
+      "description" : "additional custom data"
+    }
+  },
+  "required" : [ "account", "changedAt", "effectiveDate", "balanceUpdates" ],
+  "definitions" : {
+    "IssuingAccountRef" : {
+      "type" : "object",
+      "additionalProperties" : true,
+      "properties" : {
+        "id" : {
+          "type" : "string"
+        },
+        "iban" : {
+          "type" : "string",
+          "description" : "International bank account number (IBAN)"
+        },
+        "bic" : {
+          "type" : "string",
+          "description" : "Bank Identifier Code (BIC)"
+        },
+        "accountNumber" : {
+          "type" : "string",
+          "description" : "Account Number"
+        },
+        "contractNumber" : {
+          "type" : "string",
+          "description" : "Contract Number"
+        },
+        "client" : {
+          "$ref" : "#/definitions/ClientRef"
+        },
+        "additionalData" : {
+          "type" : "object",
+          "additionalProperties" : { },
+          "description" : "additional custom data"
+        }
+      },
+      "required" : [ "id" ]
+    },
+    "ClientRef" : {
+      "type" : "object",
+      "additionalProperties" : true,
+      "description" : "owner details",
+      "properties" : {
+        "id" : {
+          "type" : "string"
+        },
+        "externalId" : {
+          "type" : "string",
+          "description" : "in terms of bank numeration"
+        },
+        "clientCategory" : {
+          "type" : "string",
+          "enum" : [ "Private", "Corporate" ]
+        },
+        "additionalData" : {
+          "type" : "object",
+          "additionalProperties" : { },
+          "description" : "additional custom data"
+        }
+      },
+      "required" : [ "id" ]
+    },
+    "BalanceUpdate" : {
+      "type" : "object",
+      "additionalProperties" : true,
+      "description" : "list of balance updates during the processing ",
+      "properties" : {
+        "balanceType" : {
+          "type" : "string"
+        },
+        "operationId" : {
+          "type" : "string",
+          "description" : "unique id of issuing operation which caused balance update event"
+        },
+        "amount" : {
+          "$ref" : "#/definitions/Money"
+        },
+        "newBalance" : {
+          "$ref" : "#/definitions/Money"
+        },
+        "accountChangeSeqNumber" : {
+          "type" : "integer",
+          "description" : "Sequence Number of balances update event for a particular account. This is strictly increasing number maintained on account level and updated at each issuing operation processing (financial or authorisation) affecting one or more balance types"
+        },
+        "additionalData" : {
+          "type" : "object",
+          "additionalProperties" : { },
+          "description" : "additional custom data"
+        }
+      },
+      "required" : [ "balanceType", "amount", "newBalance" ]
+    },
+    "Money" : {
+      "type" : "object",
+      "additionalProperties" : true,
+      "properties" : {
+        "amount" : {
+          "type" : "string"
+        },
+        "currency" : {
+          "type" : "string"
+        },
+        "formatted" : {
+          "type" : "string"
+        }
+      },
+      "required" : [ "amount", "currency" ]
+    }
+  }
+}

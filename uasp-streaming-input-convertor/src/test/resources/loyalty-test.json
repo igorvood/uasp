@@ -1,0 +1,36 @@
+{
+  "mdmId": "32542135",
+  "actualTime": "2022-10-19T09:25:16",
+  "loyaltyPrograms": [
+    {
+      "name": "Программа Мультибонус",
+      "code": "MULTIBONUS",
+      "status": "ACTIVE",
+      "options": [
+        {
+          "code": "CBPRIV",
+          "name": "Привилегия",
+          "startDate": "2022-09-01",
+          "closeDate": "2022-09-30",
+          "createTime": "2022-08-19T09:25:16",
+          "operatorId": null
+        },
+        {
+          "code": "NoBonus",
+          "name": "Отключена опция",
+          "startDate": "2022-10-01",
+          "closeDate": null,
+          "createTime": "2022-09-19T09:25:16",
+          "operatorId": null
+        }
+      ],
+      "accounts": [
+        {
+          "currency": "CB",
+          "balance": 1235
+        }
+      ]
+    }
+  ],
+  "eventType": "NEW_OPTION"
+}

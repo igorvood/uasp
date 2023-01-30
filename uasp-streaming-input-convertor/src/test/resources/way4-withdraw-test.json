@@ -1,0 +1,141 @@
+{
+	"id": "A95691218370G569166560",
+	"chain": {
+		"id": "95691218370",
+		"ref": {
+			"authCode": "500005",
+			"rrn": "217200452175",
+			"tref": "221721621434992",
+			"srn": "M1724298H6H1"
+		},
+		"auth": {
+			"conditions": [
+				"NO_TERM",
+				"ENET",
+				"SECURE_CODE",
+				"LINE_SECURE",
+				"CVC2",
+				"NO_CARD",
+				"NO_CARDHOLDER",
+				"NO_MERCH"
+			],
+			"isContactless": false,
+			"isPinBased": false,
+			"isRecurring": false,
+			"isEcom": false,
+			"is3DS": true
+		},
+		"serviceType": "J6",
+		"serviceDateTime": "2022-06-21T16:21:43"
+	},
+	"actionType": "Authorization",
+	"card": {
+		"id": "569166560",
+		"externalId": "40817810569166560",
+		"maskedPan": "427229******5684",
+		"cardType": {
+			"paymentScheme": "VISA",
+			"memberId": "427229",
+			"bin": "427229",
+			"country": "GBR",
+			"region": "Central and Eastern Europe, Middle East, Africa",
+			"serviceCode": "201",
+			"isChip": true,
+			"isLocal": false,
+			"psProduct": "F",
+			"psCardBrand": "VISA",
+			"psFundingSource": "Credit"
+		},
+		"plastic": {
+			"expire": "2405"
+		},
+		"client": {
+			"id": "1493661370",
+			"externalId": "1493661370",
+			"clientCategory": "Private"
+		}
+	},
+	"account": {
+		"id": "569166560",
+		"iban": "40817810569166560",
+		"accountNumber": "40817810569166560",
+		"contractNumber": "427229******5684",
+		"client": {
+			"id": "1493661370",
+			"externalId": "1493661370",
+			"clientCategory": "Private"
+		}
+	},
+	"requestedAmount": {
+		"paymentDirection": "Debit",
+		"transaction": {
+			"amount": "1000.00",
+			"currency": "RUR"
+		},
+		"billing": {
+			"amount": "1000.00",
+			"currency": "RUR"
+		}
+	},
+	"routing": {
+		"paymentScheme": "VISA",
+		"clearingDate": "2022-06-15",
+		"sourceMemberId": "437783",
+		"receivingMemberId": "405676",
+		"routingType": "Incoming",
+		"direction": "Incoming"
+	},
+	"pointOfService": {
+		"country": "RUS",
+		"city": "MOSCOW",
+		"merchantName": "Visa Unique",
+		"mcc": "6051",
+		"merchantId": "100000000000067",
+		"terminalId": "10000015",
+		"terminalType": "ECOMMERCE"
+	},
+	"processing": {
+		"billingDate": "2022-05-01",
+		"availableAmount": {
+			"amount": "4125.00",
+			"currency": "RUR"
+		},
+		"baseAmount": {
+			"amount": "-1000.00",
+			"currency": "RUR"
+		},
+		"resolution": "Accepted",
+		"resultCode": "0",
+		"chainStage": "Authorized",
+		"processedAt": "2022-06-21T13:21:43Z",
+		"effectiveDate": "2022-06-15",
+		"fxRateId": "164317420000001"
+	},
+	"taggedData": {
+		"BAMNT1": "000000312500",
+		"BCURR1": "810",
+		"BTYPE1": "02",
+		"CB_RC": "0",
+		"FNW": "V",
+		"AP_PRTCL": "1",
+		"SORCE_PAY": "UNKNOWN",
+		"KBO": "643",
+		"VPD": "0000000005",
+		"AUTH_METHOD": "00",
+		"DE22": "000",
+		"TGTCC": "GBR",
+		"PRODUCT_ID": "F C",
+		"CARD_AFS": "C",
+		"SRCCC": "RUS",
+		"CIID": "137540740",
+		"CVC2R": "M",
+		"CAVVR": "2",
+		"T_USG": "AKR",
+		"S_USG": "KAR",
+		"ISS_FMS_RQ": "",
+		"FMS_NEXT_BERTLV": "F022F51EC20BT1493661370C502T0C605TFULL",
+		"NEXT_CURR": "810",
+		"NEXT_AMOUNT": "100000",
+		"ISS_FMS_RC": "0"
+	}
+}

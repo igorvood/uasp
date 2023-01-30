@@ -1,0 +1,35 @@
+package ru.vtb.uasp.validate;
+
+global org.slf4j.Logger logger
+
+import ru.vtb.uasp.common.dto.UaspDto
+import ru.vtb.uasp.validate.entity.ValidateMsg
+import ru.vtb.uasp.inputconvertor.utils.DrlHelper
+
+dialect "mvel"
+
+
+// Идентификатор клиента должен быть обязательно
+rule "The client ID must be mandatory"
+  when
+    UaspDto(id.isEmpty)
+  then
+    insert(new ValidateMsg(drools.getRule().getName()))
+end
+// Операция подтверждения транзакции должна содержать сумму списания
+rule "The event must contain eventType = NewOption "
+  when
+    UaspDto($eventType:dataString.get("eventType"),  $eventType.isEmpty == false && $eventType.get != "NEW_OPTION")
+
+  then
+    insert(new ValidateMsg(drools.getRule().getName() + ", "
+        + " eventType: " + $eventType))
+end
+rule "The event must contain  code != Nobonus"
+  when
+
+    UaspDto($loyaltyCode:dataString.get("loyaltyCode"),  $loyaltyCode.isEmpty == false && $loyaltyCode.get == "NoBonus")
+  then
+    insert(new ValidateMsg(drools.getRule().getName() + ", "
+        + " loyaltyCode: " + $loyaltyCode))
+end

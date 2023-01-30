@@ -1,0 +1,110 @@
+{
+  "definitions": {},
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://example.com/object1660454839.json",
+  "title": "Root",
+  "type": "object",
+  "required": [
+    "typ",
+    "transaction_currency_cd",
+    "terminal_class",
+    "card_number",
+    "transaction_amt",
+    "response_code",
+    "local_transaction_dt",
+    "msgid",
+    "local_transaction_ts"
+  ],
+  "properties": {
+    "typ": {
+      "$id": "#root/typ",
+      "title": "Typ",
+      "type": "string",
+      "default": "",
+      "examples": [
+        "1"
+      ],
+      "pattern": "^.*$"
+    },
+    "transaction_currency_cd": {
+      "$id": "#root/transaction_currency_cd",
+      "title": "Transaction_currency_cd",
+      "type": "string",
+      "default": "",
+      "examples": [
+        "643"
+      ],
+      "pattern": "^.*$"
+    },
+    "terminal_class": {
+      "$id": "#root/terminal_class",
+      "title": "Terminal_class",
+      "type": "string",
+      "default": "",
+      "examples": [
+        "000"
+      ],
+      "pattern": "^.*$"
+    },
+    "card_number": {
+      "$id": "#root/card_number",
+      "title": "Card_number",
+      "type": "string",
+      "default": "",
+      "examples": [
+        "536829*****5948"
+      ],
+      "pattern": "^.*$"
+    },
+    "transaction_amt": {
+      "$id": "#root/transaction_amt",
+      "title": "Transaction_amt",
+      "type": "string",
+      "default": "",
+      "examples": [
+        "000000000001"
+      ],
+      "pattern": "^.*$"
+    },
+    "response_code": {
+      "$id": "#root/response_code",
+      "title": "Response_code",
+      "type": "string",
+      "default": "",
+      "examples": [
+        "00001"
+      ],
+      "pattern": "^.*$"
+    },
+    "local_transaction_dt": {
+      "$id": "#root/local_transaction_dt",
+      "title": "Local_transaction_dt",
+      "type": "string",
+      "default": "",
+      "examples": [
+        "0210"
+      ],
+      "pattern": "^.*$"
+    },
+    "msgid": {
+      "$id": "#root/msgid",
+      "title": "Msgid",
+      "type": "string",
+      "default": "",
+      "examples": [
+        "661500000000001509142164448582426848501A"
+      ],
+      "pattern": "^.*$"
+    },
+    "local_transaction_ts": {
+      "$id": "#root/local_transaction_ts",
+      "title": "Local_transaction_ts",
+      "type": "string",
+      "default": "",
+      "examples": [
+        "013704"
+      ],
+      "pattern": "^.*$"
+    }
+  }
+}

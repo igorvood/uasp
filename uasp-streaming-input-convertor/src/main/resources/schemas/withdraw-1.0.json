@@ -1,0 +1,408 @@
+{
+	"definitions": {},
+	"$schema": "http://json-schema.org/draft-07/schema#",
+	"$id": "https://example.com/object1659968431.json",
+	"title": "Root",
+	"type": "object",
+	"required": [
+		"systemIniciator",
+		"eventType",
+		"operationCode",
+		"senderUnc",
+		"senderMdmId",
+		"transferOrderId",
+		"createdAt",
+		"updatedAt",
+		"reasonLaunch",
+		"fields"
+	],
+	"properties": {
+		"systemIniciator": {
+			"$id": "#root/systemIniciator",
+			"title": "Systeminiciator",
+			"type": "string",
+			"default": "",
+			"examples": [
+				"transfer-orchestrator"
+			],
+			"pattern": "^.*$"
+		},
+		"eventType": {
+			"$id": "#root/eventType",
+			"title": "Eventtype",
+			"type": "string",
+			"default": "",
+			"examples": [
+				"ORDER_PROCESSED"
+			],
+			"pattern": "^.*$"
+		},
+		"operationCode": {
+			"$id": "#root/operationCode",
+			"title": "Operationcode",
+			"type": "string",
+			"default": "",
+			"examples": [
+				"9775"
+			],
+			"pattern": "^.*$"
+		},
+		"senderUnc": {
+			"$id": "#root/senderUnc",
+			"title": "Senderunc",
+			"type": "string",
+			"default": "",
+			"examples": [
+				"18003277"
+			],
+			"pattern": "^.*$"
+		},
+		"senderMdmId": {
+			"$id": "#root/senderMdmId",
+			"title": "Sendermdmid",
+			"type": "string",
+			"default": "",
+			"examples": [
+				"1353423167"
+			],
+			"pattern": "^.*$"
+		},
+		"transferOrderId": {
+			"$id": "#root/transferOrderId",
+			"title": "Transferorderid",
+			"type": "string",
+			"default": "",
+			"examples": [
+				"0eb52d92-d5a3-44a9-9d0a-c2a35508bef8"
+			],
+			"pattern": "^.*$"
+		},
+		"createdAt": {
+			"$id": "#root/createdAt",
+			"title": "Createdat",
+			"type": "number",
+			"examples": [
+				1652855458.73
+			],
+			"default": 0.0
+		},
+		"updatedAt": {
+			"$id": "#root/updatedAt",
+			"title": "Updatedat",
+			"type": "number",
+			"examples": [
+				1652855471.043
+			],
+			"default": 0.0
+		},
+		"reasonLaunch": {
+			"$id": "#root/reasonLaunch",
+			"title": "Reasonlaunch",
+			"type": "string",
+			"default": "",
+			"examples": [
+				"USER"
+			],
+			"pattern": "^.*$"
+		},
+		"fields": {
+			"$id": "#root/fields",
+			"title": "Fields",
+			"type": "object",
+			"required": [
+			],
+			"properties": {
+				"documentNumber": {
+					"$id": "#root/fields/documentNumber",
+					"title": "Documentnumber",
+					"type": "string",
+					"default": "",
+					"examples": [
+						"034257"
+					],
+					"pattern": "^.*$"
+				},
+				"senderName": {
+					"$id": "#root/fields/senderName",
+					"title": "Sendername",
+					"type": "string",
+					"default": "",
+					"examples": [
+						"Чистяков Сергей Нколаевич"
+					],
+					"pattern": "^.*$"
+				},
+				"receiverName": {
+					"$id": "#root/fields/receiverName",
+					"title": "Receivername",
+					"type": "string",
+					"default": "",
+					"examples": [
+						"Чистяков Сергей Нколаевич"
+					],
+					"pattern": "^.*$"
+				},
+				"receiverMdmId": {
+					"$id": "#root/fields/receiverMdmId",
+					"title": "Receivermdmid",
+					"type": "string",
+					"default": "",
+					"examples": [
+						"1353423167"
+					],
+					"pattern": "^.*$"
+				},
+				"sourceProductId": {
+					"$id": "#root/fields/sourceProductId",
+					"title": "Sourceproductid",
+					"type": "string",
+					"default": "",
+					"examples": [
+						"EA3B61E6A58A484F932349BDAD29ABBA"
+					],
+					"pattern": "^.*$"
+				},
+				"targetProductId": {
+					"$id": "#root/fields/targetProductId",
+					"title": "Targetproductid",
+					"type": "string",
+					"default": "",
+					"examples": [
+						"B7587A0E90614E1EA198BFCCD9F13C43"
+					],
+					"pattern": "^.*$"
+				},
+				"sourceAmount": {
+					"$id": "#root/fields/sourceAmount",
+					"title": "Sourceamount",
+					"type": "string",
+					"default": "",
+					"examples": [
+						"1.00"
+					],
+					"pattern": "^.*$"
+				},
+				"sourceCurrency": {
+					"$id": "#root/fields/sourceCurrency",
+					"title": "Sourcecurrency",
+					"type": "string",
+					"default": "",
+					"examples": [
+						"RUB"
+					],
+					"pattern": "^.*$"
+				},
+				"targetAmount": {
+					"$id": "#root/fields/targetAmount",
+					"title": "Targetamount",
+					"type": "string",
+					"default": "",
+					"examples": [
+						"1.00"
+					],
+					"pattern": "^.*$"
+				},
+				"targetCurrency": {
+					"$id": "#root/fields/targetCurrency",
+					"title": "Targetcurrency",
+					"type": "string",
+					"default": "",
+					"examples": [
+						"RUB"
+					],
+					"pattern": "^.*$"
+				},
+				"rate": {
+					"$id": "#root/fields/rate",
+					"title": "Rate",
+					"type": "string",
+					"default": "",
+					"examples": [
+						"1"
+					],
+					"pattern": "^.*$"
+				},
+				"purpose": {
+					"$id": "#root/fields/purpose",
+					"title": "Purpose",
+					"type": "string",
+					"default": "",
+					"examples": [
+						"Перевод между своими счетами"
+					],
+					"pattern": "^.*$"
+				},
+				"spmCheckResult": {
+					"$id": "#root/fields/spmCheckResult",
+					"title": "Spmcheckresult",
+					"type": "string",
+					"default": "",
+					"examples": [
+						"ALLOW"
+					],
+					"pattern": "^.*$"
+				},
+				"confirmingData": {
+					"$id": "#root/fields/confirmingData",
+					"title": "Confirmingdata",
+					"type": "string",
+					"default": "",
+					"examples": [
+						"[{\"key\":\"fullName\",\"label\":\"Тип перевода\",\"value\":\"Перевод между своими счетами\"},{\"key\":\"sourceAccount\",\"label\":\"Счет списания\",\"value\":\"40817810********2753\"},{\"key\":\"targetAccount\",\"label\":\"Счет зачисления\",\"value\":\"40817810********3328\"},{\"key\":\"sourceSum\",\"label\":\"Сумма\",\"value\":\"1 ₽\"},{\"key\":\"commission\",\"label\":\"Сумма комиссии\",\"value\":\"0 ₽\"},{\"key\":\"status\",\"label\":\"Статус\",\"value\":\"Выполнено\"}]"
+					],
+					"pattern": "^.*$"
+				},
+				"sourceAccount": {
+					"$id": "#root/fields/sourceAccount",
+					"title": "Sourceaccount",
+					"type": "string",
+					"default": "",
+					"examples": [
+						"40817810223004012753"
+					],
+					"pattern": "^.*$"
+				},
+				"sourceSystem": {
+					"$id": "#root/fields/sourceSystem",
+					"title": "Sourcesystem",
+					"type": "string",
+					"default": "",
+					"examples": [
+						"PROFILE"
+					],
+					"pattern": "^.*$"
+				},
+				"sourceSystemClientId": {
+					"$id": "#root/fields/sourceSystemClientId",
+					"title": "Sourcesystemclientid",
+					"type": "string",
+					"default": "",
+					"examples": [
+						"6300435"
+					],
+					"pattern": "^.*$"
+				},
+				"targetAccount": {
+					"$id": "#root/fields/targetAccount",
+					"title": "Targetaccount",
+					"type": "string",
+					"default": "",
+					"examples": [
+						"40817810123004013328"
+					],
+					"pattern": "^.*$"
+				},
+				"targetSystem": {
+					"$id": "#root/fields/targetSystem",
+					"title": "Targetsystem",
+					"type": "string",
+					"default": "",
+					"examples": [
+						"PROFILE"
+					],
+					"pattern": "^.*$"
+				},
+				"targetSystemClientId": {
+					"$id": "#root/fields/targetSystemClientId",
+					"title": "Targetsystemclientid",
+					"type": "string",
+					"default": "",
+					"examples": [
+						"6300435"
+					],
+					"pattern": "^.*$"
+				},
+				"commissionAmount": {
+					"$id": "#root/fields/commissionAmount",
+					"title": "Commissionamount",
+					"type": "string",
+					"default": "",
+					"examples": [
+						"0"
+					],
+					"pattern": "^.*$"
+				},
+				"commissionCurrency": {
+					"$id": "#root/fields/commissionCurrency",
+					"title": "Commissioncurrency",
+					"type": "string",
+					"default": "",
+					"examples": [
+						"RUB"
+					],
+					"pattern": "^.*$"
+				},
+				"status": {
+					"$id": "#root/fields/status",
+					"title": "Status",
+					"type": "string",
+					"default": "",
+					"examples": [
+						"PROCESSED"
+					],
+					"pattern": "^.*$"
+				},
+				"sourceProductBranch": {
+					"$id": "#root/fields/sourceProductBranch",
+					"title": "Sourceproductbranch",
+					"type": "string",
+					"default": "",
+					"examples": [
+						"00000"
+					],
+					"pattern": "^.*$"
+				},
+				"targetProductBranch": {
+					"$id": "#root/fields/targetProductBranch",
+					"title": "Targetproductbranch",
+					"type": "string",
+					"default": "",
+					"examples": [
+						"00000"
+					],
+					"pattern": "^.*$"
+				},
+				"sourceSumRub": {
+					"$id": "#root/fields/sourceSumRub",
+					"title": "Sourcesumrub",
+					"type": "string",
+					"default": "",
+					"examples": [
+						"1.00"
+					],
+					"pattern": "^.*$"
+				},
+				"sourceProductType": {
+					"$id": "#root/fields/sourceProductType",
+					"title": "Sourceproducttype",
+					"type": "string",
+					"default": "",
+					"examples": [
+						"ACCOUNT"
+					],
+					"pattern": "^.*$"
+				},
+				"targetProductType": {
+					"$id": "#root/fields/targetProductType",
+					"title": "Targetproducttype",
+					"type": "string",
+					"default": "",
+					"examples": [
+						"ACCOUNT"
+					],
+					"pattern": "^.*$"
+				},
+				"interactionChannel": {
+					"$id": "#root/fields/interactionChannel",
+					"title": "Interactionchannel",
+					"type": "string",
+					"default": "",
+					"examples": [
+						"MOBILE"
+					],
+					"pattern": "^.*$"
+				}
+			}
+		}
+	}
+}

@@ -1,0 +1,319 @@
+{
+  "definitions": {},
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://example.com/object1663240004.json",
+  "title": "Root",
+  "type": "object",
+  "required": [
+    "mdmid"
+  ],
+  "properties": {
+    "mdmid": {
+      "$id": "#root/mdmid",
+      "title": "Mdmid",
+      "type": "string",
+      "default": "",
+      "pattern": "^.*$"
+    },
+    "IpFlg": {
+      "$id": "#root/IpFlg",
+      "title": "Ipflg",
+      "type": "boolean",
+      "default": true
+    },
+    "GndrCd": {
+      "$id": "#root/GndrCd",
+      "title": "Gndrcd",
+      "type": "string",
+      "default": "",
+      "pattern": "^.*$"
+    },
+    "RgnCd": {
+      "$id": "#root/RgnCd",
+      "title": "Rgncd",
+      "type": "string",
+      "default": "",
+      "pattern": "^.*$"
+    },
+    "PrspFlg": {
+      "$id": "#root/PrspFlg",
+      "title": "Prspflg",
+      "type": "boolean",
+      "default": true
+    },
+    "StLstCrmFlg": {
+      "$id": "#root/StLstCrmFlg",
+      "title": "Stlstcrmflg",
+      "type": "boolean",
+      "default": true
+    },
+    "TtAnnAmtNc": {
+      "$id": "#root/TtAnnAmtNc",
+      "title": "Ttannamtnc",
+      "type": "integer",
+      "default": 0
+    },
+    "TtBlncAmt": {
+      "$id": "#root/TtBlncAmt",
+      "title": "Ttblncamt",
+      "type": "number",
+      "default": 0.0
+    },
+    "InvstPrtfAmtNc": {
+      "$id": "#root/InvstPrtfAmtNc",
+      "title": "Invstprtfamtnc",
+      "type": "integer",
+      "default": 0
+    },
+    "IncmCnfAmtNc": {
+      "$id": "#root/IncmCnfAmtNc",
+      "title": "Incmcnfamtnc",
+      "type": "integer",
+      "default": 0
+    },
+    "CntrCd": {
+      "$id": "#root/CntrCd",
+      "title": "Cntrcd",
+      "type": "string",
+      "default": "",
+      "pattern": "^.*$"
+    },
+    "CtprtFlg": {
+      "$id": "#root/CtprtFlg",
+      "title": "Ctprtflg",
+      "type": "boolean",
+      "default": true
+    },
+    "VtbOnlnAcsFlg": {
+      "$id": "#root/VtbOnlnAcsFlg",
+      "title": "Vtbonlnacsflg",
+      "type": "boolean",
+      "default": true
+    },
+    "PkgStrtDt": {
+      "$id": "#root/PkgStrtDt",
+      "title": "Pkgstrtdt",
+      "type": "integer",
+      "default": 0
+    },
+    "PkgClsDt": {
+      "$id": "#root/PkgClsDt",
+      "title": "Pkgclsdt",
+      "type": "integer",
+      "default": 0
+    },
+    "BnsCtgCd": {
+      "$id": "#root/BnsCtgCd",
+      "title": "Bnsctgcd",
+      "type": "string",
+      "default": "",
+      "pattern": "^.*$"
+    },
+    "BnsCtgChDt": {
+      "$id": "#root/BnsCtgChDt",
+      "title": "Bnsctgchdt",
+      "type": "integer",
+      "default": 0
+    },
+    "BnsBlncAmt": {
+      "$id": "#root/BnsBlncAmt",
+      "title": "Bnsblncamt",
+      "type": "integer",
+      "default": 0
+    },
+    "RtSpnd30Amt": {
+      "$id": "#root/RtSpnd30Amt",
+      "title": "Rtspnd30amt",
+      "type": "integer",
+      "default": 0
+    },
+    "RtSpnd30Cnt": {
+      "$id": "#root/RtSpnd30Cnt",
+      "title": "Rtspnd30cnt",
+      "type": "integer",
+      "default": 0
+    },
+    "RtSpnd60Amt": {
+      "$id": "#root/RtSpnd60Amt",
+      "title": "Rtspnd60amt",
+      "type": "integer",
+      "default": 0
+    },
+    "RtSpnd60Cnt": {
+      "$id": "#root/RtSpnd60Cnt",
+      "title": "Rtspnd60cnt",
+      "type": "integer",
+      "default": 0
+    },
+    "RtSpnd90Amt": {
+      "$id": "#root/RtSpnd90Amt",
+      "title": "Rtspnd90amt",
+      "type": "number",
+      "default": 0.0
+    },
+    "RtSpnd90Cnt": {
+      "$id": "#root/RtSpnd90Cnt",
+      "title": "Rtspnd90cnt",
+      "type": "integer",
+      "default": 0
+    },
+    "CrdDbt1MAmt": {
+      "$id": "#root/CrdDbt1MAmt",
+      "title": "Crddbt1mamt",
+      "type": "integer",
+      "default": 0
+    },
+    "CrdDbt2MAmt": {
+      "$id": "#root/CrdDbt2MAmt",
+      "title": "Crddbt2mamt",
+      "type": "integer",
+      "default": 0
+    },
+    "CrdDbt3MAmt": {
+      "$id": "#root/CrdDbt3MAmt",
+      "title": "Crddbt3mamt",
+      "type": "integer",
+      "default": 0
+    },
+    "CrdCrdt1MAmt": {
+      "$id": "#root/CrdCrdt1MAmt",
+      "title": "Crdcrdt1mamt",
+      "type": "number",
+      "default": 0.0
+    },
+    "CrdCrdt2MAmt": {
+      "$id": "#root/CrdCrdt2MAmt",
+      "title": "Crdcrdt2mamt",
+      "type": "integer",
+      "default": 0
+    },
+    "CrdCrdt3MAmt": {
+      "$id": "#root/CrdCrdt3MAmt",
+      "title": "Crdcrdt3mamt",
+      "type": "integer",
+      "default": 0
+    },
+    "CrdPrch1MAmt": {
+      "$id": "#root/CrdPrch1MAmt",
+      "title": "Crdprch1mamt",
+      "type": "integer",
+      "default": 0
+    },
+    "CrdPrch2MAmt": {
+      "$id": "#root/CrdPrch2MAmt",
+      "title": "Crdprch2mamt",
+      "type": "number",
+      "default": 0.0
+    },
+    "CrdPrch3MAmt": {
+      "$id": "#root/CrdPrch3MAmt",
+      "title": "Crdprch3mamt",
+      "type": "number",
+      "default": 0.0
+    },
+    "CrdTxn1MCnt": {
+      "$id": "#root/CrdTxn1MCnt",
+      "title": "Crdtxn1mcnt",
+      "type": "number",
+      "default": 0.0
+    },
+    "CrdTxn2MCnt": {
+      "$id": "#root/CrdTxn2MCnt",
+      "title": "Crdtxn2mcnt",
+      "type": "number",
+      "default": 0.0
+    },
+    "CrdTxn3MCnt": {
+      "$id": "#root/CrdTxn3MCnt",
+      "title": "Crdtxn3mcnt",
+      "type": "number",
+      "default": 0.0
+    },
+    "VtbOnlnLstSsnDt": {
+      "$id": "#root/VtbOnlnLstSsnDt",
+      "title": "Vtbonlnlstssndt",
+      "type": "integer",
+      "default": 0
+    },
+    "OpnFlg": {
+      "$id": "#root/OpnFlg",
+      "title": "Opnflg",
+      "type": "boolean",
+      "default": true
+    },
+    "ActCatMDMCd": {
+      "$id": "#root/ActCatMDMCd",
+      "title": "Actcatmdmcd",
+      "type": "string",
+      "default": "",
+      "pattern": "^.*$"
+    },
+    "ChStLCFlg": {
+      "$id": "#root/ChStLCFlg",
+      "title": "Chstlcflg",
+      "type": "boolean",
+      "default": true
+    },
+    "CrtXzFdTpCd": {
+      "$id": "#root/CrtXzFdTpCd",
+      "title": "Crtxzfdtpcd",
+      "type": "string",
+      "default": "",
+      "pattern": "^.*$"
+    },
+    "CrtXzKkTpCd": {
+      "$id": "#root/CrtXzKkTpCd",
+      "title": "Crtxzkktpcd",
+      "type": "string",
+      "default": "",
+      "pattern": "^.*$"
+    },
+    "ZpBs144Flg": {
+      "$id": "#root/ZpBs144Flg",
+      "title": "Zpbs144flg",
+      "type": "boolean",
+      "default": true
+    },
+    "SrvcMdl": {
+      "$id": "#root/SrvcMdl",
+      "title": "Srvcmdl",
+      "type": "string",
+      "default": "",
+      "pattern": "^.*$"
+    },
+    "ZFrntClntId": {
+      "$id": "#root/ZFrntClntId",
+      "title": "Zfrntclntid",
+      "type": "integer",
+      "default": 0
+    },
+    "PackDsc": {
+      "$id": "#root/PackDsc",
+      "title": "Packdsc",
+      "type": "string",
+      "default": "",
+      "pattern": "^.*$"
+    },
+    "PfmManSapId": {
+      "$id": "#root/PfmManSapId",
+      "title": "Pfmmansapid",
+      "type": "string",
+      "default": "",
+      "pattern": "^.*$"
+    },
+    "IntOrgGenId": {
+      "$id": "#root/IntOrgGenId",
+      "title": "Intorggenid",
+      "type": "string",
+      "default": "",
+      "pattern": "^.*$"
+    },
+    "ZfrntChngCd": {
+      "$id": "#root/ZfrntChngCd",
+      "title": "Zfrntchngcd",
+      "type": "string",
+      "default": "",
+      "pattern": "^.*$"
+    }
+  }
+}

@@ -1,0 +1,216 @@
+{
+  "definitions": {},
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://example.com/object1665522911.json",
+  "title": "Root",
+  "type": "object",
+  "required": [
+    "mdm_id",
+    "hash_card_number",
+    "hash_sha256md5_card_number",
+    "mask_card_number",
+    "customer_id_and_masked_card_number",
+    "customer_id"
+  ],
+  "properties": {
+    "mdm_id": {
+      "$id": "#root/mdm_id",
+      "title": "Mdmid",
+      "type": "string",
+      "default": "",
+      "examples": [
+        "123"
+      ],
+      "pattern": "^.*$"
+    },
+    "hash_card_number": {
+      "$id": "#root/hash_card_number",
+      "title": "Hash_card_number",
+      "type": "string",
+      "default": "",
+      "examples": [
+        "990654099"
+      ],
+      "pattern": "^.*$"
+    },
+    "hash_sha256md5_card_number": {
+      "$id": "#root/hash_sha256md5_card_number",
+      "title": "Hash_sha256md5_card_number",
+      "type": "string",
+      "default": "",
+      "examples": [
+        "aaa"
+      ],
+      "pattern": "^.*$"
+    },
+    "mask_card_number": {
+      "$id": "#root/mask_card_number",
+      "title": "Mask_card_number",
+      "type": "string",
+      "default": "",
+      "examples": [
+        "123***213"
+      ],
+      "pattern": "^.*$"
+    },
+    "customer_id_and_masked_card_number": {
+      "$id": "#root/customer_id_and_masked_card_number",
+      "title": "Customer_id_and_masked_card_number",
+      "type": "string",
+      "default": "",
+      "examples": [
+        "customer_id_and_masked_card_number"
+      ],
+      "pattern": "^.*$"
+    },
+    "customer_id": {
+      "$id": "#root/customer_id",
+      "title": "Customer_id",
+      "type": "string",
+      "default": "",
+      "examples": [
+        "455"
+      ],
+      "pattern": "^.*$"
+    },
+    "source_system_cd": {
+      "$id": "#root/source_system_cd",
+      "title": "Source_system_cd",
+      "type": "string",
+      "default": "",
+      "examples": [
+        "M"
+      ],
+      "pattern": "^.*$"
+    },
+    "pos_flg": {
+      "$id": "#root/pos_flg",
+      "title": "Pos_flg",
+      "type": "string",
+      "default": "",
+      "examples": [
+        "pos_flg"
+      ],
+      "pattern": "^.*$"
+    },
+    "account_num": {
+      "$id": "#root/account_num",
+      "title": "Account_num",
+      "type": "string",
+      "default": "",
+      "examples": [
+        "222"
+      ],
+      "pattern": "^.*$"
+    },
+    "is_virtual_card_flg": {
+      "$id": "#root/is_virtual_card_flg",
+      "title": "Is_virtual_card_flg",
+      "type": "string",
+      "default": "",
+      "examples": [
+        "v"
+      ],
+      "pattern": "^.*$"
+    },
+    "card_expiration_dt": {
+      "$id": "#root/card_expiration_dt",
+      "title": "Card_expiration_dt",
+      "type": "string",
+      "default": "",
+      "examples": [
+        "2210"
+      ],
+      "pattern": "^.*$"
+    },
+    "payment_system_desc": {
+      "$id": "#root/payment_system_desc",
+      "title": "Payment_system_desc",
+      "type": "string",
+      "default": "",
+      "examples": [
+        "desc"
+      ],
+      "pattern": "^.*$"
+    },
+    "card_type_cd": {
+      "$id": "#root/card_type_cd",
+      "title": "Card_type_cd",
+      "type": "string",
+      "default": "",
+      "examples": [
+        "master"
+      ],
+      "pattern": "^.*$"
+    },
+    "salary_serv_pack_flg": {
+      "$id": "#root/salary_serv_pack_flg",
+      "title": "Salary_serv_pack_flg",
+      "type": "string",
+      "default": "",
+      "examples": [
+        "salary_serv_pack_flg"
+      ],
+      "pattern": "^.*$"
+    },
+    "salary_project_flg": {
+      "$id": "#root/salary_project_flg",
+      "title": "Salary_project_flg",
+      "type": "string",
+      "default": "",
+      "examples": [
+        "salary_project_flg"
+      ],
+      "pattern": "^.*$"
+    },
+    "salary_account_scheme_flg": {
+      "$id": "#root/salary_account_scheme_flg",
+      "title": "Salary_account_scheme_flg",
+      "type": "string",
+      "default": "",
+      "examples": [
+        "salary_account_scheme_flg"
+      ],
+      "pattern": "^.*$"
+    },
+    "salary_card_type_flg": {
+      "$id": "#root/salary_card_type_flg",
+      "title": "Salary_card_type_flg",
+      "type": "string",
+      "default": "",
+      "examples": [
+        "TestString"
+      ],
+      "pattern": "^.*$"
+    },
+    "contract_card_type_cd": {
+      "$id": "#root/contract_card_type_cd",
+      "title": "Contract_card_type_cd",
+      "type": "string",
+      "default": "",
+      "examples": [
+        "contract_card_type_cd"
+      ],
+      "pattern": "^.*$"
+    },
+    "credit_limit_amt": {
+      "$id": "#root/credit_limit_amt",
+      "title": "Credit_limit_amt",
+      "type": "number",
+      "examples": [
+        10.01
+      ],
+      "default": 0.0
+    },
+    "loan_insurance_flg": {
+      "$id": "#root/loan_insurance_flg",
+      "title": "Loan_insurance_flg",
+      "type": "string",
+      "default": "",
+      "examples": [
+        "loan_insurance_flg"
+      ],
+      "pattern": "^.*$"
+    }
+  }
+}

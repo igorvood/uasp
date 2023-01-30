@@ -1,0 +1,58 @@
+{
+  "id": "111111750",
+  "pan": "437424******8246",
+  "openingDate": "2021-10-01",
+  "expirationDate": "2022-10-31",
+  "client": {
+    "id": "1111725110",
+    "externalId": "V20119111",
+    "clientCategory": "Private"
+  },
+  "account": {
+    "id": "566379111",
+    "iban": "40111110800009000361",
+    "accountNumber": "40111110800009000361",
+    "contractNumber": "00000-P-814211",
+    "client": {
+      "id": "1111725860",
+      "externalId": "V20119111",
+      "clientCategory": "Private"
+    }
+  },
+  "relatedAccounts": [],
+  "product": {
+    "code": "PREPAID_ACC_RUR.DVPREPAID"
+  },
+  "cardProduct": {
+    "paymentScheme": "VISA",
+    "memberId": "437411",
+    "bin": "437411",
+    "country": "RUS",
+    "region": "Central and Eastern Europe, Middle East, Africa",
+    "serviceCode": "111",
+    "isChip": true,
+    "isLocal": false,
+    "psProduct": "N1",
+    "psCardBrand": "VISA",
+    "psFundingSource": "Debit"
+  },
+  "isSupplementary": false,
+  "status": {
+    "value": "05",
+    "valueGroup": "Decline"
+  },
+  "pinTriesStatus": "OK",
+  "stateBankDate": "2021-10-01",
+  "taggedData": {
+    "PRJ511": "",
+    "ChangeStatusDate": "2021.10.08"
+  },
+  "additionalAttributes": [
+    {
+      "code": "SPC_CARD",
+      "value": "PREPAID",
+      "changeBankDate": "2021-10-01",
+      "changedAt": "2021-10-08T08:36:22Z"
+    }
+  ]
+}

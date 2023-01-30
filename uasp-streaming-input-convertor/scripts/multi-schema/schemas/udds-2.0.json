@@ -1,0 +1,185 @@
+{
+  "definitions": {},
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://example.com/object1663748718.json",
+  "title": "Root",
+  "type": "object",
+  "required": [
+    "OPERATION_ID",
+    "MDM_ID",
+    "EVENT_DTTM",
+    "OPERATION_AMOUNT",
+    "GOAL_CURRENCY",
+    "TRADING_PLATFORM",
+    "INTERACTION_CHANNEL",
+    "OPERATION_TYPE",
+    "SOURCE_ACCOUNT",
+    "SOURCE_ACCOUNT_BIC",
+    "SOURCE_ACCOUNT_TYPE",
+    "TARGET_ACCOUNT",
+    "TARGET_ACCOUNT_BIC",
+    "TARGET_ACCOUNT_TYPE"
+  ],
+  "properties": {
+    "OPERATION_ID": {
+      "$id": "#root/OPERATION_ID",
+      "title": "Operation_id",
+      "type": "string",
+      "default": "",
+      "examples": [
+        "348snd-32sd-wwd3-2kdjs3"
+      ],
+      "pattern": "^.*$"
+    },
+    "MDM_ID": {
+      "$id": "#root/MDM_ID",
+      "title": "MdmId",
+      "type": "string",
+      "default": "",
+      "examples": [
+        "1223134231"
+      ],
+      "pattern": "^.*$"
+    },
+    "EVENT_DTTM": {
+      "$id": "#root/EVENT_DTTM",
+      "title": "Event_dttm",
+      "type": "string",
+      "default": "",
+      "examples": [
+        "2022-02-01 09:54:00"
+      ],
+      "pattern": "^.*$"
+    },
+    "OPERATION_AMOUNT": {
+      "$id": "#root/OPERATION_AMOUNT",
+      "title": "Operation_amount",
+      "type": "string",
+      "default": "",
+      "examples": [
+        "1000"
+      ],
+      "pattern": "^.*$"
+    },
+    "GOAL_CURRENCY": {
+      "$id": "#root/GOAL_CURRENCY",
+      "title": "Goal_currency",
+      "type": "string",
+      "default": "",
+      "examples": [
+        "RUB"
+      ],
+      "pattern": "^.*$"
+    },
+    "TRADING_PLATFORM": {
+      "$id": "#root/TRADING_PLATFORM",
+      "title": "Trading_platform",
+      "type": "string",
+      "default": "",
+      "examples": [
+        "основной рынок"
+      ],
+      "pattern": "^.*$"
+    },
+    "BALANCE_BEFORE_OPERATION": {
+      "$id": "#root/BALANCE_BEFORE_OPERATION",
+      "title": "Balance_before_operation",
+      "type": "string",
+      "default": "",
+      "examples": [
+        "1000"
+      ],
+      "pattern": "^.*$"
+    },
+    "INTERACTION_CHANNEL": {
+      "$id": "#root/INTERACTION_CHANNEL",
+      "title": "Interaction_channel",
+      "type": "string",
+      "default": "",
+      "examples": [
+        "VTBPRO"
+      ],
+      "pattern": "^.*$"
+    },
+    "OPERATION_TYPE": {
+      "$id": "#root/OPERATION_TYPE",
+      "title": "Operation_type",
+      "type": "string",
+      "default": "",
+      "examples": [
+        "REFUND"
+      ],
+      "pattern": "^.*$"
+    },
+    "SOURCE_ACCOUNT": {
+      "$id": "#root/SOURCE_ACCOUNT",
+      "title": "Source_account",
+      "type": "string",
+      "default": "",
+      "examples": [
+        "4081781***********8309"
+      ],
+      "pattern": "^.*$"
+    },
+    "SOURCE_ACCOUNT_BIC": {
+      "$id": "#root/SOURCE_ACCOUNT_BIC",
+      "title": "Source_account_bic",
+      "type": "string",
+      "default": "",
+      "examples": [
+        "BIC.044525745"
+      ],
+      "pattern": "^.*$"
+    },
+    "SOURCE_ACCOUNT_TYPE": {
+      "$id": "#root/SOURCE_ACCOUNT_TYPE",
+      "title": "Source_account_type",
+      "type": "string",
+      "default": "",
+      "examples": [
+        "CURRENT_ACCOUNT"
+      ],
+      "pattern": "^.*$"
+    },
+    "TARGET_ACCOUNT": {
+      "$id": "#root/TARGET_ACCOUNT",
+      "title": "Target_account",
+      "type": "string",
+      "default": "",
+      "examples": [
+        "4081781***********8309"
+      ],
+      "pattern": "^.*$"
+    },
+    "TARGET_ACCOUNT_BIC": {
+      "$id": "#root/TARGET_ACCOUNT_BIC",
+      "title": "Target_account_bic",
+      "type": "string",
+      "default": "",
+      "examples": [
+        "BIC.044525745"
+      ],
+      "pattern": "^.*$"
+    },
+    "TARGET_ACCOUNT_TYPE": {
+      "$id": "#root/TARGET_ACCOUNT_TYPE",
+      "title": "Target_account_type",
+      "type": "string",
+      "default": "",
+      "examples": [
+        "BROKERAGE_ACCOUNT"
+      ],
+      "pattern": "^.*$"
+    },
+    "CREDIT_TRANSACTION_ID": {
+      "$id": "#root/CREDIT_TRANSACTION_ID",
+      "title": "Credit_transaction_id",
+      "type": "string",
+      "default": "",
+      "examples": [
+        "TS.0000002263298966"
+      ],
+      "pattern": "^.*$"
+    }
+  }
+}

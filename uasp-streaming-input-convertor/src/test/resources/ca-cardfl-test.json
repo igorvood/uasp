@@ -1,0 +1,22 @@
+{
+  "mdm_id" : "123",
+  "hash_card_number": "990654099",
+ "hash_sha256md5_card_number": "aaa",
+  "mask_card_number": "123***213",
+  "customer_id_and_masked_card_number": "customer_id_and_masked_card_number",
+  "customer_id": "455",
+  "source_system_cd": "M",
+  "pos_flg": "pos_flg",
+  "account_num": "222",
+  "is_virtual_card_flg": "v",
+  "card_expiration_dt": "2210",
+  "payment_system_desc": "desc",
+  "card_type_cd": "master",
+  "salary_serv_pack_flg": "salary_serv_pack_flg",
+  "salary_project_flg": "salary_project_flg",
+  "salary_account_scheme_flg": "salary_account_scheme_flg",
+  "salary_card_type_flg": "TestString",
+  "contract_card_type_cd": "contract_card_type_cd",
+  "credit_limit_amt": 10.01,
+  "loan_insurance_flg": "loan_insurance_flg"
+}

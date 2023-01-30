@@ -1,0 +1,64 @@
+{
+  "definitions": {},
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://example.com/object1665522931.json",
+  "title": "Root",
+  "type": "object",
+  "required": [
+    "account_num",
+    "mdm_id",
+    "product_nm",
+    "product_rate",
+    "period"
+  ],
+  "properties": {
+    "account_num": {
+      "$id": "#root/account_num",
+      "title": "Account_num",
+      "type": "string",
+      "default": "",
+      "examples": [
+        "12345"
+      ],
+      "pattern": "^.*$"
+    },
+    "mdm_id": {
+      "$id": "#root/mdm_id",
+      "title": "Mdm_id",
+      "type": "string",
+      "default": "",
+      "examples": [
+        "123"
+      ],
+      "pattern": "^.*$"
+    },
+    "product_nm": {
+      "$id": "#root/product_nm",
+      "title": "Product_nm",
+      "type": "string",
+      "default": "",
+      "examples": [
+        "nm"
+      ],
+      "pattern": "^.*$"
+    },
+    "product_rate": {
+      "$id": "#root/product_rate",
+      "title": "Product_rate",
+      "type": "number",
+      "examples": [
+        10.01
+      ],
+      "default": 0.0
+    },
+    "period": {
+      "$id": "#root/period",
+      "title": "Period",
+      "type": "integer",
+      "examples": [
+        3
+      ],
+      "default": 0
+    }
+  }
+}

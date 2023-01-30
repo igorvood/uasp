@@ -1,0 +1,39 @@
+#ru.vtb.uasp.main.input uasp-streaming-main-input 1.2.2
+#ru.vtb.uasp.streaming.main.input.itest uasp-streaming-mdm-main-input-itest
+#ru.vtb.uasp.aggregat uasp-streaming-main-aggregate 1.0.14
+#ru.vtb.uasp.aggregate.integration.tests uasp-streaming-ca-ha-aggregate-integration-test
+#ru.vtb.uasp.inputconvertor uasp-streaming-input-convertor 1.2.7
+#ru.vtb.uasp.streaming.convertor.itest.tests uasp-streaming-convertor-itest
+#ru.vtb.uasp.streaming.unp.convertor uasp-streaming-unp-convertor 1.4.1
+#
+#
+#uasp-streaming-main-input
+#uasp-streaming-main-input-itest
+#uasp-streaming-main-aggregate
+#uasp-streaming-main-aggregate-itest
+#uasp-streaming-input-convertor
+#uasp-streaming-input-convertor-itest
+#uasp-streaming-unp-convertor
+#uasp-streaming-unp-convertor-itest
+#uasp-streaming-mdm-enrichment
+#uasp-streaming-mdm-enrichment-itest
+#uasp-streaming-aggregate
+#uasp-streaming-aggregate-i-test
+#uasp-streaming-common
+#uasp-streaming-common-itest
+#uasp-streaming-common-etl-all-itest
+#uasp-streaming-mdm-additional-enrichment
+#uasp-streaming-mdm-additional-enrichment-itest
+#flink-deployment
+#uasp-streaming-mdm-enrichment
+#uasp-streaming-mdm-enrichment-itest
+#uasp-streaming-rto-core
+#uasp-streaming-rto-4_1_3
+#uasp-streaming-rto-4_1_7
+#uasp-streaming-rto-4_1_11
+#uasp-streaming-rto-4_1_12
+#uasp-streaming-rto-4_1_4
+uasp-streaming-model-vector
+#uasp-streaming-model-vector-i-test
+uasp-streaming-ca-ha-aggregate
+#uasp-streaming-ca-ha-aggregate-i-test

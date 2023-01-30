@@ -1,0 +1,19 @@
+{
+  "id": "111111750",
+  "client": {
+    "id": "1111725110",
+    "externalId": "V20119111",
+    "clientCategory": "Private"
+  },
+  "account": {
+    "id": "566379111",
+    "iban": "40111110800009000361",
+    "accountNumber": "40111110800009000361",
+    "contractNumber": "00000-P-814211",
+    "client": {
+      "id": "1111725860",
+      "externalId": "V20119111",
+      "clientCategory": "Private"
+    }
+  }
+}

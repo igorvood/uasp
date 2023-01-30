@@ -1,0 +1,807 @@
+{
+  "$schema" : "http://json-schema.org/draft-07/schema#",
+  "title" : "Issuing Operation",
+  "type" : "object",
+  "additionalProperties" : true,
+  "description" : "issuing operation: on/off us*auth/fin",
+  "properties" : {
+    "id" : {
+      "type" : "string",
+      "description" : "Unique within processing center, action type"
+    },
+    "prevId" : {
+      "type" : "string",
+      "description" : "Reference to previous"
+    },
+    "chain" : {
+      "$ref" : "#/definitions/OperationChain"
+    },
+    "actionType" : {
+      "type" : "string",
+      "enum" : [ "Authorization", "AuthorizationReversal", "AuthorizationAdjustment", "Presentment", "PresentmentReversal", "PresentmentAdjustment", "Chargeback", "ChargebackPartial", "ChargebackReversal", "ChargebackAdjustment", "Representment", "RepresentmentPartial", "RepresentmentReversal", "SecondChargeback", "SecondChargebackPartial", "SecondChargebackReversal", "SecondChargebackAdjustment", "Acknowledgement", "WriteOff", "Annex", "Retrieval", "Fulfilment" ],
+      "description" : "Chain step of business service (defined by service type)"
+    },
+    "comment" : {
+      "type" : "string"
+    },
+    "reasonDetails" : {
+      "type" : "string"
+    },
+    "token" : {
+      "$ref" : "#/definitions/TokenRef"
+    },
+    "card" : {
+      "$ref" : "#/definitions/IssuingCardRef"
+    },
+    "account" : {
+      "$ref" : "#/definitions/IssuingAccountRef"
+    },
+    "requestedAmount" : {
+      "$ref" : "#/definitions/OperationAmount"
+    },
+    "routing" : {
+      "oneOf" : [ {
+        "$ref" : "#/definitions/IncomingRouting"
+      }, {
+        "$ref" : "#/definitions/OutgoingRouting"
+      }, {
+        "$ref" : "#/definitions/OnUsRouting"
+      }, {
+        "$ref" : "#/definitions/InternalRouting"
+      } ]
+    },
+    "pointOfService" : {
+      "$ref" : "#/definitions/PointOfService"
+    },
+    "processing" : {
+      "$ref" : "#/definitions/IssuingOperationProcessing"
+    },
+    "paymentDetails" : {
+      "$ref" : "#/definitions/PaymentDetails",
+      "description" : "Payment attributes"
+    },
+    "counterpartyPaymentDetails" : {
+      "$ref" : "#/definitions/PaymentDetails",
+      "description" : "Counterparty payment attributes"
+    },
+    "taggedData" : {
+      "type" : "object",
+      "additionalProperties" : {
+        "type" : "string"
+      }
+    },
+    "additionalData" : {
+      "type" : "object",
+      "additionalProperties" : { },
+      "description" : "additional custom data"
+    }
+  },
+  "required" : [ "id", "chain", "actionType", "account", "requestedAmount", "routing", "processing", "taggedData" ],
+  "definitions" : {
+    "OperationChain" : {
+      "type" : "object",
+      "additionalProperties" : true,
+      "description" : "Parameters of this operation within so called operation chain. Chain is the sequence of possible secondary operations linked to one primary operation and affecting acquirer financial position - e.g. reversal, chargeback etc.",
+      "properties" : {
+        "id" : {
+          "type" : "string",
+          "description" : "Unique id of the first operation in the chain within acquiring system."
+        },
+        "ref" : {
+          "$ref" : "#/definitions/OperationChainRef"
+        },
+        "auth" : {
+          "$ref" : "#/definitions/OperationChainAuth"
+        },
+        "serviceType" : {
+          "type" : "string",
+          "description" : "Transaction type code which defines business service classification. Sample transaction types are: retail, cash, ATM, Credit etc. Coding is not fixed and can be setup in each project differently."
+        },
+        "serviceTypeExtension" : {
+          "type" : "string",
+          "description" : "Transaction type extension code which defines business service classification"
+        },
+        "serviceDateTime" : {
+          "type" : "string",
+          "format" : "date-time",
+          "description" : "bill datetime (primary action datetime)"
+        },
+        "additionalData" : {
+          "type" : "object",
+          "additionalProperties" : { },
+          "description" : "additional custom data"
+        }
+      },
+      "required" : [ "id", "serviceType" ]
+    },
+    "OperationChainRef" : {
+      "type" : "object",
+      "additionalProperties" : true,
+      "description" : "chain reference set",
+      "properties" : {
+        "authCode" : {
+          "type" : "string",
+          "description" : "Issuer authorization code. Filled for authorized operations only."
+        },
+        "rrn" : {
+          "type" : "string",
+          "description" : "Retrieval reference number"
+        },
+        "tref" : {
+          "type" : "string",
+          "description" : "Transaction reference value (Trace Id) in Mastercard or Transaction Identifier (TID) in Visa. This value is unique for each original authorization and financial request, it is assigned by payment scheme"
+        },
+        "srn" : {
+          "type" : "string",
+          "description" : "Internal system reference number"
+        },
+        "arn" : {
+          "type" : "string",
+          "description" : "Acquirer reference number."
+        },
+        "additionalData" : {
+          "type" : "object",
+          "additionalProperties" : { },
+          "description" : "additional custom data"
+        }
+      }
+    },
+    "OperationChainAuth" : {
+      "type" : "object",
+      "additionalProperties" : true,
+      "description" : "conditions when transaction has been approved",
+      "properties" : {
+        "conditions" : {
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          },
+          "description" : "tag list from trans attribute"
+        },
+        "isContactless" : {
+          "type" : "boolean",
+          "description" : "flag is set to true if transaction was made in contactless environment"
+        },
+        "isPinBased" : {
+          "type" : "boolean",
+          "description" : "flag is set to true if PIN code was entered"
+        },
+        "isRecurring" : {
+          "type" : "boolean",
+          "description" : "flag is set to true if transaction is recurring"
+        },
+        "isEcom" : {
+          "type" : "boolean",
+          "description" : "flag is set to true if transaction was made in e-commerce environment"
+        },
+        "is3DS" : {
+          "type" : "boolean",
+          "description" : "flag is set to true if transaction was made in e-commerce environment with 3DS flow"
+        },
+        "tokenType" : {
+          "type" : "string",
+          "description" : "e.g. ApplePay, GooglePay ..."
+        },
+        "additionalData" : {
+          "type" : "object",
+          "additionalProperties" : { },
+          "description" : "additional custom data"
+        }
+      },
+      "required" : [ "conditions" ]
+    },
+    "TokenRef" : {
+      "type" : "object",
+      "additionalProperties" : true,
+      "description" : "token details",
+      "properties" : {
+        "id" : {
+          "type" : "string"
+        },
+        "contractId" : {
+          "type" : "string"
+        },
+        "tokenType" : {
+          "type" : "string"
+        },
+        "dpan" : {
+          "type" : "string"
+        },
+        "maskedDpan" : {
+          "type" : "string"
+        },
+        "expirationDate" : {
+          "type" : "string",
+          "format" : "date"
+        },
+        "serviceProvider" : {
+          "type" : "string"
+        },
+        "gadgetType" : {
+          "type" : "string"
+        },
+        "gadgetId" : {
+          "type" : "string"
+        },
+        "gadgetName" : {
+          "type" : "string"
+        },
+        "requestorId" : {
+          "type" : "string"
+        },
+        "cardRefId" : {
+          "type" : "string"
+        },
+        "tokenRefId" : {
+          "type" : "string"
+        },
+        "dataStorageForm" : {
+          "type" : "string"
+        },
+        "provPath" : {
+          "type" : "string"
+        },
+        "additionalData" : {
+          "type" : "object",
+          "additionalProperties" : { },
+          "description" : "additional custom data"
+        }
+      },
+      "required" : [ "id", "contractId", "tokenType" ]
+    },
+    "IssuingCardRef" : {
+      "type" : "object",
+      "additionalProperties" : true,
+      "description" : "details of the operation payment instrument",
+      "properties" : {
+        "id" : {
+          "type" : "string"
+        },
+        "externalId" : {
+          "type" : "string",
+          "description" : "card identifier in bank system"
+        },
+        "pan" : {
+          "type" : "string",
+          "description" : "Clear pan exported by parameter only"
+        },
+        "maskedPan" : {
+          "type" : "string"
+        },
+        "cardType" : {
+          "$ref" : "#/definitions/CardProduct"
+        },
+        "plastic" : {
+          "$ref" : "#/definitions/CardPlastic"
+        },
+        "client" : {
+          "$ref" : "#/definitions/ClientRef"
+        },
+        "additionalData" : {
+          "type" : "object",
+          "additionalProperties" : { },
+          "description" : "additional custom data"
+        }
+      },
+      "required" : [ "id" ]
+    },
+    "CardProduct" : {
+      "type" : "object",
+      "additionalProperties" : true,
+      "description" : "card properties, based on bin table and service code",
+      "properties" : {
+        "paymentScheme" : {
+          "type" : "string",
+          "description" : "payment scheme 'name'. e.g.: VISA, MC ..."
+        },
+        "memberId" : {
+          "type" : "string"
+        },
+        "bin" : {
+          "type" : "string"
+        },
+        "country" : {
+          "type" : "string",
+          "description" : "alfa(3) iso code"
+        },
+        "region" : {
+          "type" : "string"
+        },
+        "serviceCode" : {
+          "type" : "string",
+          "description" : "available for on us only"
+        },
+        "isChip" : {
+          "type" : "boolean",
+          "description" : "convolution of service code"
+        },
+        "isLocal" : {
+          "type" : "boolean",
+          "description" : "convolution of service code"
+        },
+        "isContactless" : {
+          "type" : "boolean",
+          "description" : "convolution of service code"
+        },
+        "psProduct" : {
+          "type" : "string"
+        },
+        "psCardBrand" : {
+          "type" : "string"
+        },
+        "psFundingSource" : {
+          "type" : "string",
+          "enum" : [ "Prepaid", "Debit", "Credit", "Charge", "DeferredDebit" ],
+          "description" : "card product funding source in terms of payment scheme"
+        },
+        "fundingSource" : {
+          "type" : "string",
+          "enum" : [ "Prepaid", "Debit", "Credit", "Charge", "DeferredDebit" ],
+          "description" : "card product funding source in terms of accounting scheme"
+        },
+        "coBadges" : {
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          }
+        },
+        "additionalData" : {
+          "type" : "object",
+          "additionalProperties" : { },
+          "description" : "additional custom data"
+        }
+      },
+      "required" : [ "paymentScheme", "memberId", "bin" ]
+    },
+    "CardPlastic" : {
+      "type" : "object",
+      "additionalProperties" : true,
+      "properties" : {
+        "expire" : {
+          "type" : "string",
+          "description" : "YYMM"
+        },
+        "seqvN" : {
+          "type" : "string"
+        },
+        "additionalData" : {
+          "type" : "object",
+          "additionalProperties" : { },
+          "description" : "additional custom data"
+        }
+      }
+    },
+    "ClientRef" : {
+      "type" : "object",
+      "additionalProperties" : true,
+      "description" : "owner details",
+      "properties" : {
+        "id" : {
+          "type" : "string"
+        },
+        "externalId" : {
+          "type" : "string",
+          "description" : "in terms of bank numeration"
+        },
+        "clientCategory" : {
+          "type" : "string",
+          "enum" : [ "Private", "Corporate" ]
+        },
+        "additionalData" : {
+          "type" : "object",
+          "additionalProperties" : { },
+          "description" : "additional custom data"
+        }
+      },
+      "required" : [ "id" ]
+    },
+    "IssuingAccountRef" : {
+      "type" : "object",
+      "additionalProperties" : true,
+      "properties" : {
+        "id" : {
+          "type" : "string"
+        },
+        "iban" : {
+          "type" : "string",
+          "description" : "International bank account number (IBAN)"
+        },
+        "bic" : {
+          "type" : "string",
+          "description" : "Bank Identifier Code (BIC)"
+        },
+        "accountNumber" : {
+          "type" : "string",
+          "description" : "Account Number"
+        },
+        "contractNumber" : {
+          "type" : "string",
+          "description" : "Contract Number"
+        },
+        "client" : {
+          "$ref" : "#/definitions/ClientRef"
+        },
+        "additionalData" : {
+          "type" : "object",
+          "additionalProperties" : { },
+          "description" : "additional custom data"
+        }
+      },
+      "required" : [ "id" ]
+    },
+    "OperationAmount" : {
+      "type" : "object",
+      "additionalProperties" : true,
+      "description" : "amounts submitted by operation initiator and payment scheme in transaction message",
+      "properties" : {
+        "paymentDirection" : {
+          "type" : "string",
+          "enum" : [ "Debit", "Credit", "None" ],
+          "description" : "accounting direction regarding to operation target"
+        },
+        "transaction" : {
+          "$ref" : "#/definitions/Money"
+        },
+        "cashback" : {
+          "$ref" : "#/definitions/Money"
+        },
+        "billing" : {
+          "$ref" : "#/definitions/Money",
+          "description" : "named also settlement"
+        },
+        "additionalData" : {
+          "type" : "object",
+          "additionalProperties" : { },
+          "description" : "additional custom data"
+        }
+      },
+      "required" : [ "paymentDirection" ]
+    },
+    "Money" : {
+      "type" : "object",
+      "additionalProperties" : true,
+      "properties" : {
+        "amount" : {
+          "type" : "string"
+        },
+        "currency" : {
+          "type" : "string"
+        },
+        "formatted" : {
+          "type" : "string"
+        }
+      },
+      "required" : [ "amount", "currency" ]
+    },
+    "IncomingRouting" : {
+      "type" : "object",
+      "additionalProperties" : true,
+      "properties" : {
+        "routingType" : {
+          "type" : "string",
+          "enum" : [ "Incoming" ],
+          "default" : "Incoming"
+        },
+        "paymentScheme" : {
+          "type" : "string",
+          "description" : "payment scheme 'name'. e.g.: VISA, MC ..."
+        },
+        "clearingDate" : {
+          "type" : "string",
+          "format" : "date",
+          "description" : "in term of payment scheme clearing process"
+        },
+        "sourceMemberId" : {
+          "type" : "string"
+        },
+        "receivingMemberId" : {
+          "type" : "string"
+        },
+        "additionalData" : {
+          "type" : "object",
+          "additionalProperties" : { },
+          "description" : "additional custom data"
+        },
+        "direction" : {
+          "type" : "string",
+          "enum" : [ "Incoming", "Outgoing", "Internal" ]
+        }
+      },
+      "title" : "Incoming",
+      "required" : [ "routingType", "paymentScheme", "sourceMemberId", "receivingMemberId", "direction" ]
+    },
+    "OutgoingRouting" : {
+      "type" : "object",
+      "additionalProperties" : true,
+      "properties" : {
+        "routingType" : {
+          "type" : "string",
+          "enum" : [ "Outgoing" ],
+          "default" : "Outgoing"
+        },
+        "paymentScheme" : {
+          "type" : "string",
+          "description" : "payment scheme 'name'. e.g.: VISA, MC ..."
+        },
+        "clearingDate" : {
+          "type" : "string",
+          "format" : "date",
+          "description" : "in term of payment scheme clearing process"
+        },
+        "targetMemberId" : {
+          "type" : "string"
+        },
+        "sendingBin" : {
+          "type" : "string"
+        },
+        "sendingMemberId" : {
+          "type" : "string"
+        },
+        "additionalData" : {
+          "type" : "object",
+          "additionalProperties" : { },
+          "description" : "additional custom data"
+        },
+        "direction" : {
+          "type" : "string",
+          "enum" : [ "Incoming", "Outgoing", "Internal" ]
+        }
+      },
+      "title" : "Outgoing",
+      "required" : [ "routingType", "paymentScheme", "targetMemberId", "sendingMemberId", "direction" ]
+    },
+    "OnUsRouting" : {
+      "type" : "object",
+      "additionalProperties" : true,
+      "properties" : {
+        "routingType" : {
+          "type" : "string",
+          "enum" : [ "OnUs" ],
+          "default" : "OnUs"
+        },
+        "direction" : {
+          "type" : "string",
+          "enum" : [ "Incoming", "Outgoing", "Internal" ]
+        },
+        "additionalData" : {
+          "type" : "object",
+          "additionalProperties" : { },
+          "description" : "additional custom data"
+        }
+      },
+      "title" : "OnUs",
+      "required" : [ "routingType", "direction" ]
+    },
+    "InternalRouting" : {
+      "type" : "object",
+      "additionalProperties" : true,
+      "properties" : {
+        "routingType" : {
+          "type" : "string",
+          "enum" : [ "Internal" ],
+          "default" : "Internal"
+        },
+        "additionalData" : {
+          "type" : "object",
+          "additionalProperties" : { },
+          "description" : "additional custom data"
+        },
+        "direction" : {
+          "type" : "string",
+          "enum" : [ "Incoming", "Outgoing", "Internal" ]
+        }
+      },
+      "title" : "Internal",
+      "required" : [ "routingType", "direction" ]
+    },
+    "PointOfService" : {
+      "type" : "object",
+      "additionalProperties" : true,
+      "description" : "for particular operation",
+      "properties" : {
+        "country" : {
+          "type" : "string"
+        },
+        "region" : {
+          "type" : "string"
+        },
+        "city" : {
+          "type" : "string"
+        },
+        "location" : {
+          "type" : "string"
+        },
+        "merchantName" : {
+          "type" : "string"
+        },
+        "mcc" : {
+          "type" : "string"
+        },
+        "merchantId" : {
+          "type" : "string"
+        },
+        "terminalId" : {
+          "type" : "string"
+        },
+        "terminalType" : {
+          "type" : "string",
+          "enum" : [ "CAT", "ATM", "POS", "WEB", "IMPRINTER", "ECOMMERCE", "MPOS" ],
+          "description" : "by trans attributes"
+        },
+        "institution" : {
+          "$ref" : "#/definitions/FinancialInstitution"
+        },
+        "additionalData" : {
+          "type" : "object",
+          "additionalProperties" : { },
+          "description" : "additional custom data"
+        }
+      }
+    },
+    "FinancialInstitution" : {
+      "type" : "object",
+      "additionalProperties" : true,
+      "description" : "financial institution identification",
+      "properties" : {
+        "bank" : {
+          "type" : "string"
+        },
+        "branch" : {
+          "type" : "string"
+        },
+        "country" : {
+          "type" : "string",
+          "description" : "ISO 3166 Alfa(3) country code"
+        },
+        "office" : {
+          "type" : "string"
+        },
+        "id" : {
+          "type" : "string"
+        },
+        "additionalData" : {
+          "type" : "object",
+          "additionalProperties" : { },
+          "description" : "additional custom data"
+        }
+      },
+      "required" : [ "bank", "branch", "country" ]
+    },
+    "IssuingOperationProcessing" : {
+      "type" : "object",
+      "additionalProperties" : true,
+      "description" : "processing results (issuing specific)",
+      "properties" : {
+        "billingDate" : {
+          "type" : "string",
+          "format" : "date",
+          "description" : "target account start of billing"
+        },
+        "availableAmount" : {
+          "$ref" : "#/definitions/Money",
+          "description" : "payment instrument available amount before the operation (on-us card auth only)"
+        },
+        "baseAmount" : {
+          "$ref" : "#/definitions/Money",
+          "description" : "total by entries: requested amount in account currency"
+        },
+        "feeAmount" : {
+          "$ref" : "#/definitions/Money",
+          "description" : "total by entries: fee amount in account currency"
+        },
+        "additionalData" : {
+          "type" : "object",
+          "additionalProperties" : { },
+          "description" : "additional custom data"
+        },
+        "resolution" : {
+          "type" : "string",
+          "enum" : [ "Accepted", "Rejected" ]
+        },
+        "resultCode" : {
+          "type" : "string"
+        },
+        "chainStage" : {
+          "type" : "string",
+          "enum" : [ "Authorized", "Presented", "Settled", "Reversed", "Disputed", "Rejected" ],
+          "description" : "service result stage after the operation"
+        },
+        "processedAt" : {
+          "type" : "string",
+          "format" : "date-time",
+          "description" : "processing time"
+        },
+        "effectiveDate" : {
+          "type" : "string",
+          "format" : "date",
+          "description" : "in terms of bank date"
+        },
+        "fxRateId" : {
+          "type" : "string"
+        }
+      },
+      "required" : [ "resolution", "resultCode", "chainStage", "processedAt", "effectiveDate" ]
+    },
+    "PaymentDetails" : {
+      "type" : "object",
+      "additionalProperties" : true,
+      "description" : "Party Info",
+      "properties" : {
+        "partyType" : {
+          "type" : "string",
+          "enum" : [ "Payer", "Beneficiary" ],
+          "description" : "Party type"
+        },
+        "party" : {
+          "$ref" : "#/definitions/PartyInfo",
+          "description" : "Party"
+        },
+        "bank" : {
+          "$ref" : "#/definitions/PartyInfo",
+          "description" : "Party bank Info"
+        },
+        "corrBank" : {
+          "$ref" : "#/definitions/PartyInfo",
+          "description" : "Party correspondent bank Info"
+        }
+      }
+    },
+    "PartyInfo" : {
+      "type" : "object",
+      "additionalProperties" : true,
+      "properties" : {
+        "name" : {
+          "type" : "string",
+          "description" : "Party name"
+        },
+        "accountInfo" : {
+          "$ref" : "#/definitions/PartyAccount"
+        },
+        "taxInfo" : {
+          "$ref" : "#/definitions/PartyTax"
+        },
+        "taggedData" : {
+          "type" : "object",
+          "additionalProperties" : {
+            "type" : "string"
+          }
+        },
+        "additionalData" : {
+          "type" : "object",
+          "additionalProperties" : { },
+          "description" : "additional custom data"
+        }
+      }
+    },
+    "PartyAccount" : {
+      "type" : "object",
+      "additionalProperties" : true,
+      "description" : "Party account attributes",
+      "properties" : {
+        "accountNumber" : {
+          "type" : "string",
+          "description" : "Account number"
+        },
+        "accountMemberId" : {
+          "type" : "string",
+          "description" : "Account member id"
+        }
+      }
+    },
+    "PartyTax" : {
+      "type" : "object",
+      "additionalProperties" : true,
+      "description" : "Party tax attributes",
+      "properties" : {
+        "itn" : {
+          "type" : "string",
+          "description" : "Individual tax number"
+        },
+        "taxPosition" : {
+          "type" : "string",
+          "description" : "Tax position"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,92 @@
+package ru.vtb.uasp.validate;
+
+global org.slf4j.Logger logger
+
+import ru.vtb.uasp.common.dto.UaspDto
+import ru.vtb.uasp.validate.entity.ValidateMsg
+import ru.vtb.uasp.inputconvertor.utils.DrlHelper
+
+dialect "mvel"
+
+
+// Идентификатор клиента должен быть обязательно
+rule "The client ID must be mandatory"
+  when
+    UaspDto(id.isEmpty)
+  then
+    insert(new ValidateMsg(drools.getRule().getName()))
+end
+
+// UUID должен быть обязательно
+rule "The UUID must be mandatory"
+  when
+    UaspDto(uuid.isEmpty)
+  then
+    insert(new ValidateMsg(drools.getRule().getName()))
+end
+
+
+// Тип операции должен быть обязательно
+rule "The type of operation must be mandatory"
+  when
+    UaspDto(dataString.get("action_type").isEmpty)
+  then
+    insert(new ValidateMsg(drools.getRule().getName()))
+end
+
+//rule "Test rule"
+//    when
+//        UaspDto($actionType:dataString.get("action_type"), $actionType.get == "Authorization1")
+//
+//    then
+//        insert(new ValidateMsg("Fail test rule"))
+//end
+
+
+// Операция подтверждения транзакции должна содержать дату оформления
+/*
+rule "The transaction confirmation operation must contain the registration date"
+  when
+    UaspDto($actionType:dataString.get("action_type"), $actionType.isEmpty == false && $actionType.get == "Presentment")
+    UaspDto($effectiveDate:dataLong.get("effective_date").isEmpty)
+  then
+    insert(new ValidateMsg(drools.getRule().getName() + ", + actionType: "
+        + $actionType + ", effectiveDate: " + $effectiveDate))
+end
+*/
+
+
+// Операция подтверждения транзакции должна содержать ссылку на авторизацию
+/*rule "The transaction confirmation operation must contain a link to authorization"
+  when
+    UaspDto($actionType:dataString.get("action_type"),  $actionType.isEmpty == false && $actionType.get == "Presentment")
+	and
+    (
+	UaspDto($auditRefAuthCode:dataString.get("audit_ref_authcode"), $auditRefAuthCode.isEmpty)
+	or
+    UaspDto($auditRefRnn:dataString.get("audit_ref_rrn"), $auditRefRnn.isEmpty)
+	or
+    UaspDto($auditRefSrn:dataString.get("audit_ref_srn"), $auditRefSrn.isEmpty)
+	)
+  then
+    insert(new ValidateMsg(drools.getRule().getName() + ", actionType: "
+        + $actionType))
+end*/
+
+
+// Операция подтверждения транзакции должна содержать сумму списания
+rule "The transaction confirmation operation must contain the amount of the debit"
+  when
+    UaspDto($actionType:dataString.get("action_type"),  $actionType.isEmpty == false && $actionType.get == "Presentment")
+    UaspDto($transactionAmount:dataDecimal.get("transaction_amount"), $transactionAmount.isEmpty)
+  then
+    insert(new ValidateMsg(drools.getRule().getName() + ", "
+        + " transactionAmount: " + $transactionAmount))
+end
+
+rule "Transaction amount has invalid format"
+  when
+    UaspDto($transactionAmount:dataDecimal.get("transaction_amount"), DrlHelper.checkFormatBigDecimal($transactionAmount))
+  then
+    insert(new ValidateMsg(drools.getRule().getName() + ", " + " transactionAmount: " + $transactionAmount))
+end

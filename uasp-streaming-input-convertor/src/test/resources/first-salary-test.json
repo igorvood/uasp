@@ -1,0 +1,103 @@
+{
+  "accSaldo": 0,
+  "clientId": "1538541282",
+  "data": {
+    "KBO": "731820-01",
+    "account": "42304840********0037",
+    "accountProductId": "",
+    "authorizationCode": "",
+    "balance": {
+      "amount": 0,
+      "currency": "USD"
+    },
+    "card": "",
+    "cardProductId": "",
+    "categoryId": null,
+    "debet": true,
+    "feeAmount": {
+      "currency": "",
+      "sum": 0
+    },
+    "fullOperationName": "",
+    "isHold": false,
+    "mcc": "",
+    "message": "",
+    "operationAmount": {
+      "currency": "USD",
+      "sum": 500.00
+    },
+    "operationCode": "",
+    "operationName": "Перечисление средств на счет ",
+    "operationType": "",
+    "processedDate": "",
+    "properties": [
+      {
+        "key": "DocNum",
+        "receipt": [
+        ],
+        "remove": false,
+        "value": "89208"
+      },
+      {
+        "key": "DocCode",
+        "receipt": [
+        ],
+        "remove": false,
+        "value": "17"
+      },
+      {
+        "key": "CorrAcct",
+        "receipt": [
+        ],
+        "remove": false,
+        "value": "00000840********0000"
+      },
+      {
+        "key": "CorrBank",
+        "receipt": [
+        ],
+        "remove": false,
+        "value": "044525745"
+      },
+      {
+        "key": "ReceiverAcct",
+        "receipt": [
+        ],
+        "remove": false,
+        "value": "40817840********0047"
+      },
+      {
+        "key": "ReceiverBIC",
+        "receipt": [
+        ],
+        "remove": false,
+        "value": "044525745"
+      }
+    ],
+    "status": "Processed",
+    "template": {
+      "list": "",
+      "view": ""
+    },
+    "terminalName": "",
+    "transactionAmount": {
+      "currency": "USD",
+      "sum": 500
+    },
+    "transactionDate": "2022-05-18T12:31:22.4508222"
+  },
+  "eventTime": "2022-05-18T12:32:18.4513818",
+  "firstAdd": false,
+  "internalId": "CFT2RS.10000033307567",
+  "operationDate": "2022-05-18T12:32:18.4513818",
+  "systemId": "CFT2RS",
+  "transactions": [
+    {
+      "transactionId": "TS.0000000001240066",
+      "transactionSystemId": "CFT2RS"
+    }
+  ],
+  "vidDep": "primebodbo",
+  "vidDepName": "Вклад в будущее Прайм",
+  "vidDepType": "VKL"
+}

@@ -1,0 +1,114 @@
+{
+  "definitions": {},
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://example.com/object1653891517.json",
+  "title": "Root",
+  "type": "object",
+  "required": [
+    "id",
+    "date",
+    "rates"
+  ],
+  "properties": {
+    "id": {
+      "$id": "#root/id",
+      "title": "Id",
+      "type": "string",
+      "default": "",
+      "examples": [
+        "78a3b0e4-4221-3020-8bad-080de84de4c6"
+      ],
+      "pattern": "^.*$"
+    },
+    "date": {
+      "$id": "#root/date",
+      "title": "Date",
+      "type": "string",
+      "default": "",
+      "examples": [
+        "2022-05-24"
+      ],
+      "pattern": "^.*$"
+    },
+    "rates": {
+      "$id": "#root/rates",
+      "title": "Rates",
+      "type": "array",
+      "default": [],
+      "items":{
+        "$id": "#root/rates/items",
+        "title": "Items",
+        "type": "object",
+        "required": [
+          "currency",
+          "price",
+          "scale"
+        ],
+        "properties": {
+          "currency": {
+            "$id": "#root/rates/items/currency",
+            "title": "Currency",
+            "type": "object",
+            "required": [
+              "name",
+              "numericCode",
+              "alphaCode"
+            ],
+            "properties": {
+              "name": {
+                "$id": "#root/rates/items/currency/name",
+                "title": "Name",
+                "type": "string",
+                "default": "",
+                "examples": [
+                  "Австралийский доллар"
+                ],
+                "pattern": "^.*$"
+              },
+              "numericCode": {
+                "$id": "#root/rates/items/currency/numericCode",
+                "title": "Numericcode",
+                "type": "string",
+                "default": "",
+                "examples": [
+                  "036"
+                ],
+                "pattern": "^.*$"
+              },
+              "alphaCode": {
+                "$id": "#root/rates/items/currency/alphaCode",
+                "title": "Alphacode",
+                "type": "string",
+                "default": "",
+                "examples": [
+                  "AUD"
+                ],
+                "pattern": "^.*$"
+              }
+            }
+          }
+        ,
+          "price": {
+            "$id": "#root/rates/items/price",
+            "title": "Price",
+            "type": "number",
+            "examples": [
+              41.398
+            ],
+            "default": 0.0
+          },
+          "scale": {
+            "$id": "#root/rates/items/scale",
+            "title": "Scale",
+            "type": "integer",
+            "examples": [
+              1
+            ],
+            "default": 0
+          }
+        }
+      }
+
+    }
+  }
+}

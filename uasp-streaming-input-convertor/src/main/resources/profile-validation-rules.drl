@@ -1,0 +1,65 @@
+package ru.vtb.uasp.validate;
+
+global org.slf4j.Logger logger
+
+import ru.vtb.uasp.common.dto.UaspDto
+import ru.vtb.uasp.validate.entity.ValidateMsg
+
+dialect "mvel"
+
+
+// Идентификатор клиента должен быть обязательно
+rule "The  ID must be mandatory"
+  when
+   UaspDto($type:id, $type == null || $type.isEmpty())
+  then
+    insert(new ValidateMsg(drools.getRule().getName()))
+end
+
+// Дата операции обязательное поле
+rule "The  event time must be mandatory"
+  when
+   UaspDto(dataLong.get("event_dttm_prf").isEmpty)
+  then
+    insert(new ValidateMsg(drools.getRule().getName()))
+end
+
+// Сумма операции обязательное поле
+rule "The transaction amount must be mandatory"
+  when
+   UaspDto(dataDecimal.get("transaction_amount_prf").isEmpty)
+  then
+    insert(new ValidateMsg(drools.getRule().getName()))
+end
+
+// Валюта операции обязательное поле
+rule "The currency code must be mandatory"
+  when
+   UaspDto(dataString.get("currency_code_prf").isEmpty)
+  then
+    insert(new ValidateMsg(drools.getRule().getName()))
+end
+
+// Код банковской операции  обязательное поле
+rule "The kbo must be mandatory"
+  when
+   UaspDto(dataString.get("kbo_prf").isEmpty)
+  then
+    insert(new ValidateMsg(drools.getRule().getName()))
+end
+
+// тип счета  обязательное поле
+rule "The account type must be mandatory"
+  when
+   UaspDto(dataString.get("account_type_prf").isEmpty)
+  then
+    insert(new ValidateMsg(drools.getRule().getName()))
+end
+
+// система источник обязательное поле
+rule "The system source  must be mandatory"
+  when
+   UaspDto(dataString.get("source_system_prf").isEmpty)
+  then
+    insert(new ValidateMsg(drools.getRule().getName()))
+end
