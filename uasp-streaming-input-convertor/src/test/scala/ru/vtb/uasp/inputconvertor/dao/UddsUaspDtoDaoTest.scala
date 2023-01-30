@@ -12,7 +12,7 @@ import ru.vtb.uasp.inputconvertor.entity.{CommonMessageType, InputMessageType}
 import ru.vtb.uasp.inputconvertor.factory.{UaspDtoParser, UaspDtoParserFactory}
 import ru.vtb.uasp.inputconvertor.service.MsgCollector
 import ru.vtb.uasp.inputconvertor.service.TransformHelper.extractJson
-import ru.vtb.uasp.inputconvertor.utils.config.InputPropsModel
+import ru.vtb.uasp.inputconvertor.utils.config.{InputPropsModel, NewInputPropsModel}
 import ru.vtb.uasp.validate.DroolsValidator
 
 class UddsUaspDtoDaoTest extends AnyFlatSpec with should.Matchers {
@@ -21,26 +21,25 @@ class UddsUaspDtoDaoTest extends AnyFlatSpec with should.Matchers {
 
     val (commonMessage, _, uaspDtoType, dtoMap, _) = getCommonMessageAndProps()
     println("commonMessage: " + commonMessage)
-    val uaspDtoParser: UaspDtoParser = UaspDtoParserFactory(uaspDtoType, InputPropsModel(Map("input-convertor.test.uaspdto.type" -> uaspDtoType,
-      "input-convertor-sys.test.card.number.sha256.salt" -> "TEST"), "test"))
+    val uaspDtoParser: UaspDtoParser = UaspDtoParserFactory(uaspDtoType, null /*InputPropsModel(Map("input-convertor.test.uaspdto.type" -> uaspDtoType,
+      "input-convertor-sys.test.card.number.sha256.salt" -> "TEST"), "test")*/)
     val uaspDto: UaspDto = uaspDtoParser.fromJValue(commonMessage.json_message.get, dtoMap)
     println("uaspDto: " + uaspDto)
     val standardUaspDto: UaspDto = UaspDtostandardFactory("udds").getstandardUaspDto
 
     assert(standardUaspDto == uaspDto.copy(process_timestamp = 0,
-      uuid = ""))
+      ))
   }
 }
 
 object UddsUaspDtoDaoTest {
-  def getCommonMessageAndProps(args: Array[String] = Array[String]()): (CommonMessageType, Map[String, String], String, Map[String, Array[String]], DroolsValidator) = {
-    val allProps = getAllProps(args, "application-udds.properties")
+  def getCommonMessageAndProps(args: Array[String] = Array[String]()): (CommonMessageType, NewInputPropsModel, String, Map[String, Array[String]], DroolsValidator) = {
+//    val allProps = getAllProps(args, "application-udds.properties")
+val allProps : NewInputPropsModel = null
     println(allProps)
-    val uaspDtoType = allProps("app.uaspdto.type")
+    val uaspDtoType = allProps.appUaspdtoType//("app.uaspdto.type")
     println("uaspDtoType: " + uaspDtoType)
 
-    val defaultJsonSchemaKey = getSchemaKey(allProps)
-    println("defaultJsonSchemaKey: " + defaultJsonSchemaKey)
 
     val jsonMessageStr = getStringFromResourceFile(uaspDtoType + "-test.json")
     //val jsonMessageStr = getStringFromResourceFile ( "way4-ift-mes1.json" )
@@ -49,7 +48,7 @@ object UddsUaspDtoDaoTest {
     val inMessage = InputMessageType(message_key = "123", message = jsonMessageStr.getBytes, Map[String, String]())
     println("inMessage: " + inMessage)
     val msgCollector = new MsgCollector
-    extractJson(inMessage, allProps, defaultJsonSchemaKey, msgCollector)
+    extractJson(inMessage, allProps,  msgCollector)
     val uaspDtoMap = Map[String, String]() ++ getPropsFromResourcesFile(uaspDtoType + "-uaspdto.properties").get
     val dtoMap = uaspDtoMap.map(m => (m._1, m._2.split("::")))
     (msgCollector.getAll().get(0), allProps, uaspDtoType, dtoMap, new DroolsValidator(uaspDtoType + "-validation-rules.drl"))

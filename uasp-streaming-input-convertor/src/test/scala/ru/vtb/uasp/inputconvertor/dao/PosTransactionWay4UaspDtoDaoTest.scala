@@ -12,6 +12,7 @@ import ru.vtb.uasp.inputconvertor.entity.{CommonMessageType, InputMessageType}
 import ru.vtb.uasp.inputconvertor.factory.{UaspDtoParser, UaspDtoParserFactory}
 import ru.vtb.uasp.inputconvertor.service.MsgCollector
 import ru.vtb.uasp.inputconvertor.service.TransformHelper.extractJson
+import ru.vtb.uasp.inputconvertor.utils.config.NewInputPropsModel
 import ru.vtb.uasp.validate.DroolsValidator
 
 @Feature("PosTerminalWay4UaspDtoDaoTest")
@@ -35,20 +36,18 @@ class PosTransactionWay4UaspDtoDaoTest extends AnyFlatSpec with should.Matchers 
           "audit_auth_code" -> "500004", "local_id" -> "1493814790", "source_system_w4" -> "WAY4", "merchant_name_w4" -> "Visa Retail",
           "processing_date_string" -> "2022-06-21T09:21:54Z"))
     assert(expecteduaspDto == uaspDto.copy(process_timestamp = 0,
-      uuid = "",
       dataString = uaspDto.dataString - ("source_account_w4", "base_currency_w4")))
   }
 }
 
 object PosTransactionWay4UaspDtoDaoTest {
-  def getCommonMessageAndProps(args: Array[String] = Array[String]()): (CommonMessageType, Map[String, String], String, Map[String, Array[String]], DroolsValidator) = {
-    val allProps = getAllProps(args, "application-pos-transaction-way4.properties")
+  def getCommonMessageAndProps(args: Array[String] = Array[String]()): (CommonMessageType, NewInputPropsModel, String, Map[String, Array[String]], DroolsValidator) = {
+//    val allProps = getAllProps(args, "application-pos-transaction-way4.properties")
+val allProps :  NewInputPropsModel = null
     println(allProps)
-    val uaspDtoType = allProps("app.uaspdto.type")
+    val uaspDtoType = allProps.appUaspdtoType//("app.uaspdto.type")
     println("uaspDtoType: " + uaspDtoType)
 
-    val defaultJsonSchemaKey = getSchemaKey(allProps)
-    println("defaultJsonSchemaKey: " + defaultJsonSchemaKey)
 
     val jsonMessageStr = getStringFromResourceFile(uaspDtoType + "-test.json")
     //val jsonMessageStr = getStringFromResourceFile ( "way4-ift-mes1.json" )
@@ -57,7 +56,7 @@ object PosTransactionWay4UaspDtoDaoTest {
     val inMessage = InputMessageType(message_key = "123", message = jsonMessageStr.getBytes, Map[String, String]())
     println("inMessage: " + inMessage)
     val msgCollector = new MsgCollector
-    extractJson(inMessage, allProps, defaultJsonSchemaKey, msgCollector)
+    extractJson(inMessage, allProps,  msgCollector)
     val uaspDtoMap = Map[String, String]() ++ getPropsFromResourcesFile(uaspDtoType + "-uaspdto.properties").get
     val dtoMap = uaspDtoMap.map(m => (m._1, m._2.split("::")))
     (msgCollector.getAll().get(0), allProps, uaspDtoType, dtoMap, new DroolsValidator(uaspDtoType + "-validation-rules.drl"))

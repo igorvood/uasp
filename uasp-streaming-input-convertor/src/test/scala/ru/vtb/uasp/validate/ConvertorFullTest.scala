@@ -7,7 +7,7 @@ import ru.vtb.uasp.common.utils.config.ConfigUtils.getStringFromResourceFile
 import ru.vtb.uasp.inputconvertor.Convertor.{outputTag, process}
 import ru.vtb.uasp.inputconvertor.dao.Way4UaspDtoDaoTest
 import ru.vtb.uasp.inputconvertor.entity.{InputMessageType, InputSchemaType}
-import ru.vtb.uasp.inputconvertor.utils.config.InputPropsModel
+import ru.vtb.uasp.inputconvertor.utils.config.{InputPropsModel, NewInputPropsModel}
 
 
 class ConvertorFullTest extends AnyFlatSpec with should.Matchers {
@@ -15,26 +15,30 @@ class ConvertorFullTest extends AnyFlatSpec with should.Matchers {
   "The valid UaspDto message" should "return empty error list" in {
 
     val (commonMessage, allProps, uaspDtoType, dtoMap, droolsValidator) = Way4UaspDtoDaoTest.getCommonMessageAndProps()
-    val allPropsNew = allProps.map(q => q._1.replace("app", "input-convertor.app") -> q._2)
 
-    val jsonSchema: String = getStringFromResourceFile("schemas/jsonschema-" + uaspDtoType + ".json")
-    val specJsonVersion: String = allPropsNew.getOrElse("app.json.schema.version", "")
     val inputMessageType = InputMessageType(commonMessage.message_key, commonMessage.message, Map())
 
 
-    val propsModel = InputPropsModel(allPropsNew, "app")
+    val propsModel = new NewInputPropsModel(
+      appServiceName = null,
+      appUaspdtoType = null,
+      appInputTopicName = null,
+      appOutputTopicName = null,
+      appDlqTopicName = null,
+      appUseAvroSerialization = false,
+      appSavepointPref = null,
+      dtoMap = null,
+      appReadSourceTopicFrombeginning = false,
+      SHA256salt = null,
+      messageJsonPath = null,
+      jsonSplitElement = null)
 
 
     val env = StreamExecutionEnvironment.getExecutionEnvironment
 
-    val jsonSchemaInputStream = env.fromCollection(List(InputSchemaType(specJsonVersion, jsonSchema)))
     val messageInputStream = env.fromCollection(List(inputMessageType))
 
-    val mainDataStream = process(jsonSchemaInputStream, messageInputStream, propsModel)
-//    mainDataStream
-//      .getSideOutput(outputTag)
-//      .map("qweqweqwewqeqw"->_)
-//      .print()
+    val mainDataStream = process( messageInputStream, propsModel)
 
     mainDataStream
       .map("asdklasjhdlaskjhdaslkjdh"->_)
@@ -48,7 +52,3 @@ class ConvertorFullTest extends AnyFlatSpec with should.Matchers {
 
 }
 
-
-object ConvertorFullTest {
-
-}

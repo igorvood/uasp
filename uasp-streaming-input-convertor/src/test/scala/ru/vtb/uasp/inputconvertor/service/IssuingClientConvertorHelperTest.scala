@@ -13,7 +13,7 @@ import ru.vtb.uasp.inputconvertor.UaspDtostandardFactory
 import ru.vtb.uasp.inputconvertor.dao.Way4UaspDtoDaoTest
 import ru.vtb.uasp.inputconvertor.entity.CommonMessageType
 import ru.vtb.uasp.inputconvertor.utils.avro.AvroUtils
-import ru.vtb.uasp.inputconvertor.utils.config.InputPropsModel
+import ru.vtb.uasp.inputconvertor.utils.config.{InputPropsModel, NewInputPropsModel}
 //FIXME
 @Ignore
 class IssuingClientConvertorHelperTest extends AnyFlatSpec with should.Matchers {
@@ -25,14 +25,16 @@ class IssuingClientConvertorHelperTest extends AnyFlatSpec with should.Matchers 
     val jsonSchema: String = getStringFromResourceFile("schemas/jsonschema-" + uaspDtoType + ".json")
     val avroSchema: Schema = AvroSchema[UaspDto]
     val enrichedCommonMessage: CommonMessageType = commonMessage.copy(json_schema = Some(jsonSchema))
-    val specJsonVersion: String = allProps.getOrElse("app.json.schema.version", "")
-    val propsModel = InputPropsModel(Map("input-convertor.uaspdto.type" -> uaspDtoType), "")
+    val specJsonVersion: String = allProps.appUaspdtoType//.getOrElse("app.json.schema.version", "")
+    val propsModel: NewInputPropsModel = null// InputPropsModel(Map("input-convertor.uaspdto.type" -> uaspDtoType), "")
 
     val convertOutMapService = new ConvertOutMapService
     val testedMessage: CommonMessageType = ConvertHelper.validAndTransform(enrichedCommonMessage, propsModel, appUseAvroSerializationIsY = true, droolsValidator, avroSchema, dtoMap,  convertOutMapService)
     println("testedMessage: " + testedMessage)
 
-    val initialUaspDto: UaspDto = AvroUtils.avroDeserialize[UaspDto](testedMessage.avro_message.get).copy(uuid = "", process_timestamp = 0)
+    val dto = AvroUtils.avroDeserialize[UaspDto](testedMessage.avro_message.get)
+    val initialUaspDto: UaspDto = dto.copy(
+      process_timestamp = 0)
     //standard
     val standardUaspDto: UaspDto = UaspDtostandardFactory("way4").getstandardUaspDto
     val expectedUaspDto = standardUaspDto.copy(dataString = standardUaspDto.dataString +

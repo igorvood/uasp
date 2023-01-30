@@ -13,7 +13,7 @@ import ru.vtb.uasp.inputconvertor.service.MsgCollector
 import ru.vtb.uasp.inputconvertor.service.TransformHelper.extractJson
 import ru.vtb.uasp.validate.DroolsValidator
 import ru.vtb.uasp.common.utils.config.ConfigUtils.{getAllProps, getPropsFromResourcesFile, getSchemaKey, getStringFromResourceFile}
-import ru.vtb.uasp.inputconvertor.utils.config.InputPropsModel
+import ru.vtb.uasp.inputconvertor.utils.config.{InputPropsModel, NewInputPropsModel}
 
 @Feature("MDMUaspDtoDaoTest")
 class MDMUaspDtoDaoTest extends AnyFlatSpec with should.Matchers {
@@ -28,19 +28,18 @@ class MDMUaspDtoDaoTest extends AnyFlatSpec with should.Matchers {
     val uaspDto: UaspDto = uaspDtoParser.fromJValue(commonMessage.json_message.get, dtoMap)
     println("uaspDto: " + uaspDto)
     val standardUaspDto = UaspDtostandardFactory("mdm").getstandardUaspDto
-    assert(standardUaspDto == uaspDto.copy(process_timestamp = 0, uuid = ""))
+    assert(standardUaspDto == uaspDto.copy(process_timestamp = 0))
   }
 }
 
 object MDMUaspDtoDaoTest {
-  def getCommonMessageAndProps(args: Array[String] = Array[String]()): (CommonMessageType, Map[String, String], String, Map[String, Array[String]], DroolsValidator) = {
-    val allProps = getAllProps(args, "application-mdm.properties")
+  def getCommonMessageAndProps(args: Array[String] = Array[String]()): (CommonMessageType,NewInputPropsModel, String, Map[String, Array[String]], DroolsValidator) = {
+//    val allProps = getAllProps(args, "application-mdm.properties")
+val allProps :  NewInputPropsModel = null
     println(allProps)
-    val uaspDtoType = allProps("app.uaspdto.type")
+    val uaspDtoType = allProps.appUaspdtoType//("app.uaspdto.type")
     println("uaspDtoType: " + uaspDtoType)
 
-    val defaultJsonSchemaKey = getSchemaKey(allProps)
-    println("defaultJsonSchemaKey: " + defaultJsonSchemaKey)
 
     val jsonMessageStr = getStringFromResourceFile(uaspDtoType + "-test.json")
     //val jsonMessageStr = getStringFromResourceFile("mdm-test.json")
@@ -49,7 +48,7 @@ object MDMUaspDtoDaoTest {
     val inMessage = InputMessageType(message_key = "123", message = jsonMessageStr.getBytes, Map[String, String]())
     println("inMessage: " + inMessage)
     val msgCollector = new MsgCollector
-    extractJson(inMessage, allProps, defaultJsonSchemaKey, msgCollector)
+    extractJson(inMessage, allProps,  msgCollector)
     val uaspDtoMap = Map[String, String]() ++ getPropsFromResourcesFile(uaspDtoType + "-uaspdto.properties").get
     val dtoMap = uaspDtoMap.map(m => (m._1, m._2.split("::")))
     (msgCollector.getAll().get(0), allProps, uaspDtoType, dtoMap, new DroolsValidator(uaspDtoType + "-validation-rules.drl"))

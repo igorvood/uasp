@@ -6,21 +6,22 @@ import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should
 import ru.vtb.uasp.common.utils.config.ConfigUtils.{getAllProps, getSchemaKey, getStringFromResourceFile}
 import ru.vtb.uasp.inputconvertor.entity.InputMessageType
+import ru.vtb.uasp.inputconvertor.utils.config.NewInputPropsModel
 
 import scala.collection.mutable
 
 class TransformHelperTest extends AnyFlatSpec with should.Matchers {
 
   "extractJson type mdm" should "be return 4 messages" in new AllureScalatestContext {
-    val allProps = getAllProps(args = Array("--input-convertor.json.split.element", "contact"), "application-mdm.properties")
+//    val allProps = getAllProps(args = Array("--input-convertor.json.split.element", "contact"), "application-mdm.properties")
+    val allProps : NewInputPropsModel = null
     println(allProps)
-    val uaspDtoType = allProps("app.uaspdto.type")
-    val defaultJsonSchemaKey = getSchemaKey(allProps)
+    val uaspDtoType = allProps.appUaspdtoType
     val msgCollector = new MsgCollector
     val jsonMessageStr = getStringFromResourceFile(uaspDtoType + "-test.json")
     val inMessage = InputMessageType(message_key = "123", message = jsonMessageStr.getBytes, Map[String, String]())
 
-    val result = TransformHelper.extractJson(inMessage, allProps, defaultJsonSchemaKey, msgCollector)
+    val result = TransformHelper.extractJson(inMessage, allProps,  msgCollector)
     val doc1 = render(msgCollector.getAll().get(1).json_message.get)
     val compactJson1 = compact(doc1)
     val prettyJson1 = pretty(doc1)
@@ -31,15 +32,15 @@ class TransformHelperTest extends AnyFlatSpec with should.Matchers {
   }
 
   "extractJson type mdm" should "be return 1 messages" in new AllureScalatestContext {
-    val allProps = getAllProps(args = Array.empty, "application-mdm.properties")
+//    val allProps = getAllProps(args = Array.empty, "application-mdm.properties")
+    val allProps : NewInputPropsModel = null
     println(allProps)
-    val uaspDtoType = allProps("app.uaspdto.type")
-    val defaultJsonSchemaKey = getSchemaKey(allProps)
+    val uaspDtoType = allProps.appUaspdtoType
     val msgCollector = new MsgCollector
     val jsonMessageStr = getStringFromResourceFile(uaspDtoType + "-test.json")
     val inMessage = InputMessageType(message_key = "123", message = jsonMessageStr.getBytes, Map[String, String]())
     println(inMessage)
-    val result = TransformHelper.extractJson(inMessage, allProps, defaultJsonSchemaKey, msgCollector)
+    val result = TransformHelper.extractJson(inMessage, allProps,  msgCollector)
     val doc1 = render(msgCollector.getAll().get(0).json_message.get)
     val compactJson1 = compact(doc1)
     val prettyJson1 = pretty(doc1)
@@ -50,15 +51,15 @@ class TransformHelperTest extends AnyFlatSpec with should.Matchers {
   }
 
   "extractJson type mdm" should "be throw exception" in new AllureScalatestContext {
-    val allProps = getAllProps(args = Array("--input-convertor.json.split.element", "contact"), "application-mdm.properties")
+//    val allProps = getAllProps(args = Array("--input-convertor.json.split.element", "contact"), "application-mdm.properties")
+    val allProps : NewInputPropsModel = null
     println(allProps)
-    val uaspDtoType = allProps("app.uaspdto.type")
-    val defaultJsonSchemaKey = getSchemaKey(allProps)
+    val uaspDtoType = allProps.appUaspdtoType
     val msgCollector = new MsgCollector
     val jsonMessageStr = "test:invalid"
     val inMessage = InputMessageType(message_key = "123", message = jsonMessageStr.getBytes, Map[String, String]())
 
-    val result = TransformHelper.extractJson(inMessage, allProps, defaultJsonSchemaKey, msgCollector)
+    val result = TransformHelper.extractJson(inMessage, allProps,  msgCollector)
 
     println(msgCollector.getAll().get(0).error.get)
 
@@ -67,15 +68,15 @@ class TransformHelperTest extends AnyFlatSpec with should.Matchers {
     msgCollector.getAll().get(0).error.get should startWith ("Error json parsing: Unrecognized token 'test':")
   }
   "extractJson type currency" should "be return 40 messages" in new AllureScalatestContext {
-    val allProps = getAllProps(args = Array("--input-convertor.json.split.element", "rates"), "application-currency.properties")
+//    val allProps = getAllProps(args = Array("--input-convertor.json.split.element", "rates"), "application-currency.properties")
+    val allProps : NewInputPropsModel = null
     println(allProps)
-    val uaspDtoType = allProps("app.uaspdto.type")
-    val defaultJsonSchemaKey = getSchemaKey(allProps)
+    val uaspDtoType = allProps.appUaspdtoType
     val msgCollector = new MsgCollector
     val jsonMessageStr = getStringFromResourceFile(uaspDtoType + "-test.json")
     val inMessage = InputMessageType(message_key = "123", message = jsonMessageStr.getBytes, Map[String, String]())
 
-    val result = TransformHelper.extractJson(inMessage, allProps, defaultJsonSchemaKey, msgCollector)
+    val result = TransformHelper.extractJson(inMessage, allProps,  msgCollector)
     val doc1 = render(msgCollector.getAll().get(1).json_message.get)
     val compactJson1 = compact(doc1)
     val prettyJson1 = pretty(doc1)
