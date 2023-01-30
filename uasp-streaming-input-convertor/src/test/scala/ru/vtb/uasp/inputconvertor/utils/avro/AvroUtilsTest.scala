@@ -1,8 +1,8 @@
 package ru.vtb.uasp.inputconvertor.utils.avro
 
 import com.sksamuel.avro4s.{AvroSchema, ScalePrecision}
-import io.qameta.allure.{Allure, Feature}
 import io.qameta.allure.scalatest.AllureScalatestContext
+import io.qameta.allure.{Allure, Feature}
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should
 import ru.vtb.uasp.common.constants.BigDecimalConst

@@ -1,13 +1,12 @@
 package ru.vtb.uasp.validate
 
-import io.qameta.allure.{Allure, Feature}
 import io.qameta.allure.scalatest.AllureScalatestContext
+import io.qameta.allure.{Allure, Feature}
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should
 import ru.vtb.uasp.common.dto.UaspDto
 import ru.vtb.uasp.inputconvertor.dao.Way4UaspDtoDaoTest
 import ru.vtb.uasp.inputconvertor.factory.UaspDtoParserFactory
-import ru.vtb.uasp.inputconvertor.utils.config.InputPropsModel
 
 @Feature("Way4ValidateTest")
 class Way4ValidateTest extends AnyFlatSpec with should.Matchers {

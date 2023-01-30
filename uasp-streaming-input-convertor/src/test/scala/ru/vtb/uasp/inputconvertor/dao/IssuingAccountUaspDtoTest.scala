@@ -4,14 +4,14 @@ import io.qameta.allure.scalatest.AllureScalatestContext
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should
 import ru.vtb.uasp.common.dto.UaspDto
+import ru.vtb.uasp.common.utils.config.ConfigUtils.{getPropsFromResourcesFile, getStringFromResourceFile}
 import ru.vtb.uasp.inputconvertor.UaspDtostandardFactory
 import ru.vtb.uasp.inputconvertor.dao.IssuingAccountUaspDtoTest.getCommonMessageAndProps
 import ru.vtb.uasp.inputconvertor.entity.{CommonMessageType, InputMessageType}
 import ru.vtb.uasp.inputconvertor.factory.UaspDtoParserFactory
 import ru.vtb.uasp.inputconvertor.service.MsgCollector
 import ru.vtb.uasp.inputconvertor.service.TransformHelper.extractJson
-import ru.vtb.uasp.common.utils.config.ConfigUtils.{getAllProps, getPropsFromResourcesFile, getSchemaKey, getStringFromResourceFile}
-import ru.vtb.uasp.inputconvertor.utils.config.{InputPropsModel, NewInputPropsModel}
+import ru.vtb.uasp.inputconvertor.utils.config.NewInputPropsModel
 import ru.vtb.uasp.validate.DroolsValidator
 
 class IssuingAccountUaspDtoTest extends AnyFlatSpec with should.Matchers {
@@ -28,10 +28,10 @@ class IssuingAccountUaspDtoTest extends AnyFlatSpec with should.Matchers {
 
 object IssuingAccountUaspDtoTest {
   def getCommonMessageAndProps(args: Array[String] = Array[String]()): (CommonMessageType, NewInputPropsModel, String, Map[String, Array[String]], DroolsValidator) = {
-    val allProps :  NewInputPropsModel = null
-//    val allProps = getAllProps(args, "application-account.properties")
+    val allProps: NewInputPropsModel = null
+    //    val allProps = getAllProps(args, "application-account.properties")
     println(allProps)
-    val uaspDtoType = allProps.appUaspdtoType//("app.uaspdto.type")
+    val uaspDtoType = allProps.appUaspdtoType //("app.uaspdto.type")
     println("uaspDtoType: " + uaspDtoType)
 
 
@@ -42,7 +42,7 @@ object IssuingAccountUaspDtoTest {
     val inMessage = InputMessageType(message_key = "123", message = jsonMessageStr.getBytes, Map[String, String]())
     println("inMessage: " + inMessage)
     val msgCollector = new MsgCollector
-    val cmt = extractJson(inMessage, allProps,  msgCollector)
+    val cmt = extractJson(inMessage, allProps, msgCollector)
     val uaspDtoMap = Map[String, String]() ++ getPropsFromResourcesFile(uaspDtoType + "-uaspdto.properties").get
     val dtoMap = uaspDtoMap.map(m => (m._1, m._2.split("::")))
     (msgCollector.getAll().get(0), allProps, uaspDtoType, dtoMap, new DroolsValidator(uaspDtoType + "-validation-rules.drl"))

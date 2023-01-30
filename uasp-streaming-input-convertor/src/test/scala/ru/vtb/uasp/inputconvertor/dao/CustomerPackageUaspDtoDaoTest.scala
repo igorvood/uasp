@@ -4,14 +4,14 @@ import io.qameta.allure.scalatest.AllureScalatestContext
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should
 import ru.vtb.uasp.common.dto.UaspDto
-import ru.vtb.uasp.common.utils.config.ConfigUtils.{getAllProps, getPropsFromResourcesFile, getSchemaKey, getStringFromResourceFile}
+import ru.vtb.uasp.common.utils.config.ConfigUtils.{getPropsFromResourcesFile, getStringFromResourceFile}
 import ru.vtb.uasp.inputconvertor.UaspDtostandardFactory
 import ru.vtb.uasp.inputconvertor.dao.CustomerPackageUaspDtoDaoTest.getCommonMessageAndProps
 import ru.vtb.uasp.inputconvertor.entity.{CommonMessageType, InputMessageType}
 import ru.vtb.uasp.inputconvertor.factory.{UaspDtoParser, UaspDtoParserFactory}
 import ru.vtb.uasp.inputconvertor.service.MsgCollector
 import ru.vtb.uasp.inputconvertor.service.TransformHelper.extractJson
-import ru.vtb.uasp.inputconvertor.utils.config.{InputPropsModel, NewInputPropsModel}
+import ru.vtb.uasp.inputconvertor.utils.config.NewInputPropsModel
 import ru.vtb.uasp.validate.DroolsValidator
 
 class CustomerPackageUaspDtoDaoTest extends AnyFlatSpec with should.Matchers {
@@ -19,7 +19,7 @@ class CustomerPackageUaspDtoDaoTest extends AnyFlatSpec with should.Matchers {
   "The result UaspDto" should "be valid" in new AllureScalatestContext {
     val (commonMessage, _, uaspDtoType, dtoMap, _) = getCommonMessageAndProps()
     println("commonMessage: " + commonMessage)
-    val uaspDtoParser: UaspDtoParser = UaspDtoParserFactory(uaspDtoType, null/*InputPropsModel(Map("input-convertor.test.uaspdto.type" -> uaspDtoType,
+    val uaspDtoParser: UaspDtoParser = UaspDtoParserFactory(uaspDtoType, null /*InputPropsModel(Map("input-convertor.test.uaspdto.type" -> uaspDtoType,
       "input-convertor-sys.test.card.number.sha256.salt" -> "TEST"), "test")*/)
     val uaspDto: UaspDto = uaspDtoParser.fromJValue(commonMessage.json_message.get, dtoMap)
     println("uaspDto: " + uaspDto)
@@ -31,10 +31,10 @@ class CustomerPackageUaspDtoDaoTest extends AnyFlatSpec with should.Matchers {
 
 object CustomerPackageUaspDtoDaoTest {
   def getCommonMessageAndProps(args: Array[String] = Array[String]()): (CommonMessageType, NewInputPropsModel, String, Map[String, Array[String]], DroolsValidator) = {
-//    val allProps = getAllProps(args, "application-customer-package.properties")
-val allProps :  NewInputPropsModel = null
+    //    val allProps = getAllProps(args, "application-customer-package.properties")
+    val allProps: NewInputPropsModel = null
     println(allProps)
-    val uaspDtoType = allProps.appUaspdtoType//("app.uaspdto.type")
+    val uaspDtoType = allProps.appUaspdtoType //("app.uaspdto.type")
     println("uaspDtoType: " + uaspDtoType)
 
 
@@ -45,7 +45,7 @@ val allProps :  NewInputPropsModel = null
     val inMessage = InputMessageType(message_key = "123", message = jsonMessageStr.getBytes, Map[String, String]())
     println("inMessage: " + inMessage)
     val msgCollector = new MsgCollector
-    extractJson(inMessage, allProps,  msgCollector)
+    extractJson(inMessage, allProps, msgCollector)
     val uaspDtoMap = Map[String, String]() ++ getPropsFromResourcesFile(uaspDtoType + "-uaspdto.properties").get
     val dtoMap = uaspDtoMap.map(m => (m._1, m._2.split("::")))
     (msgCollector.getAll().get(0), allProps, uaspDtoType, dtoMap, new DroolsValidator(uaspDtoType + "-validation-rules.drl"))

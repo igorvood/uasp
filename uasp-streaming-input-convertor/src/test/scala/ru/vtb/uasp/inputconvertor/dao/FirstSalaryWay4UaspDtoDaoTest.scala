@@ -5,7 +5,7 @@ import io.qameta.allure.scalatest.AllureScalatestContext
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should
 import ru.vtb.uasp.common.dto.UaspDto
-import ru.vtb.uasp.common.utils.config.ConfigUtils.{getAllProps, getPropsFromResourcesFile, getSchemaKey, getStringFromResourceFile}
+import ru.vtb.uasp.common.utils.config.ConfigUtils.{getPropsFromResourcesFile, getStringFromResourceFile}
 import ru.vtb.uasp.inputconvertor.UaspDtostandardFactory
 import ru.vtb.uasp.inputconvertor.dao.FirstSalaryWay4UaspDtoDaoTest.getCommonMessageAndProps
 import ru.vtb.uasp.inputconvertor.entity.{CommonMessageType, InputMessageType}
@@ -32,7 +32,7 @@ class FirstSalaryWay4UaspDtoDaoTest extends AnyFlatSpec with should.Matchers {
       dataString = standardUaspDto.dataString + ("source_system_w4" -> "WAY4", "source_account_w4" -> "40817810569166560",
         "base_currency_w4" -> "RUR", "audit_rrn" -> "217200452175", "operation_id" -> "A95691218370G569166560", "mcc" -> "6051",
         "audit_srn" -> "M1724298H6H1", "service_type" -> "J6", "audit_auth_code" -> "500005", "local_id" -> "1493661370",
-        "terminal_type" -> "ECOMMERCE" ,"merchant_name_w4" -> "Visa Unique" , "processing_date_string" -> "2022-06-21T13:21:43Z", "terminal_id" -> "10000015"))
+        "terminal_type" -> "ECOMMERCE", "merchant_name_w4" -> "Visa Unique", "processing_date_string" -> "2022-06-21T13:21:43Z", "terminal_id" -> "10000015"))
     assert(expecteduaspDto == uaspDto.copy(process_timestamp = 0,
 
       dataString = uaspDto.dataString - ("card_ps_funding_source", "card_masked_pan", "transaction_currency")))
@@ -41,10 +41,10 @@ class FirstSalaryWay4UaspDtoDaoTest extends AnyFlatSpec with should.Matchers {
 
 object FirstSalaryWay4UaspDtoDaoTest {
   def getCommonMessageAndProps(args: Array[String] = Array[String]()): (CommonMessageType, NewInputPropsModel, String, Map[String, Array[String]], DroolsValidator) = {
-//    val allProps = getAllProps(args, "application-first-salary-way4.properties")
-val allProps :  NewInputPropsModel = null
+    //    val allProps = getAllProps(args, "application-first-salary-way4.properties")
+    val allProps: NewInputPropsModel = null
     println(allProps)
-    val uaspDtoType = allProps.appUaspdtoType//("app.uaspdto.type")
+    val uaspDtoType = allProps.appUaspdtoType //("app.uaspdto.type")
     println("uaspDtoType: " + uaspDtoType)
 
 
@@ -55,7 +55,7 @@ val allProps :  NewInputPropsModel = null
     val inMessage = InputMessageType(message_key = "123", message = jsonMessageStr.getBytes, Map[String, String]())
     println("inMessage: " + inMessage)
     val msgCollector = new MsgCollector
-    extractJson(inMessage, allProps,  msgCollector)
+    extractJson(inMessage, allProps, msgCollector)
     val uaspDtoMap = Map[String, String]() ++ getPropsFromResourcesFile(uaspDtoType + "-uaspdto.properties").get
     val dtoMap = uaspDtoMap.map(m => (m._1, m._2.split("::")))
     (msgCollector.getAll().get(0), allProps, uaspDtoType, dtoMap, new DroolsValidator(uaspDtoType + "-validation-rules.drl"))

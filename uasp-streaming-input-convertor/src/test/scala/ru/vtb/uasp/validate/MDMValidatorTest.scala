@@ -7,7 +7,6 @@ import org.scalatest.matchers.should
 import ru.vtb.uasp.common.dto.UaspDto
 import ru.vtb.uasp.inputconvertor.dao.MDMProfileUaspDtoDaoTest
 import ru.vtb.uasp.inputconvertor.factory.UaspDtoParserFactory
-import ru.vtb.uasp.inputconvertor.utils.config.InputPropsModel
 
 @Feature("MDMValidateTest")
 class MDMValidateTest extends AnyFlatSpec with should.Matchers {
