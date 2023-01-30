@@ -5,7 +5,7 @@ import ru.vtb.uasp.common.dto.UaspDto
 import ru.vtb.uasp.common.service.JsonConvertOutService
 import ru.vtb.uasp.inputconvertor.entity.CommonMessageType
 import ru.vtb.uasp.inputconvertor.factory.UaspDtoParserFactory
-import ru.vtb.uasp.inputconvertor.utils.config.InputPropsModel
+import ru.vtb.uasp.inputconvertor.utils.config.NewInputPropsModel
 import ru.vtb.uasp.validate.DroolsValidator
 
 import scala.util.{Failure, Success, Try}
@@ -14,7 +14,7 @@ object ConvertHelper {
 
 
   def validAndTransform(commonMessage: CommonMessageType,
-                        propsModel: InputPropsModel,
+                        propsModel: NewInputPropsModel,
                         appUseAvroSerializationIsY: Boolean,
                         validator: DroolsValidator,
                         avroSchema: Schema,

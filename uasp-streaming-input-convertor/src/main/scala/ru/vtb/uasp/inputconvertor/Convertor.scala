@@ -4,23 +4,24 @@ import com.sksamuel.avro4s.AvroSchema
 import org.apache.avro.Schema
 import org.apache.flink.streaming.api.datastream.DataStreamSink
 import org.apache.flink.streaming.api.functions.ProcessFunction
+import org.apache.flink.streaming.api.functions.sink.SinkFunction
 import org.apache.flink.streaming.api.scala._
 import org.apache.flink.streaming.connectors.kafka.FlinkKafkaProducer.Semantic
 import org.apache.flink.util.Collector
 import ru.vtb.uasp.common.dto.UaspDto
-import ru.vtb.uasp.common.utils.config.ConfigUtils.{getAllProps, getPropsFromResourcesFile}
+import ru.vtb.uasp.common.kafka.FlinkSinkProperties
+import ru.vtb.uasp.common.kafka.FlinkSinkProperties.producerFactoryDefault
+import ru.vtb.uasp.common.service.dto.KafkaDto
 import ru.vtb.uasp.inputconvertor.entity.{CommonMessageType, InputMessageType}
 import ru.vtb.uasp.inputconvertor.service.ConvertHelper.validAndTransform
 import ru.vtb.uasp.inputconvertor.service._
-import ru.vtb.uasp.inputconvertor.utils.config.InputPropsModel
-import ru.vtb.uasp.inputconvertor.utils.serialization.{AvroPullOut, DLQSerializer, InputMessageTypeDeserialization}
+import ru.vtb.uasp.inputconvertor.utils.config.NewInputPropsModel
+import ru.vtb.uasp.inputconvertor.utils.config.NewInputPropsModel.appPrefixDefaultName
+import ru.vtb.uasp.inputconvertor.utils.serialization.NewAvroPullOut
 import ru.vtb.uasp.validate.DroolsValidator
-
-import scala.util.{Failure, Success}
 
 object Convertor {
 
-  private val producerSemantic = Semantic.AT_LEAST_ONCE
   private val outputTag = OutputTag[CommonMessageType]("dlq")
 
   def main(args: Array[String]): Unit = {
@@ -39,7 +40,7 @@ object Convertor {
       // get result
       setSink(mainDataStream, propsModel)
 
-      env.execute(propsModel.appServiceName)
+      env.execute(propsModel.appServiceName.fullServiceName)
     } catch {
       case e: Exception =>
         e.printStackTrace()
@@ -48,34 +49,33 @@ object Convertor {
     }
   }
 
-  def initProps(args: Array[String], appPrefix: String = ""): InputPropsModel = {
-    val stringToString = getAllProps(args)
-    val appPropsLocal: Map[String, String] = scala.util.Try(getPropsFromResourcesFile("application-local.properties").get) match {
-      case Success(x) => if (appPrefix.nonEmpty) x.updated("input-convertor.instance.conf.name", appPrefix) else x
-      case Failure(_) => Map()
-    }
-
-    InputPropsModel(appPropsLocal ++ stringToString, appPrefix)
+  def initProps(args: Array[String]): NewInputPropsModel = {
+    //    val stringToString = getAllProps(args)
+    //    val appPropsLocal: Map[String, String] = scala.util.Try(getPropsFromResourcesFile("application-local.properties").get) match {
+    //      case Success(x) => if (appPrefix.nonEmpty) x.updated("input-convertor.instance.conf.name", appPrefix) else x
+    //      case Failure(_) => Map()
+    //    }
+    //
+    //    InputPropsModel(appPropsLocal ++ stringToString, appPrefix)
+    NewInputPropsModel.configApp(appPrefixDefaultName, args)
   }
 
-  def init(env: StreamExecutionEnvironment, propsModel: InputPropsModel) = {
+  def init(env: StreamExecutionEnvironment, propsModel: NewInputPropsModel) = {
+
+    val consumer = propsModel.appInputTopicName.createConsumer(propsModel.inputMessageTypeDeserialization)
 
 
-    val readSourceTopicFromBeginning: Boolean = propsModel.appReadSourceTopicFrombeginning.toUpperCase == "Y"
-
-    val messageInputStream: DataStream[InputMessageType] = env.addSource(
-      KafkaConsumerService.getKafkaConsumer[InputMessageType](propsModel.appInputTopicName,
-        propsModel.commonKafkaProps, new InputMessageTypeDeserialization(),
-        propsModel.appInputTopicGroupId, readSourceTopicFromBeginning)).rebalance
+    val messageInputStream: DataStream[InputMessageType] = env
+      .addSource(consumer).rebalance
     messageInputStream
   }
 
   def process(
                messageInputStream: DataStream[InputMessageType],
-               propsModel: InputPropsModel): DataStream[CommonMessageType] = {
+               propsModel: NewInputPropsModel): DataStream[CommonMessageType] = {
     val droolsValidator = new DroolsValidator(propsModel.appUaspdtoType + "-validation-rules.drl")
     val avroSchema: Schema = AvroSchema[UaspDto]
-    val messageParserFlatMap = new MessageParserFlatMap(propsModel.config)
+    val messageParserFlatMap = new MessageParserFlatMap(propsModel)
 
     val extractJsonStream: DataStream[CommonMessageType] =
       messageInputStream
@@ -85,7 +85,7 @@ object Convertor {
 
     val commonStream = extractJsonStream
       //TODO: avro schema inference only once
-      .map(m => validAndTransform(m, propsModel, propsModel.appUseAvroSerializationIsY,
+      .map(m => validAndTransform(m, propsModel, propsModel.appUseAvroSerialization,
         droolsValidator, avroSchema, propsModel.dtoMap, convertOutMapService))
       .name(propsModel.appSavepointPref + "-map-validAndTransform").uid(propsModel.appSavepointPref + "-map-validAndTransform")
 
@@ -101,30 +101,36 @@ object Convertor {
   }
 
   def setSink(mainDataStream: DataStream[CommonMessageType],
-              propsModel: InputPropsModel): Unit = {
+              propsModel: NewInputPropsModel,
+              producerFabric: FlinkSinkProperties => SinkFunction[KafkaDto] = producerFactoryDefault
+             ): Unit = {
 
-    setMainSink(mainDataStream, propsModel)
-    setOutSideSink(mainDataStream, propsModel)
+    setMainSink(mainDataStream, propsModel, producerFabric)
+    setOutSideSink(mainDataStream, propsModel, producerFabric)
   }
 
   def setMainSink(mainDataStream: DataStream[CommonMessageType],
-                  propsModel: InputPropsModel): DataStreamSink[CommonMessageType] = {
-    val outputTopicName = propsModel.appOutputTopicName
+                  propsModel: NewInputPropsModel,
+                  producerFabric: FlinkSinkProperties => SinkFunction[KafkaDto] = producerFactoryDefault
+                 ): DataStreamSink[KafkaDto] = {
+    val outputTopicName = propsModel.appOutputTopicName.createSinkFunction(producerFabric)
+    val out = new NewAvroPullOut()
     mainDataStream
-      .addSink(KafkaProducerService.getKafkaProducer[CommonMessageType](
-        outputTopicName, propsModel.commonKafkaProps, new AvroPullOut(outputTopicName),
-        propsModel.appServiceName + "-" + outputTopicName, producerSemantic, propsModel.kafkaProducerPoolSize))
-      .name(propsModel.appSavepointPref + "-sink-outInputConvertor").uid(propsModel.appSavepointPref + "-sink-outInputConvertor")
+      .map(out)
+      .addSink(outputTopicName)
   }
 
   def setOutSideSink(mainDataStream: DataStream[CommonMessageType],
-                     propsModel: InputPropsModel): DataStreamSink[CommonMessageType] = {
-    val dlqTopicName = propsModel.appDlqTopicName
+                     propsModel: NewInputPropsModel,
+                     producerFabric: FlinkSinkProperties => SinkFunction[KafkaDto] = producerFactoryDefault
+                    ): DataStreamSink[KafkaDto] = {
+    val dlqTopicName = propsModel.appDlqTopicName.createSinkFunction(producerFabric)
+    val out = new NewAvroPullOut()
     mainDataStream
       .getSideOutput(outputTag)
-      .addSink(KafkaProducerService.getKafkaProducer[CommonMessageType](
-        dlqTopicName, propsModel.commonKafkaProps, new DLQSerializer(dlqTopicName),
-        propsModel.appServiceName + "-" + dlqTopicName, producerSemantic, propsModel.kafkaProducerPoolSize))
+
+      .map(out)
+      .addSink(dlqTopicName)
       .name(propsModel.appSavepointPref + "-sink-outInputConvertorDlq").uid(propsModel.appSavepointPref + "-sink-outInputConvertorDlq")
   }
 }

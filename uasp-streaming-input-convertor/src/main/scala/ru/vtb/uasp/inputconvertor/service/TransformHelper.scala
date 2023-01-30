@@ -5,6 +5,7 @@ import org.json4s._
 import org.json4s.jackson.JsonMethods._
 import ru.vtb.uasp.inputconvertor.constants.Config
 import ru.vtb.uasp.inputconvertor.entity.{CommonMessageType, InputMessageType}
+import ru.vtb.uasp.inputconvertor.utils.config.NewInputPropsModel
 
 import scala.collection.mutable.ListBuffer
 
@@ -12,57 +13,43 @@ import scala.collection.mutable.ListBuffer
 object TransformHelper {
   implicit val formats: Formats = DefaultFormats
 
-  def extractJson(inputMessage: InputMessageType, allProps: Map[String, String], defaultJsonSchemaKey: String, collector: Collector[CommonMessageType]): Unit = {
+  def extractJson(inputMessage: InputMessageType,
+                  allProps: NewInputPropsModel,
+                  collector: Collector[CommonMessageType]
+                 ): Unit = {
 
 
-    def extractMessage(parsedValue: JValue): JValue =
-      if (allProps.getOrElse("app.message.json.path", "") != "") {
-        val payloadMessageJV = parsedValue \ allProps("app.message.json.path")
-        val payloadMessage: String = payloadMessageJV.extract[String]
-        parse(payloadMessage)
-      }
-      else parsedValue
+    def extractMessage(parsedValue: JValue): JValue = {
+      allProps.messageJsonPath
+        .map(path => {
+          val payloadMessageJV = parsedValue \ path
+          val payloadMessage: String = payloadMessageJV.extract[String]
+          parse(payloadMessage)
+        }
+      )
+      .getOrElse(parsedValue)
+    }
 
     def splitMessage(cm: CommonMessageType) = {
       val list = ListBuffer[JValue]()
       val parsedMessage = parse(cm.message_str.get)
-
-      if (allProps.getOrElse("input-convertor.json.split.element", "") != "") {
-        /*val doc1 = render(parsedMessage)
-        val compactJson1 = compact(doc1)
-        val prettyJson1 = pretty(doc1)
-        println(prettyJson1)*/
-        val splitter = allProps("input-convertor.json.split.element")
-        val contacts = parsedMessage \\ splitter
-
-        //FIXME https://github.com/json4s/json4s/issues/428
-        /*for (
-          JObject(elems) <- parsedMessage;
-          ( "contact", JArray(arr)) <- elems
-        )*/
-        /*for ( o <- arr) {
-                    val merged = parsedMessage mapField {
-                      case ("contact", JArray(arr)) => ("contact", JArray(List(o)))
-                      case other => other
-                    }
-                    list += merged
-                  }*/
-        val l = List(contacts)
-        for (JArray(o) <- l) {
-          for (d <- o) {
-            val merged = parsedMessage mapField {
-              case (splitter, JArray(arr)) => (splitter, JArray(List(d)))
-              case other => other
+      allProps.jsonSplitElement
+        .map(splitter => {
+          val contacts = parsedMessage \\ splitter
+          val l = List(contacts)
+          for (JArray(o) <- l) {
+            for (d <- o) {
+              val merged = parsedMessage mapField {
+                case (splitter, JArray(arr)) => (splitter, JArray(List(d)))
+                case other => other
+              }
+              list += merged
             }
-            list += merged
+
           }
-
-        }
-
-      } else list += parsedMessage
-
+        })
+        .getOrElse(list += parsedMessage)
       list.toList
-
     }
 
     val cm: CommonMessageType = CommonMessageType(message_key = inputMessage.message_key,
@@ -91,7 +78,9 @@ object TransformHelper {
           cm.copy(error = Some("Error json parsing: "
             + e.getMessage
             + ", with allProps: "
-            + allProps.filterKeys(key => !key.contains("password")))
+
+//            + allProps.filterKeys(key => !key.contains("password"))
+          )
           )
         )
     }

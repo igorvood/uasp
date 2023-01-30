@@ -4,7 +4,7 @@ import com.eatthepath.uuid.FastUUID
 import org.json4s.{DefaultFormats, Formats, JValue}
 import ru.vtb.uasp.common.dto.UaspDto
 import ru.vtb.uasp.inputconvertor.dao.CommonDao.getMap
-import ru.vtb.uasp.inputconvertor.utils.config.InputPropsModel
+
 
 import java.time.{LocalDateTime, ZoneId}
 import java.util.UUID
