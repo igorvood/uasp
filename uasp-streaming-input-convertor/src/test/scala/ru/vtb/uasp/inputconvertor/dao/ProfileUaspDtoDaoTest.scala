@@ -19,19 +19,17 @@ import ru.vtb.uasp.validate.DroolsValidator
 class ProfileUaspDtoDaoTest extends AnyFlatSpec with should.Matchers {
 
   "The test data" should "be equals standard first salary UaspDto instance" in new AllureScalatestContext {
-    /*Allure.link("291129", "manual", "")
-    Allure.tms("21", "")*/
 
     val (commonMessage, allProps, uaspDtoType, dtoMap, droolsValidator) = getCommonMessageAndProps()
-    println("commonMessage: " + commonMessage)
-    val uaspDtoParser = UaspDtoParserFactory(uaspDtoType, null /*InputPropsModel(Map("input-convertor.uaspdto.type" -> uaspDtoType), "")*/)
+
+    val uaspDtoParser = UaspDtoParserFactory(uaspDtoType, allProps)
     val uaspDto: UaspDto = uaspDtoParser.fromJValue(commonMessage.json_message.get, dtoMap)
-    println("uaspDto: " + uaspDto)
-    val standardUaspDto = UaspDtostandardFactory("profile").getstandardUaspDto(uaspDto.uuid)
+
+    val standardUaspDto = UaspDtostandardFactory("profile").getstandardUaspDto(uaspDto.uuid).copy(process_timestamp = uaspDto.process_timestamp)
     val validationList = droolsValidator.validate(List(uaspDto))
 
     validationList shouldBe empty
-    assert(standardUaspDto == uaspDto.copy(process_timestamp = 0))
+    assert(uaspDto == standardUaspDto)
 
     val convertOutMapService = new ConvertOutMapService
     val serializable = convertOutMapService.serialize(uaspDto)
@@ -44,7 +42,19 @@ object ProfileUaspDtoDaoTest {
 
   def getCommonMessageAndProps(args: Array[String] = Array[String]()): (CommonMessageType, NewInputPropsModel, String, Map[String, Array[String]], DroolsValidator) = {
     //    val allProps = getAllProps(args, "application-profile.properties")
-    val allProps: NewInputPropsModel = null
+    val allProps: NewInputPropsModel = new NewInputPropsModel(
+      null,
+      "profile",
+      null,
+      null,
+      null,
+      false,
+      null,
+      null,
+      true,
+      "",
+      None,
+      None)
     println(allProps)
     val uaspDtoType = allProps.appUaspdtoType //("app.uaspdto.type")
     println("uaspDtoType: " + uaspDtoType)

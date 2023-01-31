@@ -41,7 +41,7 @@ object UddsUaspDtoDaoTest {
       null,
       null,
       true,
-      null,
+      "",
       None,
       None)
     val uaspDtoType = allProps.appUaspdtoType
