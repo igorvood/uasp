@@ -17,16 +17,14 @@ class LoyaltyUaspDtoDaoTest extends AnyFlatSpec with should.Matchers {
 
   "The result UaspDto" should "be valid and drools return 1 error" in new AllureScalatestContext {
 
-    val (commonMessage, _, uaspDtoType, dtoMap, validator) = getCommonMessageAndProps()
-    println("commonMessage: " + commonMessage)
-    val uaspDtoParser: UaspDtoParser = UaspDtoParserFactory(uaspDtoType, null /*InputPropsModel(Map("input-convertor.test.uaspdto.type" -> uaspDtoType,
-      "input-convertor-sys.test.card.number.sha256.salt" -> "TEST"), "test")*/)
-    val uaspDto: UaspDto = uaspDtoParser.fromJValue(commonMessage.json_message.get, dtoMap)
-    println("uaspDto: " + uaspDto)
-    val standardUaspDto: UaspDto = UaspDtostandardFactory("loyalty").getstandardUaspDto(uaspDto.uuid)
+    val (commonMessage, inputPropsModel, uaspDtoType, dtoMap, validator) = getCommonMessageAndProps()
 
-    assert(standardUaspDto == uaspDto.copy(process_timestamp = 0,
-    ))
+    val uaspDtoParser: UaspDtoParser = UaspDtoParserFactory(uaspDtoType, inputPropsModel )
+    val uaspDto: UaspDto = uaspDtoParser.fromJValue(commonMessage.json_message.get, dtoMap)
+
+    val standardUaspDto: UaspDto = UaspDtostandardFactory("loyalty").getstandardUaspDto(uaspDto.uuid).copy(process_timestamp = uaspDto.process_timestamp)
+
+    assert(uaspDto == standardUaspDto )
     val valid = validator.validate(List(uaspDto))
     assert(valid.size == 1)
   }
@@ -34,19 +32,28 @@ class LoyaltyUaspDtoDaoTest extends AnyFlatSpec with should.Matchers {
 
 object LoyaltyUaspDtoDaoTest {
   def getCommonMessageAndProps(args: Array[String] = Array[String]()): (CommonMessageType, NewInputPropsModel, String, Map[String, Array[String]], DroolsValidator) = {
-    //    val allProps = getAllProps(args, "application-loyalty.properties")
-    val allProps: NewInputPropsModel = null
-    println(allProps)
+
+    val allProps: NewInputPropsModel = new NewInputPropsModel(
+      null,
+      "loyalty",
+      null,
+      null,
+      null,
+      false,
+      null,
+      null,
+      true,
+      "",
+      None,
+      None)
+
     val uaspDtoType = allProps.appUaspdtoType
-    println("uaspDtoType: " + uaspDtoType)
 
 
     val jsonMessageStr = getStringFromResourceFile(uaspDtoType + "-test.json")
-    //val jsonMessageStr = getStringFromResourceFile ( "way4-ift-mes1.json" )
-    println("jsonMessageStr: " + jsonMessageStr)
 
     val inMessage = InputMessageType(message_key = "123", message = jsonMessageStr.getBytes, Map[String, String]())
-    println("inMessage: " + inMessage)
+
     val msgCollector = new MsgCollector
     extractJson(inMessage, allProps, msgCollector)
     val uaspDtoMap = Map[String, String]() ++ getPropsFromResourcesFile(uaspDtoType + "-uaspdto.properties").get
