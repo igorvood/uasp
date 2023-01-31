@@ -29,8 +29,8 @@ class ConvertorFullTest extends AnyFlatSpec with should.Matchers {
       dtoMap = null,
       appReadSourceTopicFrombeginning = false,
       SHA256salt = null,
-      messageJsonPath = null,
-      jsonSplitElement = null)
+      messageJsonPath = None,
+      jsonSplitElement = None)
 
 
     val env = StreamExecutionEnvironment.getExecutionEnvironment
