@@ -22,39 +22,48 @@ class CardFlDtoDaoTest extends AnyFlatSpec with should.Matchers {
     val uaspDtoParser: UaspDtoParser = UaspDtoParserFactory(uaspDtoType, null)
     val uaspDto: UaspDto = uaspDtoParser.fromJValue(commonMessage.json_message.get, dtoMap)
     println("uaspDto: " + uaspDto)
-    val standardUaspDto: UaspDto = UaspDtostandardFactory("cardfl").getstandardUaspDto(uaspDto.uuid)
+    val standardUaspDto: UaspDto = UaspDtostandardFactory("cardfl").getstandardUaspDto(uaspDto.uuid).copy(process_timestamp = uaspDto.process_timestamp)
 
-    assert(standardUaspDto == uaspDto.copy(process_timestamp = 0))
+    assert(standardUaspDto == uaspDto)
   }
 
   "The result UaspDto" should "be valid with null" in new AllureScalatestContext {
 
     val (commonMessage, _, uaspDtoType, dtoMap, _) = getCommonNullMessageAndProps()
-    println("commonMessage: " + commonMessage)
+
     val uaspDtoParser: UaspDtoParser = UaspDtoParserFactory(uaspDtoType, null)
     val uaspDto: UaspDto = uaspDtoParser.fromJValue(commonMessage.json_message.get, dtoMap)
-    println("uaspDto: " + uaspDto)
-    val standardUaspDto: UaspDto = UaspDtostandardFactory("cardflNull").getstandardUaspDto(uaspDto.uuid)
 
-    assert(standardUaspDto == uaspDto.copy(process_timestamp = 0))
+    val standardUaspDto: UaspDto = UaspDtostandardFactory("cardflNull").getstandardUaspDto(uaspDto.uuid).copy(process_timestamp = uaspDto.process_timestamp)
+
+    assert(standardUaspDto == uaspDto)
   }
 }
 
 object CardFlDtoDaoTest {
   def getCommonMessageAndProps(args: Array[String] = Array[String]()): (CommonMessageType, NewInputPropsModel, String, Map[String, Array[String]], DroolsValidator) = {
-    //    val allProps = getAllProps(args, "application-cardfl.properties")
-    val allProps: NewInputPropsModel = null
-    println(allProps)
-    val uaspDtoType = allProps.appUaspdtoType
-    println("uaspDtoType: " + uaspDtoType)
 
+    val allProps: NewInputPropsModel =  new NewInputPropsModel(
+      null,
+      "cardfl",
+      null,
+      null,
+      null,
+      false,
+      null,
+      null,
+      true,
+      "",
+      None,
+      None)
+
+
+    val uaspDtoType = allProps.appUaspdtoType
 
     val jsonMessageStr = getStringFromResourceFile(uaspDtoType + "-test.json")
-    //val jsonMessageStr = getStringFromResourceFile ( "way4-ift-mes1.json" )
-    println("jsonMessageStr: " + jsonMessageStr)
 
     val inMessage = InputMessageType(message_key = "123", message = jsonMessageStr.getBytes, Map[String, String]())
-    println("inMessage: " + inMessage)
+
     val msgCollector = new MsgCollector
     extractJson(inMessage, allProps, msgCollector)
     val uaspDtoMap = Map[String, String]() ++ getPropsFromResourcesFile(uaspDtoType + "-uaspdto.properties").get
@@ -63,18 +72,26 @@ object CardFlDtoDaoTest {
   }
 
   def getCommonNullMessageAndProps(args: Array[String] = Array[String]()): (CommonMessageType, NewInputPropsModel, String, Map[String, Array[String]], DroolsValidator) = {
-    //    val allProps = getAllProps(args, "application-cardfl.properties")
-    val allProps: NewInputPropsModel = null
-    println(allProps)
-    val uaspDtoType = allProps.appUaspdtoType
-    println("uaspDtoType: " + uaspDtoType)
+    val allProps: NewInputPropsModel = new NewInputPropsModel(
+      null,
+      "cardfl",
+      null,
+      null,
+      null,
+      false,
+      null,
+      null,
+      true,
+      "",
+      None,
+      None)
 
+    val uaspDtoType = allProps.appUaspdtoType
 
     val jsonMessageStr = getStringFromResourceFile(uaspDtoType + "-null-test.json")
-    println("jsonMessageStr: " + jsonMessageStr)
 
     val inMessage = InputMessageType(message_key = "123", message = jsonMessageStr.getBytes, Map[String, String]())
-    println("inMessage: " + inMessage)
+
     val msgCollector = new MsgCollector
     extractJson(inMessage, allProps, msgCollector)
     val uaspDtoMap = Map[String, String]() ++ getPropsFromResourcesFile(uaspDtoType + "-uaspdto.properties").get
