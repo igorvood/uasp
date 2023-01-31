@@ -34,7 +34,7 @@ class ProfileAuthUaspDtoDaoTest extends AnyFlatSpec with should.Matchers {
 object ProfileAuthUaspDtoDaoTest {
 
   def getCommonMessageAndProps(args: Array[String] = Array[String]()): (CommonMessageType, NewInputPropsModel, String, Map[String, Array[String]], DroolsValidator) = {
-    //    val allProps = getAllProps(args, "application-profile-auth.properties")
+
     val allProps: NewInputPropsModel = new NewInputPropsModel(
       null,
       "profile-auth",
