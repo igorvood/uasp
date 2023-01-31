@@ -22,7 +22,7 @@ class CardFlDtoDaoTest extends AnyFlatSpec with should.Matchers {
     val uaspDtoParser: UaspDtoParser = UaspDtoParserFactory(uaspDtoType, null)
     val uaspDto: UaspDto = uaspDtoParser.fromJValue(commonMessage.json_message.get, dtoMap)
     println("uaspDto: " + uaspDto)
-    val standardUaspDto: UaspDto = UaspDtostandardFactory("cardfl").getstandardUaspDto
+    val standardUaspDto: UaspDto = UaspDtostandardFactory("cardfl").getstandardUaspDto(uaspDto.uuid)
 
     assert(standardUaspDto == uaspDto.copy(process_timestamp = 0))
   }
@@ -34,7 +34,7 @@ class CardFlDtoDaoTest extends AnyFlatSpec with should.Matchers {
     val uaspDtoParser: UaspDtoParser = UaspDtoParserFactory(uaspDtoType, null)
     val uaspDto: UaspDto = uaspDtoParser.fromJValue(commonMessage.json_message.get, dtoMap)
     println("uaspDto: " + uaspDto)
-    val standardUaspDto: UaspDto = UaspDtostandardFactory("cardflNull").getstandardUaspDto
+    val standardUaspDto: UaspDto = UaspDtostandardFactory("cardflNull").getstandardUaspDto(uaspDto.uuid)
 
     assert(standardUaspDto == uaspDto.copy(process_timestamp = 0))
   }

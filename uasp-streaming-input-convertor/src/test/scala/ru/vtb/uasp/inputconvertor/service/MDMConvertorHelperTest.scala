@@ -36,7 +36,7 @@ class MDMConvertorHelperTest extends AnyFlatSpec with should.Matchers {
 
     val initialUaspDto: UaspDto = AvroUtils.avroDeserialize[UaspDto](testedMessage.avro_message.get)
     //standard
-    val standardUaspDto = UaspDtostandardFactory("mdm").getstandardUaspDto
+    val standardUaspDto = UaspDtostandardFactory("mdm").getstandardUaspDto(initialUaspDto.uuid)
     assert(standardUaspDto == initialUaspDto.copy(process_timestamp = 0))
   }
 }

@@ -24,7 +24,7 @@ class PosTransactionWay4UaspDtoDaoTest extends AnyFlatSpec with should.Matchers 
     val uaspDtoParser: UaspDtoParser = UaspDtoParserFactory(uaspDtoType, null)
     val uaspDto: UaspDto = uaspDtoParser.fromJValue(commonMessage.json_message.get, dtoMap)
     println("uaspDto: " + uaspDto)
-    val standardUaspDto: UaspDto = UaspDtostandardFactory("way4").getstandardUaspDto
+    val standardUaspDto: UaspDto = UaspDtostandardFactory("way4").getstandardUaspDto(uaspDto.uuid)
     val expecteduaspDto = standardUaspDto.copy(id = "1493814790",
       dataLong = standardUaspDto.dataLong + ("transaction_datetime" -> 1655814114000L, "processing_datetime" -> 1655803314000L, "effective_date" -> 1655424000000L),
       dataDecimal = Map("transaction_amount" -> 1000.00, "base_amount_w4" -> -1000.00),

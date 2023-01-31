@@ -17,13 +17,12 @@ class MDMProfileUaspDtoDaoTest extends AnyFlatSpec with should.Matchers {
   "The test data" should "be equals standard mdm-profile UaspDto instance" in {
 
     val (commonMessage, allProps, uaspDtoType, dtoMap, droolsValidator) = getCommonMessageAndProps()
-    println("commonMessage: " + commonMessage)
     val uaspDtoParser = UaspDtoParserFactory(uaspDtoType, null)
     val uaspDto: UaspDto = uaspDtoParser.fromJValue(commonMessage.json_message.get, dtoMap)
-    println("uaspDto: " + uaspDto)
-    val standardUaspDto = UaspDtostandardFactory("mdm").getstandardUaspDto
-    val expectedUaspDto = standardUaspDto.copy(id = "456", dataString = Map("local_id" -> "456", "global_id" -> "10324", "system_number" -> "99995"))
-    assert(expectedUaspDto == uaspDto.copy(process_timestamp = 0))
+
+    val standardUaspDto = UaspDtostandardFactory("mdm").getstandardUaspDto(uaspDto.uuid)
+    val expectedUaspDto = standardUaspDto.copy(id = "456", dataString = Map("local_id" -> "456", "global_id" -> "10324", "system_number" -> "99995"), process_timestamp = uaspDto.process_timestamp)
+    assert(expectedUaspDto == uaspDto)
   }
 }
 
@@ -39,21 +38,17 @@ object MDMProfileUaspDtoDaoTest {
       false,
       null,
       null,
-      false,
+      true,
       null,
-      null,
-      null)
-    println(allProps)
+      None,
+      None)
     val uaspDtoType = allProps.appUaspdtoType //("app.uaspdto.type")
-    println("uaspDtoType: " + uaspDtoType)
 
 
     val jsonMessageStr = getStringFromResourceFile(uaspDtoType + "-test.json")
     //val jsonMessageStr = getStringFromResourceFile("mdm-test.json")
-    println("jsonMessageStr: " + jsonMessageStr)
 
     val inMessage = InputMessageType(message_key = "123", message = jsonMessageStr.getBytes, Map[String, String]())
-    println("inMessage: " + inMessage)
     val msgCollector = new MsgCollector
     extractJson(inMessage, allProps, msgCollector)
     val uaspDtoMap = Map[String, String]() ++ getPropsFromResourcesFile(uaspDtoType + "-uaspdto.properties").get

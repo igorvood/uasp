@@ -20,7 +20,7 @@ class IssuingAccountBalanceUaspDtoTest extends AnyFlatSpec with should.Matchers 
     val uaspDtoParser = UaspDtoParserFactory(uaspDtoType, null /*InputPropsModel(Map("input-convertor.uaspdto.type" -> uaspDtoType), "")*/)
     val uaspDto: UaspDto = uaspDtoParser.fromJValue(commonMessage.json_message.get, dtoMap)
     println("uaspDto: " + uaspDto)
-    val standardUaspDto = UaspDtostandardFactory("issuing-account-balance").getstandardUaspDto
+    val standardUaspDto = UaspDtostandardFactory("issuing-account-balance").getstandardUaspDto(uaspDto.uuid)
     standardUaspDto shouldEqual uaspDto.copy(process_timestamp = 0)
   }
 

@@ -4,11 +4,11 @@ import ru.vtb.uasp.common.dto.UaspDto
 
 
 trait UaspDtostandard {
-  def getstandardUaspDto: UaspDto
+  def getstandardUaspDto(uuid: String): UaspDto
 }
 
 private class Way4UaspDtostandard() extends UaspDtostandard {
-  override def getstandardUaspDto: UaspDto = UaspDto(id = "2157291480",
+  override def getstandardUaspDto(uuid: String): UaspDto = UaspDto(id = "2157291480",
     dataInt = Map[String, Int](),
     dataLong = Map("transaction_datetime" -> 1626631944000L) ++
       Map("processing_datetime" -> 1626631944000L) ++
@@ -30,13 +30,13 @@ private class Way4UaspDtostandard() extends UaspDtostandard {
       Map("card_expire_w4" -> "2405") ++
       Map("payment_scheme_w4" -> "VISA"),
     dataBoolean = Map[String, Boolean](),
-    uuid = "",
+    uuid =uuid,
     process_timestamp = 0
   )
 }
 
 private class MDMUaspDtostandard extends UaspDtostandard {
-  override def getstandardUaspDto: UaspDto = UaspDto(id = "324",
+  override def getstandardUaspDto(uuid: String): UaspDto = UaspDto(id = "324",
     dataInt = Map[String, Int](),
     dataLong = Map[String, Long](),
     dataFloat = Map[String, Float](),
@@ -46,13 +46,13 @@ private class MDMUaspDtostandard extends UaspDtostandard {
       Map("global_id" -> "10324") ++
       Map("system_number" -> "OW4"),
     dataBoolean = Map[String, Boolean](),
-    uuid = "",
+    uuid = uuid,
     process_timestamp = 0
   )
 }
 
 private class IssiungClientUaspDtostandard extends UaspDtostandard {
-  override def getstandardUaspDto: UaspDto = UaspDto(id = "1457163490",
+  override def getstandardUaspDto(uuid: String): UaspDto = UaspDto(id = "1457163490",
     dataInt = Map[String, Int](),
     dataLong = Map[String, Long](),
     dataFloat = Map[String, Float](),
@@ -60,13 +60,13 @@ private class IssiungClientUaspDtostandard extends UaspDtostandard {
     dataDecimal = Map[String, BigDecimal](),
     dataString = Map("local_id" -> "1457163490"),
     dataBoolean = Map[String, Boolean](),
-    uuid = "",
+    uuid = uuid,
     process_timestamp = 0
   )
 }
 
 private class IssiungCardUaspDtoStandard extends UaspDtostandard {
-  override def getstandardUaspDto: UaspDto = UaspDto(id = "111111750",
+  override def getstandardUaspDto(uuid: String): UaspDto = UaspDto(id = "111111750",
     dataInt = Map[String, Int](),
     dataLong = Map[String, Long](),
     dataFloat = Map[String, Float](),
@@ -74,13 +74,13 @@ private class IssiungCardUaspDtoStandard extends UaspDtostandard {
     dataDecimal = Map[String, BigDecimal](),
     dataString = Map("local_id" -> "1111725110"),
     dataBoolean = Map[String, Boolean](),
-    uuid = "",
+    uuid = uuid,
     process_timestamp = 0
   )
 }
 
 private class IssuingAccountUaspDtostandard extends UaspDtostandard {
-  override def getstandardUaspDto: UaspDto = UaspDto(id = "560896180",
+  override def getstandardUaspDto(uuid: String): UaspDto = UaspDto(id = "560896180",
     dataInt = Map[String, Int](),
     dataLong = Map[String, Long](),
     dataFloat = Map[String, Float](),
@@ -88,13 +88,13 @@ private class IssuingAccountUaspDtostandard extends UaspDtostandard {
     dataDecimal = Map[String, BigDecimal](),
     dataString = Map("local_id" -> "560896180"),
     dataBoolean = Map[String, Boolean](),
-    uuid = "",
+    uuid = uuid,
     process_timestamp = 0
   )
 }
 
 private class IssuingAccountBalanceUaspDtostandard extends UaspDtostandard {
-  override def getstandardUaspDto: UaspDto = UaspDto(id = "111111750",
+  override def getstandardUaspDto(uuid: String): UaspDto = UaspDto(id = "111111750",
     dataInt = Map[String, Int](),
     dataLong = Map[String, Long](),
     dataFloat = Map[String, Float](),
@@ -102,13 +102,13 @@ private class IssuingAccountBalanceUaspDtostandard extends UaspDtostandard {
     dataDecimal = Map[String, BigDecimal](),
     dataString = Map("local_id" -> "111111750"),
     dataBoolean = Map[String, Boolean](),
-    uuid = "",
+    uuid = uuid,
     process_timestamp = 0
   )
 }
 
 private class CurrencyUaspDtostandard extends UaspDtostandard {
-  override def getstandardUaspDto: UaspDto = UaspDto(id = "78a3b0e4-4221-3020-8bad-080de84de4c6",
+  override def getstandardUaspDto(uuid: String): UaspDto = UaspDto(id = "78a3b0e4-4221-3020-8bad-080de84de4c6",
     dataInt = Map("rates_scale" -> 1),
     dataLong = Map("currency_date" -> 1653350400000L),
     dataFloat = Map[String, Float](),
@@ -119,7 +119,7 @@ private class CurrencyUaspDtostandard extends UaspDtostandard {
       Map("rates_currency_numericCode" -> "036") ++
       Map("rates_currency_alphaCode" -> "AUD"),
     dataBoolean = Map[String, Boolean](),
-    uuid = "",
+    uuid = uuid,
     process_timestamp = 0
   )
   // rates_currency_name -> Австралийский доллар, rates_currency_numericCode -> 036, rates_currency_alphaCode -> AUD),Map(),,0)
@@ -131,7 +131,7 @@ private class CurrencyUaspDtostandard extends UaspDtostandard {
 // CFT2RS_CD_systemId -> CFT2RS, CFT2RS_CD_data_operationAmount_currency -> USD, local_id -> 1538541282, CFT2RS_CD_data_KBO -> 731820-01, CFT2RS_CD_vidDepType -> VKL),
 // Map(),,0)
 private class FirstSalaryUaspDtostandard extends UaspDtostandard {
-  override def getstandardUaspDto: UaspDto = UaspDto(id = "1538541282",
+  override def getstandardUaspDto(uuid: String): UaspDto = UaspDto(id = "1538541282",
     dataInt = Map(),
     dataLong = Map("event_dttm_cft" -> 1652866338000L),
     dataFloat = Map[String, Float](),
@@ -156,13 +156,13 @@ private class FirstSalaryUaspDtostandard extends UaspDtostandard {
       Map("hash_card_number" -> "94ee059335e587e501cc4bf90613e0814f00a7b08bc7c648fd865a2af6a22cc2"),
     dataBoolean = Map("first_add_cft" -> false) ++
       Map("data_debet" -> true),
-    uuid = "",
+    uuid = uuid,
     process_timestamp = 0
   )
 }
 
 private class CaFirstSalaryUaspDtostandard extends UaspDtostandard {
-  override def getstandardUaspDto: UaspDto = UaspDto(id = "123",
+  override def getstandardUaspDto(uuid: String): UaspDto = UaspDto(id = "123",
     dataInt = Map(),
     dataLong = Map("event_dttm_ca" -> 1664093471000L),
     dataFloat = Map[String, Float](),
@@ -172,13 +172,13 @@ private class CaFirstSalaryUaspDtostandard extends UaspDtostandard {
       Map("kbo_ca" -> "qwerty") ++
       Map("source_system_ca" -> "CA"),
     dataBoolean = Map(),
-    uuid = "",
+    uuid = uuid,
     process_timestamp = 0
   )
 }
 
 private class ProfileUaspDtoStandart extends UaspDtostandard {
-  override def getstandardUaspDto: UaspDto = UaspDto(id = "401037430091",
+  override def getstandardUaspDto(uuid: String): UaspDto = UaspDto(id = "401037430091",
     dataInt = Map(),
     dataLong = Map("event_dttm_prf" -> 1658737654000L),
     dataFloat = Map[String, Float](),
@@ -201,13 +201,13 @@ private class ProfileUaspDtoStandart extends UaspDtostandard {
       Map("tso" -> "FCID#40817810414154018746~MRPC29#DW^14031.04~RCID#88888~ZAUTHMET#CIFID~ZCCODE#0~ZCHNL#BACKOFFICE~ZMRPC1030#~ZPKGID#MULTICARTA~ZROLE#1~ZTFEEFLG#1~ZTRNTYPE#731800-22~ZLINKTYP#ENTDEP~ZLINKID#88888~ZLINKSYS#") ++
       Map("data_transactionDate" -> "2022-07-25 112734"),
     dataBoolean = Map[String, Boolean](),
-    uuid = "",
+    uuid = uuid,
     process_timestamp = 0
   )
 }
 
 private class ProfileAuthUaspDtoStandart extends UaspDtostandard {
-  override def getstandardUaspDto: UaspDto = UaspDto(id = "661500000000001509142164448582426848501A",
+  override def getstandardUaspDto(uuid: String): UaspDto = UaspDto(id = "661500000000001509142164448582426848501A",
     dataInt = Map("transaction_currency_cd" -> 643) ++
       Map("typ" -> 1),
     dataLong = Map("local_transaction_dttm" -> 1644457024000L, "transmission_dttm" -> 1644485824000L),
@@ -230,13 +230,13 @@ private class ProfileAuthUaspDtoStandart extends UaspDtostandard {
       Map("date_time_string" -> "0210093704") ++
       Map("replacement_amt" -> "1145"),
     dataBoolean = Map[String, Boolean](),
-    uuid = "",
+    uuid = uuid,
     process_timestamp = 0
   )
 }
 
 private class CardFlUaspDtoStandart extends UaspDtostandard {
-  override def getstandardUaspDto: UaspDto = UaspDto(id = "990654099",
+  override def getstandardUaspDto(uuid: String): UaspDto = UaspDto(id = "990654099",
 
     dataInt = Map("RtSpnd30Cnt" -> 654456) ++
       Map("RtSpnd60Cnt" -> 882233) ++
@@ -296,13 +296,13 @@ private class CardFlUaspDtoStandart extends UaspDtostandard {
       Map("OpnFlg" -> true) ++
       Map("ZpBs144Flg" -> false),
 
-    uuid = "",
+    uuid = uuid,
     process_timestamp = 0
   )
 }
 
 private class CaCardFlUaspDtoStandart extends UaspDtostandard {
-  override def getstandardUaspDto: UaspDto = UaspDto(id = "990654099",
+  override def getstandardUaspDto(uuid: String): UaspDto = UaspDto(id = "990654099",
     dataInt = Map(),
     dataLong = Map(),
     dataFloat = Map[String, Float](),
@@ -329,13 +329,13 @@ private class CaCardFlUaspDtoStandart extends UaspDtostandard {
       Map("loan_insurance_flg" -> "loan_insurance_flg"),
 
     dataBoolean = Map(),
-    uuid = "",
+    uuid = uuid,
     process_timestamp = 0
   )
 }
 
 private class CaDepositFlUaspDtoStandart extends UaspDtostandard {
-  override def getstandardUaspDto: UaspDto = UaspDto(id = "12345",
+  override def getstandardUaspDto(uuid: String): UaspDto = UaspDto(id = "12345",
     dataInt = Map("period" -> 3),
     dataLong = Map(),
     dataFloat = Map[String, Float](),
@@ -346,13 +346,13 @@ private class CaDepositFlUaspDtoStandart extends UaspDtostandard {
       Map("product_nm" -> "nm"),
 
     dataBoolean = Map(),
-    uuid = "",
+    uuid = uuid,
     process_timestamp = 0
   )
 }
 
 private class CardFlNullUaspDtoStandart extends UaspDtostandard {
-  override def getstandardUaspDto: UaspDto = UaspDto(id = "990654099",
+  override def getstandardUaspDto(uuid: String): UaspDto = UaspDto(id = "990654099",
 
     dataInt = Map[String, Int](),
 
@@ -368,13 +368,13 @@ private class CardFlNullUaspDtoStandart extends UaspDtostandard {
 
     dataBoolean = Map[String, Boolean](),
 
-    uuid = "",
+    uuid = uuid,
     process_timestamp = 0
   )
 }
 
 private class UddsUaspDtoStandart extends UaspDtostandard {
-  override def getstandardUaspDto: UaspDto = UaspDto(id = "1223134231",
+  override def getstandardUaspDto(uuid: String): UaspDto = UaspDto(id = "1223134231",
     dataInt = Map(),
     dataLong = Map("eventDttm" -> 1643709240000L),
     dataFloat = Map[String, Float](),
@@ -404,13 +404,13 @@ private class UddsUaspDtoStandart extends UaspDtostandard {
 
     dataBoolean = Map(),
 
-    uuid = "",
+    uuid = uuid,
     process_timestamp = 0
   )
 }
 
 private class LoyaltyUaspDtoStandart extends UaspDtostandard {
-  override def getstandardUaspDto: UaspDto = UaspDto(id = "32542135",
+  override def getstandardUaspDto(uuid: String): UaspDto = UaspDto(id = "32542135",
     dataInt = Map(),
     dataLong = Map("eventDttm" -> 1666171516000L),
     dataFloat = Map[String, Float](),
@@ -426,13 +426,13 @@ private class LoyaltyUaspDtoStandart extends UaspDtostandard {
 
     dataBoolean = Map(),
 
-    uuid = "",
+    uuid = uuid,
     process_timestamp = 0
   )
 }
 
 private class CustomerPackageUaspDtoStandart extends UaspDtostandard {
-  override def getstandardUaspDto: UaspDto = UaspDto(id = "1223134231",
+  override def getstandardUaspDto(uuid: String): UaspDto = UaspDto(id = "1223134231",
     dataInt = Map(),
     dataLong = Map(),
     dataFloat = Map[String, Float](),
@@ -447,13 +447,13 @@ private class CustomerPackageUaspDtoStandart extends UaspDtostandard {
 
     dataBoolean = Map(),
 
-    uuid = "",
+    uuid = uuid,
     process_timestamp = 0
   )
 }
 
 private class CustomerProfileFullUaspDtoStandart extends UaspDtostandard {
-  override def getstandardUaspDto: UaspDto = UaspDto(id = "897",
+  override def getstandardUaspDto(uuid: String): UaspDto = UaspDto(id = "897",
     dataInt = Map(),
     dataLong = Map(),
     dataFloat = Map[String, Float](),
@@ -466,7 +466,7 @@ private class CustomerProfileFullUaspDtoStandart extends UaspDtostandard {
 
     dataBoolean = Map(),
 
-    uuid = "",
+    uuid = uuid,
     process_timestamp = 0
   )
 }

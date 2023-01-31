@@ -23,7 +23,7 @@ class ProfileAuthUaspDtoDaoTest extends AnyFlatSpec with should.Matchers {
         "input-convertor-sys.test.card.number.sha256.salt" -> "TEST"), "test")*/)
     val uaspDto: UaspDto = uaspDtoParser.fromJValue(commonMessage.json_message.get, dtoMap)
     println("uaspDto: " + uaspDto)
-    val standardUaspDto = UaspDtostandardFactory("profile-auth").getstandardUaspDto
+    val standardUaspDto = UaspDtostandardFactory("profile-auth").getstandardUaspDto(uaspDto.uuid)
     val validationList = droolsValidator.validate(List(uaspDto))
 
     validationList shouldBe empty

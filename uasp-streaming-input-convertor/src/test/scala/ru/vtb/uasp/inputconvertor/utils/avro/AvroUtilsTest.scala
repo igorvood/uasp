@@ -19,7 +19,7 @@ class AvroUtilsTest extends AnyFlatSpec with should.Matchers {
     Allure.link("302198", "manual", "")
     Allure.tms("18", "")
 
-    val uaspDto = UaspDtostandardFactory("way4").getstandardUaspDto
+    val uaspDto = UaspDtostandardFactory("way4").getstandardUaspDto("")
     val avroSchema = AvroSchema[UaspDto]
 
     val convertOutMapService = new ConvertOutMapService

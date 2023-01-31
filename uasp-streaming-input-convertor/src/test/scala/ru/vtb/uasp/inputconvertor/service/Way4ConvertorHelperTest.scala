@@ -33,7 +33,7 @@ class Way4ConvertorHelperTest extends AnyFlatSpec with should.Matchers {
 
     val initialUaspDto: UaspDto = AvroUtils.avroDeserialize[UaspDto](testedMessage.avro_message.get).copy(process_timestamp = 0)
     //standard
-    val standardUaspDto: UaspDto = UaspDtostandardFactory("way4").getstandardUaspDto
+    val standardUaspDto: UaspDto = UaspDtostandardFactory("way4").getstandardUaspDto(initialUaspDto.uuid)
     val expectedUaspDto = standardUaspDto.copy(dataString = standardUaspDto.dataString + ("source_system_w4" -> "WAY4", "card_masked_pan" -> "529938******8812",
       "source_account_w4" -> "40914810200009000369", "base_currency_w4" -> "RUR", "card_ps_funding_source" -> "Credit", "transaction_currency" -> "RUR",
       "card_expire_w4" -> "2607", "payment_scheme_w4" -> "Mastercard", "processing_date_string" -> "2021-07-18T18:12:24Z"),

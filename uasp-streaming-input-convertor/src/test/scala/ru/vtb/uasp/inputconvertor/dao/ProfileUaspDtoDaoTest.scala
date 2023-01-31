@@ -27,7 +27,7 @@ class ProfileUaspDtoDaoTest extends AnyFlatSpec with should.Matchers {
     val uaspDtoParser = UaspDtoParserFactory(uaspDtoType, null /*InputPropsModel(Map("input-convertor.uaspdto.type" -> uaspDtoType), "")*/)
     val uaspDto: UaspDto = uaspDtoParser.fromJValue(commonMessage.json_message.get, dtoMap)
     println("uaspDto: " + uaspDto)
-    val standardUaspDto = UaspDtostandardFactory("profile").getstandardUaspDto
+    val standardUaspDto = UaspDtostandardFactory("profile").getstandardUaspDto(uaspDto.uuid)
     val validationList = droolsValidator.validate(List(uaspDto))
 
     validationList shouldBe empty

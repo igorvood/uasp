@@ -27,7 +27,7 @@ class CaFirstSalaryUaspDtoDaoTest extends AnyFlatSpec with should.Matchers {
       "input-convertor-sys.test.card.number.sha256.salt" -> "TEST"), "test")*/)
     val uaspDto: UaspDto = uaspDtoParser.fromJValue(commonMessage.json_message.get, dtoMap)
     println("uaspDto: " + uaspDto)
-    val standardUaspDto = UaspDtostandardFactory("ca-first-salary").getstandardUaspDto
+    val standardUaspDto = UaspDtostandardFactory("ca-first-salary").getstandardUaspDto(uaspDto.uuid)
     assert(standardUaspDto == uaspDto.copy(process_timestamp = 0))
   }
 

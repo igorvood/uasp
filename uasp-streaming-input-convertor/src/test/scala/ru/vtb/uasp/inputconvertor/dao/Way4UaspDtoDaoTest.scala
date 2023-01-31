@@ -26,7 +26,7 @@ class Way4UaspDtoDaoTest extends AnyFlatSpec with should.Matchers {
     val uaspDtoParser: UaspDtoParser = UaspDtoParserFactory(uaspDtoType, null /*InputPropsModel(Map("input-convertor.uaspdto.type" -> uaspDtoType), "")*/)
     val uaspDto: UaspDto = uaspDtoParser.fromJValue(commonMessage.json_message.get, dtoMap)
     println("uaspDto: " + uaspDto)
-    val standardUaspDto: UaspDto = UaspDtostandardFactory("way4").getstandardUaspDto
+    val standardUaspDto: UaspDto = UaspDtostandardFactory("way4").getstandardUaspDto(uaspDto.uuid)
     assert(standardUaspDto.copy(dataString = standardUaspDto.dataString + ("card_expire_w4" -> "2607", "payment_scheme_w4" -> "Mastercard",
       "processing_date_string" -> "2021-07-18T18:12:24Z", "terminal_id" -> "11111111"))
       == uaspDto.copy(process_timestamp = 0,

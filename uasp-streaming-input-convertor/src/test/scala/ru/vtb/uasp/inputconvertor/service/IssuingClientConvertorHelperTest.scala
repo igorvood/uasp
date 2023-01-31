@@ -36,7 +36,7 @@ class IssuingClientConvertorHelperTest extends AnyFlatSpec with should.Matchers 
     val initialUaspDto: UaspDto = dto.copy(
       process_timestamp = 0)
     //standard
-    val standardUaspDto: UaspDto = UaspDtostandardFactory("way4").getstandardUaspDto
+    val standardUaspDto: UaspDto = UaspDtostandardFactory("way4").getstandardUaspDto(initialUaspDto.uuid)
     val expectedUaspDto = standardUaspDto.copy(dataString = standardUaspDto.dataString +
       ("source_system_w4" -> "WAY4", "card_masked_pan" -> "529938******8812", "source_account_w4" -> "40914810200009000369",
         "base_currency_w4" -> "RUR", "card_ps_funding_source" -> "Credit", "transaction_currency" -> "RUR",

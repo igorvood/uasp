@@ -22,7 +22,7 @@ class CustomerPackageUaspDtoDaoTest extends AnyFlatSpec with should.Matchers {
       "input-convertor-sys.test.card.number.sha256.salt" -> "TEST"), "test")*/)
     val uaspDto: UaspDto = uaspDtoParser.fromJValue(commonMessage.json_message.get, dtoMap)
     println("uaspDto: " + uaspDto)
-    val standardUaspDto: UaspDto = UaspDtostandardFactory("customer-package").getstandardUaspDto
+    val standardUaspDto: UaspDto = UaspDtostandardFactory("customer-package").getstandardUaspDto(uaspDto.uuid)
 
     assert(standardUaspDto == uaspDto.copy(process_timestamp = 0))
   }

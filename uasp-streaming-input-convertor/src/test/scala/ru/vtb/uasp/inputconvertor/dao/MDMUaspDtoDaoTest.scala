@@ -26,7 +26,7 @@ class MDMUaspDtoDaoTest extends AnyFlatSpec with should.Matchers {
     val uaspDtoParser = UaspDtoParserFactory(uaspDtoType, null)
     val uaspDto: UaspDto = uaspDtoParser.fromJValue(commonMessage.json_message.get, dtoMap)
     println("uaspDto: " + uaspDto)
-    val standardUaspDto = UaspDtostandardFactory("mdm").getstandardUaspDto
+    val standardUaspDto = UaspDtostandardFactory("mdm").getstandardUaspDto(uaspDto.uuid)
     assert(standardUaspDto == uaspDto.copy(process_timestamp = 0))
   }
 }
