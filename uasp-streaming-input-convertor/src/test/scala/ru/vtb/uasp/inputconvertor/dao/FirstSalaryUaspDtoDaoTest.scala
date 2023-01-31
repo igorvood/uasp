@@ -38,7 +38,7 @@ object FirstSalaryUaspDtoDaoTest {
     //    val allProps = getAllProps(args, "application-first-salary.properties")
     val allProps: NewInputPropsModel = null
     println(allProps)
-    val uaspDtoType = allProps.appUaspdtoType //("app.uaspdto.type")
+    val uaspDtoType = allProps.appUaspdtoType
     println("uaspDtoType: " + uaspDtoType)
 
 

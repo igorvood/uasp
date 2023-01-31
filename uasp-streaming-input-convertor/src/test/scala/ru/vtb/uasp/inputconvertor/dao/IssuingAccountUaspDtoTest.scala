@@ -30,7 +30,7 @@ object IssuingAccountUaspDtoTest {
     val allProps: NewInputPropsModel = null
     //    val allProps = getAllProps(args, "application-account.properties")
     println(allProps)
-    val uaspDtoType = allProps.appUaspdtoType //("app.uaspdto.type")
+    val uaspDtoType = allProps.appUaspdtoType
     println("uaspDtoType: " + uaspDtoType)
 
 

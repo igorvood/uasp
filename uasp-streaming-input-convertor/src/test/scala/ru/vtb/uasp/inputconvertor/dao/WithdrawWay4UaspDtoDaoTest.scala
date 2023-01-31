@@ -58,7 +58,7 @@ object WithdrawWay4UaspDtoDaoTest {
       null,
       None,
       None)
-    val uaspDtoType = allProps.appUaspdtoType //("app.uaspdto.type")
+    val uaspDtoType = allProps.appUaspdtoType
 
     val jsonMessageStr = getStringFromResourceFile(uaspDtoType + "-test.json")
 

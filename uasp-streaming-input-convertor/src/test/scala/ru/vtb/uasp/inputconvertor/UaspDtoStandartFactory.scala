@@ -217,8 +217,8 @@ private class ProfileAuthUaspDtoStandart extends UaspDtostandard {
     dataString = Map("source_system_prf_auth" -> "Profile-auth") ++
       Map("msgid" -> "661500000000001509142164448582426848501A") ++
       Map("card_number" -> "536829*****5948") ++
-      Map("card_number_sha_256" -> "b3ff97fac040df442d1a0ef4133e2f651939693877f6f861c799868774a906ce") ++
-      Map("card_number_sha_256_md5" -> "95072f9ddc97b19ce8e6dc08fd264229059094c9a87f0fa5b58057ddbfff9908") ++
+      Map("card_number_sha_256" -> "639499b05babb36c8c96420068febbd52ad74f82196c0a0b2ece38f026a0e101") ++
+      Map("card_number_sha_256_md5" -> "f9e69f301d24041e790eec74b3851c1fdcc0fc58503092e099c174a4a9d918b3") ++
       Map("terminal_owner" -> "DEVICE IN MOSCOW") ++
       Map("message_type" -> "0100") ++
       Map("transaction_cd" -> "132") ++

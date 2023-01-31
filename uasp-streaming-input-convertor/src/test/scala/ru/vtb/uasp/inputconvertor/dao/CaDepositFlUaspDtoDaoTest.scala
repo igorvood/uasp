@@ -36,7 +36,7 @@ object CaDepositFlUaspDtoDaoTest {
     //    val allProps = getAllProps(args, "application-ca-depositfl.properties")
     val allProps: NewInputPropsModel = null
     println(allProps)
-    val uaspDtoType = allProps.appUaspdtoType //("app.uaspdto.type")
+    val uaspDtoType = allProps.appUaspdtoType
     println("uaspDtoType: " + uaspDtoType)
 
 

@@ -44,7 +44,7 @@ object PosTransactionWay4UaspDtoDaoTest {
     //    val allProps = getAllProps(args, "application-pos-transaction-way4.properties")
     val allProps: NewInputPropsModel = null
     println(allProps)
-    val uaspDtoType = allProps.appUaspdtoType //("app.uaspdto.type")
+    val uaspDtoType = allProps.appUaspdtoType
     println("uaspDtoType: " + uaspDtoType)
 
 

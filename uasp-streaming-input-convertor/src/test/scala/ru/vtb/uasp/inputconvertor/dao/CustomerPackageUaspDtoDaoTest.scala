@@ -33,7 +33,7 @@ object CustomerPackageUaspDtoDaoTest {
     //    val allProps = getAllProps(args, "application-customer-package.properties")
     val allProps: NewInputPropsModel = null
     println(allProps)
-    val uaspDtoType = allProps.appUaspdtoType //("app.uaspdto.type")
+    val uaspDtoType = allProps.appUaspdtoType
     println("uaspDtoType: " + uaspDtoType)
 
 

@@ -41,7 +41,6 @@ class ProfileUaspDtoDaoTest extends AnyFlatSpec with should.Matchers {
 object ProfileUaspDtoDaoTest {
 
   def getCommonMessageAndProps(args: Array[String] = Array[String]()): (CommonMessageType, NewInputPropsModel, String, Map[String, Array[String]], DroolsValidator) = {
-    //    val allProps = getAllProps(args, "application-profile.properties")
     val allProps: NewInputPropsModel = new NewInputPropsModel(
       null,
       "profile",
@@ -55,17 +54,13 @@ object ProfileUaspDtoDaoTest {
       "",
       None,
       None)
-    println(allProps)
-    val uaspDtoType = allProps.appUaspdtoType //("app.uaspdto.type")
-    println("uaspDtoType: " + uaspDtoType)
 
+    val uaspDtoType = allProps.appUaspdtoType
 
     val jsonMessageStr = getStringFromResourceFile(uaspDtoType + "-test.json")
-    //val jsonMessageStr = getStringFromResourceFile("mdm-test.json")
-    println("jsonMessageStr: " + jsonMessageStr)
 
     val inMessage = InputMessageType(message_key = "CFT2RS.10000033307567", message = jsonMessageStr.getBytes, Map[String, String]())
-    println("inMessage: " + inMessage)
+
     val msgCollector = new MsgCollector
     extractJson(inMessage, allProps, msgCollector)
     val uaspDtoMap = Map[String, String]() ++ getPropsFromResourcesFile(uaspDtoType + "-uaspdto.properties").get
