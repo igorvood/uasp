@@ -21,35 +21,42 @@ class Way4UaspDtoDaoTest extends AnyFlatSpec with should.Matchers {
     Allure.link("291128", "manual", "")
     Allure.tms("17", "")
 
-    val (commonMessage, _, uaspDtoType, dtoMap, _) = getCommonMessageAndProps()
-    println("commonMessage: " + commonMessage)
-    val uaspDtoParser: UaspDtoParser = UaspDtoParserFactory(uaspDtoType, null /*InputPropsModel(Map("input-convertor.uaspdto.type" -> uaspDtoType), "")*/)
+    val (commonMessage, allProp, uaspDtoType, dtoMap, _) = getCommonMessageAndProps()
+    val uaspDtoParser: UaspDtoParser = UaspDtoParserFactory(uaspDtoType, allProp)
     val uaspDto: UaspDto = uaspDtoParser.fromJValue(commonMessage.json_message.get, dtoMap)
-    println("uaspDto: " + uaspDto)
-    val standardUaspDto: UaspDto = UaspDtostandardFactory("way4").getstandardUaspDto(uaspDto.uuid)
-    assert(standardUaspDto.copy(dataString = standardUaspDto.dataString + ("card_expire_w4" -> "2607", "payment_scheme_w4" -> "Mastercard",
-      "processing_date_string" -> "2021-07-18T18:12:24Z", "terminal_id" -> "11111111"))
-      == uaspDto.copy(process_timestamp = 0,
+    private val dto: UaspDto = uaspDto.copy(
       dataString = uaspDto.dataString - ("card_ps_funding_source", "transaction_currency", "card_masked_pan",
         "source_account_w4", "base_currency_w4", "source_system_w4"),
-      dataDecimal = uaspDto.dataDecimal - "base_amount_w4"))
+      dataDecimal = uaspDto.dataDecimal - "base_amount_w4")
+
+    val standardUaspDto: UaspDto = UaspDtostandardFactory("way4").getstandardUaspDto(uaspDto.uuid)
+    assert(standardUaspDto.copy(dataString = standardUaspDto.dataString + ("card_expire_w4" -> "2607", "payment_scheme_w4" -> "Mastercard",
+      "processing_date_string" -> "2021-07-18T18:12:24Z", "terminal_id" -> "11111111"), process_timestamp = dto.process_timestamp)
+      == dto)
   }
 }
 
 object Way4UaspDtoDaoTest {
   def getCommonMessageAndProps(args: Array[String] = Array[String]()): (CommonMessageType, NewInputPropsModel, String, Map[String, Array[String]], DroolsValidator) = {
     //    val allProps = getAllProps(args, "application-way4.properties")
-    val allProps: NewInputPropsModel = null
-    println(allProps)
-    val uaspDtoType = allProps.appUaspdtoType //("app.uaspdto.type")
-    println("uaspDtoType: " + uaspDtoType)
+    val allProps: NewInputPropsModel = new NewInputPropsModel(
+      null,
+      "way4",
+      null,
+      null,
+      null,
+      false,
+      null,
+      null,
+      true,
+      null,
+      None,
+      None)
+    val uaspDtoType = allProps.appUaspdtoType
 
     val jsonMessageStr = getStringFromResourceFile(uaspDtoType + "-test.json")
-    //val jsonMessageStr = getStringFromResourceFile ( "way4-ift-mes1.json" )
-    println("jsonMessageStr: " + jsonMessageStr)
 
     val inMessage = InputMessageType(message_key = "123", message = jsonMessageStr.getBytes, Map[String, String]())
-    println("inMessage: " + inMessage)
     val msgCollector = new MsgCollector
     extractJson(inMessage, allProps, msgCollector)
     val uaspDtoMap = Map[String, String]() ++ getPropsFromResourcesFile(uaspDtoType + "-uaspdto.properties").get
