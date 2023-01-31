@@ -13,6 +13,6 @@ class MsgCollector extends Collector[CommonMessageType] {
   override def collect(t: CommonMessageType): Unit = list.add(t)
 
   override def close(): Unit = {
-    //list.clear()
+
   }
 }
