@@ -16,30 +16,37 @@ import ru.vtb.uasp.validate.DroolsValidator
 class IssuingAccountUaspDtoTest extends AnyFlatSpec with should.Matchers {
   "The test data" should "be equals standard way4 UaspDto instance" in new AllureScalatestContext {
     val (commonMessage, allProps, uaspDtoType, dtoMap, droolsValidator) = getCommonMessageAndProps()
-    println("commonMessage: " + commonMessage)
+
     val uaspDtoParser = UaspDtoParserFactory(uaspDtoType, null)
     val uaspDto: UaspDto = uaspDtoParser.fromJValue(commonMessage.json_message.get, dtoMap)
-    println("uaspDto: " + uaspDto)
-    val standardUaspDto = UaspDtostandardFactory("issuing-account").getstandardUaspDto(uaspDto.uuid)
-    standardUaspDto shouldEqual uaspDto.copy(process_timestamp = 0)
+
+    val standardUaspDto = UaspDtostandardFactory("issuing-account").getstandardUaspDto(uaspDto.uuid).copy(process_timestamp = uaspDto.process_timestamp)
+    standardUaspDto shouldEqual uaspDto
   }
 }
 
 object IssuingAccountUaspDtoTest {
   def getCommonMessageAndProps(args: Array[String] = Array[String]()): (CommonMessageType, NewInputPropsModel, String, Map[String, Array[String]], DroolsValidator) = {
-    val allProps: NewInputPropsModel = null
-    //    val allProps = getAllProps(args, "application-account.properties")
-    println(allProps)
-    val uaspDtoType = allProps.appUaspdtoType
-    println("uaspDtoType: " + uaspDtoType)
+    val allProps: NewInputPropsModel = new NewInputPropsModel(
+      null,
+      "issuing-account",
+      null,
+      null,
+      null,
+      false,
+      null,
+      null,
+      true,
+      "",
+      None,
+      None)
 
+    val uaspDtoType = allProps.appUaspdtoType
 
     val jsonMessageStr = getStringFromResourceFile(uaspDtoType + "-test.json")
-    //val jsonMessageStr = getStringFromResourceFile("mdm-test.json")
-    println("jsonMessageStr: " + jsonMessageStr)
 
     val inMessage = InputMessageType(message_key = "123", message = jsonMessageStr.getBytes, Map[String, String]())
-    println("inMessage: " + inMessage)
+
     val msgCollector = new MsgCollector
     val cmt = extractJson(inMessage, allProps, msgCollector)
     val uaspDtoMap = Map[String, String]() ++ getPropsFromResourcesFile(uaspDtoType + "-uaspdto.properties").get
