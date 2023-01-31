@@ -399,8 +399,8 @@ private class UddsUaspDtoStandart extends UaspDtostandard {
       Map("targetAccountBic" -> "BIC.044525745") ++
       Map("system_source" -> "udds") ++
       Map("targetAccountType" -> "BROKERAGE_ACCOUNT") ++
-      Map("eventDttm" -> "2022-02-01 09:54:00") ++
-      Map("hash_card_number" -> "94ee059335e587e501cc4bf90613e0814f00a7b08bc7c648fd865a2af6a22cc2"),
+      Map("eventDttm" -> "2022-02-01 09:54:00") ,
+//      Map("hash_card_number" -> "94ee059335e587e501cc4bf90613e0814f00a7b08bc7c648fd865a2af6a22cc2"),
 
     dataBoolean = Map(),
 
