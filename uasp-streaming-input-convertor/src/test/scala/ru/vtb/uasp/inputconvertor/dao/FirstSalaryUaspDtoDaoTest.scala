@@ -18,36 +18,42 @@ import ru.vtb.uasp.validate.DroolsValidator
 class FirstSalaryUaspDtoDaoTest extends AnyFlatSpec with should.Matchers {
 
   "The test data" should "be equals standard first salary UaspDto instance" in new AllureScalatestContext {
-    /*Allure.link("291129", "manual", "")
-    Allure.tms("21", "")*/
 
     val (commonMessage, allProps, uaspDtoType, dtoMap, droolsValidator) = getCommonMessageAndProps()
-    println("commonMessage: " + commonMessage)
-    val uaspDtoParser = UaspDtoParserFactory(uaspDtoType, null /*InputPropsModel(Map("input-convertor.test.uaspdto.type" -> uaspDtoType,
+
+    val uaspDtoParser = UaspDtoParserFactory(uaspDtoType, allProps /*InputPropsModel(Map("input-convertor.test.uaspdto.type" -> uaspDtoType,
       "input-convertor-sys.test.card.number.sha256.salt" -> "TEST"), "test")*/)
     val uaspDto: UaspDto = uaspDtoParser.fromJValue(commonMessage.json_message.get, dtoMap)
-    println("uaspDto: " + uaspDto)
-    val standardUaspDto = UaspDtostandardFactory("first-salary").getstandardUaspDto(uaspDto.uuid)
-    assert(standardUaspDto == uaspDto.copy(process_timestamp = 0))
+
+    val standardUaspDto = UaspDtostandardFactory("first-salary").getstandardUaspDto(uaspDto.uuid).copy(process_timestamp = uaspDto.process_timestamp)
+    assert(uaspDto == standardUaspDto)
   }
 
 }
 
 object FirstSalaryUaspDtoDaoTest {
   def getCommonMessageAndProps(args: Array[String] = Array[String]()): (CommonMessageType, NewInputPropsModel, String, Map[String, Array[String]], DroolsValidator) = {
-    //    val allProps = getAllProps(args, "application-first-salary.properties")
-    val allProps: NewInputPropsModel = null
-    println(allProps)
-    val uaspDtoType = allProps.appUaspdtoType
-    println("uaspDtoType: " + uaspDtoType)
 
+    val allProps: NewInputPropsModel = new NewInputPropsModel(
+      null,
+      "first-salary",
+      null,
+      null,
+      null,
+      false,
+      null,
+      null,
+      true,
+      "",
+      None,
+      None)
+
+    val uaspDtoType = allProps.appUaspdtoType
 
     val jsonMessageStr = getStringFromResourceFile(uaspDtoType + "-test.json")
-    //val jsonMessageStr = getStringFromResourceFile("mdm-test.json")
-    println("jsonMessageStr: " + jsonMessageStr)
 
     val inMessage = InputMessageType(message_key = "CFT2RS.10000033307567", message = jsonMessageStr.getBytes, Map[String, String]())
-    println("inMessage: " + inMessage)
+
     val msgCollector = new MsgCollector
     extractJson(inMessage, allProps, msgCollector)
     val uaspDtoMap = Map[String, String]() ++ getPropsFromResourcesFile(uaspDtoType + "-uaspdto.properties").get

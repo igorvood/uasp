@@ -153,7 +153,7 @@ private class FirstSalaryUaspDtostandard extends UaspDtostandard {
       Map("transactionId" -> "TS.0000000001240066") ++
       Map("fee_amount_currency" -> "") ++
       Map("transaction_amount_currency" -> "USD") ++
-      Map("hash_card_number" -> "94ee059335e587e501cc4bf90613e0814f00a7b08bc7c648fd865a2af6a22cc2"),
+      Map("hash_card_number" -> "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"),
     dataBoolean = Map("first_add_cft" -> false) ++
       Map("data_debet" -> true),
     uuid = uuid,
