@@ -15,7 +15,7 @@ object Way4UaspDtoDao {
     implicit val formats: Formats = DefaultFormats.disallowNull
     lazy val systemSource = "WAY4"
 
-    // val test: String = (inMessage \ "test").extract[String]
+
     // DKO WAY4
     lazy val operationId: String = (inMessage \ "id").extract[String] // нужно ли сериализовать
     lazy val cardClientId: String = (inMessage \ "account" \ "client" \ "id").extract[String] // у нас id это id клиента, правильно ли это?
@@ -58,12 +58,9 @@ object Way4UaspDtoDao {
     lazy val taggedDataKDO: String = (inMessage \ "taggedData" \ "KBO").extract[String]
     lazy val taggedDataSourcePay: String = (inMessage \ "taggedData" \ "SORCE_PAY").extract[String]
     lazy val taggedDataWalletPay: String = (inMessage \ "taggedData" \ "WALLET_TYPE").extract[String]
-    //    lazy val comment: String = (inMessage \ "comment").extract[String]
 
 
     val dataInt = Map[String, Int]()
-    //    val dataInt = Map[String, Int]() ++
-    //      getMap[Int](dtoMap("app.uaspdto.fields.processing_result_code")(0), processingResultCode)
     val dataLong = Map[String, Long]() ++
       getMap[Long](dtoMap("app.uaspdto.fields.transaction_datetime")(0), transactionDatetime) ++
       getMap[Long](dtoMap("app.uaspdto.fields.processing_datetime")(0), processingDatetime) ++
@@ -104,7 +101,6 @@ object Way4UaspDtoDao {
       getMap[String](dtoMap("app.uaspdto.fields.terminal_id")(0), terminalId) ++
       getMap[String](dtoMap("app.uaspdto.fields.counterpartyAccountNumber")(0), counterpartyAccountNumber) ++
       getMap[String](dtoMap("app.uaspdto.fields.taggedData.WALLET_TYPE")(0), taggedDataWalletPay)
-    //      getMap[String](dtoMap("app.uaspdto.comment")(0), comment)
 
 
     val dataBoolean = Map[String, Boolean]()

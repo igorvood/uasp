@@ -5,14 +5,14 @@ import org.json4s._
 import ru.vtb.uasp.common.dto.UaspDto
 import ru.vtb.uasp.inputconvertor.dao.CommonDao.{dtStringToLong, findAndMaskNumber, getMap}
 import ru.vtb.uasp.inputconvertor.utils.CurrencyConverter.returnAlphaCode
-import ru.vtb.uasp.inputconvertor.utils.config.NewInputPropsModel
+import ru.vtb.uasp.inputconvertor.utils.config.InputPropsModel
 import ru.vtb.uasp.inputconvertor.utils.hash.HashUtils
 
 import java.time.{LocalDate, LocalDateTime, ZoneId}
 import java.util.{Calendar, UUID}
 
 object ProfileAuthUaspDtoDao {
-  def fromJValue(inMessage: JValue, propsModel: NewInputPropsModel, dtoMap: Map[String, Array[String]]): UaspDto = {
+  def fromJValue(inMessage: JValue, propsModel: InputPropsModel, dtoMap: Map[String, Array[String]]): UaspDto = {
     implicit val formats: Formats = DefaultFormats.disallowNull
     lazy val systemSource = "Profile-auth"
     ///таймзона в которой приходит дата
@@ -22,8 +22,8 @@ object ProfileAuthUaspDtoDao {
     lazy val msgid: String = (inMessage \ "msgid").extract[String]
     lazy val unMaskCardNumber = (inMessage \ "card_number").extract[String]
     lazy val card_number = findAndMaskNumber(unMaskCardNumber)
-    lazy val hashCardNumber = HashUtils.getHashSHA256PrependingSalt(unMaskCardNumber, propsModel.SHA256salt)
-    lazy val hashCardNumberSha256Md5 = HashUtils.getHashSHA256AppendingSalt(HashUtils.getMD5Hash(unMaskCardNumber), propsModel.SHA256salt)
+    lazy val hashCardNumber = HashUtils.getHashSHA256PrependingSalt(unMaskCardNumber, propsModel.sha256salt)
+    lazy val hashCardNumberSha256Md5 = HashUtils.getHashSHA256AppendingSalt(HashUtils.getMD5Hash(unMaskCardNumber), propsModel.sha256salt)
     lazy val transaction_amt = BigDecimal((inMessage \ "transaction_amt").extract[String])
     lazy val transaction_currency_cd = (inMessage \ "transaction_currency_cd").extract[String].toInt
     lazy val currency_alpha_code = returnAlphaCode(transaction_currency_cd.toString)

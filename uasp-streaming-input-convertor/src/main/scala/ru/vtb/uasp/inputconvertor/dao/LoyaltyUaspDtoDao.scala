@@ -1,24 +1,24 @@
 package ru.vtb.uasp.inputconvertor.dao
 
 import com.eatthepath.uuid.FastUUID
-import org.json4s.{JValue, _}
+import org.json4s._
 import ru.vtb.uasp.common.dto.UaspDto
 import ru.vtb.uasp.inputconvertor.dao.CommonDao.{dtStringToLong, getMap}
-import ru.vtb.uasp.inputconvertor.utils.config.NewInputPropsModel
+import ru.vtb.uasp.inputconvertor.utils.config.InputPropsModel
 import ru.vtb.uasp.inputconvertor.utils.hash.HashUtils
 
 import java.time.{LocalDateTime, ZoneId}
 import java.util.UUID
 
 object LoyaltyUaspDtoDao {
-  def fromJValue(inMessage: JValue, propsModel: NewInputPropsModel, dtoMap: Map[String, Array[String]]): UaspDto = {
+  def fromJValue(inMessage: JValue, propsModel: InputPropsModel, dtoMap: Map[String, Array[String]]): UaspDto = {
     implicit val formats: Formats = DefaultFormats.disallowNull
     lazy val systemSource = "loyalty"
 
     lazy val mdmId: String = (inMessage \ "mdmId").extract[String]
     lazy val eventDttm: String = (inMessage \ "actualTime").extract[String]
     lazy val eventDttmLong: Long = dtStringToLong(eventDttm, "yyyy-MM-dd'T'HH:mm:ss", "GMT+0000")
-    lazy val hash_empty_hash = HashUtils.getHashSHA256PrependingSalt("", propsModel.SHA256salt)
+    lazy val hash_empty_hash = HashUtils.getHashSHA256PrependingSalt("", propsModel.sha256salt)
     lazy val eventType: String = (inMessage \ "eventType").extractOrElse[String]("")
 
     lazy val loyaltyPrograms = for {
@@ -111,49 +111,4 @@ object LoyaltyUaspDtoDao {
   }
 
 }
-
-/*
-case class Loyalty(mdmId: String, actualTime: String, loyaltyPrograms: Seq[Program])
-case class Program(name: String, code: String, Status: String, options: Seq[Option], accounts: Seq[Account])
-case class Option(name: String, code: String, startDate: String, closeDate: String, createTime: String)
-case class Account(currency: String, balance: String)
-
-{
-  "mdmId": "32542135",
-  "actualTime": "2022-10-19T09:25:16",
-  "loyaltyPrograms": [
-    {
-      "name": "Программа Мультибонус",
-      "code": "MULTIBONUS",
-      "status": "ACTIVE",
-      "options": [
-        {
-          "code": "CBPRIV",
-          "name": "Привилегия",
-          "startDate": "2022-09-01",
-          "closeDate": "2022-09-30",
-          "createTime": "2022-08-19T09:25:16",
-          "operatorId": null
-        },
-        {
-          "code": "01",
-          "name": "Отключена опция",
-          "startDate": "2022-10-01",
-          "closeDate": null,
-          "createTime": "2022-09-19T09:25:16",
-          "operatorId": null
-        }
-      ],
-      "accounts": [
-        {
-          "currency": "CB",
-          "balance": 1235
-        }
-      ]
-    }
-  ],
-  "eventType": "NEW_OPTION"
-}
-
-*/
 

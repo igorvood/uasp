@@ -10,7 +10,7 @@ import ru.vtb.uasp.inputconvertor.dao.CardFlDtoDaoTest.{getCommonMessageAndProps
 import ru.vtb.uasp.inputconvertor.entity.{CommonMessageType, InputMessageType}
 import ru.vtb.uasp.inputconvertor.factory.{UaspDtoParser, UaspDtoParserFactory}
 import ru.vtb.uasp.inputconvertor.service.TransformHelper.extractJson
-import ru.vtb.uasp.inputconvertor.utils.config.NewInputPropsModel
+import ru.vtb.uasp.inputconvertor.utils.config.InputPropsModel
 import ru.vtb.uasp.validate.DroolsValidator
 
 class CardFlDtoDaoTest extends AnyFlatSpec with should.Matchers {
@@ -41,9 +41,9 @@ class CardFlDtoDaoTest extends AnyFlatSpec with should.Matchers {
 }
 
 object CardFlDtoDaoTest {
-  def getCommonMessageAndProps(args: Array[String] = Array[String]()): (CommonMessageType, NewInputPropsModel, String, Map[String, Array[String]], DroolsValidator) = {
+  def getCommonMessageAndProps(args: Array[String] = Array[String]()): (CommonMessageType, InputPropsModel, String, Map[String, Array[String]], DroolsValidator) = {
 
-    val allProps: NewInputPropsModel =  new NewInputPropsModel(
+    val allProps: InputPropsModel =  new InputPropsModel(
       null,
       "cardfl",
       null,
@@ -58,7 +58,7 @@ object CardFlDtoDaoTest {
       None)
 
 
-    val uaspDtoType = allProps.appUaspdtoType
+    val uaspDtoType = allProps.uaspdtoType
 
     val jsonMessageStr = getStringFromResourceFile(uaspDtoType + "-test.json")
 
@@ -71,8 +71,8 @@ object CardFlDtoDaoTest {
     (msgCollector.getAll().get(0), allProps, uaspDtoType, dtoMap, new DroolsValidator(uaspDtoType + "-validation-rules.drl"))
   }
 
-  def getCommonNullMessageAndProps(args: Array[String] = Array[String]()): (CommonMessageType, NewInputPropsModel, String, Map[String, Array[String]], DroolsValidator) = {
-    val allProps: NewInputPropsModel = new NewInputPropsModel(
+  def getCommonNullMessageAndProps(args: Array[String] = Array[String]()): (CommonMessageType, InputPropsModel, String, Map[String, Array[String]], DroolsValidator) = {
+    val allProps: InputPropsModel = new InputPropsModel(
       null,
       "cardfl",
       null,
@@ -86,7 +86,7 @@ object CardFlDtoDaoTest {
       None,
       None)
 
-    val uaspDtoType = allProps.appUaspdtoType
+    val uaspDtoType = allProps.uaspdtoType
 
     val jsonMessageStr = getStringFromResourceFile(uaspDtoType + "-null-test.json")
 

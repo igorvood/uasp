@@ -4,14 +4,14 @@ import com.eatthepath.uuid.FastUUID
 import org.json4s._
 import ru.vtb.uasp.common.dto.UaspDto
 import ru.vtb.uasp.inputconvertor.dao.CommonDao.{dtStringToLong, getMap}
-import ru.vtb.uasp.inputconvertor.utils.config.NewInputPropsModel
+import ru.vtb.uasp.inputconvertor.utils.config.InputPropsModel
 import ru.vtb.uasp.inputconvertor.utils.hash.HashUtils
 
 import java.time.{LocalDateTime, ZoneId}
 import java.util.UUID
 
 object FirstSalaryUaspDtoDao {
-  def fromJValue(inMessage: JValue, propsModel: NewInputPropsModel, dtoMap: Map[String, Array[String]]): UaspDto = {
+  def fromJValue(inMessage: JValue, propsModel: InputPropsModel, dtoMap: Map[String, Array[String]]): UaspDto = {
     implicit val formats: Formats = DefaultFormats.disallowNull
     lazy val systemSource = "CFT2RS"
 
@@ -30,7 +30,7 @@ object FirstSalaryUaspDtoDao {
     lazy val dataTransactionDate = (inMessage \ "data" \ "transactionDate").extract[String]
     lazy val dataDebet = (inMessage \ "data" \ "debet").extract[Boolean]
     lazy val firstAdd = (inMessage \ "firstAdd").extract[Boolean]
-    lazy val hash_empty_hash = HashUtils.getHashSHA256PrependingSalt("", propsModel.SHA256salt)
+    lazy val hash_empty_hash = HashUtils.getHashSHA256PrependingSalt("", propsModel.sha256salt)
     lazy val feeAmountSum = BigDecimal((inMessage \ "data" \ "feeAmount" \ "sum").extract[String])
     lazy val feeAmountCurrency = (inMessage \ "data" \ "feeAmount" \ "currency").extract[String]
 

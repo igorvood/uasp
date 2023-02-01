@@ -13,7 +13,7 @@ import ru.vtb.uasp.inputconvertor.UaspDtostandardFactory
 import ru.vtb.uasp.inputconvertor.dao.MDMUaspDtoDaoTest
 import ru.vtb.uasp.inputconvertor.entity.CommonMessageType
 import ru.vtb.uasp.inputconvertor.utils.avro.AvroUtils
-import ru.vtb.uasp.inputconvertor.utils.config.NewInputPropsModel
+import ru.vtb.uasp.inputconvertor.utils.config.InputPropsModel
 
 //FIXME
 @Ignore
@@ -28,7 +28,7 @@ class MDMConvertorHelperTest extends AnyFlatSpec with should.Matchers {
     val jsonSchema = getStringFromResourceFile("schemas/jsonschema-" + uaspDtoType + ".json")
     val avroSchema: Schema = AvroSchema[UaspDto]
     val enrichedCommonMessage = commonMessage.copy(json_schema = Some(jsonSchema))
-    val propsModel: NewInputPropsModel = null // InputPropsModel(Map("input-convertor.uaspdto.type" -> uaspDtoType), "")
+    val propsModel: InputPropsModel = null // InputPropsModel(Map("input-convertor.uaspdto.type" -> uaspDtoType), "")
 
     val convertOutMapService = new ConvertOutMapService
     val testedMessage: CommonMessageType = ConvertHelper.validAndTransform(enrichedCommonMessage, propsModel, appUseAvroSerializationIsY = true, droolsValidator, avroSchema, dtoMap, convertOutMapService)

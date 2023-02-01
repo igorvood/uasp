@@ -5,7 +5,7 @@ import org.json4s._
 import org.json4s.jackson.JsonMethods._
 import ru.vtb.uasp.inputconvertor.constants.Config
 import ru.vtb.uasp.inputconvertor.entity.{CommonMessageType, InputMessageType}
-import ru.vtb.uasp.inputconvertor.utils.config.NewInputPropsModel
+import ru.vtb.uasp.inputconvertor.utils.config.InputPropsModel
 
 import scala.collection.mutable.ListBuffer
 
@@ -14,7 +14,7 @@ object TransformHelper {
   implicit val formats: Formats = DefaultFormats
 
   def extractJson(inputMessage: InputMessageType,
-                  allProps: NewInputPropsModel,
+                  allProps: InputPropsModel,
                   collector: Collector[CommonMessageType]
                  ): Unit = {
 

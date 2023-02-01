@@ -4,14 +4,14 @@ import com.eatthepath.uuid.FastUUID
 import org.json4s._
 import ru.vtb.uasp.common.dto.UaspDto
 import ru.vtb.uasp.inputconvertor.dao.CommonDao.{dtStringToLong, getMap}
-import ru.vtb.uasp.inputconvertor.utils.config.NewInputPropsModel
+import ru.vtb.uasp.inputconvertor.utils.config.InputPropsModel
 import ru.vtb.uasp.inputconvertor.utils.hash.HashUtils
 
 import java.time.{LocalDateTime, ZoneId}
 import java.util.UUID
 
 object UddsUaspDtoDao {
-  def fromJValue(inMessage: JValue, propsModel: NewInputPropsModel, dtoMap: Map[String, Array[String]]): UaspDto = {
+  def fromJValue(inMessage: JValue, propsModel: InputPropsModel, dtoMap: Map[String, Array[String]]): UaspDto = {
     implicit val formats: Formats = DefaultFormats.disallowNull
     lazy val systemSource = "udds"
 
@@ -32,7 +32,7 @@ object UddsUaspDtoDao {
     lazy val targetAccountBic: String = (inMessage \ "TARGET_ACCOUNT_BIC").extract[String]
     lazy val targetAccountType: String = (inMessage \ "TARGET_ACCOUNT_TYPE").extract[String]
     lazy val creditTransactionId: String = (inMessage \ "CREDIT_TRANSACTION_ID").extract[String]
-    lazy val hash_empty_hash = HashUtils.getHashSHA256PrependingSalt("", propsModel.SHA256salt)
+    lazy val hash_empty_hash = HashUtils.getHashSHA256PrependingSalt("", propsModel.sha256salt)
 
     val dataInt = Map[String, Int]()
 

@@ -11,7 +11,7 @@ import ru.vtb.uasp.inputconvertor.dao.WithdrawUaspDtoDaoTest.getCommonMessageAnd
 import ru.vtb.uasp.inputconvertor.entity.{CommonMessageType, InputMessageType}
 import ru.vtb.uasp.inputconvertor.factory.{UaspDtoParser, UaspDtoParserFactory}
 import ru.vtb.uasp.inputconvertor.service.TransformHelper.extractJson
-import ru.vtb.uasp.inputconvertor.utils.config.NewInputPropsModel
+import ru.vtb.uasp.inputconvertor.utils.config.InputPropsModel
 import ru.vtb.uasp.validate.DroolsValidator
 
 @Feature("WithdrawWay4UaspDtoDaoTest")
@@ -39,8 +39,8 @@ class WithdrawUaspDtoDaoTest extends AnyFlatSpec with should.Matchers {
 }
 
 object WithdrawUaspDtoDaoTest {
-  def getCommonMessageAndProps(args: Array[String] = Array[String]()): (CommonMessageType, NewInputPropsModel, String, Map[String, Array[String]], DroolsValidator) = {
-    val allProps: NewInputPropsModel = new NewInputPropsModel(
+  def getCommonMessageAndProps(args: Array[String] = Array[String]()): (CommonMessageType, InputPropsModel, String, Map[String, Array[String]], DroolsValidator) = {
+    val allProps: InputPropsModel = new InputPropsModel(
       null,
       "withdraw",
       null,
@@ -53,7 +53,7 @@ object WithdrawUaspDtoDaoTest {
       null,
       None,
       None)
-    val uaspDtoType = allProps.appUaspdtoType
+    val uaspDtoType = allProps.uaspdtoType
 
     val jsonMessageStr = getStringFromResourceFile(uaspDtoType + "-test.json")
 

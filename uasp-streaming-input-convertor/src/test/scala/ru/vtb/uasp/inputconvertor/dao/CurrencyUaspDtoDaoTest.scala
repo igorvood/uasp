@@ -11,7 +11,7 @@ import ru.vtb.uasp.inputconvertor.dao.CurrencyUaspDtoDaoTest.getCommonMessageAnd
 import ru.vtb.uasp.inputconvertor.entity.{CommonMessageType, InputMessageType}
 import ru.vtb.uasp.inputconvertor.factory.UaspDtoParserFactory
 import ru.vtb.uasp.inputconvertor.service.TransformHelper.extractJson
-import ru.vtb.uasp.inputconvertor.utils.config.NewInputPropsModel
+import ru.vtb.uasp.inputconvertor.utils.config.InputPropsModel
 import ru.vtb.uasp.validate.DroolsValidator
 
 @Feature("CurrencyUaspDtoDaoTest")
@@ -31,9 +31,9 @@ class CurrencyUaspDtoDaoTest extends AnyFlatSpec with should.Matchers {
 }
 
 object CurrencyUaspDtoDaoTest {
-  def getCommonMessageAndProps(args: Array[String] = Array[String]()): (CommonMessageType, NewInputPropsModel, String, Map[String, Array[String]], DroolsValidator) = {
+  def getCommonMessageAndProps(args: Array[String] = Array[String]()): (CommonMessageType, InputPropsModel, String, Map[String, Array[String]], DroolsValidator) = {
 
-    val allProps: NewInputPropsModel = new NewInputPropsModel(
+    val allProps: InputPropsModel = new InputPropsModel(
       null,
       "currency",
       null,
@@ -47,7 +47,7 @@ object CurrencyUaspDtoDaoTest {
       None,
       None)
 
-    val uaspDtoType = allProps.appUaspdtoType
+    val uaspDtoType = allProps.uaspdtoType
 
     val jsonMessageStr = getStringFromResourceFile(uaspDtoType + "-test.json")
 

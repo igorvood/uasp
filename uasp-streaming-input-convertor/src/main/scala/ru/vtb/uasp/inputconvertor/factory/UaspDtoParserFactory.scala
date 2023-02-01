@@ -4,7 +4,7 @@ import org.json4s.JValue
 import ru.vtb.uasp.common.dto.UaspDto
 import ru.vtb.uasp.inputconvertor.dao._
 import ru.vtb.uasp.inputconvertor.dao.ca._
-import ru.vtb.uasp.inputconvertor.utils.config.NewInputPropsModel
+import ru.vtb.uasp.inputconvertor.utils.config.InputPropsModel
 
 
 trait UaspDtoParser {
@@ -46,7 +46,7 @@ private class CurrencyUaspDtoParser extends UaspDtoParser {
     CurrencyUaspDtoDao.fromJValue(mes, dtoMap)
 }
 
-private class FirstSalaryUaspDtoParser(propsModel: NewInputPropsModel) extends UaspDtoParser {
+private class FirstSalaryUaspDtoParser(propsModel: InputPropsModel) extends UaspDtoParser {
   override def fromJValue(mes: JValue, dtoMap: Map[String, Array[String]]): UaspDto =
     FirstSalaryUaspDtoDao.fromJValue(mes, propsModel, dtoMap)
 }
@@ -56,12 +56,12 @@ private class CAFirstSalaryUaspDtoParser extends UaspDtoParser {
     CAFirstSalaryUaspDtoDao.fromJValue(mes, dtoMap)
 }
 
-private class ProfileUaspDtoParser(propsModel: NewInputPropsModel) extends UaspDtoParser {
+private class ProfileUaspDtoParser(propsModel: InputPropsModel) extends UaspDtoParser {
   override def fromJValue(mes: JValue, dtoMap: Map[String, Array[String]]): UaspDto =
     ProfileUaspDtoDao.fromJValue(mes, propsModel, dtoMap)
 }
 
-private class ProfileAuthUaspDtoDaoParser(propsModel: NewInputPropsModel) extends UaspDtoParser {
+private class ProfileAuthUaspDtoDaoParser(propsModel: InputPropsModel) extends UaspDtoParser {
   override def fromJValue(mes: JValue, dtoMap: Map[String, Array[String]]): UaspDto =
     ProfileAuthUaspDtoDao.fromJValue(mes, propsModel, dtoMap)
 }
@@ -97,18 +97,18 @@ private class CustomerProfileFullUaspDtoStandart extends UaspDtoParser {
     CustomerIdProfileFullUaspDtoDao.fromJValue(mes, dtoMap)
 }
 
-private class UddsUaspDtoParser(propsModel: NewInputPropsModel) extends UaspDtoParser {
+private class UddsUaspDtoParser(propsModel: InputPropsModel) extends UaspDtoParser {
   override def fromJValue(mes: JValue, dtoMap: Map[String, Array[String]]): UaspDto =
     UddsUaspDtoDao.fromJValue(mes, propsModel, dtoMap)
 }
 
-private class LoyaltyUaspDtoParser(propsModel: NewInputPropsModel) extends UaspDtoParser {
+private class LoyaltyUaspDtoParser(propsModel: InputPropsModel) extends UaspDtoParser {
   override def fromJValue(mes: JValue, dtoMap: Map[String, Array[String]]): UaspDto =
     LoyaltyUaspDtoDao.fromJValue(mes, propsModel, dtoMap)
 }
 
 object UaspDtoParserFactory {
-  def apply(uaspDtoType: String, propsModel: NewInputPropsModel) = uaspDtoType.toUpperCase match {
+  def apply(uaspDtoType: String, propsModel: InputPropsModel) = uaspDtoType.toUpperCase match {
     case "WAY4" => new Way4UaspDtoParser
     case "MDM" => new MDMUaspDtoParser(uaspDtoType)
     case "MDM-PROFILE" => new MDMUaspDtoParser(uaspDtoType)

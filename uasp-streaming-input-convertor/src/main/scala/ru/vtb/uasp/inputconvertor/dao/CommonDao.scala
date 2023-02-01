@@ -18,7 +18,6 @@ object CommonDao {
       Map(mapKey -> res)
     } catch {
       case e: Throwable =>
-        //logger.info("key: " + mapKey + ", " + e.getMessage)
         logger.warn("key: " + mapKey + ", " + e.getMessage)
         Map[String, T]()
     }
@@ -47,7 +46,7 @@ object CommonDao {
     loop(numMap.size - 1, input)
   }
 
-  def maskNumber(number: String) = {
+  def maskNumber(number: String): String = {
     val head = number.slice(0, 6)
     val tail = number.slice(number.length - 4, number.length)
     val mask = Array.fill(number.length - 10) {

@@ -4,14 +4,14 @@ import com.eatthepath.uuid.FastUUID
 import org.json4s._
 import ru.vtb.uasp.common.dto.UaspDto
 import ru.vtb.uasp.inputconvertor.dao.CommonDao.{dtStringToLong, getMap}
-import ru.vtb.uasp.inputconvertor.utils.config.NewInputPropsModel
+import ru.vtb.uasp.inputconvertor.utils.config.InputPropsModel
 import ru.vtb.uasp.inputconvertor.utils.hash.HashUtils
 
 import java.time.{LocalDateTime, ZoneId}
 import java.util.UUID
 
 object ProfileUaspDtoDao {
-  def fromJValue(inMessage: JValue, propsModel: NewInputPropsModel, dtoMap: Map[String, Array[String]]): UaspDto = {
+  def fromJValue(inMessage: JValue, propsModel: InputPropsModel, dtoMap: Map[String, Array[String]]): UaspDto = {
     implicit val formats: Formats = DefaultFormats.disallowNull
 
     lazy val systemSource = "Profile"
@@ -40,7 +40,7 @@ object ProfileUaspDtoDao {
       dataKBO.equals("731720-00")) "\\d{20}".r.findFirstMatchIn(tcmt).map(_.toString()).getOrElse("********************")
     else "********************"
     lazy val data_transactionDate = date + " " + time
-    lazy val hash_card_number = HashUtils.getHashSHA256PrependingSalt(ztsoatmc, propsModel.SHA256salt)
+    lazy val hash_card_number = HashUtils.getHashSHA256PrependingSalt(ztsoatmc, propsModel.sha256salt)
     val dataInt = Map[String, Int]()
     val dataLong = Map[String, Long]() ++
       getMap[Long](dtoMap("app.uaspdto.fields.profile.cdt_tim")(0), eventTime)

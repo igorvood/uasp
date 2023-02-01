@@ -10,7 +10,7 @@ import ru.vtb.uasp.inputconvertor.dao.CustomerPackageUaspDtoDaoTest.getCommonMes
 import ru.vtb.uasp.inputconvertor.entity.{CommonMessageType, InputMessageType}
 import ru.vtb.uasp.inputconvertor.factory.{UaspDtoParser, UaspDtoParserFactory}
 import ru.vtb.uasp.inputconvertor.service.TransformHelper.extractJson
-import ru.vtb.uasp.inputconvertor.utils.config.NewInputPropsModel
+import ru.vtb.uasp.inputconvertor.utils.config.InputPropsModel
 import ru.vtb.uasp.validate.DroolsValidator
 
 class CustomerPackageUaspDtoDaoTest extends AnyFlatSpec with should.Matchers {
@@ -28,8 +28,8 @@ class CustomerPackageUaspDtoDaoTest extends AnyFlatSpec with should.Matchers {
 }
 
 object CustomerPackageUaspDtoDaoTest {
-  def getCommonMessageAndProps(args: Array[String] = Array[String]()): (CommonMessageType, NewInputPropsModel, String, Map[String, Array[String]], DroolsValidator) = {
-    val allProps: NewInputPropsModel = new NewInputPropsModel(
+  def getCommonMessageAndProps(args: Array[String] = Array[String]()): (CommonMessageType, InputPropsModel, String, Map[String, Array[String]], DroolsValidator) = {
+    val allProps: InputPropsModel = new InputPropsModel(
       null,
       "customer-package",
       null,
@@ -43,7 +43,7 @@ object CustomerPackageUaspDtoDaoTest {
       None,
       None)
 
-    val uaspDtoType = allProps.appUaspdtoType
+    val uaspDtoType = allProps.uaspdtoType
 
     val jsonMessageStr = getStringFromResourceFile(uaspDtoType + "-test.json")
 

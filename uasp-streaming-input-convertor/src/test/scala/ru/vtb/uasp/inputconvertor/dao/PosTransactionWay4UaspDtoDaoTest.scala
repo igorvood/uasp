@@ -11,7 +11,7 @@ import ru.vtb.uasp.inputconvertor.dao.PosTransactionWay4UaspDtoDaoTest.getCommon
 import ru.vtb.uasp.inputconvertor.entity.{CommonMessageType, InputMessageType}
 import ru.vtb.uasp.inputconvertor.factory.{UaspDtoParser, UaspDtoParserFactory}
 import ru.vtb.uasp.inputconvertor.service.TransformHelper.extractJson
-import ru.vtb.uasp.inputconvertor.utils.config.NewInputPropsModel
+import ru.vtb.uasp.inputconvertor.utils.config.InputPropsModel
 import ru.vtb.uasp.validate.DroolsValidator
 
 @Feature("PosTerminalWay4UaspDtoDaoTest")
@@ -41,8 +41,8 @@ class PosTransactionWay4UaspDtoDaoTest extends AnyFlatSpec with should.Matchers 
 }
 
 object PosTransactionWay4UaspDtoDaoTest {
-  def getCommonMessageAndProps(args: Array[String] = Array[String]()): (CommonMessageType, NewInputPropsModel, String, Map[String, Array[String]], DroolsValidator) = {
-    val allProps: NewInputPropsModel = new NewInputPropsModel(
+  def getCommonMessageAndProps(args: Array[String] = Array[String]()): (CommonMessageType, InputPropsModel, String, Map[String, Array[String]], DroolsValidator) = {
+    val allProps: InputPropsModel = new InputPropsModel(
       null,
       "pos-transaction",
       null,
@@ -56,7 +56,7 @@ object PosTransactionWay4UaspDtoDaoTest {
       None,
       None)
 
-    val uaspDtoType = allProps.appUaspdtoType
+    val uaspDtoType = allProps.uaspdtoType
 
     val jsonMessageStr = getStringFromResourceFile(uaspDtoType + "-test.json")
 
