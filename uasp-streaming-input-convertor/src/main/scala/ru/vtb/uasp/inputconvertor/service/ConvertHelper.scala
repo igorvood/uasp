@@ -14,7 +14,6 @@ object ConvertHelper {
   def validAndTransform(commonMessage: CommonMessageType,
                         propsModel: InputPropsModel,
                         validator: DroolsValidator,
-                        dtoMap: Map[String, Array[String]],
                        ): CommonMessageType = {
     if (!commonMessage.valid) return commonMessage
     val cm = commonMessage.copy(valid = false)

@@ -22,9 +22,9 @@ class Way4ConvertorHelperTest extends AnyFlatSpec with should.Matchers {
     println("commonMessage: " + commonMessage)
     val jsonSchema: String = getStringFromResourceFile("schemas/jsonschema-" + uaspDtoType + ".json")
     val enrichedCommonMessage: CommonMessageType = commonMessage.copy(json_schema = Some(jsonSchema))
-    val propsModel: InputPropsModel = null // InputPropsModel(Map("input-convertor.uaspdto.type" -> uaspDtoType), "")
+    val propsModel: InputPropsModel = null
 
-    val testedMessage: CommonMessageType = ConvertHelper.validAndTransform(enrichedCommonMessage, propsModel, droolsValidator, dtoMap)
+    val testedMessage: CommonMessageType = ConvertHelper.validAndTransform(enrichedCommonMessage, propsModel, droolsValidator)
     println("testedMessage: " + testedMessage)
 
     val initialUaspDto: UaspDto = AvroUtils.avroDeserialize[UaspDto](testedMessage.avro_message.get).copy(process_timestamp = 0)

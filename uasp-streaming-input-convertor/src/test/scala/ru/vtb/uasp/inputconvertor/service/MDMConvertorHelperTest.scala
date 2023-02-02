@@ -27,7 +27,7 @@ class MDMConvertorHelperTest extends AnyFlatSpec with should.Matchers {
     val enrichedCommonMessage = commonMessage.copy(json_schema = Some(jsonSchema))
     val propsModel: InputPropsModel = null // InputPropsModel(Map("input-convertor.uaspdto.type" -> uaspDtoType), "")
 
-    val testedMessage: CommonMessageType = ConvertHelper.validAndTransform(enrichedCommonMessage, propsModel, droolsValidator, dtoMap)
+    val testedMessage: CommonMessageType = ConvertHelper.validAndTransform(enrichedCommonMessage, propsModel, droolsValidator)
     println("testedMessage: " + testedMessage)
 
     val initialUaspDto: UaspDto = AvroUtils.avroDeserialize[UaspDto](testedMessage.avro_message.get)

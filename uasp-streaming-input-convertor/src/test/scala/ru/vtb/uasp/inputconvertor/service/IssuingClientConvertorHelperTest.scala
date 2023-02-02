@@ -25,7 +25,7 @@ class IssuingClientConvertorHelperTest extends AnyFlatSpec with should.Matchers 
     val enrichedCommonMessage: CommonMessageType = commonMessage.copy(json_schema = Some(jsonSchema))
     val propsModel: InputPropsModel = null
 
-    val testedMessage: CommonMessageType = ConvertHelper.validAndTransform(enrichedCommonMessage, propsModel, droolsValidator, dtoMap)
+    val testedMessage: CommonMessageType = ConvertHelper.validAndTransform(enrichedCommonMessage, propsModel, droolsValidator)
     println("testedMessage: " + testedMessage)
 
     val dto = AvroUtils.avroDeserialize[UaspDto](testedMessage.avro_message.get)
