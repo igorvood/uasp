@@ -17,7 +17,7 @@ class CardFlDtoDaoTest extends AnyFlatSpec with should.Matchers {
 
     val (commonMessage, allProp) = getCommonMessageAndProps()
 
-        val uaspDto: UaspDto = allProp.uaspDtoParser.fromJValue(commonMessage.json_message.get, allProp.dtoMap)
+    val uaspDto: UaspDto = allProp.uaspDtoParser.fromJValue(commonMessage.json_message.get, allProp.dtoMap)
 
     val standardUaspDto: UaspDto = UaspDtostandardFactory("cardfl").getstandardUaspDto(uaspDto.uuid).copy(process_timestamp = uaspDto.process_timestamp)
 

@@ -5,7 +5,7 @@ import ru.vtb.uasp.common.service.dto.ServiceDataDto
 import ru.vtb.uasp.common.utils.config.ConfigUtils.getPropsFromResourcesFile
 import ru.vtb.uasp.common.utils.config.PropertyUtil.{propertyVal, propertyValOptional, s}
 import ru.vtb.uasp.common.utils.config.{AllApplicationProperties, ConfigurationInitialise, ReadConfigErrors}
-import ru.vtb.uasp.inputconvertor.factory.{UaspDtoParser, UaspDtoParserFactory, UaspdtoTypeEnum}
+import ru.vtb.uasp.inputconvertor.factory.{UaspDtoParser, UaspDtoParserFactory}
 import ru.vtb.uasp.inputconvertor.utils.serialization.InputMessageTypeDeserialization
 import ru.vtb.uasp.validate.DroolsValidator
 
@@ -13,8 +13,8 @@ import scala.collection.mutable
 
 case class InputPropsModel(
                             serviceName: ServiceDataDto,
-//                            uaspdtoType: UaspdtoTypeEnum.Val ,
-                            uaspdtoType: String ,
+                            //                            uaspdtoType: UaspdtoTypeEnum.Val ,
+                            uaspdtoType: String,
                             consumerProp: FlinkConsumerProperties,
                             outputSink: FlinkSinkProperties,
                             dlqSink: FlinkSinkProperties,

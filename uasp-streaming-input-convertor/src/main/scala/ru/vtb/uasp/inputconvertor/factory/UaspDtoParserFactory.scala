@@ -21,93 +21,93 @@ class Way4UaspDtoParser(override val propsModel: InputPropsModel) extends UaspDt
     Way4UaspDtoDao.fromJValue(mes, dtoMap)
 }
 
- class MDMUaspDtoParser(override val propsModel: InputPropsModel) extends UaspDtoParser {
+class MDMUaspDtoParser(override val propsModel: InputPropsModel) extends UaspDtoParser {
   override def fromJValue(mes: JValue, dtoMap: Map[String, Array[String]]): UaspDto =
     MDMUaspDtoDao.fromJValue(mes, dtoMap, propsModel.uaspdtoType)
 }
 
- class ClientUaspDtoParser(override val propsModel: InputPropsModel) extends UaspDtoParser {
+class ClientUaspDtoParser(override val propsModel: InputPropsModel) extends UaspDtoParser {
   override def fromJValue(mes: JValue, dtoMap: Map[String, Array[String]]): UaspDto =
     IssuingClientUaspDtoDao.fromJValue(mes, dtoMap)
 }
 
- class AccountBalanceUaspDtoParser(override val propsModel: InputPropsModel) extends UaspDtoParser {
+class AccountBalanceUaspDtoParser(override val propsModel: InputPropsModel) extends UaspDtoParser {
   override def fromJValue(mes: JValue, dtoMap: Map[String, Array[String]]): UaspDto =
     IssuingAccountBalanceUaspDtoDao.fromJValue(mes, dtoMap)
 }
 
- class AccountUaspDtoParser(override val propsModel: InputPropsModel) extends UaspDtoParser {
+class AccountUaspDtoParser(override val propsModel: InputPropsModel) extends UaspDtoParser {
   override def fromJValue(mes: JValue, dtoMap: Map[String, Array[String]]): UaspDto =
     IssuingAccountUaspDtoDao.fromJValue(mes, dtoMap)
 }
 
- class CardUaspDtoParser(override val propsModel: InputPropsModel) extends UaspDtoParser {
+class CardUaspDtoParser(override val propsModel: InputPropsModel) extends UaspDtoParser {
   override def fromJValue(mes: JValue, dtoMap: Map[String, Array[String]]): UaspDto =
     IssuingCardUaspDtoDao.fromJValue(mes, dtoMap)
 }
 
- class CurrencyUaspDtoParser(override val propsModel: InputPropsModel) extends UaspDtoParser {
+class CurrencyUaspDtoParser(override val propsModel: InputPropsModel) extends UaspDtoParser {
   override def fromJValue(mes: JValue, dtoMap: Map[String, Array[String]]): UaspDto =
     CurrencyUaspDtoDao.fromJValue(mes, dtoMap)
 }
 
- class FirstSalaryUaspDtoParser(override val propsModel: InputPropsModel) extends UaspDtoParser {
+class FirstSalaryUaspDtoParser(override val propsModel: InputPropsModel) extends UaspDtoParser {
   override def fromJValue(mes: JValue, dtoMap: Map[String, Array[String]]): UaspDto =
     FirstSalaryUaspDtoDao.fromJValue(mes, propsModel, dtoMap)
 }
 
- class CAFirstSalaryUaspDtoParser(override val propsModel: InputPropsModel) extends UaspDtoParser {
+class CAFirstSalaryUaspDtoParser(override val propsModel: InputPropsModel) extends UaspDtoParser {
   override def fromJValue(mes: JValue, dtoMap: Map[String, Array[String]]): UaspDto =
     CAFirstSalaryUaspDtoDao.fromJValue(mes, dtoMap)
 }
 
- class ProfileUaspDtoParser(override val propsModel: InputPropsModel) extends UaspDtoParser with Serializable {
+class ProfileUaspDtoParser(override val propsModel: InputPropsModel) extends UaspDtoParser with Serializable {
   override def fromJValue(mes: JValue, dtoMap: Map[String, Array[String]]): UaspDto =
     ProfileUaspDtoDao.fromJValue(mes, propsModel, dtoMap)
 }
 
- class ProfileAuthUaspDtoDaoParser(override val propsModel: InputPropsModel) extends UaspDtoParser {
+class ProfileAuthUaspDtoDaoParser(override val propsModel: InputPropsModel) extends UaspDtoParser {
   override def fromJValue(mes: JValue, dtoMap: Map[String, Array[String]]): UaspDto =
     ProfileAuthUaspDtoDao.fromJValue(mes, propsModel, dtoMap)
 }
 
- class WithDrawUaspDtoParser(override val propsModel: InputPropsModel) extends UaspDtoParser {
+class WithDrawUaspDtoParser(override val propsModel: InputPropsModel) extends UaspDtoParser {
   override def fromJValue(mes: JValue, dtoMap: Map[String, Array[String]]): UaspDto =
     WithdrawUaspDtoDao.fromJValue(mes, dtoMap)
 }
 
- class CardFlUaspDtoParser(override val propsModel: InputPropsModel) extends UaspDtoParser {
+class CardFlUaspDtoParser(override val propsModel: InputPropsModel) extends UaspDtoParser {
   override def fromJValue(mes: JValue, dtoMap: Map[String, Array[String]]): UaspDto =
     CardFlUaspDtoDao.fromJValue(mes, dtoMap)
 }
 
- class CaCardFlUaspDtoParser(override val propsModel: InputPropsModel) extends UaspDtoParser {
+class CaCardFlUaspDtoParser(override val propsModel: InputPropsModel) extends UaspDtoParser {
   override def fromJValue(mes: JValue, dtoMap: Map[String, Array[String]]): UaspDto =
     CACardFlUaspDtoDao.fromJValue(mes, dtoMap)
 }
 
- class CaDepositFlUaspDtoParser(override val propsModel: InputPropsModel) extends UaspDtoParser {
+class CaDepositFlUaspDtoParser(override val propsModel: InputPropsModel) extends UaspDtoParser {
   override def fromJValue(mes: JValue, dtoMap: Map[String, Array[String]]): UaspDto =
     CADepositFlUaspDtoDao.fromJValue(mes, dtoMap)
 }
 
 
- class CustomerPackageUaspDtoStandart(override val propsModel: InputPropsModel) extends UaspDtoParser {
+class CustomerPackageUaspDtoStandart(override val propsModel: InputPropsModel) extends UaspDtoParser {
   override def fromJValue(mes: JValue, dtoMap: Map[String, Array[String]]): UaspDto =
     CustomerPackageUaspDtoDao.fromJValue(mes, dtoMap)
 }
 
- class CustomerProfileFullUaspDtoStandart(override val propsModel: InputPropsModel) extends UaspDtoParser {
+class CustomerProfileFullUaspDtoStandart(override val propsModel: InputPropsModel) extends UaspDtoParser {
   override def fromJValue(mes: JValue, dtoMap: Map[String, Array[String]]): UaspDto =
     CustomerIdProfileFullUaspDtoDao.fromJValue(mes, dtoMap)
 }
 
- class UddsUaspDtoParser(override val propsModel: InputPropsModel) extends UaspDtoParser {
+class UddsUaspDtoParser(override val propsModel: InputPropsModel) extends UaspDtoParser {
   override def fromJValue(mes: JValue, dtoMap: Map[String, Array[String]]): UaspDto =
     UddsUaspDtoDao.fromJValue(mes, propsModel, dtoMap)
 }
 
- class LoyaltyUaspDtoParser(override val propsModel: InputPropsModel) extends UaspDtoParser {
+class LoyaltyUaspDtoParser(override val propsModel: InputPropsModel) extends UaspDtoParser {
   override def fromJValue(mes: JValue, dtoMap: Map[String, Array[String]]): UaspDto =
     LoyaltyUaspDtoDao.fromJValue(mes, propsModel, dtoMap)
 }
