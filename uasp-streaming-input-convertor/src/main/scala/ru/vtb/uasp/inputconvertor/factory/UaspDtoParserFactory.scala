@@ -108,7 +108,7 @@ private class LoyaltyUaspDtoParser(propsModel: InputPropsModel) extends UaspDtoP
 }
 
 object UaspDtoParserFactory {
-  def apply( propsModel: InputPropsModel) = propsModel.uaspdtoType.toUpperCase match {
+  def apply(propsModel: InputPropsModel) = propsModel.uaspdtoType.toUpperCase match {
     case "WAY4" => new Way4UaspDtoParser
     case "MDM" => new MDMUaspDtoParser(propsModel.uaspdtoType)
     case "MDM-PROFILE" => new MDMUaspDtoParser(propsModel.uaspdtoType)

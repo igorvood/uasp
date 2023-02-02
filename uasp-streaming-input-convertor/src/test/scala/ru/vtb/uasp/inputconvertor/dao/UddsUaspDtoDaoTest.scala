@@ -4,14 +4,13 @@ import io.qameta.allure.scalatest.AllureScalatestContext
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should
 import ru.vtb.uasp.common.dto.UaspDto
-import ru.vtb.uasp.common.utils.config.ConfigUtils.{getPropsFromResourcesFile, getStringFromResourceFile}
+import ru.vtb.uasp.common.utils.config.ConfigUtils.getStringFromResourceFile
 import ru.vtb.uasp.inputconvertor.UaspDtostandardFactory
 import ru.vtb.uasp.inputconvertor.dao.UddsUaspDtoDaoTest.getCommonMessageAndProps
 import ru.vtb.uasp.inputconvertor.entity.{CommonMessageType, InputMessageType}
 import ru.vtb.uasp.inputconvertor.factory.{UaspDtoParser, UaspDtoParserFactory}
 import ru.vtb.uasp.inputconvertor.service.TransformHelper.extractJson
 import ru.vtb.uasp.inputconvertor.utils.config.InputPropsModel
-import ru.vtb.uasp.validate.DroolsValidator
 
 class UddsUaspDtoDaoTest extends AnyFlatSpec with should.Matchers {
 
@@ -19,7 +18,7 @@ class UddsUaspDtoDaoTest extends AnyFlatSpec with should.Matchers {
 
     val (commonMessage, inputPropsModel) = getCommonMessageAndProps()
 
-    val uaspDtoParser: UaspDtoParser = UaspDtoParserFactory( inputPropsModel)
+    val uaspDtoParser: UaspDtoParser = UaspDtoParserFactory(inputPropsModel)
     val uaspDto: UaspDto = uaspDtoParser.fromJValue(commonMessage.json_message.get, inputPropsModel.dtoMap)
 
     val standardUaspDto: UaspDto = UaspDtostandardFactory("udds").getstandardUaspDto(uaspDto.uuid).copy(process_timestamp = uaspDto.process_timestamp)

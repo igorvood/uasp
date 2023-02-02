@@ -14,7 +14,6 @@ import ru.vtb.uasp.inputconvertor.service._
 import ru.vtb.uasp.inputconvertor.utils.config.InputPropsModel
 import ru.vtb.uasp.inputconvertor.utils.config.InputPropsModel.appPrefixDefaultName
 import ru.vtb.uasp.inputconvertor.utils.serialization.{AvroPullOut, DlqPullOut}
-import ru.vtb.uasp.validate.DroolsValidator
 
 object Convertor {
 

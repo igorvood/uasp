@@ -1,7 +1,7 @@
 package ru.vtb.uasp.validate
 
+import io.qameta.allure.Feature
 import io.qameta.allure.scalatest.AllureScalatestContext
-import io.qameta.allure.{Allure, Feature}
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should
 import ru.vtb.uasp.common.dto.UaspDto

@@ -1,6 +1,5 @@
 package ru.vtb.uasp.inputconvertor.service
 
-import io.qameta.allure.Allure
 import io.qameta.allure.scalatest.AllureScalatestContext
 import org.scalatest.Ignore
 import org.scalatest.flatspec.AnyFlatSpec

@@ -26,17 +26,12 @@ case class InputPropsModel(
 
                           ) {
 
+  lazy val savepointPref: String = serviceName.serviceNameNoVersion
+  lazy val inputMessageTypeDeserialization = new InputMessageTypeDeserialization()
   val droolsValidator = new DroolsValidator(uaspdtoType + "-validation-rules.drl")
-
   val dtoMap: Map[String, Array[String]] = getPropsFromResourcesFile(s"$uaspdtoType-uaspdto.properties")
     .map(map => map.map(m => (m._1, m._2.split("::"))))
     .getOrElse(throw new IllegalArgumentException(s"unable to read resources file $uaspdtoType-uaspdto.properties"))
-
-  lazy val savepointPref: String = serviceName.serviceNameNoVersion
-
-  lazy val inputMessageTypeDeserialization = new InputMessageTypeDeserialization()
-
-
   val uaspDtoParser: UaspDtoParser = UaspDtoParserFactory(this)
 }
 

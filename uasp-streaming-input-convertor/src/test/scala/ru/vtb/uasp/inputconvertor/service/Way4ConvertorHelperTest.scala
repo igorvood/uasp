@@ -11,7 +11,6 @@ import ru.vtb.uasp.inputconvertor.UaspDtostandardFactory
 import ru.vtb.uasp.inputconvertor.dao.Way4UaspDtoDaoTest
 import ru.vtb.uasp.inputconvertor.entity.CommonMessageType
 import ru.vtb.uasp.inputconvertor.utils.avro.AvroUtils
-import ru.vtb.uasp.inputconvertor.utils.config.InputPropsModel
 
 //FIXME
 @Ignore

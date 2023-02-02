@@ -5,14 +5,13 @@ import io.qameta.allure.scalatest.AllureScalatestContext
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should
 import ru.vtb.uasp.common.dto.UaspDto
-import ru.vtb.uasp.common.utils.config.ConfigUtils.{getPropsFromResourcesFile, getStringFromResourceFile}
+import ru.vtb.uasp.common.utils.config.ConfigUtils.getStringFromResourceFile
 import ru.vtb.uasp.inputconvertor.UaspDtostandardFactory
 import ru.vtb.uasp.inputconvertor.dao.PosTransactionWay4UaspDtoDaoTest.getCommonMessageAndProps
 import ru.vtb.uasp.inputconvertor.entity.{CommonMessageType, InputMessageType}
 import ru.vtb.uasp.inputconvertor.factory.{UaspDtoParser, UaspDtoParserFactory}
 import ru.vtb.uasp.inputconvertor.service.TransformHelper.extractJson
 import ru.vtb.uasp.inputconvertor.utils.config.InputPropsModel
-import ru.vtb.uasp.validate.DroolsValidator
 
 @Feature("PosTerminalWay4UaspDtoDaoTest")
 class PosTransactionWay4UaspDtoDaoTest extends AnyFlatSpec with should.Matchers {
