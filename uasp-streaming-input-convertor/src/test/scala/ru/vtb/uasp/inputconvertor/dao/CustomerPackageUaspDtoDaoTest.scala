@@ -8,7 +8,6 @@ import ru.vtb.uasp.common.utils.config.ConfigUtils.getStringFromResourceFile
 import ru.vtb.uasp.inputconvertor.UaspDtostandardFactory
 import ru.vtb.uasp.inputconvertor.dao.CustomerPackageUaspDtoDaoTest.getCommonMessageAndProps
 import ru.vtb.uasp.inputconvertor.entity.{CommonMessageType, InputMessageType}
-import ru.vtb.uasp.inputconvertor.factory.{UaspDtoParser, UaspDtoParserFactory}
 import ru.vtb.uasp.inputconvertor.service.TransformHelper.extractJson
 import ru.vtb.uasp.inputconvertor.utils.config.InputPropsModel
 
@@ -17,8 +16,8 @@ class CustomerPackageUaspDtoDaoTest extends AnyFlatSpec with should.Matchers {
   "The result UaspDto" should "be valid" in new AllureScalatestContext {
     val (commonMessage, allProps) = getCommonMessageAndProps()
 
-    val uaspDtoParser: UaspDtoParser = UaspDtoParserFactory(allProps)
-    val uaspDto: UaspDto = uaspDtoParser.fromJValue(commonMessage.json_message.get, allProps.dtoMap)
+
+    val uaspDto: UaspDto = allProps.uaspDtoParser.fromJValue(commonMessage.json_message.get, allProps.dtoMap)
 
     val standardUaspDto: UaspDto = UaspDtostandardFactory("customer-package").getstandardUaspDto(uaspDto.uuid).copy(process_timestamp = uaspDto.process_timestamp)
 

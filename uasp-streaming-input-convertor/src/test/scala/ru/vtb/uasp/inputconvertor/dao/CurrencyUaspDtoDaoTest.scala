@@ -9,7 +9,6 @@ import ru.vtb.uasp.common.utils.config.ConfigUtils.getStringFromResourceFile
 import ru.vtb.uasp.inputconvertor.UaspDtostandardFactory
 import ru.vtb.uasp.inputconvertor.dao.CurrencyUaspDtoDaoTest.getCommonMessageAndProps
 import ru.vtb.uasp.inputconvertor.entity.{CommonMessageType, InputMessageType}
-import ru.vtb.uasp.inputconvertor.factory.UaspDtoParserFactory
 import ru.vtb.uasp.inputconvertor.service.TransformHelper.extractJson
 import ru.vtb.uasp.inputconvertor.utils.config.InputPropsModel
 
@@ -20,8 +19,8 @@ class CurrencyUaspDtoDaoTest extends AnyFlatSpec with should.Matchers {
 
     val (commonMessage, allProps) = getCommonMessageAndProps()
 
-    val uaspDtoParser = UaspDtoParserFactory(allProps)
-    val uaspDto: UaspDto = uaspDtoParser.fromJValue(commonMessage.json_message.get, allProps.dtoMap)
+
+    val uaspDto: UaspDto = allProps.uaspDtoParser.fromJValue(commonMessage.json_message.get, allProps.dtoMap)
 
     val standardUaspDto = UaspDtostandardFactory("currency").getstandardUaspDto(uaspDto.uuid).copy(process_timestamp = uaspDto.process_timestamp)
     assert(standardUaspDto == uaspDto)

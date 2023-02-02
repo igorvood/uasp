@@ -9,7 +9,6 @@ import ru.vtb.uasp.common.utils.config.ConfigUtils.getStringFromResourceFile
 import ru.vtb.uasp.inputconvertor.UaspDtostandardFactory
 import ru.vtb.uasp.inputconvertor.dao.Way4UaspDtoDaoTest.getCommonMessageAndProps
 import ru.vtb.uasp.inputconvertor.entity.{CommonMessageType, InputMessageType}
-import ru.vtb.uasp.inputconvertor.factory.{UaspDtoParser, UaspDtoParserFactory}
 import ru.vtb.uasp.inputconvertor.service.TransformHelper.extractJson
 import ru.vtb.uasp.inputconvertor.utils.config.InputPropsModel
 
@@ -21,8 +20,8 @@ class Way4UaspDtoDaoTest extends AnyFlatSpec with should.Matchers {
     Allure.tms("17", "")
 
     val (commonMessage, allProp) = getCommonMessageAndProps()
-    val uaspDtoParser: UaspDtoParser = UaspDtoParserFactory(allProp)
-    val uaspDto: UaspDto = uaspDtoParser.fromJValue(commonMessage.json_message.get, allProp.dtoMap)
+
+    val uaspDto: UaspDto = allProp.uaspDtoParser.fromJValue(commonMessage.json_message.get, allProp.dtoMap)
     private val dto: UaspDto = uaspDto.copy(
       dataString = uaspDto.dataString - ("card_ps_funding_source", "transaction_currency", "card_masked_pan",
         "source_account_w4", "base_currency_w4", "source_system_w4"),

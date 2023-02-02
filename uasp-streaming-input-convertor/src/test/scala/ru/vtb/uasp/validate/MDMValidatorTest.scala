@@ -6,14 +6,14 @@ import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should
 import ru.vtb.uasp.common.dto.UaspDto
 import ru.vtb.uasp.inputconvertor.dao.MDMProfileUaspDtoDaoTest
-import ru.vtb.uasp.inputconvertor.factory.UaspDtoParserFactory
+
 
 @Feature("MDMValidateTest")
 class MDMValidateTest extends AnyFlatSpec with should.Matchers {
   val (uaspDto, validator) = {
     val (commonMessage, allProps) = MDMProfileUaspDtoDaoTest.getCommonMessageAndProps()
-    val uaspDtoParser = UaspDtoParserFactory(allProps)
-    val uaspDto: UaspDto = uaspDtoParser.fromJValue(commonMessage.json_message.get, allProps.dtoMap)
+
+    val uaspDto: UaspDto = allProps.uaspDtoParser.fromJValue(commonMessage.json_message.get, allProps.dtoMap)
     (uaspDto, allProps.droolsValidator)
   }
 

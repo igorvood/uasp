@@ -9,7 +9,6 @@ import ru.vtb.uasp.common.utils.config.ConfigUtils.getStringFromResourceFile
 import ru.vtb.uasp.inputconvertor.UaspDtostandardFactory
 import ru.vtb.uasp.inputconvertor.dao.PosTransactionWay4UaspDtoDaoTest.getCommonMessageAndProps
 import ru.vtb.uasp.inputconvertor.entity.{CommonMessageType, InputMessageType}
-import ru.vtb.uasp.inputconvertor.factory.{UaspDtoParser, UaspDtoParserFactory}
 import ru.vtb.uasp.inputconvertor.service.TransformHelper.extractJson
 import ru.vtb.uasp.inputconvertor.utils.config.InputPropsModel
 
@@ -20,8 +19,7 @@ class PosTransactionWay4UaspDtoDaoTest extends AnyFlatSpec with should.Matchers 
 
     val (commonMessage, allProps) = getCommonMessageAndProps()
 
-    val uaspDtoParser: UaspDtoParser = UaspDtoParserFactory(allProps)
-    val uaspDto: UaspDto = uaspDtoParser.fromJValue(commonMessage.json_message.get, allProps.dtoMap)
+    val uaspDto: UaspDto = allProps.uaspDtoParser.fromJValue(commonMessage.json_message.get, allProps.dtoMap)
 
     private val dto: UaspDto = uaspDto.copy(dataString = uaspDto.dataString - ("source_account_w4", "base_currency_w4"))
 

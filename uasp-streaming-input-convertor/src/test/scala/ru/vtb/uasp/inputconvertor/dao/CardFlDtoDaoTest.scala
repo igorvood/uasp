@@ -8,7 +8,6 @@ import ru.vtb.uasp.common.utils.config.ConfigUtils.getStringFromResourceFile
 import ru.vtb.uasp.inputconvertor.UaspDtostandardFactory
 import ru.vtb.uasp.inputconvertor.dao.CardFlDtoDaoTest.{getCommonMessageAndProps, getCommonNullMessageAndProps}
 import ru.vtb.uasp.inputconvertor.entity.{CommonMessageType, InputMessageType}
-import ru.vtb.uasp.inputconvertor.factory.{UaspDtoParser, UaspDtoParserFactory}
 import ru.vtb.uasp.inputconvertor.service.TransformHelper.extractJson
 import ru.vtb.uasp.inputconvertor.utils.config.InputPropsModel
 
@@ -17,10 +16,9 @@ class CardFlDtoDaoTest extends AnyFlatSpec with should.Matchers {
   "The result UaspDto" should "be valid" in new AllureScalatestContext {
 
     val (commonMessage, allProp) = getCommonMessageAndProps()
-    println("commonMessage: " + commonMessage)
-    val uaspDtoParser: UaspDtoParser = UaspDtoParserFactory(allProp)
-    val uaspDto: UaspDto = uaspDtoParser.fromJValue(commonMessage.json_message.get, allProp.dtoMap)
-    println("uaspDto: " + uaspDto)
+
+        val uaspDto: UaspDto = allProp.uaspDtoParser.fromJValue(commonMessage.json_message.get, allProp.dtoMap)
+
     val standardUaspDto: UaspDto = UaspDtostandardFactory("cardfl").getstandardUaspDto(uaspDto.uuid).copy(process_timestamp = uaspDto.process_timestamp)
 
     assert(standardUaspDto == uaspDto)
@@ -30,8 +28,8 @@ class CardFlDtoDaoTest extends AnyFlatSpec with should.Matchers {
 
     val (commonMessage, allProp) = getCommonNullMessageAndProps()
 
-    val uaspDtoParser: UaspDtoParser = UaspDtoParserFactory(allProp)
-    val uaspDto: UaspDto = uaspDtoParser.fromJValue(commonMessage.json_message.get, allProp.dtoMap)
+
+    val uaspDto: UaspDto = allProp.uaspDtoParser.fromJValue(commonMessage.json_message.get, allProp.dtoMap)
 
     val standardUaspDto: UaspDto = UaspDtostandardFactory("cardflNull").getstandardUaspDto(uaspDto.uuid).copy(process_timestamp = uaspDto.process_timestamp)
 

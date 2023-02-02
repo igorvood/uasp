@@ -6,15 +6,15 @@ import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should
 import ru.vtb.uasp.common.dto.UaspDto
 import ru.vtb.uasp.inputconvertor.dao.Way4UaspDtoDaoTest
-import ru.vtb.uasp.inputconvertor.factory.UaspDtoParserFactory
+
 
 @Feature("Way4ValidateTest")
 class Way4ValidateTest extends AnyFlatSpec with should.Matchers {
 
   val (uaspDto, validator) = {
     val (commonMessage, allProps) = Way4UaspDtoDaoTest.getCommonMessageAndProps()
-    val uaspDtoParser = UaspDtoParserFactory(allProps)
-    val uaspDto: UaspDto = uaspDtoParser.fromJValue(commonMessage.json_message.get, allProps.dtoMap)
+
+    val uaspDto: UaspDto = allProps.uaspDtoParser.fromJValue(commonMessage.json_message.get, allProps.dtoMap)
     (uaspDto, allProps.droolsValidator)
   }
 

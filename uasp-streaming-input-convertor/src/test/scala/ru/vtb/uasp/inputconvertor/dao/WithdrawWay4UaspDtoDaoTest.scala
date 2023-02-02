@@ -9,7 +9,6 @@ import ru.vtb.uasp.common.utils.config.ConfigUtils.getStringFromResourceFile
 import ru.vtb.uasp.inputconvertor.UaspDtostandardFactory
 import ru.vtb.uasp.inputconvertor.dao.WithdrawWay4UaspDtoDaoTest.getCommonMessageAndProps
 import ru.vtb.uasp.inputconvertor.entity.{CommonMessageType, InputMessageType}
-import ru.vtb.uasp.inputconvertor.factory.{UaspDtoParser, UaspDtoParserFactory}
 import ru.vtb.uasp.inputconvertor.service.TransformHelper.extractJson
 import ru.vtb.uasp.inputconvertor.utils.config.InputPropsModel
 
@@ -19,8 +18,8 @@ class WithdrawWay4UaspDtoDaoTest extends AnyFlatSpec with should.Matchers {
   "The result UaspDto" should "be contains fields tagged_data_source_pay" in new AllureScalatestContext {
 
     val (commonMessage, allProp) = getCommonMessageAndProps()
-    val uaspDtoParser: UaspDtoParser = UaspDtoParserFactory(allProp)
-    val uaspDto: UaspDto = uaspDtoParser.fromJValue(commonMessage.json_message.get, allProp.dtoMap)
+
+    val uaspDto: UaspDto = allProp.uaspDtoParser.fromJValue(commonMessage.json_message.get, allProp.dtoMap)
     val standardUaspDto: UaspDto = UaspDtostandardFactory("way4").getstandardUaspDto(uaspDto.uuid)
 
     private val dto: UaspDto = uaspDto.copy(
