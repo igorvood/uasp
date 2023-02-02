@@ -13,7 +13,6 @@ object ConvertHelper {
 
   def validAndTransform(commonMessage: CommonMessageType,
                         propsModel: InputPropsModel,
-                        appUseAvroSerializationIsY: Boolean,
                         validator: DroolsValidator,
                         dtoMap: Map[String, Array[String]],
                        ): CommonMessageType = {
@@ -51,12 +50,12 @@ object ConvertHelper {
       }
     else cm.avro_message.getOrElse(new Array[Byte](0))*/
 
-    val avroMessage: Array[Byte] = if (appUseAvroSerializationIsY)
+    val avroMessage: Array[Byte] =
       Try(JsonConvertOutService.serializeToBytes(uaspDto)) match {
         case Success(s) => s.value
         case Failure(s) => return cm.copy(error = Some("Can't serialize to avro format: " + s.getMessage))
       }
-    else cm.avro_message.getOrElse(new Array[Byte](0))
+
 
     //    val avroMessage : Array [ Byte ] =
     //    //time("4. to avro") {
