@@ -36,7 +36,6 @@ object CustomerProfileFullUaspDtoDaoTest {
       consumerProp = null,
       outputSink = null,
       dlqSink = null,
-      dtoMap = null,
       readSourceTopicFromBeginning = true,
       sha256salt = "",
       messageJsonPath = None,

@@ -38,16 +38,15 @@ object ProfileUaspDtoDaoTest {
 
   def getCommonMessageAndProps(args: Array[String] = Array[String]()): (CommonMessageType, InputPropsModel, String, Map[String, Array[String]], DroolsValidator) = {
     val allProps: InputPropsModel = new InputPropsModel(
-      null,
-      "profile",
-      null,
-      null,
-      null,
-      null,
-      true,
-      "",
-      None,
-      None)
+      serviceName = null,
+      uaspdtoType = "profile",
+      consumerProp = null,
+      outputSink = null,
+      dlqSink = null,
+      readSourceTopicFromBeginning = true,
+      sha256salt = "",
+      messageJsonPath = None,
+      jsonSplitElement = None)
 
     val uaspDtoType = allProps.uaspdtoType
 

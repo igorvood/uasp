@@ -14,16 +14,15 @@ class TransformHelperTest extends AnyFlatSpec with should.Matchers {
   "extractJson type mdm" should "be return 4 messages" in new AllureScalatestContext {
 
     val allProps: InputPropsModel = new InputPropsModel(
-      null,
-      "mdm",
-      null,
-      null,
-      null,
-      null,
-      true,
-      null,
-      None,
-      Some("contact"))
+      serviceName = null,
+      uaspdtoType = "mdm",
+      consumerProp = null,
+      outputSink = null,
+      dlqSink = null,
+      readSourceTopicFromBeginning = true,
+      sha256salt = null,
+      messageJsonPath = None,
+      jsonSplitElement = Some("contact"))
 
     val uaspDtoType = allProps.uaspdtoType
     val msgCollector = new MsgCollector
@@ -42,16 +41,15 @@ class TransformHelperTest extends AnyFlatSpec with should.Matchers {
   "extractJson type mdm" should "be return 1 messages" in new AllureScalatestContext {
     //    val allProps = getAllProps(args = Array.empty, "application-mdm.properties")
     val allProps: InputPropsModel = new InputPropsModel(
-      null,
-      "mdm",
-      null,
-      null,
-      null,
-      null,
-      true,
-      null,
-      None,
-      None)
+      serviceName = null,
+      uaspdtoType = "mdm",
+      consumerProp = null,
+      outputSink = null,
+      dlqSink = null,
+      readSourceTopicFromBeginning = true,
+      sha256salt = null,
+      messageJsonPath = None,
+      jsonSplitElement = None)
 
     val uaspDtoType = allProps.uaspdtoType
     val msgCollector = new MsgCollector
@@ -69,16 +67,15 @@ class TransformHelperTest extends AnyFlatSpec with should.Matchers {
 
   "extractJson type mdm" should "be throw exception" in new AllureScalatestContext {
     val allProps: InputPropsModel = new InputPropsModel(
-      null,
-      "mdm",
-      null,
-      null,
-      null,
-      null,
-      true,
-      null,
-      None,
-      Some("contact"))
+      serviceName = null,
+      uaspdtoType = "mdm",
+      consumerProp = null,
+      outputSink = null,
+      dlqSink = null,
+      readSourceTopicFromBeginning = true,
+      sha256salt = null,
+      messageJsonPath = None,
+      jsonSplitElement = Some("contact"))
 
     val uaspDtoType = allProps.uaspdtoType
     val msgCollector = new MsgCollector
@@ -94,16 +91,15 @@ class TransformHelperTest extends AnyFlatSpec with should.Matchers {
   "extractJson type currency" should "be return 40 messages" in new AllureScalatestContext {
 
     val allProps: InputPropsModel = new InputPropsModel(
-      null,
-      "currency",
-      null,
-      null,
-      null,
-      null,
-      true,
-      null,
-      None,
-      Some("rates"))
+      serviceName = null,
+      uaspdtoType = "currency",
+      consumerProp = null,
+      outputSink = null,
+      dlqSink = null,
+      readSourceTopicFromBeginning = true,
+      sha256salt = null,
+      messageJsonPath = None,
+      jsonSplitElement = Some("rates"))
 
     val uaspDtoType = allProps.uaspdtoType
     val msgCollector = new MsgCollector

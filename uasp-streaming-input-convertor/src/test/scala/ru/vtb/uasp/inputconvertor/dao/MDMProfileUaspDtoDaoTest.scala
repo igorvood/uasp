@@ -34,11 +34,10 @@ object MDMProfileUaspDtoDaoTest {
       null,
       null,
       null,
-      null,
-      true,
-      null,
-      None,
-      None)
+      readSourceTopicFromBeginning = true,
+      sha256salt = null,
+      messageJsonPath = None,
+      jsonSplitElement = None)
     val uaspDtoType = allProps.uaspdtoType
 
 

@@ -39,16 +39,15 @@ class Way4UaspDtoDaoTest extends AnyFlatSpec with should.Matchers {
 object Way4UaspDtoDaoTest {
   def getCommonMessageAndProps(args: Array[String] = Array[String]()): (CommonMessageType, InputPropsModel, String, Map[String, Array[String]], DroolsValidator) = {
     val allProps: InputPropsModel = new InputPropsModel(
-      null,
-      "way4",
-      null,
-      null,
-      null,
-      null,
-      true,
-      null,
-      None,
-      None)
+      serviceName = null,
+      uaspdtoType = "way4",
+      consumerProp = null,
+      outputSink = null,
+      dlqSink = null,
+      readSourceTopicFromBeginning = true,
+      sha256salt = null,
+      messageJsonPath = None,
+      jsonSplitElement = None)
     val uaspDtoType = allProps.uaspdtoType
 
     val jsonMessageStr = getStringFromResourceFile(uaspDtoType + "-test.json")

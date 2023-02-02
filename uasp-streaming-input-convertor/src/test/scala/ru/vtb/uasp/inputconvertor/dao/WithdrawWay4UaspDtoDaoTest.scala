@@ -46,16 +46,15 @@ class WithdrawWay4UaspDtoDaoTest extends AnyFlatSpec with should.Matchers {
 object WithdrawWay4UaspDtoDaoTest {
   def getCommonMessageAndProps(args: Array[String] = Array[String]()): (CommonMessageType, InputPropsModel, String, Map[String, Array[String]], DroolsValidator) = {
     val allProps: InputPropsModel = new InputPropsModel(
-      null,
-      "way4-withdraw",
-      null,
-      null,
-      null,
-      null,
-      true,
-      null,
-      None,
-      None)
+      serviceName = null,
+      uaspdtoType = "way4-withdraw",
+      consumerProp = null,
+      outputSink = null,
+      dlqSink = null,
+      readSourceTopicFromBeginning = true,
+      sha256salt = null,
+      messageJsonPath = None,
+      jsonSplitElement = None)
     val uaspDtoType = allProps.uaspdtoType
 
     val jsonMessageStr = getStringFromResourceFile(uaspDtoType + "-test.json")

@@ -43,16 +43,15 @@ class PosTransactionWay4UaspDtoDaoTest extends AnyFlatSpec with should.Matchers 
 object PosTransactionWay4UaspDtoDaoTest {
   def getCommonMessageAndProps(args: Array[String] = Array[String]()): (CommonMessageType, InputPropsModel, String, Map[String, Array[String]], DroolsValidator) = {
     val allProps: InputPropsModel = new InputPropsModel(
-      null,
-      "pos-transaction",
-      null,
-      null,
-      null,
-      null,
-      true,
-      "",
-      None,
-      None)
+      serviceName = null,
+      uaspdtoType = "pos-transaction",
+      consumerProp = null,
+      outputSink = null,
+      dlqSink = null,
+      readSourceTopicFromBeginning = true,
+      sha256salt = "",
+      messageJsonPath = None,
+      jsonSplitElement = None)
 
     val uaspDtoType = allProps.uaspdtoType
 
