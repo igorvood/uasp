@@ -16,9 +16,3 @@ case class CommonMessageType(
                               valid: Boolean = false,
                               check_timestamp: Long = LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant.toEpochMilli
                             )
-
-//object CommonMessageType {
-//  implicit val uaspJsonReads: Reads[CommonMessageType] = Json.reads[CommonMessageType]
-//  implicit val uaspJsonWrites: OWrites[CommonMessageType] = Json.writes[CommonMessageType]
-//
-//}
