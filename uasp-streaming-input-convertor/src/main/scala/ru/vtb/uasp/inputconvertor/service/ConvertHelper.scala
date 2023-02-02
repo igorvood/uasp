@@ -30,7 +30,7 @@ object ConvertHelper {
     //2. create uaspdto
 
     val parser = propsModel.uaspDtoParser
-    val uaspDto: UaspDto = Try(parser.fromJValue(cm.json_message.get, dtoMap)) match {
+    val uaspDto: UaspDto = Try(parser.fromJValue(cm.json_message.get, propsModel.dtoMap)) match {
       case Success(s) => s
       case Failure(s) => return cm.copy(error = Some("Cant create UaspDto from json: " + s.getMessage))
     }
