@@ -34,17 +34,16 @@ object CurrencyUaspDtoDaoTest {
   def getCommonMessageAndProps(args: Array[String] = Array[String]()): (CommonMessageType, InputPropsModel, String, Map[String, Array[String]], DroolsValidator) = {
 
     val allProps: InputPropsModel = new InputPropsModel(
-      null,
-      "currency",
-      null,
-      null,
-      null,
-      false,
-      null,
-      true,
-      "",
-      None,
-      None)
+      serviceName = null,
+      uaspdtoType = "currency",
+      consumerProp = null,
+      outputSink = null,
+      dlqSink = null,
+      dtoMap = null,
+      readSourceTopicFromBeginning = true,
+      sha256salt = "",
+      messageJsonPath = None,
+      jsonSplitElement = None)
 
     val uaspDtoType = allProps.uaspdtoType
 

@@ -30,17 +30,17 @@ object IssuingClientUaspDtoTest {
   def getCommonMessageAndProps(args: Array[String] = Array[String]()): (CommonMessageType, InputPropsModel, String, Map[String, Array[String]], DroolsValidator) = {
 
     val allProps: InputPropsModel = new InputPropsModel(
-      null,
-      "issiung-client",
-      null,
-      null,
-      null,
-      false,
-      null,
-      true,
-      "",
-      None,
-      None)
+      serviceName = null,
+      uaspdtoType = "issiung-client",
+      consumerProp = null,
+      outputSink = null,
+      dlqSink = null,
+
+      dtoMap = null,
+      readSourceTopicFromBeginning = true,
+      sha256salt = "",
+      messageJsonPath = None,
+      jsonSplitElement = None)
 
     val uaspDtoType = allProps.uaspdtoType
 

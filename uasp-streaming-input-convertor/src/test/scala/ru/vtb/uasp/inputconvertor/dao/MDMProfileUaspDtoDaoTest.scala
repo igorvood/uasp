@@ -34,7 +34,6 @@ object MDMProfileUaspDtoDaoTest {
       null,
       null,
       null,
-      false,
       null,
       true,
       null,

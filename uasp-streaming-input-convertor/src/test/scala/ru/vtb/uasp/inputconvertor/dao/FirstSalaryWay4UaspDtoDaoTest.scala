@@ -43,17 +43,16 @@ object FirstSalaryWay4UaspDtoDaoTest {
   def getCommonMessageAndProps(args: Array[String] = Array[String]()): (CommonMessageType, InputPropsModel, String, Map[String, Array[String]], DroolsValidator) = {
 
     val allProps: InputPropsModel = new InputPropsModel(
-      null,
-      "way4-first-salary",
-      null,
-      null,
-      null,
-      false,
-      null,
-      true,
-      "",
-      None,
-      None)
+      serviceName = null,
+      uaspdtoType = "way4-first-salary",
+      consumerProp = null,
+      outputSink = null,
+      dlqSink = null,
+      dtoMap = null,
+      readSourceTopicFromBeginning = true,
+      sha256salt = "",
+      messageJsonPath = None,
+      jsonSplitElement = None)
 
     val uaspDtoType = allProps.uaspdtoType
 

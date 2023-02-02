@@ -21,8 +21,7 @@ class FirstSalaryUaspDtoDaoTest extends AnyFlatSpec with should.Matchers {
 
     val (commonMessage, allProps, uaspDtoType, dtoMap, droolsValidator) = getCommonMessageAndProps()
 
-    val uaspDtoParser = UaspDtoParserFactory(uaspDtoType, allProps /*InputPropsModel(Map("input-convertor.test.uaspdto.type" -> uaspDtoType,
-      "input-convertor-sys.test.card.number.sha256.salt" -> "TEST"), "test")*/)
+    val uaspDtoParser = UaspDtoParserFactory(uaspDtoType, allProps )
     val uaspDto: UaspDto = uaspDtoParser.fromJValue(commonMessage.json_message.get, dtoMap)
 
     val standardUaspDto = UaspDtostandardFactory("first-salary").getstandardUaspDto(uaspDto.uuid).copy(process_timestamp = uaspDto.process_timestamp)
@@ -35,17 +34,16 @@ object FirstSalaryUaspDtoDaoTest {
   def getCommonMessageAndProps(args: Array[String] = Array[String]()): (CommonMessageType, InputPropsModel, String, Map[String, Array[String]], DroolsValidator) = {
 
     val allProps: InputPropsModel = new InputPropsModel(
-      null,
-      "first-salary",
-      null,
-      null,
-      null,
-      false,
-      null,
-      true,
-      "",
-      None,
-      None)
+      serviceName = null,
+      uaspdtoType = "first-salary",
+      consumerProp = null,
+      outputSink = null,
+      dlqSink = null,
+      dtoMap = null,
+      readSourceTopicFromBeginning = true,
+      sha256salt = "",
+      messageJsonPath = None,
+      jsonSplitElement = None)
 
     val uaspDtoType = allProps.uaspdtoType
 
