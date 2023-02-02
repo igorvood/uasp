@@ -7,6 +7,7 @@ import ru.vtb.uasp.common.utils.config.PropertyUtil.{propertyVal, propertyValOpt
 import ru.vtb.uasp.common.utils.config.{AllApplicationProperties, ConfigurationInitialise, ReadConfigErrors}
 import ru.vtb.uasp.inputconvertor.factory.{UaspDtoParser, UaspDtoParserFactory}
 import ru.vtb.uasp.inputconvertor.utils.serialization.InputMessageTypeDeserialization
+import ru.vtb.uasp.validate.DroolsValidator
 
 import scala.collection.mutable
 
@@ -24,6 +25,8 @@ case class InputPropsModel(
                             jsonSplitElement: Option[String],
 
                           ) {
+
+  val droolsValidator = new DroolsValidator(uaspdtoType + "-validation-rules.drl")
 
   val dtoMap: Map[String, Array[String]] = getPropsFromResourcesFile(s"$uaspdtoType-uaspdto.properties")
     .map(map => map.map(m => (m._1, m._2.split("::"))))
