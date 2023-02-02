@@ -30,7 +30,7 @@ private class Way4UaspDtostandard() extends UaspDtostandard {
       Map("card_expire_w4" -> "2405") ++
       Map("payment_scheme_w4" -> "VISA"),
     dataBoolean = Map[String, Boolean](),
-    uuid =uuid,
+    uuid = uuid,
     process_timestamp = 0
   )
 }

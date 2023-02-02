@@ -1,7 +1,6 @@
 package ru.vtb.uasp.inputconvertor.service
 
-import com.sksamuel.avro4s.{AvroSchema, ScalePrecision}
-import org.apache.avro.Schema
+import com.sksamuel.avro4s.ScalePrecision
 import org.scalatest.Ignore
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should

@@ -18,7 +18,7 @@ class CustomerPackageUaspDtoDaoTest extends AnyFlatSpec with should.Matchers {
   "The result UaspDto" should "be valid" in new AllureScalatestContext {
     val (commonMessage, _, uaspDtoType, dtoMap, _) = getCommonMessageAndProps()
 
-    val uaspDtoParser: UaspDtoParser = UaspDtoParserFactory(uaspDtoType, null )
+    val uaspDtoParser: UaspDtoParser = UaspDtoParserFactory(uaspDtoType, null)
     val uaspDto: UaspDto = uaspDtoParser.fromJValue(commonMessage.json_message.get, dtoMap)
 
     val standardUaspDto: UaspDto = UaspDtostandardFactory("customer-package").getstandardUaspDto(uaspDto.uuid).copy(process_timestamp = uaspDto.process_timestamp)

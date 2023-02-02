@@ -26,7 +26,7 @@ class ProfileAuthUaspDtoDaoTest extends AnyFlatSpec with should.Matchers {
     val validationList = droolsValidator.validate(List(uaspDto))
 
     validationList shouldBe empty
-    assert(uaspDto == standardUaspDto )
+    assert(uaspDto == standardUaspDto)
   }
 
 }
@@ -49,7 +49,6 @@ object ProfileAuthUaspDtoDaoTest {
       None)
 
     val uaspDtoType = allProps.uaspdtoType
-
 
 
     val jsonMessageStr = getStringFromResourceFile(uaspDtoType + "-test.json")

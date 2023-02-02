@@ -38,7 +38,7 @@ class WithdrawWay4UaspDtoDaoTest extends AnyFlatSpec with should.Matchers {
         "mcc" -> "6051", "audit_srn" -> "M1724298H6H1", "service_type" -> "J6",
         "audit_auth_code" -> "500005", "local_id" -> "1493661370", "terminal_type" -> "ECOMMERCE",
         "tagged_data_KBO" -> "643", "tagged_data_source_pay" -> "UNKNOWN", "merchant_name_w4" -> "Visa Unique",
-        "processing_date_string" -> "2022-06-21T13:21:43Z", "terminal_id" -> "10000015"),process_timestamp = dto.process_timestamp)
+        "processing_date_string" -> "2022-06-21T13:21:43Z", "terminal_id" -> "10000015"), process_timestamp = dto.process_timestamp)
     assert(expecteduaspDto == dto)
   }
 }

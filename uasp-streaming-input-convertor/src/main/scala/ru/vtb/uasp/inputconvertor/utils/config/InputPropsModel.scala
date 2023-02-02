@@ -3,7 +3,7 @@ package ru.vtb.uasp.inputconvertor.utils.config
 import ru.vtb.uasp.common.kafka.{FlinkConsumerProperties, FlinkSinkProperties}
 import ru.vtb.uasp.common.service.dto.ServiceDataDto
 import ru.vtb.uasp.common.utils.config.ConfigUtils.getPropsFromResourcesFile
-import ru.vtb.uasp.common.utils.config.PropertyUtil.{mapProperty, propertyVal, propertyValOptional, s}
+import ru.vtb.uasp.common.utils.config.PropertyUtil.{propertyVal, propertyValOptional, s}
 import ru.vtb.uasp.common.utils.config.{AllApplicationProperties, ConfigurationInitialise, ReadConfigErrors}
 import ru.vtb.uasp.inputconvertor.factory.{UaspDtoParser, UaspDtoParserFactory}
 import ru.vtb.uasp.inputconvertor.utils.serialization.InputMessageTypeDeserialization
@@ -25,7 +25,7 @@ case class InputPropsModel(
 
                             jsonSplitElement: Option[String],
 
-                             ) {
+                          ) {
 
   lazy val savepointPref: String = serviceName.serviceName
 
@@ -50,8 +50,8 @@ object InputPropsModel extends ConfigurationInitialise[InputPropsModel] {
       outputSink <- FlinkSinkProperties.create(s"$prf.output")
       dlqSink <- FlinkSinkProperties.create(s"$prf.dlq")
       useAvroSerialization <- propertyVal[Boolean](s"$prf", "use.avro.serialization")
-//      dtoMap <- Right(Map[String, Array[String]]())
-      dtoMap <- getPropsFromResourcesFile(s"$uaspdtoType-uaspdto.properties").map(map => Right(map.map(m => (m._1,m._2.split("::"))))).getOrElse(Left(ReadConfigErrors(List(s"unable to read resources file $uaspdtoType-uaspdto.properties"))))
+      //      dtoMap <- Right(Map[String, Array[String]]())
+      dtoMap <- getPropsFromResourcesFile(s"$uaspdtoType-uaspdto.properties").map(map => Right(map.map(m => (m._1, m._2.split("::"))))).getOrElse(Left(ReadConfigErrors(List(s"unable to read resources file $uaspdtoType-uaspdto.properties"))))
       readSourceTopicFromBeginning <- propertyVal[Boolean](s"$prf", "read.source.topic.frombeginning")
       sha256salt <- propertyVal[String](s"$prf", "card.number.sha256.salt")(appProps, configurationInitialise, s)
       messageJsonPath <- propertyValOptional[String](s"$prf", "message.json.path")(appProps, configurationInitialise, s)

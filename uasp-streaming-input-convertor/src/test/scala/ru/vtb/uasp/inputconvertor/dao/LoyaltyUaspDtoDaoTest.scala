@@ -19,12 +19,12 @@ class LoyaltyUaspDtoDaoTest extends AnyFlatSpec with should.Matchers {
 
     val (commonMessage, inputPropsModel, uaspDtoType, dtoMap, validator) = getCommonMessageAndProps()
 
-    val uaspDtoParser: UaspDtoParser = UaspDtoParserFactory(uaspDtoType, inputPropsModel )
+    val uaspDtoParser: UaspDtoParser = UaspDtoParserFactory(uaspDtoType, inputPropsModel)
     val uaspDto: UaspDto = uaspDtoParser.fromJValue(commonMessage.json_message.get, dtoMap)
 
     val standardUaspDto: UaspDto = UaspDtostandardFactory("loyalty").getstandardUaspDto(uaspDto.uuid).copy(process_timestamp = uaspDto.process_timestamp)
 
-    assert(uaspDto == standardUaspDto )
+    assert(uaspDto == standardUaspDto)
     val valid = validator.validate(List(uaspDto))
     assert(valid.size == 1)
   }

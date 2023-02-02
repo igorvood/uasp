@@ -31,7 +31,7 @@ class UddsUaspDtoDaoTest extends AnyFlatSpec with should.Matchers {
 object UddsUaspDtoDaoTest {
   def getCommonMessageAndProps(args: Array[String] = Array[String]()): (CommonMessageType, InputPropsModel, String, Map[String, Array[String]], DroolsValidator) = {
 
-    val allProps: InputPropsModel =  new InputPropsModel(
+    val allProps: InputPropsModel = new InputPropsModel(
       null,
       "udds",
       null,

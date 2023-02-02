@@ -1,10 +1,8 @@
 package ru.vtb.uasp.inputconvertor.service
 
-import org.apache.avro.Schema
 import ru.vtb.uasp.common.dto.UaspDto
 import ru.vtb.uasp.common.service.JsonConvertOutService
 import ru.vtb.uasp.inputconvertor.entity.CommonMessageType
-import ru.vtb.uasp.inputconvertor.factory.UaspDtoParserFactory
 import ru.vtb.uasp.inputconvertor.utils.config.InputPropsModel
 import ru.vtb.uasp.validate.DroolsValidator
 
@@ -18,7 +16,7 @@ object ConvertHelper {
                         appUseAvroSerializationIsY: Boolean,
                         validator: DroolsValidator,
                         dtoMap: Map[String, Array[String]],
-                        ): CommonMessageType = {
+                       ): CommonMessageType = {
     if (!commonMessage.valid) return commonMessage
     val cm = commonMessage.copy(valid = false)
     //1. check schema compliance

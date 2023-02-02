@@ -2,9 +2,9 @@ package ru.vtb.uasp.inputconvertor.utils.avro
 
 import com.sksamuel.avro4s._
 import org.apache.avro.Schema
-import org.apache.avro.generic.{GenericDatumReader, GenericDatumWriter, GenericRecord}
+import org.apache.avro.generic.{GenericDatumReader, GenericRecord}
 import ru.vtb.uasp.common.constants.BigDecimalConst.{PRECISION, SCALE}
-import ru.vtb.uasp.common.utils.avro.{AvroDeserializeUtil, AvroSerializeUtil}
+import ru.vtb.uasp.common.utils.avro.AvroDeserializeUtil
 
 import java.nio.ByteBuffer
 

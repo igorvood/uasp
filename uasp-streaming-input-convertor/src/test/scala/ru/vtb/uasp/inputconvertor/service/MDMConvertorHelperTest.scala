@@ -1,9 +1,7 @@
 package ru.vtb.uasp.inputconvertor.service
 
-import com.sksamuel.avro4s.AvroSchema
 import io.qameta.allure.Allure
 import io.qameta.allure.scalatest.AllureScalatestContext
-import org.apache.avro.Schema
 import org.scalatest.Ignore
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should

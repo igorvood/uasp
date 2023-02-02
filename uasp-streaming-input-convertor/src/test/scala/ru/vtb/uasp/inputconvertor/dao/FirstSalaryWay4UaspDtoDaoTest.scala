@@ -27,7 +27,7 @@ class FirstSalaryWay4UaspDtoDaoTest extends AnyFlatSpec with should.Matchers {
     private val dto: UaspDto = uaspDto.copy(
       dataString = uaspDto.dataString - ("card_ps_funding_source", "card_masked_pan", "transaction_currency"))
 
-        val standardUaspDto: UaspDto = UaspDtostandardFactory("way4").getstandardUaspDto(uaspDto.uuid)
+    val standardUaspDto: UaspDto = UaspDtostandardFactory("way4").getstandardUaspDto(uaspDto.uuid)
     val expecteduaspDto = standardUaspDto.copy(id = "1493661370",
       dataLong = standardUaspDto.dataLong + ("transaction_datetime" -> 1655828503000L, "processing_datetime" -> 1655817703000L, "effective_date" -> 1655251200000L),
       dataDecimal = Map("transaction_amount" -> 1000.00, "base_amount_w4" -> -1000.00),

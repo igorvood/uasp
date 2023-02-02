@@ -7,9 +7,8 @@ import scala.collection.mutable
 
 object CurrencyConverter {
 
-  var CurrencyMap = mutable.Map[String, String]()
-
   val rowsList: List[String] = FileUtils.getRows
+  var CurrencyMap = mutable.Map[String, String]()
 
   rowsList.forEach(r => {
     val row = r.split(";")

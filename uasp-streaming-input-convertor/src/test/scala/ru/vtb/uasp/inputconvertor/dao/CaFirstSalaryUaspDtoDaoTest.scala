@@ -21,7 +21,7 @@ class CaFirstSalaryUaspDtoDaoTest extends AnyFlatSpec with should.Matchers {
 
     val (commonMessage, allProps, uaspDtoType, dtoMap, droolsValidator) = getCommonMessageAndProps()
 
-    val uaspDtoParser = UaspDtoParserFactory(uaspDtoType, null )
+    val uaspDtoParser = UaspDtoParserFactory(uaspDtoType, null)
     val uaspDto: UaspDto = uaspDtoParser.fromJValue(commonMessage.json_message.get, dtoMap)
 
     val standardUaspDto = UaspDtostandardFactory("ca-first-salary").getstandardUaspDto(uaspDto.uuid).copy(process_timestamp = uaspDto.process_timestamp)

@@ -1,7 +1,6 @@
 package ru.vtb.uasp.inputconvertor.entity
 
 import org.json4s._
-import play.api.libs.json.{Json, OWrites, Reads}
 
 import java.time.{LocalDateTime, ZoneId}
 
