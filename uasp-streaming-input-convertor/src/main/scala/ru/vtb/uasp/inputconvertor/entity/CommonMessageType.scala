@@ -1,6 +1,7 @@
 package ru.vtb.uasp.inputconvertor.entity
 
 import org.json4s._
+import play.api.libs.json.{Json, OWrites, Reads}
 
 import java.time.{LocalDateTime, ZoneId}
 
@@ -16,3 +17,9 @@ case class CommonMessageType(
                               valid: Boolean = false,
                               check_timestamp: Long = LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant.toEpochMilli
                             )
+
+//object CommonMessageType {
+//  implicit val uaspJsonReads: Reads[CommonMessageType] = Json.reads[CommonMessageType]
+//  implicit val uaspJsonWrites: OWrites[CommonMessageType] = Json.writes[CommonMessageType]
+//
+//}

@@ -56,7 +56,7 @@ private class CAFirstSalaryUaspDtoParser extends UaspDtoParser {
     CAFirstSalaryUaspDtoDao.fromJValue(mes, dtoMap)
 }
 
-private class ProfileUaspDtoParser(propsModel: InputPropsModel) extends UaspDtoParser {
+private class ProfileUaspDtoParser(propsModel: InputPropsModel) extends UaspDtoParser with Serializable {
   override def fromJValue(mes: JValue, dtoMap: Map[String, Array[String]]): UaspDto =
     ProfileUaspDtoDao.fromJValue(mes, propsModel, dtoMap)
 }

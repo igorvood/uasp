@@ -16,7 +16,7 @@ import ru.vtb.uasp.inputconvertor.service.ConvertHelper.validAndTransform
 import ru.vtb.uasp.inputconvertor.service._
 import ru.vtb.uasp.inputconvertor.utils.config.InputPropsModel
 import ru.vtb.uasp.inputconvertor.utils.config.InputPropsModel.appPrefixDefaultName
-import ru.vtb.uasp.inputconvertor.utils.serialization.AvroPullOut
+import ru.vtb.uasp.inputconvertor.utils.serialization.{AvroPullOut, DlqPullOut}
 import ru.vtb.uasp.validate.DroolsValidator
 
 object Convertor {
@@ -105,7 +105,7 @@ object Convertor {
                      producerFabric: FlinkSinkProperties => SinkFunction[KafkaDto] = producerFactoryDefault
                     ): DataStreamSink[KafkaDto] = {
     val dlqTopicName = propsModel.dlqSink.createSinkFunction(producerFabric)
-    val out = new AvroPullOut()
+    val out = new DlqPullOut()
     mainDataStream
       .getSideOutput(outputTag)
       .map(propsModel.outputSink.prometheusMetric[CommonMessageType](propsModel.serviceName))
