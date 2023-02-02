@@ -16,9 +16,9 @@ class MDMProfileUaspDtoDaoTest extends AnyFlatSpec with should.Matchers {
 
   "The test data" should "be equals standard mdm-profile UaspDto instance" in {
 
-    val (commonMessage, allProps, uaspDtoType, dtoMap, droolsValidator) = getCommonMessageAndProps()
-    val uaspDtoParser = UaspDtoParserFactory(uaspDtoType, null)
-    val uaspDto: UaspDto = uaspDtoParser.fromJValue(commonMessage.json_message.get, dtoMap)
+    val (commonMessage, allProps) = getCommonMessageAndProps()
+    val uaspDtoParser = UaspDtoParserFactory(allProps)
+    val uaspDto: UaspDto = uaspDtoParser.fromJValue(commonMessage.json_message.get, allProps.dtoMap)
 
     val standardUaspDto = UaspDtostandardFactory("mdm").getstandardUaspDto(uaspDto.uuid)
     val expectedUaspDto = standardUaspDto.copy(id = "456", dataString = Map("local_id" -> "456", "global_id" -> "10324", "system_number" -> "99995"), process_timestamp = uaspDto.process_timestamp)
@@ -27,7 +27,7 @@ class MDMProfileUaspDtoDaoTest extends AnyFlatSpec with should.Matchers {
 }
 
 object MDMProfileUaspDtoDaoTest {
-  def getCommonMessageAndProps(args: Array[String] = Array[String]()): (CommonMessageType, InputPropsModel, String, Map[String, Array[String]], DroolsValidator) = {
+  def getCommonMessageAndProps(args: Array[String] = Array[String]()): (CommonMessageType, InputPropsModel) = {
     val allProps: InputPropsModel = new InputPropsModel(
       null,
       "mdm-profile",
@@ -42,13 +42,10 @@ object MDMProfileUaspDtoDaoTest {
 
 
     val jsonMessageStr = getStringFromResourceFile(uaspDtoType + "-test.json")
-    //val jsonMessageStr = getStringFromResourceFile("mdm-test.json")
 
     val inMessage = InputMessageType(message_key = "123", message = jsonMessageStr.getBytes, Map[String, String]())
     val msgCollector = new MsgCollector
     extractJson(inMessage, allProps, msgCollector)
-    val uaspDtoMap = Map[String, String]() ++ getPropsFromResourcesFile(uaspDtoType + "-uaspdto.properties").get
-    val dtoMap = uaspDtoMap.map(m => (m._1, m._2.split("::")))
-    (msgCollector.getAll().get(0), allProps, uaspDtoType, dtoMap, new DroolsValidator(uaspDtoType + "-validation-rules.drl"))
+    (msgCollector.getAll().get(0), allProps)
   }
 }

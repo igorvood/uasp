@@ -15,10 +15,10 @@ import ru.vtb.uasp.validate.DroolsValidator
 
 class IssuingAccountUaspDtoTest extends AnyFlatSpec with should.Matchers {
   "The test data" should "be equals standard way4 UaspDto instance" in new AllureScalatestContext {
-    val (commonMessage, allProps, uaspDtoType, dtoMap, droolsValidator) = getCommonMessageAndProps()
+    val (commonMessage, allProps) = getCommonMessageAndProps()
 
-    val uaspDtoParser = UaspDtoParserFactory(uaspDtoType, null)
-    val uaspDto: UaspDto = uaspDtoParser.fromJValue(commonMessage.json_message.get, dtoMap)
+    val uaspDtoParser = UaspDtoParserFactory(allProps)
+    val uaspDto: UaspDto = uaspDtoParser.fromJValue(commonMessage.json_message.get, allProps.dtoMap)
 
     val standardUaspDto = UaspDtostandardFactory("issuing-account").getstandardUaspDto(uaspDto.uuid).copy(process_timestamp = uaspDto.process_timestamp)
     standardUaspDto shouldEqual uaspDto
@@ -26,7 +26,7 @@ class IssuingAccountUaspDtoTest extends AnyFlatSpec with should.Matchers {
 }
 
 object IssuingAccountUaspDtoTest {
-  def getCommonMessageAndProps(args: Array[String] = Array[String]()): (CommonMessageType, InputPropsModel, String, Map[String, Array[String]], DroolsValidator) = {
+  def getCommonMessageAndProps(args: Array[String] = Array[String]()): (CommonMessageType, InputPropsModel) = {
     val allProps: InputPropsModel = new InputPropsModel(
       serviceName = null,
       uaspdtoType = "issuing-account",
@@ -45,10 +45,8 @@ object IssuingAccountUaspDtoTest {
     val inMessage = InputMessageType(message_key = "123", message = jsonMessageStr.getBytes, Map[String, String]())
 
     val msgCollector = new MsgCollector
-    val cmt = extractJson(inMessage, allProps, msgCollector)
-    val uaspDtoMap = Map[String, String]() ++ getPropsFromResourcesFile(uaspDtoType + "-uaspdto.properties").get
-    val dtoMap = uaspDtoMap.map(m => (m._1, m._2.split("::")))
-    (msgCollector.getAll().get(0), allProps, uaspDtoType, dtoMap, new DroolsValidator(uaspDtoType + "-validation-rules.drl"))
+     extractJson(inMessage, allProps, msgCollector)
+    (msgCollector.getAll().get(0), allProps)
   }
 }
 

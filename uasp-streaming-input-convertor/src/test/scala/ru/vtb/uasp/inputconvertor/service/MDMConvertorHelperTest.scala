@@ -18,17 +18,15 @@ import ru.vtb.uasp.inputconvertor.utils.config.InputPropsModel
 class MDMConvertorHelperTest extends AnyFlatSpec with should.Matchers {
 
   "The serialized avro object" should "be equals standard serialized mdm UaspDto" in new AllureScalatestContext {
-    Allure.link("302202", "manual", "")
-    Allure.tms("22", "")
 
-    val (commonMessage, allProps, uaspDtoType, dtoMap, droolsValidator) = MDMUaspDtoDaoTest.getCommonMessageAndProps()
-    println("commonMessage: " + commonMessage)
-    val jsonSchema = getStringFromResourceFile("schemas/jsonschema-" + uaspDtoType + ".json")
+    val (commonMessage, allProps) = MDMUaspDtoDaoTest.getCommonMessageAndProps()
+
+    val jsonSchema = getStringFromResourceFile("schemas/jsonschema-" + allProps.uaspdtoType + ".json")
     val enrichedCommonMessage = commonMessage.copy(json_schema = Some(jsonSchema))
     val propsModel: InputPropsModel = null // InputPropsModel(Map("input-convertor.uaspdto.type" -> uaspDtoType), "")
 
-    val testedMessage: CommonMessageType = ConvertHelper.validAndTransform(enrichedCommonMessage, propsModel, droolsValidator)
-    println("testedMessage: " + testedMessage)
+    val testedMessage: CommonMessageType = ConvertHelper.validAndTransform(enrichedCommonMessage, propsModel)
+
 
     val initialUaspDto: UaspDto = AvroUtils.avroDeserialize[UaspDto](testedMessage.avro_message.get)
     //standard

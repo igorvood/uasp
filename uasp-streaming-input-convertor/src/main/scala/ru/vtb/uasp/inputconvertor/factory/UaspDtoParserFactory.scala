@@ -108,10 +108,10 @@ private class LoyaltyUaspDtoParser(propsModel: InputPropsModel) extends UaspDtoP
 }
 
 object UaspDtoParserFactory {
-  def apply(uaspDtoType: String, propsModel: InputPropsModel) = uaspDtoType.toUpperCase match {
+  def apply( propsModel: InputPropsModel) = propsModel.uaspdtoType.toUpperCase match {
     case "WAY4" => new Way4UaspDtoParser
-    case "MDM" => new MDMUaspDtoParser(uaspDtoType)
-    case "MDM-PROFILE" => new MDMUaspDtoParser(uaspDtoType)
+    case "MDM" => new MDMUaspDtoParser(propsModel.uaspdtoType)
+    case "MDM-PROFILE" => new MDMUaspDtoParser(propsModel.uaspdtoType)
     case "ISSIUNG-CLIENT" => new ClientUaspDtoParser
     case "ISSUING-ACCOUNT-BALANCE" => new AccountBalanceUaspDtoParser
     case "ISSUING-ACCOUNT" => new AccountUaspDtoParser
@@ -132,7 +132,7 @@ object UaspDtoParserFactory {
     case "CUSTOMER-PROFILE-FULL" => new CustomerProfileFullUaspDtoStandart
     case "UDDS" => new UddsUaspDtoParser(propsModel)
     case "LOYALTY" => new LoyaltyUaspDtoParser(propsModel)
-    case _ => throw new RuntimeException("Wrong UaspDto type: " + uaspDtoType)
+    case _ => throw new RuntimeException("Wrong UaspDto type: " + propsModel.uaspdtoType)
 
   }
 }

@@ -19,10 +19,10 @@ class PosTransactionWay4UaspDtoDaoTest extends AnyFlatSpec with should.Matchers 
 
   "The result UaspDto" should "be contains fields card_ps_funding_source, card_masked_pan  and transaction_currency" in new AllureScalatestContext {
 
-    val (commonMessage, _, uaspDtoType, dtoMap, _) = getCommonMessageAndProps()
+    val (commonMessage, allProps) = getCommonMessageAndProps()
 
-    val uaspDtoParser: UaspDtoParser = UaspDtoParserFactory(uaspDtoType, null)
-    val uaspDto: UaspDto = uaspDtoParser.fromJValue(commonMessage.json_message.get, dtoMap)
+    val uaspDtoParser: UaspDtoParser = UaspDtoParserFactory(allProps)
+    val uaspDto: UaspDto = uaspDtoParser.fromJValue(commonMessage.json_message.get, allProps.dtoMap)
 
     private val dto: UaspDto = uaspDto.copy(dataString = uaspDto.dataString - ("source_account_w4", "base_currency_w4"))
 
@@ -41,7 +41,7 @@ class PosTransactionWay4UaspDtoDaoTest extends AnyFlatSpec with should.Matchers 
 }
 
 object PosTransactionWay4UaspDtoDaoTest {
-  def getCommonMessageAndProps(args: Array[String] = Array[String]()): (CommonMessageType, InputPropsModel, String, Map[String, Array[String]], DroolsValidator) = {
+  def getCommonMessageAndProps(args: Array[String] = Array[String]()): (CommonMessageType, InputPropsModel) = {
     val allProps: InputPropsModel = new InputPropsModel(
       serviceName = null,
       uaspdtoType = "pos-transaction",
@@ -61,9 +61,7 @@ object PosTransactionWay4UaspDtoDaoTest {
 
     val msgCollector = new MsgCollector
     extractJson(inMessage, allProps, msgCollector)
-    val uaspDtoMap = Map[String, String]() ++ getPropsFromResourcesFile(uaspDtoType + "-uaspdto.properties").get
-    val dtoMap = uaspDtoMap.map(m => (m._1, m._2.split("::")))
-    (msgCollector.getAll().get(0), allProps, uaspDtoType, dtoMap, new DroolsValidator(uaspDtoType + "-validation-rules.drl"))
+    (msgCollector.getAll().get(0), allProps)
   }
 }
 

@@ -18,14 +18,13 @@ import ru.vtb.uasp.inputconvertor.utils.config.InputPropsModel
 class Way4ConvertorHelperTest extends AnyFlatSpec with should.Matchers {
   implicit val sp: ScalePrecision = ScalePrecision(BigDecimalConst.SCALE, BigDecimalConst.PRECISION)
   "The test data" should "be equals standard way4 UaspDto instance" in {
-    val (commonMessage, allProps, uaspDtoType, dtoMap, droolsValidator) = Way4UaspDtoDaoTest.getCommonMessageAndProps()
-    println("commonMessage: " + commonMessage)
-    val jsonSchema: String = getStringFromResourceFile("schemas/jsonschema-" + uaspDtoType + ".json")
-    val enrichedCommonMessage: CommonMessageType = commonMessage.copy(json_schema = Some(jsonSchema))
-    val propsModel: InputPropsModel = null
+    val (commonMessage, allProps) = Way4UaspDtoDaoTest.getCommonMessageAndProps()
 
-    val testedMessage: CommonMessageType = ConvertHelper.validAndTransform(enrichedCommonMessage, propsModel, droolsValidator)
-    println("testedMessage: " + testedMessage)
+    val jsonSchema: String = getStringFromResourceFile("schemas/jsonschema-" + allProps.uaspdtoType + ".json")
+    val enrichedCommonMessage: CommonMessageType = commonMessage.copy(json_schema = Some(jsonSchema))
+
+
+    val testedMessage: CommonMessageType = ConvertHelper.validAndTransform(enrichedCommonMessage, allProps)
 
     val initialUaspDto: UaspDto = AvroUtils.avroDeserialize[UaspDto](testedMessage.avro_message.get).copy(process_timestamp = 0)
     //standard
@@ -34,8 +33,7 @@ class Way4ConvertorHelperTest extends AnyFlatSpec with should.Matchers {
       "source_account_w4" -> "40914810200009000369", "base_currency_w4" -> "RUR", "card_ps_funding_source" -> "Credit", "transaction_currency" -> "RUR",
       "card_expire_w4" -> "2607", "payment_scheme_w4" -> "Mastercard", "processing_date_string" -> "2021-07-18T18:12:24Z"),
       dataDecimal = standardUaspDto.dataDecimal + ("base_amount_w4" -> -2300.00000))
-    println("expected: " + standardUaspDto)
-    println("reality : " + initialUaspDto)
+
     assert(expectedUaspDto == initialUaspDto)
   }
 }

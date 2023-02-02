@@ -37,7 +37,7 @@ case class InputPropsModel(
   lazy val inputMessageTypeDeserialization = new InputMessageTypeDeserialization()
 
 
-  val uaspDtoParser: UaspDtoParser = UaspDtoParserFactory(uaspdtoType, this)
+  val uaspDtoParser: UaspDtoParser = UaspDtoParserFactory(this)
 }
 
 object InputPropsModel extends ConfigurationInitialise[InputPropsModel] {

@@ -58,7 +58,7 @@ object Convertor {
 
     val commonStream = extractJsonStream
       //TODO: avro schema inference only once
-      .map(m => validAndTransform(m, propsModel,  propsModel.droolsValidator))
+      .map(m => validAndTransform(m, propsModel))
       .name(propsModel.savepointPref + "-map-validAndTransform").uid(propsModel.savepointPref + "-map-validAndTransform")
 
     //split valid and invalid messages

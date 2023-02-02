@@ -16,14 +16,13 @@ class ProfileAuthUaspDtoDaoTest extends AnyFlatSpec with should.Matchers {
 
   "The test data" should "be equals standard first salary UaspDto instance" in {
 
-    val (commonMessage, allProps, uaspDtoType, dtoMap, droolsValidator) = getCommonMessageAndProps()
+    val (commonMessage, allProps) = getCommonMessageAndProps()
 
-    val uaspDtoParser = UaspDtoParserFactory(uaspDtoType,
-      allProps)
-    val uaspDto: UaspDto = uaspDtoParser.fromJValue(commonMessage.json_message.get, dtoMap)
+    val uaspDtoParser = UaspDtoParserFactory(allProps)
+    val uaspDto: UaspDto = uaspDtoParser.fromJValue(commonMessage.json_message.get, allProps.dtoMap)
 
     val standardUaspDto = UaspDtostandardFactory("profile-auth").getstandardUaspDto(uaspDto.uuid).copy(process_timestamp = uaspDto.process_timestamp)
-    val validationList = droolsValidator.validate(List(uaspDto))
+    val validationList = allProps.droolsValidator.validate(List(uaspDto))
 
     validationList shouldBe empty
     assert(uaspDto == standardUaspDto)
@@ -33,7 +32,7 @@ class ProfileAuthUaspDtoDaoTest extends AnyFlatSpec with should.Matchers {
 
 object ProfileAuthUaspDtoDaoTest {
 
-  def getCommonMessageAndProps(args: Array[String] = Array[String]()): (CommonMessageType, InputPropsModel, String, Map[String, Array[String]], DroolsValidator) = {
+  def getCommonMessageAndProps(args: Array[String] = Array[String]()): (CommonMessageType, InputPropsModel) = {
 
     val allProps: InputPropsModel = new InputPropsModel(
       serviceName = null,
@@ -56,9 +55,7 @@ object ProfileAuthUaspDtoDaoTest {
 
     val msgCollector = new MsgCollector
     extractJson(inMessage, allProps, msgCollector)
-    val uaspDtoMap = Map[String, String]() ++ getPropsFromResourcesFile(uaspDtoType + "-uaspdto.properties").get
-    val dtoMap = uaspDtoMap.map(m => (m._1, m._2.split("::")))
-    (msgCollector.getAll().get(0), allProps, uaspDtoType, dtoMap, new DroolsValidator(uaspDtoType + "-validation-rules.drl"))
+    (msgCollector.getAll().get(0), allProps)
   }
 }
 

@@ -19,9 +19,9 @@ class WithdrawWay4UaspDtoDaoTest extends AnyFlatSpec with should.Matchers {
 
   "The result UaspDto" should "be contains fields tagged_data_source_pay" in new AllureScalatestContext {
 
-    val (commonMessage, _, uaspDtoType, dtoMap, _) = getCommonMessageAndProps()
-    val uaspDtoParser: UaspDtoParser = UaspDtoParserFactory(uaspDtoType, null)
-    val uaspDto: UaspDto = uaspDtoParser.fromJValue(commonMessage.json_message.get, dtoMap)
+    val (commonMessage, allProp) = getCommonMessageAndProps()
+    val uaspDtoParser: UaspDtoParser = UaspDtoParserFactory(allProp)
+    val uaspDto: UaspDto = uaspDtoParser.fromJValue(commonMessage.json_message.get, allProp.dtoMap)
     val standardUaspDto: UaspDto = UaspDtostandardFactory("way4").getstandardUaspDto(uaspDto.uuid)
 
     private val dto: UaspDto = uaspDto.copy(
@@ -44,7 +44,7 @@ class WithdrawWay4UaspDtoDaoTest extends AnyFlatSpec with should.Matchers {
 }
 
 object WithdrawWay4UaspDtoDaoTest {
-  def getCommonMessageAndProps(args: Array[String] = Array[String]()): (CommonMessageType, InputPropsModel, String, Map[String, Array[String]], DroolsValidator) = {
+  def getCommonMessageAndProps(args: Array[String] = Array[String]()): (CommonMessageType, InputPropsModel) = {
     val allProps: InputPropsModel = new InputPropsModel(
       serviceName = null,
       uaspdtoType = "way4-withdraw",
@@ -62,9 +62,7 @@ object WithdrawWay4UaspDtoDaoTest {
     val inMessage = InputMessageType(message_key = "123", message = jsonMessageStr.getBytes, Map[String, String]())
     val msgCollector = new MsgCollector
     extractJson(inMessage, allProps, msgCollector)
-    val uaspDtoMap = Map[String, String]() ++ getPropsFromResourcesFile(uaspDtoType + "-uaspdto.properties").get
-    val dtoMap = uaspDtoMap.map(m => (m._1, m._2.split("::")))
-    (msgCollector.getAll().get(0), allProps, uaspDtoType, dtoMap, new DroolsValidator(uaspDtoType + "-validation-rules.drl"))
+    (msgCollector.getAll().get(0), allProps)
   }
 }
 

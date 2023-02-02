@@ -21,9 +21,9 @@ class Way4UaspDtoDaoTest extends AnyFlatSpec with should.Matchers {
     Allure.link("291128", "manual", "")
     Allure.tms("17", "")
 
-    val (commonMessage, allProp, uaspDtoType, dtoMap, _) = getCommonMessageAndProps()
-    val uaspDtoParser: UaspDtoParser = UaspDtoParserFactory(uaspDtoType, allProp)
-    val uaspDto: UaspDto = uaspDtoParser.fromJValue(commonMessage.json_message.get, dtoMap)
+    val (commonMessage, allProp) = getCommonMessageAndProps()
+    val uaspDtoParser: UaspDtoParser = UaspDtoParserFactory(allProp)
+    val uaspDto: UaspDto = uaspDtoParser.fromJValue(commonMessage.json_message.get, allProp.dtoMap)
     private val dto: UaspDto = uaspDto.copy(
       dataString = uaspDto.dataString - ("card_ps_funding_source", "transaction_currency", "card_masked_pan",
         "source_account_w4", "base_currency_w4", "source_system_w4"),
@@ -37,7 +37,7 @@ class Way4UaspDtoDaoTest extends AnyFlatSpec with should.Matchers {
 }
 
 object Way4UaspDtoDaoTest {
-  def getCommonMessageAndProps(args: Array[String] = Array[String]()): (CommonMessageType, InputPropsModel, String, Map[String, Array[String]], DroolsValidator) = {
+  def getCommonMessageAndProps(args: Array[String] = Array[String]()): (CommonMessageType, InputPropsModel) = {
     val allProps: InputPropsModel = new InputPropsModel(
       serviceName = null,
       uaspdtoType = "way4",
@@ -55,9 +55,7 @@ object Way4UaspDtoDaoTest {
     val inMessage = InputMessageType(message_key = "123", message = jsonMessageStr.getBytes, Map[String, String]())
     val msgCollector = new MsgCollector
     extractJson(inMessage, allProps, msgCollector)
-    val uaspDtoMap = Map[String, String]() ++ getPropsFromResourcesFile(uaspDtoType + "-uaspdto.properties").get
-    val dtoMap = uaspDtoMap.map(m => (m._1, m._2.split("::")))
-    (msgCollector.getAll().get(0), allProps, uaspDtoType, dtoMap, new DroolsValidator(uaspDtoType + "-validation-rules.drl"))
+    (msgCollector.getAll().get(0), allProps)
   }
 }
 

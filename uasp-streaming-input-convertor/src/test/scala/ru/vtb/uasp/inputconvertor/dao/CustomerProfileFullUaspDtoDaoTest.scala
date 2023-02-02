@@ -16,10 +16,10 @@ import ru.vtb.uasp.validate.DroolsValidator
 class CustomerProfileFullUaspDtoDaoTest extends AnyFlatSpec with should.Matchers {
 
   "The result UaspDto" should "be valid" in new AllureScalatestContext {
-    val (commonMessage, a, uaspDtoType, dtoMap, _) = getCommonMessageAndProps()
+    val (commonMessage, allProps) = getCommonMessageAndProps()
 
-    val uaspDtoParser: UaspDtoParser = UaspDtoParserFactory(uaspDtoType, null)
-    val uaspDto: UaspDto = uaspDtoParser.fromJValue(commonMessage.json_message.get, dtoMap)
+    val uaspDtoParser: UaspDtoParser = UaspDtoParserFactory(allProps)
+    val uaspDto: UaspDto = uaspDtoParser.fromJValue(commonMessage.json_message.get, allProps.dtoMap)
 
     val standardUaspDto: UaspDto = UaspDtostandardFactory("customer-profile-full").getstandardUaspDto(uaspDto.uuid).copy(process_timestamp = uaspDto.process_timestamp)
 
@@ -28,7 +28,7 @@ class CustomerProfileFullUaspDtoDaoTest extends AnyFlatSpec with should.Matchers
 }
 
 object CustomerProfileFullUaspDtoDaoTest {
-  def getCommonMessageAndProps(args: Array[String] = Array[String]()): (CommonMessageType, InputPropsModel, String, Map[String, Array[String]], DroolsValidator) = {
+  def getCommonMessageAndProps(args: Array[String] = Array[String]()): (CommonMessageType, InputPropsModel) = {
 
     val allProps: InputPropsModel = new InputPropsModel(
       serviceName = null,
@@ -49,8 +49,6 @@ object CustomerProfileFullUaspDtoDaoTest {
 
     val msgCollector = new MsgCollector
     extractJson(inMessage, allProps, msgCollector)
-    val uaspDtoMap = Map[String, String]() ++ getPropsFromResourcesFile(uaspDtoType + "-uaspdto.properties").get
-    val dtoMap = uaspDtoMap.map(m => (m._1, m._2.split("::")))
-    (msgCollector.getAll().get(0), allProps, uaspDtoType, dtoMap, new DroolsValidator(uaspDtoType + "-validation-rules.drl"))
+    (msgCollector.getAll().get(0), allProps)
   }
 }
