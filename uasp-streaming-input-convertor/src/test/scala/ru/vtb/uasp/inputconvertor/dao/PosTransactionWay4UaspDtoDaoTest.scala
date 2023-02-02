@@ -50,7 +50,6 @@ object PosTransactionWay4UaspDtoDaoTest {
       null,
       false,
       null,
-      null,
       true,
       "",
       None,

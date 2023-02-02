@@ -37,7 +37,6 @@ object IssuingAccountBalanceUaspDtoTest {
       null,
       false,
       null,
-      null,
       true,
       "",
       None,

@@ -50,7 +50,6 @@ object FirstSalaryWay4UaspDtoDaoTest {
       null,
       false,
       null,
-      null,
       true,
       "",
       None,

@@ -40,7 +40,6 @@ object CACardFlDtoDaoTest {
       null,
       false,
       null,
-      null,
       true,
       "",
       None,

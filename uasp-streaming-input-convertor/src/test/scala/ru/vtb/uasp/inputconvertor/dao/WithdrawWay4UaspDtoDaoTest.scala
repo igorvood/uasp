@@ -53,7 +53,6 @@ object WithdrawWay4UaspDtoDaoTest {
       null,
       false,
       null,
-      null,
       true,
       null,
       None,

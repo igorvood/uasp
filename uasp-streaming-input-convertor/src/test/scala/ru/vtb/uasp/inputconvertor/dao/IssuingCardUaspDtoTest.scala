@@ -37,7 +37,6 @@ object IssuingCardUaspDtoTest {
       null,
       false,
       null,
-      null,
       true,
       "",
       None,

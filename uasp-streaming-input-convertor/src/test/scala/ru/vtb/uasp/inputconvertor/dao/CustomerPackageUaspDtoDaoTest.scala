@@ -37,7 +37,6 @@ object CustomerPackageUaspDtoDaoTest {
       null,
       false,
       null,
-      null,
       true,
       "",
       None,

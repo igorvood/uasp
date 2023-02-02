@@ -39,7 +39,6 @@ object UddsUaspDtoDaoTest {
       null,
       false,
       null,
-      null,
       true,
       "",
       None,

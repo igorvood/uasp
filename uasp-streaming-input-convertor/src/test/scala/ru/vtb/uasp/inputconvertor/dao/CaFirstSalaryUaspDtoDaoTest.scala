@@ -41,7 +41,6 @@ object CaFirstSalaryUaspDtoDaoTest {
       null,
       false,
       null,
-      null,
       true,
       "",
       None,

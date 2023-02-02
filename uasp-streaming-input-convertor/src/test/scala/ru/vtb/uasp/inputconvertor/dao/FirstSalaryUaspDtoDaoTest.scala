@@ -42,7 +42,6 @@ object FirstSalaryUaspDtoDaoTest {
       null,
       false,
       null,
-      null,
       true,
       "",
       None,

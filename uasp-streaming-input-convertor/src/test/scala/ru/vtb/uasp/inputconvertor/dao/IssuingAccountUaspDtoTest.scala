@@ -35,7 +35,6 @@ object IssuingAccountUaspDtoTest {
       null,
       false,
       null,
-      null,
       true,
       "",
       None,

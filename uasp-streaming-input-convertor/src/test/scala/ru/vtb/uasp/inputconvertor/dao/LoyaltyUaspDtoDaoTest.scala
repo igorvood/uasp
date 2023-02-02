@@ -41,7 +41,6 @@ object LoyaltyUaspDtoDaoTest {
       null,
       false,
       null,
-      null,
       true,
       "",
       None,

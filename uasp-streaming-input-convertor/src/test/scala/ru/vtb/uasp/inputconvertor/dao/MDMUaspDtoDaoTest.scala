@@ -40,7 +40,6 @@ object MDMUaspDtoDaoTest {
       null,
       false,
       null,
-      null,
       true,
       "",
       None,

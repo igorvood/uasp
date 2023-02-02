@@ -48,7 +48,6 @@ object WithdrawUaspDtoDaoTest {
       null,
       false,
       null,
-      null,
       true,
       null,
       None,

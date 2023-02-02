@@ -37,7 +37,6 @@ object IssuingClientUaspDtoTest {
       null,
       false,
       null,
-      null,
       true,
       "",
       None,

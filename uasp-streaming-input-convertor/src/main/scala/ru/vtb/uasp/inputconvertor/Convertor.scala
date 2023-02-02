@@ -1,13 +1,10 @@
 package ru.vtb.uasp.inputconvertor
 
-import com.sksamuel.avro4s.AvroSchema
-import org.apache.avro.Schema
 import org.apache.flink.streaming.api.datastream.DataStreamSink
 import org.apache.flink.streaming.api.functions.ProcessFunction
 import org.apache.flink.streaming.api.functions.sink.SinkFunction
 import org.apache.flink.streaming.api.scala._
 import org.apache.flink.util.Collector
-import ru.vtb.uasp.common.dto.UaspDto
 import ru.vtb.uasp.common.kafka.FlinkSinkProperties
 import ru.vtb.uasp.common.kafka.FlinkSinkProperties.producerFactoryDefault
 import ru.vtb.uasp.common.service.dto.KafkaDto
@@ -53,19 +50,17 @@ object Convertor {
                messageInputStream: DataStream[InputMessageType],
                propsModel: InputPropsModel): DataStream[CommonMessageType] = {
     val droolsValidator = new DroolsValidator(propsModel.uaspdtoType + "-validation-rules.drl")
-    val avroSchema: Schema = AvroSchema[UaspDto]
     val messageParserFlatMap = new MessageParserFlatMap(propsModel)
 
     val extractJsonStream: DataStream[CommonMessageType] =
       messageInputStream
         .flatMap(messageParserFlatMap)
         .name(propsModel.savepointPref + "-flatMap-messageInputStream").uid(propsModel.savepointPref + "-flatMap-messageInputStream")
-    val convertOutMapService = new ConvertOutMapService
 
     val commonStream = extractJsonStream
       //TODO: avro schema inference only once
       .map(m => validAndTransform(m, propsModel, propsModel.useAvroSerialization,
-        droolsValidator, avroSchema, propsModel.dtoMap, convertOutMapService))
+        droolsValidator, propsModel.dtoMap))
       .name(propsModel.savepointPref + "-map-validAndTransform").uid(propsModel.savepointPref + "-map-validAndTransform")
 
     //split valid and invalid messages

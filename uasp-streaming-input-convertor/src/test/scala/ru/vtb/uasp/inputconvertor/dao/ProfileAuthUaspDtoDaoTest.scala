@@ -43,7 +43,6 @@ object ProfileAuthUaspDtoDaoTest {
       null,
       false,
       null,
-      null,
       true,
       "",
       None,

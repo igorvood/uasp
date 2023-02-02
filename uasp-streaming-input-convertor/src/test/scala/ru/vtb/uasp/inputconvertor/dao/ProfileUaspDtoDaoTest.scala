@@ -10,7 +10,6 @@ import ru.vtb.uasp.inputconvertor.UaspDtostandardFactory
 import ru.vtb.uasp.inputconvertor.dao.ProfileUaspDtoDaoTest.getCommonMessageAndProps
 import ru.vtb.uasp.inputconvertor.entity.{CommonMessageType, InputMessageType}
 import ru.vtb.uasp.inputconvertor.factory.UaspDtoParserFactory
-import ru.vtb.uasp.inputconvertor.service.ConvertOutMapService
 import ru.vtb.uasp.inputconvertor.service.TransformHelper.extractJson
 import ru.vtb.uasp.inputconvertor.utils.config.InputPropsModel
 import ru.vtb.uasp.validate.DroolsValidator
@@ -31,9 +30,6 @@ class ProfileUaspDtoDaoTest extends AnyFlatSpec with should.Matchers {
     validationList shouldBe empty
     assert(uaspDto == standardUaspDto)
 
-    val convertOutMapService = new ConvertOutMapService
-    val serializable = convertOutMapService.serialize(uaspDto)
-
   }
 
 }
@@ -48,7 +44,6 @@ object ProfileUaspDtoDaoTest {
       null,
       null,
       false,
-      null,
       null,
       true,
       "",

@@ -17,11 +17,8 @@ object ConvertHelper {
                         propsModel: InputPropsModel,
                         appUseAvroSerializationIsY: Boolean,
                         validator: DroolsValidator,
-                        avroSchema: Schema,
                         dtoMap: Map[String, Array[String]],
-
-                        convertOutMapService: ConvertOutMapService): CommonMessageType = {
-    val appUaspdtoType: String = propsModel.uaspdtoType
+                        ): CommonMessageType = {
     if (!commonMessage.valid) return commonMessage
     val cm = commonMessage.copy(valid = false)
     //1. check schema compliance

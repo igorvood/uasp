@@ -41,7 +41,6 @@ object CurrencyUaspDtoDaoTest {
       null,
       false,
       null,
-      null,
       true,
       "",
       None,

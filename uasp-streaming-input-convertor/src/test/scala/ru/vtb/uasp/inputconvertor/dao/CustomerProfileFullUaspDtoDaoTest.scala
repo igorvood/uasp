@@ -38,7 +38,6 @@ object CustomerProfileFullUaspDtoDaoTest {
       null,
       false,
       null,
-      null,
       true,
       "",
       None,
