@@ -1,8 +1,9 @@
 package ru.vtb.uasp.common.mask
 
-import play.api.libs.json.{JsNumber, JsString}
+import play.api.libs.json.JsString
 
-class StringMaskAll extends JsNumberMaskedFun{
+class StringMaskAll extends JsStringMaskedFun {
 
-  override def mask(v: JsNumber): JsNumber = JsNumber(-1)
+  override def apply(v1: JsString): JsString = JsString("***MASKED***")
+
 }
