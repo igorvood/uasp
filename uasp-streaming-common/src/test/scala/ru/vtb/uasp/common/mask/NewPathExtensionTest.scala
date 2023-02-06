@@ -2,7 +2,7 @@ package ru.vtb.uasp.common.mask
 
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should
-import ru.vtb.uasp.common.mask.NewJPath.PathFactory
+import ru.vtb.uasp.common.mask.JsMaskedPath.PathFactory
 
 import scala.util.{Failure, Success, Try}
 
@@ -10,15 +10,15 @@ import scala.util.{Failure, Success, Try}
 class NewPathExtensionTest extends AnyFlatSpec with should.Matchers {
 
   "single transform str to JPath " should " OK" in {
-    val expected = NewJPathObject(
-      Map("f1" -> NewJPathObject(
-        Map("o1" -> NewJPathObject(
-          Map("d1" -> NewJPathValue())))))
+    val expected = JsMaskedPathObject(
+      Map("f1" -> JsMaskedPathObject(
+        Map("o1" -> JsMaskedPathObject(
+          Map("d1" -> JsMaskedPathValue())))))
     )
 
     val paths = Map("f1.o1.d1" -> "Asdsad")
       .map(q => MaskedStrPath(q._1,q._2))
-      .toJsonPath18()
+      .toJsonPath()
 
     assertResult(expected)(paths)
 
@@ -26,19 +26,19 @@ class NewPathExtensionTest extends AnyFlatSpec with should.Matchers {
   }
 
   "two transform not cross str to JPath " should " OK" in {
-    val expected = NewJPathObject(
-      Map("f1" -> NewJPathObject(
-        Map("o1" -> NewJPathObject(
-          Map("d1" -> NewJPathValue())))),
-        "f2" -> NewJPathObject(
-          Map("o1" -> NewJPathObject(
-            Map("d1" -> NewJPathValue()))))
+    val expected = JsMaskedPathObject(
+      Map("f1" -> JsMaskedPathObject(
+        Map("o1" -> JsMaskedPathObject(
+          Map("d1" -> JsMaskedPathValue())))),
+        "f2" -> JsMaskedPathObject(
+          Map("o1" -> JsMaskedPathObject(
+            Map("d1" -> JsMaskedPathValue()))))
       )
     )
 
     val paths = Map("f1.o1.d1" -> "asdad", "f2.o1.d1"-> "asd")
       .map(q => MaskedStrPath(q._1,q._2))
-      .toJsonPath18()
+      .toJsonPath()
 
     assertResult(expected)(paths)
 
@@ -54,14 +54,14 @@ class NewPathExtensionTest extends AnyFlatSpec with should.Matchers {
       //      "f2.o2.d3",
     )
       .map(q => MaskedStrPath(q._1,q._2))
-      .toJsonPath18()
+      .toJsonPath()
 
-    val expected = NewJPathObject(
-      Map("f1" -> NewJPathObject(
-        Map("o1" -> NewJPathObject(
+    val expected = JsMaskedPathObject(
+      Map("f1" -> JsMaskedPathObject(
+        Map("o1" -> JsMaskedPathObject(
           Map(
-            "d1" -> NewJPathValue(),
-            "d2" -> NewJPathValue(),
+            "d1" -> JsMaskedPathValue(),
+            "d2" -> JsMaskedPathValue(),
           )))))
     )
 
@@ -76,7 +76,7 @@ class NewPathExtensionTest extends AnyFlatSpec with should.Matchers {
       .map(q => MaskedStrPath(q._1,q._2))
 
     Try(paths1
-      .toJsonPath18())       match {
+      .toJsonPath())       match {
       case Success(_) => throw new RuntimeException("must fail")
       case Failure(exception) => assertResult("Wrong structure 'd1.q1' it is object, but 'd1' all ready registered like value")(exception.getMessage)
     }
@@ -91,7 +91,7 @@ class NewPathExtensionTest extends AnyFlatSpec with should.Matchers {
       .map(q => MaskedStrPath(q._1,q._2))
 
     Try(paths1
-      .toJsonPath18())       match {
+      .toJsonPath())       match {
       case Success(_) => throw new RuntimeException("must fail")
       case Failure(exception) => assertResult("Wrong structure 'd1' it is value, but 'Set(d1)' all ready registered like object")(exception.getMessage)
     }

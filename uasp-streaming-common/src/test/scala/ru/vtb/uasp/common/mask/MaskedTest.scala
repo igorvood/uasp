@@ -5,7 +5,7 @@ import org.scalatest.matchers.should
 import play.api.libs.json.{JsObject, JsString, JsValue, Json}
 import ru.vtb.uasp.common
 import ru.vtb.uasp.common.dto.UaspDto
-import ru.vtb.uasp.common.mask.NewJPath.PathFactory
+import ru.vtb.uasp.common.mask.JsMaskedPath.PathFactory
 
 import scala.annotation.tailrec
 
@@ -13,9 +13,9 @@ import scala.annotation.tailrec
 
 class MaskedTest extends AnyFlatSpec with should.Matchers {
 
-  def maskData(jsObject: JsValue, path: NewJPath): JsValue = {
+  def maskData(jsObject: JsValue, path: JsMaskedPath): JsValue = {
     val value1: JsValue = (jsObject, path) match {
-      case (JsObject(values), NewJPathObject(masked)) => {
+      case (JsObject(values), JsMaskedPathObject(masked)) => {
         val newVals = values
           .map(vv => {
             masked
@@ -26,7 +26,7 @@ class MaskedTest extends AnyFlatSpec with should.Matchers {
           )
         JsObject(newVals)
       }
-      case (value, NewJPathValue(masked)) => {
+      case (value, JsMaskedPathValue(masked)) => {
         val string = value match {
           case JsString(value) => JsString("masked " + value)
           case _ => throw new IllegalArgumentException("bad")
@@ -62,7 +62,7 @@ class MaskedTest extends AnyFlatSpec with should.Matchers {
       "dataString.7" -> "asdasd",
     )
       .map(q => MaskedStrPath(q._1, q._2))
-      .toJsonPath18()
+      .toJsonPath()
 
     val value1 = maskData(jsObject, path)
     println(value1)
