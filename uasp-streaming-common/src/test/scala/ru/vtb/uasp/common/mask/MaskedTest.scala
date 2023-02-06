@@ -65,12 +65,13 @@ class MaskedTest extends AnyFlatSpec with should.Matchers {
       .toJsonPath()
 
     val value1 = maskData(jsObject, path)
-    println(value1)
 
     val value2 = value1.validate[UaspDto]
-    println(dto)
-    println(value2.get)
 
+
+    val dto1 = dto.copy(id = "masked 1", dataString = Map("7" -> "masked 7"), process_timestamp = value2.get.process_timestamp)
+
+    assertResult(dto1)(value2.get)
 
   }
 
