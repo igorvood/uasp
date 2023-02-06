@@ -1,6 +1,6 @@
 package ru.vtb.uasp.common.mask
 
-import play.api.libs.json.JsValue
+import play.api.libs.json.{JsBoolean, JsNumber, JsString, JsValue}
 
 import scala.annotation.tailrec
 
@@ -71,6 +71,7 @@ case class JsMaskedPathObject(
 
 }
 
+@deprecated
 case class JsMaskedPathValue(maskFun: JsValue => JsValue = { q => q}) extends JsMaskedPath {
 
   override def addNew(pathNodeList: List[String]): JsMaskedPath =
@@ -81,3 +82,21 @@ case class JsMaskedPathValue(maskFun: JsValue => JsValue = { q => q}) extends Js
     }
 
 }
+
+sealed trait JsMaskedPathValueTrait[T<: JsValue] extends JsMaskedPath{
+  val maskFun : MaskedFun[T]
+
+  override def addNew(pathNodeList: List[String]): JsMaskedPath =
+    pathNodeList match {
+      case Nil => this
+      case x::Nil => JsMaskedPathObject( inner = Map(x -> this /*JsMaskedPathStringValue(maskFun)*/))
+      case x::xs =>  throw new IllegalArgumentException("UNABLE TO ADD")
+    }
+
+}
+
+case class JsStringMaskedPathValue(override val maskFun: JsStringMaskedFun ) extends JsMaskedPathValueTrait[JsString]
+
+case class JsNumberMaskedPathValue(override val maskFun: JsNumberMaskedFun ) extends JsMaskedPathValueTrait[JsNumber]
+
+case class JsBooleanMaskedPathValue(override val maskFun: JsBooleanMaskedFun ) extends JsMaskedPathValueTrait[JsBoolean]
