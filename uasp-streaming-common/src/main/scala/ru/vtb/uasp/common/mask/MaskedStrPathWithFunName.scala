@@ -15,8 +15,8 @@ case class MaskedStrPathWithFunName(strPath: String, maskedFunc: String){
       value3
     }
     value match {
-      case Failure(exception) => throw new IllegalArgumentException(s"unable to load class $maskedFunc for $strPath", exception)
-      case Success(value) => value
+      case Failure(exception) => Left(s"unable to load class $maskedFunc for $strPath. Cause ${exception.getMessage}" )
+      case Success(value) => Right(value)
     }
 
   }
