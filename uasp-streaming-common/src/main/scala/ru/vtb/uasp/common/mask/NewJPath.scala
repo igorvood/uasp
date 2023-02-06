@@ -3,7 +3,6 @@ package ru.vtb.uasp.common.mask
 import play.api.libs.json.JsValue
 
 import scala.annotation.tailrec
-import scala.collection.immutable.::
 
 sealed trait NewJPath{
   def addNew(pathNodeList: List[String]): NewJPath
@@ -12,8 +11,6 @@ sealed trait NewJPath{
 
 object NewJPath{
 
-
-  val rootName = "__root__"
 
   implicit class PathFactory(val self: List[MaskedStrPath]) extends AnyVal {
 
@@ -47,8 +44,7 @@ case class NewJPathObject(
       case Nil => this
       case head :: Nil =>
         inner.get(head)
-          .map(q =>
-            throw throw new IllegalArgumentException(s"Wrong structure '${head}' it is value, but '${inner.keys}' all ready registered like object")
+          .map(_ => throw throw new IllegalArgumentException(s"Wrong structure '${head}' it is value, but '${inner.keys}' all ready registered like object")
           )
           .getOrElse(NewJPathObject(inner = inner ++ Map(head -> NewJPathValue())))
 
@@ -73,32 +69,6 @@ case class NewJPathObject(
     product
   }
 
-
-//  def addNew(pathNodeList: List[String]): NewJPath =
-//    pathNodeList match {
-//      case Nil => this
-//      case head :: xs => {
-//        val maybePath = inner
-//          .find {
-//            case NewJPathValue(name, _) => name == head
-//            case NewJPathObject(name, _, _) => name == head
-//          }
-//        maybePath match {
-//          case Some(v) => {
-//            val newJsPath = v.addNew(xs)
-//            val cuttenSetPaths = inner - v
-//            NewJPathObject(name, cuttenSetPaths + newJsPath)
-//          }
-//          case None => {
-//            val newJsPath = NewJPathValue(head)
-//              .addNew(xs)
-//            NewJPathObject(name, inner + newJsPath)
-//          }
-//        }
-//      }
-//    }
-
-
 }
 
 case class NewJPathValue(maskFun: JsValue => JsValue = { q => q}) extends NewJPath {
@@ -107,14 +77,7 @@ case class NewJPathValue(maskFun: JsValue => JsValue = { q => q}) extends NewJPa
     pathNodeList match {
       case Nil => this
       case x::Nil => NewJPathObject( inner = Map(x -> NewJPathValue(maskFun)))
-      case x::xs => {
-        throw new IllegalArgumentException("UNABLE TO ADD")
-//        Map(x -> NewJPathValue(maskFun))
-//
-//        val newJsPath = NewJPathValue(x).addNew(xs)
-//
-//        NewJPathObject(name, Set(newJsPath))
-      }
+      case x::xs =>  throw new IllegalArgumentException("UNABLE TO ADD")
     }
 
 }

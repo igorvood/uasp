@@ -2,20 +2,47 @@ package ru.vtb.uasp.common.mask
 
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should
-import play.api.libs.json.{JsObject, JsValue, Json}
+import play.api.libs.json.{JsObject, JsString, JsValue, Json}
+import ru.vtb.uasp.common
 import ru.vtb.uasp.common.dto.UaspDto
+import ru.vtb.uasp.common.mask.NewJPath.PathFactory
 
 
 
 class MaskedTest extends AnyFlatSpec with should.Matchers {
 
-//  def maskData(jsObject: JsValue, path: JPath): JsValue = {
-//    path match {
-//      case JPathObject(name, inner) =>
-//    }
-//
-//    ???
-//  }
+
+  def maskData(jsObject: JsValue, path: NewJPath): JsValue = {
+    val value1: JsValue = (jsObject, path) match {
+      case (JsObject(values), NewJPathObject(masked)) => {
+
+        val units = values
+          .map(vv => {
+
+
+            masked
+              .get(vv._1)
+              .map(q => vv._1 -> maskData(vv._2, q))
+              .getOrElse(vv)
+          }
+          )
+        JsObject(units)
+      }
+      case (value, NewJPathValue(masked)) => {
+        val string = value match {
+          case JsString(value) => JsString("masked " + value)
+          case _ => throw new IllegalArgumentException("bad")
+
+        }
+        string
+      }
+      case (value, _) => throw new IllegalArgumentException("bad 2")
+    }
+
+
+
+    value1
+  }
 
   "transform str to JPath " should " OK" in {
 
@@ -33,15 +60,22 @@ class MaskedTest extends AnyFlatSpec with should.Matchers {
     )
 
     val jsObject: JsValue = Json.toJsObject(dto)
-    println(jsObject)
+//    println(jsObject)
 
-//    val path = List(
-//      "id",
-//      "dataString.7",
-//    ).map(MaskedStrPath)
-//      .toJsonPath()
+    val path = List(
+      "id",
+      "dataString.7",
+    ).map(MaskedStrPath)
+      .toJsonPath18()
+
+//    println(path)
 //
-//    maskData(jsObject, path)
+    val value1 = maskData(jsObject, path)
+    println(value1)
+
+    val value2 = value1.validate[UaspDto]
+    println(dto)
+    println(value2.get)
 
 
   }
