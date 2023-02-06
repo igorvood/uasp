@@ -4,6 +4,8 @@ import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should
 import ru.vtb.uasp.common.mask.NewJPath.PathFactory
 
+import scala.util.{Failure, Success, Try}
+
 
 class NewPathExtensionTest extends AnyFlatSpec with should.Matchers {
 
@@ -63,43 +65,37 @@ class NewPathExtensionTest extends AnyFlatSpec with should.Matchers {
           )))))
     )
 
-    println(paths)
     assertResult(expected)(paths)
-
-
-    //    assertResult(root)(path)
   }
 
-  //  "transform str to JPath " should " no ERR when dublicate" in {
-  //    val root = JPathObject(rootName,
-  //      Set(
-  //        JPathObject("f1",
-  //          Set(JPathObject("o1", Set(
-  //            JPathValue("d1"),
-  //            JPathValue("d2"),
-  //            JPathValue("d3")
-  //          )))),
-  //        JPathObject("f2",
-  //          Set(
-  //            JPathObject("o2", Set(
-  //              JPathValue("d3")
-  //            )
-  //            )
-  //          )
-  //        )
-  //      )
-  //    )
-  //
-  //    val path = List(
-  //      "f1.o1.d1",
-  //      "f1.o1.d2",
-  //      "f1.o1.d3",
-  //      "f2.o2.d3",
-  //      "f2.o2.d3",
-  //    )
-  //      .map(MaskedStrPath)
-  //      .toJsonPath()
-  //    assertResult(root)(path)
-  //  }
+  "two with across error register object " should " OK" in {
+    val paths1 = List(
+      "f1.o1.d1",
+      "f1.o1.d1.q1",
+    )
+      .map(MaskedStrPath)
+
+    Try(paths1
+      .toJsonPath18())       match {
+      case Success(_) => throw new RuntimeException("must fail")
+      case Failure(exception) => assertResult("Wrong structure 'd1.q1' it is object, but 'd1' all ready registered like value")(exception.getMessage)
+    }
+
+  }
+
+  "two with across error register value " should " OK" in {
+    val paths1 = List(
+      "f1.o1.d1.q1",
+      "f1.o1.d1",
+    )
+      .map(MaskedStrPath)
+
+    Try(paths1
+      .toJsonPath18())       match {
+      case Success(_) => throw new RuntimeException("must fail")
+      case Failure(exception) => assertResult("Wrong structure 'd1' it is value, but 'Set(d1)' all ready registered like object")(exception.getMessage)
+    }
+
+  }
 
 }

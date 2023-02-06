@@ -3,6 +3,7 @@ package ru.vtb.uasp.common.mask
 import play.api.libs.json.JsValue
 
 import scala.annotation.tailrec
+import scala.collection.immutable.::
 
 sealed trait NewJPath{
   def addNew(pathNodeList: List[String]): NewJPath
@@ -47,7 +48,7 @@ case class NewJPathObject(
       case head :: Nil =>
         inner.get(head)
           .map(q =>
-            throw new IllegalArgumentException("unable")
+            throw throw new IllegalArgumentException(s"Wrong structure '${head}' it is value, but '${inner.keys}' all ready registered like object")
           )
           .getOrElse(NewJPathObject(inner = inner ++ Map(head -> NewJPathValue())))
 
@@ -59,7 +60,7 @@ case class NewJPathObject(
           .map(j =>
             j match {
               case NewJPathObject(_) => NewJPathObject( inner ++ Map(head -> j.addNew(xs)))
-              case _ => throw new IllegalArgumentException("Asdasdasd")
+              case NewJPathValue(_) => throw new IllegalArgumentException(s"Wrong structure '${(head :: xs).mkString(".")}' it is object, but '${head}' all ready registered like value")
             }
           )
           .getOrElse(
