@@ -1,9 +1,8 @@
-package ru.vtb.uasp.common.extension
+package ru.vtb.uasp.common.mask
 
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should
 import ru.vtb.uasp.common.mask.JPath.PathFactory
-import ru.vtb.uasp.common.mask.{JPathObject, JPathValue, MaskedStrPath}
 
 
 class PathExtensionTest extends AnyFlatSpec with should.Matchers {
