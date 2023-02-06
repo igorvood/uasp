@@ -3,7 +3,7 @@ package ru.vtb.uasp.common.extension
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should
 import ru.vtb.uasp.common.mask.JPath.PathFactory
-import ru.vtb.uasp.common.mask.{JPath, JPathObject, JPathValue}
+import ru.vtb.uasp.common.mask.{JPath, JPathObject, JPathValue, MaskedStrPath}
 
 
 class PathExtensionTest extends AnyFlatSpec with should.Matchers {
@@ -34,7 +34,9 @@ class PathExtensionTest extends AnyFlatSpec with should.Matchers {
       "f1.o1.d2",
       "f1.o1.d3",
       "f2.o2.d3",
-    ).toJsonPath()
+    )
+      .map(MaskedStrPath)
+      .toJsonPath()
 
     assertResult(root)(path)
 
@@ -50,7 +52,9 @@ class PathExtensionTest extends AnyFlatSpec with should.Matchers {
 
     //    val strings = "f2.o2.d3".split("\\.")
 
-    val path1 = paths.toJsonPath()
+    val path1 = paths
+      .map(MaskedStrPath)
+      .toJsonPath()
     assertResult(pathObject)(path1)
 
   }

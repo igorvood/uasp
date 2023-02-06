@@ -11,7 +11,7 @@ sealed trait JPath{
 
 object JPath{
 
-  implicit class PathFactory(val self: List[String]) extends AnyVal {
+  implicit class PathFactory(val self: List[MaskedStrPath]) extends AnyVal {
 
     def toJsonPath(): JPath ={
       listToJsonPath(self, JPathObject("root", Set()))
@@ -20,11 +20,11 @@ object JPath{
   }
 
   @tailrec
-  def listToJsonPath(l: List[String], path: JPath): JPath = {
+  def listToJsonPath(l: List[MaskedStrPath], path: JPath): JPath = {
     l match {
       case Nil => path
       case x :: xs => {
-        val path1 = path.addNew(x.split("\\.").toList)
+        val path1 = path.addNew(x.strPath.split("\\.").toList)
         listToJsonPath(xs, path1)
       }
     }
