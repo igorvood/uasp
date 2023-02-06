@@ -2,7 +2,7 @@ package ru.vtb.uasp.common.mask
 
 import play.api.libs.json.JsValue
 
-import scala.util.Try
+import scala.util.{Failure, Success, Try}
 
 case class MaskedStrPathWithFunName(strPath: String, maskedFunc: String){
 
@@ -14,6 +14,10 @@ case class MaskedStrPathWithFunName(strPath: String, maskedFunc: String){
       val value3 = value2.asInstanceOf[MaskedFun[TT]]
       value3
     }
-    value
+    value match {
+      case Failure(exception) => throw new IllegalArgumentException(s"unable to load class $maskedFunc for $strPath", exception)
+      case Success(value) => value
+    }
+
   }
 }
