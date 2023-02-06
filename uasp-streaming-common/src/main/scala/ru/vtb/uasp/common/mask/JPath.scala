@@ -75,8 +75,8 @@ case class JPathValue(name: String) extends JPath {
     pathNodeList match {
       case Nil => this
       case x::xs => {
-        val x1 = JPathValue(x).addNew(xs)
-        JPathObject(name, Set(x1))
+        val newJsPath = JPathValue(x).addNew(xs)
+        JPathObject(name, Set(newJsPath))
       }
     }
 
