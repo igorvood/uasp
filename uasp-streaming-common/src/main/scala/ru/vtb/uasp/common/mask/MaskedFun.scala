@@ -4,7 +4,7 @@ import play.api.libs.json.{JsBoolean, JsNumber, JsString, JsValue}
 
 trait MaskedFun[-IN, +T<: JsValue] {
 
-  def asdasd(in:IN): T
+  def mask(in:IN): T
 
   val name = this.getClass.getName
 
