@@ -4,18 +4,18 @@ import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should
 import play.api.libs.json.{JsObject, JsValue, Json}
 import ru.vtb.uasp.common.dto.UaspDto
-import ru.vtb.uasp.common.mask.JPath.PathFactory
+
 
 
 class MaskedTest extends AnyFlatSpec with should.Matchers {
 
-  def maskData(jsObject: JsValue, path: JPath): JsValue = {
-    path match {
-      case JPathObject(name, inner) =>
-    }
-
-    ???
-  }
+//  def maskData(jsObject: JsValue, path: JPath): JsValue = {
+//    path match {
+//      case JPathObject(name, inner) =>
+//    }
+//
+//    ???
+//  }
 
   "transform str to JPath " should " OK" in {
 
@@ -35,13 +35,13 @@ class MaskedTest extends AnyFlatSpec with should.Matchers {
     val jsObject: JsValue = Json.toJsObject(dto)
     println(jsObject)
 
-    val path = List(
-      "id",
-      "dataString.7",
-    ).map(MaskedStrPath)
-      .toJsonPath()
-
-    maskData(jsObject, path)
+//    val path = List(
+//      "id",
+//      "dataString.7",
+//    ).map(MaskedStrPath)
+//      .toJsonPath()
+//
+//    maskData(jsObject, path)
 
 
   }
