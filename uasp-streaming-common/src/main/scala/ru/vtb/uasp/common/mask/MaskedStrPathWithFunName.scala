@@ -4,7 +4,7 @@ import play.api.libs.json.JsValue
 
 import scala.util.Try
 
-case class MaskedStrPath(strPath: String, maskedFunc: String){
+case class MaskedStrPathWithFunName(strPath: String, maskedFunc: String){
 
 
   def maskedFunFactory[TT<:JsValue]() = {

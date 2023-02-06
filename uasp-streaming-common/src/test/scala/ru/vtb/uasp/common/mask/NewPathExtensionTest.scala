@@ -17,7 +17,7 @@ class NewPathExtensionTest extends AnyFlatSpec with should.Matchers {
     )
 
     val paths = Map("f1.o1.d1" -> "Asdsad")
-      .map(q => MaskedStrPath(q._1,q._2))
+      .map(q => MaskedStrPathWithFunName(q._1,q._2))
       .toJsonPath()
 
     assertResult(expected)(paths)
@@ -37,7 +37,7 @@ class NewPathExtensionTest extends AnyFlatSpec with should.Matchers {
     )
 
     val paths = Map("f1.o1.d1" -> "asdad", "f2.o1.d1"-> "asd")
-      .map(q => MaskedStrPath(q._1,q._2))
+      .map(q => MaskedStrPathWithFunName(q._1,q._2))
       .toJsonPath()
 
     assertResult(expected)(paths)
@@ -53,7 +53,7 @@ class NewPathExtensionTest extends AnyFlatSpec with should.Matchers {
       //      "f1.o1.d3",
       //      "f2.o2.d3",
     )
-      .map(q => MaskedStrPath(q._1,q._2))
+      .map(q => MaskedStrPathWithFunName(q._1,q._2))
       .toJsonPath()
 
     val expected = JsMaskedPathObject(
@@ -73,7 +73,7 @@ class NewPathExtensionTest extends AnyFlatSpec with should.Matchers {
       "f1.o1.d1" -> "ASdasd",
       "f1.o1.d1.q1"-> "Asdsad",
     )
-      .map(q => MaskedStrPath(q._1,q._2))
+      .map(q => MaskedStrPathWithFunName(q._1,q._2))
 
     Try(paths1
       .toJsonPath())       match {
@@ -88,7 +88,7 @@ class NewPathExtensionTest extends AnyFlatSpec with should.Matchers {
       "f1.o1.d1.q1" -> "asdf",
       "f1.o1.d1"-> "dasdasd",
     )
-      .map(q => MaskedStrPath(q._1,q._2))
+      .map(q => MaskedStrPathWithFunName(q._1,q._2))
 
     Try(paths1
       .toJsonPath())       match {

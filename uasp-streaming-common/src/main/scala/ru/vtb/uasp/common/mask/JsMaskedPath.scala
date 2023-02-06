@@ -12,7 +12,7 @@ sealed trait JsMaskedPath{
 object JsMaskedPath{
 
 
-  implicit class PathFactory(val self: Iterable[MaskedStrPath]) extends AnyVal {
+  implicit class PathFactory(val self: Iterable[MaskedStrPathWithFunName]) extends AnyVal {
 
     def toJsonPath(): JsMaskedPath ={
 
@@ -22,7 +22,7 @@ object JsMaskedPath{
   }
 
   @tailrec
-  private def listToJsonPath(l: Iterable[MaskedStrPath], path: JsMaskedPath): JsMaskedPath = {
+  private def listToJsonPath(l: Iterable[MaskedStrPathWithFunName], path: JsMaskedPath): JsMaskedPath = {
     l match {
       case Nil => path
       case x :: xs => {

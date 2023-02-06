@@ -61,7 +61,7 @@ class MaskedTest extends AnyFlatSpec with should.Matchers {
       "id" -> "asdasd",
       "dataString.7" -> "asdasd",
     )
-      .map(q => MaskedStrPath(q._1, q._2))
+      .map(q => MaskedStrPathWithFunName(q._1, q._2))
       .toJsonPath()
 
     val value1 = maskData(jsObject, path)
