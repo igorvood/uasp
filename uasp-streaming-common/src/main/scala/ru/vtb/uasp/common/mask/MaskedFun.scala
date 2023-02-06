@@ -2,15 +2,17 @@ package ru.vtb.uasp.common.mask
 
 import play.api.libs.json.{JsBoolean, JsNumber, JsString, JsValue}
 
-trait MaskedFun[T<: JsValue] extends (T => T){
+trait MaskedFun[-IN, +T<: JsValue] {
+
+  def asdasd(in:IN): T
 
   val name = this.getClass.getName
 
 }
 
-trait JsStringMaskedFun extends MaskedFun[JsString]
+trait JsStringMaskedFun extends MaskedFun[String,JsString]
 
-trait JsNumberMaskedFun extends MaskedFun[JsNumber]
+trait JsNumberMaskedFun extends MaskedFun[BigDecimal, JsNumber]
 
-trait  JsBooleanMaskedFun extends MaskedFun[JsBoolean]
+trait  JsBooleanMaskedFun extends MaskedFun[Boolean, JsBoolean]
 

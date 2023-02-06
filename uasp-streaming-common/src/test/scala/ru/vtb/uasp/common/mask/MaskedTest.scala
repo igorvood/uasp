@@ -27,7 +27,7 @@ class MaskedTest extends AnyFlatSpec with should.Matchers {
           )
         JsObject(newVals)
       }
-      case (JsString(value), JsStringMaskedPathValue(masked)) => masked(JsString(value))
+      case (JsString(value), JsStringMaskedPathValue(masked)) => masked.asdasd(value)
       case (q, w) => throw new IllegalArgumentException("bad 2 " + q.getClass + " -> "+w.getClass)
     }
 
@@ -65,7 +65,10 @@ class MaskedTest extends AnyFlatSpec with should.Matchers {
     val value2 = value1.validate[UaspDto]
 
 
-    val dto1 = dto.copy(id = "masked 1", dataString = Map("7" -> "masked 7"), process_timestamp = value2.get.process_timestamp)
+    val dto1 = dto.copy(
+      id = "***MASKED***",
+      dataString = Map("7" -> "***MASKED***"),
+      process_timestamp = value2.get.process_timestamp)
 
     assertResult(dto1)(value2.get)
 

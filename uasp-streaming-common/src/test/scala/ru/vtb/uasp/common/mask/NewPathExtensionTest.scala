@@ -9,18 +9,21 @@ import scala.util.{Failure, Success, Try}
 
 class NewPathExtensionTest extends AnyFlatSpec with should.Matchers {
 
+  private val jsStringMaskedPathValue=  JsStringMaskedPathValue(StringMaskAll())
+  private val jsNumberMaskedPathValue=  JsNumberMaskedPathValue(NumberMaskAll())
+
   "single transform str to JPath " should " OK" in {
     val expected = JsMaskedPathObject(
       Map("f1" -> JsMaskedPathObject(
         Map("o1" -> JsMaskedPathObject(
-          Map("d1" -> JsMaskedPathValue({ q => q}))))))
+          Map("d1" -> jsStringMaskedPathValue)))))
     )
 
-    val paths = Map("f1.o1.d1" -> "Asdsad")
+    val paths = Map("f1.o1.d1" -> "ru.vtb.uasp.common.mask.StringMaskAll")
       .map(q => MaskedStrPathWithFunName(q._1,q._2))
       .toJsonPath()
 
-    assertResult(expected)(paths)
+    assertResult(expected)(paths.right.get)
 
 
   }
@@ -29,18 +32,20 @@ class NewPathExtensionTest extends AnyFlatSpec with should.Matchers {
     val expected = JsMaskedPathObject(
       Map("f1" -> JsMaskedPathObject(
         Map("o1" -> JsMaskedPathObject(
-          Map("d1" -> JsMaskedPathValue({ q => q}))))),
+          Map("d1" -> jsStringMaskedPathValue)))),
         "f2" -> JsMaskedPathObject(
           Map("o1" -> JsMaskedPathObject(
-            Map("d1" -> JsMaskedPathValue({ q => q})))))
+            Map("d1" -> jsNumberMaskedPathValue))))
       )
     )
 
-    val paths = Map("f1.o1.d1" -> "asdad", "f2.o1.d1"-> "asd")
+    val paths = Map(
+      "f1.o1.d1" -> "ru.vtb.uasp.common.mask.StringMaskAll",
+      "f2.o1.d1"-> "ru.vtb.uasp.common.mask.NumberMaskAll")
       .map(q => MaskedStrPathWithFunName(q._1,q._2))
       .toJsonPath()
 
-    assertResult(expected)(paths)
+    assertResult(expected)(paths.right.get)
 
 
   }
@@ -48,8 +53,8 @@ class NewPathExtensionTest extends AnyFlatSpec with should.Matchers {
 
   "two with cross path transform str to JPath " should " OK" in {
     val paths = Map(
-      "f1.o1.d1" -> "asd",
-      "f1.o1.d2"-> "asdsad",
+      "f1.o1.d1" -> "ru.vtb.uasp.common.mask.StringMaskAll",
+      "f1.o1.d2"-> "ru.vtb.uasp.common.mask.StringMaskAll",
       //      "f1.o1.d3",
       //      "f2.o2.d3",
     )
@@ -60,18 +65,18 @@ class NewPathExtensionTest extends AnyFlatSpec with should.Matchers {
       Map("f1" -> JsMaskedPathObject(
         Map("o1" -> JsMaskedPathObject(
           Map(
-            "d1" -> JsMaskedPathValue({ q => q}),
-            "d2" -> JsMaskedPathValue({ q => q}),
+            "d1" -> jsStringMaskedPathValue,
+            "d2" -> jsStringMaskedPathValue,
           )))))
     )
 
-    assertResult(expected)(paths)
+    assertResult(expected)(paths.right.get)
   }
 
   "two with across error register object " should " OK" in {
     val paths1 = Map(
-      "f1.o1.d1" -> "ASdasd",
-      "f1.o1.d1.q1"-> "Asdsad",
+      "f1.o1.d1" -> "ru.vtb.uasp.common.mask.StringMaskAll",
+      "f1.o1.d1.q1"-> "ru.vtb.uasp.common.mask.StringMaskAll",
     )
       .map(q => MaskedStrPathWithFunName(q._1,q._2))
 
@@ -85,8 +90,8 @@ class NewPathExtensionTest extends AnyFlatSpec with should.Matchers {
 
   "two with across error register value " should " OK" in {
     val paths1 = Map(
-      "f1.o1.d1.q1" -> "asdf",
-      "f1.o1.d1"-> "dasdasd",
+      "f1.o1.d1.q1" -> "ru.vtb.uasp.common.mask.StringMaskAll",
+      "f1.o1.d1"-> "ru.vtb.uasp.common.mask.StringMaskAll",
     )
       .map(q => MaskedStrPathWithFunName(q._1,q._2))
 

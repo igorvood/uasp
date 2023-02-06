@@ -7,11 +7,11 @@ import scala.util.{Failure, Success, Try}
 case class MaskedStrPathWithFunName(strPath: String, maskedFunc: String){
 
 
-  def maskedFunFactory[TT<:JsValue]() = {
+  def maskedFunFactory[Q, TT<:JsValue]() = {
     val value = Try{
       val value1 = Class.forName(maskedFunc)
       val value2 = value1.getDeclaredConstructor().newInstance()
-      val value3 = value2.asInstanceOf[MaskedFun[TT]]
+      val value3 = value2.asInstanceOf[MaskedFun[Q, TT]]
       value3
     }
     value match {
