@@ -7,39 +7,34 @@ import ru.vtb.uasp.common
 import ru.vtb.uasp.common.dto.UaspDto
 import ru.vtb.uasp.common.mask.NewJPath.PathFactory
 
+import scala.annotation.tailrec
+
 
 
 class MaskedTest extends AnyFlatSpec with should.Matchers {
 
-
   def maskData(jsObject: JsValue, path: NewJPath): JsValue = {
     val value1: JsValue = (jsObject, path) match {
       case (JsObject(values), NewJPathObject(masked)) => {
-
-        val units = values
+        val newVals = values
           .map(vv => {
-
-
             masked
               .get(vv._1)
               .map(q => vv._1 -> maskData(vv._2, q))
               .getOrElse(vv)
           }
           )
-        JsObject(units)
+        JsObject(newVals)
       }
       case (value, NewJPathValue(masked)) => {
         val string = value match {
           case JsString(value) => JsString("masked " + value)
           case _ => throw new IllegalArgumentException("bad")
-
         }
         string
       }
-      case (value, _) => throw new IllegalArgumentException("bad 2")
+      case (_, _) => throw new IllegalArgumentException("bad 2")
     }
-
-
 
     value1
   }
@@ -62,14 +57,13 @@ class MaskedTest extends AnyFlatSpec with should.Matchers {
     val jsObject: JsValue = Json.toJsObject(dto)
 //    println(jsObject)
 
-    val path = List(
-      "id",
-      "dataString.7",
-    ).map(MaskedStrPath)
+    val path = Map(
+      "id" -> "asdasd",
+      "dataString.7" -> "asdasd",
+    )
+      .map(q => MaskedStrPath(q._1, q._2))
       .toJsonPath18()
 
-//    println(path)
-//
     val value1 = maskData(jsObject, path)
     println(value1)
 

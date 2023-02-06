@@ -16,8 +16,8 @@ class NewPathExtensionTest extends AnyFlatSpec with should.Matchers {
           Map("d1" -> NewJPathValue())))))
     )
 
-    val paths = List("f1.o1.d1")
-      .map(MaskedStrPath)
+    val paths = Map("f1.o1.d1" -> "Asdsad")
+      .map(q => MaskedStrPath(q._1,q._2))
       .toJsonPath18()
 
     assertResult(expected)(paths)
@@ -36,8 +36,8 @@ class NewPathExtensionTest extends AnyFlatSpec with should.Matchers {
       )
     )
 
-    val paths = List("f1.o1.d1", "f2.o1.d1")
-      .map(MaskedStrPath)
+    val paths = Map("f1.o1.d1" -> "asdad", "f2.o1.d1"-> "asd")
+      .map(q => MaskedStrPath(q._1,q._2))
       .toJsonPath18()
 
     assertResult(expected)(paths)
@@ -47,13 +47,13 @@ class NewPathExtensionTest extends AnyFlatSpec with should.Matchers {
 
 
   "two with cross path transform str to JPath " should " OK" in {
-    val paths = List(
-      "f1.o1.d1",
-      "f1.o1.d2",
+    val paths = Map(
+      "f1.o1.d1" -> "asd",
+      "f1.o1.d2"-> "asdsad",
       //      "f1.o1.d3",
       //      "f2.o2.d3",
     )
-      .map(MaskedStrPath)
+      .map(q => MaskedStrPath(q._1,q._2))
       .toJsonPath18()
 
     val expected = NewJPathObject(
@@ -69,11 +69,11 @@ class NewPathExtensionTest extends AnyFlatSpec with should.Matchers {
   }
 
   "two with across error register object " should " OK" in {
-    val paths1 = List(
-      "f1.o1.d1",
-      "f1.o1.d1.q1",
+    val paths1 = Map(
+      "f1.o1.d1" -> "ASdasd",
+      "f1.o1.d1.q1"-> "Asdsad",
     )
-      .map(MaskedStrPath)
+      .map(q => MaskedStrPath(q._1,q._2))
 
     Try(paths1
       .toJsonPath18())       match {
@@ -84,11 +84,11 @@ class NewPathExtensionTest extends AnyFlatSpec with should.Matchers {
   }
 
   "two with across error register value " should " OK" in {
-    val paths1 = List(
-      "f1.o1.d1.q1",
-      "f1.o1.d1",
+    val paths1 = Map(
+      "f1.o1.d1.q1" -> "asdf",
+      "f1.o1.d1"-> "dasdasd",
     )
-      .map(MaskedStrPath)
+      .map(q => MaskedStrPath(q._1,q._2))
 
     Try(paths1
       .toJsonPath18())       match {
