@@ -7,7 +7,7 @@ import ru.vtb.uasp.common.mask.JsMaskedPath.PathFactory
 import scala.util.{Failure, Success, Try}
 
 
-class NewPathExtensionTest extends AnyFlatSpec with should.Matchers {
+class PathExtensionTest extends AnyFlatSpec with should.Matchers {
 
   private val jsStringMaskedPathValue=  JsStringMaskedPathValue(StringMaskAll())
   private val jsNumberMaskedPathValue=  JsNumberMaskedPathValue(NumberMaskAll())

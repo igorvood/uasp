@@ -2,7 +2,7 @@ package ru.vtb.uasp.common.mask
 
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should
-import play.api.libs.json.{JsNumber, JsObject, JsString, JsValue, Json}
+import play.api.libs.json.{JsBoolean, JsNumber, JsObject, JsString, JsValue, Json}
 import ru.vtb.uasp.common
 import ru.vtb.uasp.common.dto.UaspDto
 import ru.vtb.uasp.common.mask.JsMaskedPath.PathFactory
@@ -29,13 +29,14 @@ class MaskedTest extends AnyFlatSpec with should.Matchers {
       }
       case (JsString(value), JsStringMaskedPathValue(masked)) => masked.mask(value)
       case (JsNumber(value), JsNumberMaskedPathValue(masked)) => masked.mask(value)
-      case (q, w) => throw new IllegalArgumentException("bad 2 " + q.getClass + " -> "+w.getClass)
+      case (JsBoolean(value), JsBooleanMaskedPathValue(masked)) => masked.mask(value)
+      case (q, w) => throw new IllegalArgumentException(s"Unable to masked value '$q' wrapper class  ${q.getClass} with function -> ${w.getClass}")
     }
 
     value1
   }
 
-  "transform str to JPath " should " OK" in {
+  "mask all existing fields " should " OK" in {
 
     val dto = UaspDto(
       id = "1",
@@ -60,6 +61,8 @@ class MaskedTest extends AnyFlatSpec with should.Matchers {
       "dataDouble.5" -> "ru.vtb.uasp.common.mask.NumberMaskAll",
       "dataDecimal.6" -> "ru.vtb.uasp.common.mask.NumberMaskAll",
       "dataString.7" -> "ru.vtb.uasp.common.mask.StringMaskAll",
+      "dataBoolean.8" -> "ru.vtb.uasp.common.mask.BooleanMaskAll",
+
     )
       .map(q => MaskedStrPathWithFunName(q._1, q._2))
       .toJsonPath()
@@ -72,12 +75,13 @@ class MaskedTest extends AnyFlatSpec with should.Matchers {
 
     val dto1 = dto.copy(
       id = "***MASKED***",
-      dataString = Map("7" -> "***MASKED***"),
       dataInt = Map("2" -> 0),
       dataLong = Map("3" -> 0),
       dataFloat = Map("4" -> 0),
       dataDouble = Map("5" -> 0),
       dataDecimal = Map("6" -> 0),
+      dataString = Map("7" -> "***MASKED***"),
+      dataBoolean= Map("8" -> false),
       process_timestamp = value2.get.process_timestamp)
 
     assertResult(dto1)(value2.get)

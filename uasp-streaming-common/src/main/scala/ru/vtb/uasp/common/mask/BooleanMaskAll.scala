@@ -1,6 +1,6 @@
 package ru.vtb.uasp.common.mask
 
-import play.api.libs.json.{JsBoolean, JsFalse, JsString}
+import play.api.libs.json.{JsBoolean, JsFalse}
 
 case class BooleanMaskAll() extends JsBooleanMaskedFun {
 
