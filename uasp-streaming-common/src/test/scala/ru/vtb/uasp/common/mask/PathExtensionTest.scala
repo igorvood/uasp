@@ -2,13 +2,13 @@ package ru.vtb.uasp.common.mask
 
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should
-import ru.vtb.uasp.common.mask.JPath.PathFactory
+import ru.vtb.uasp.common.mask.JPath.{PathFactory, rootName}
 
 
 class PathExtensionTest extends AnyFlatSpec with should.Matchers {
 
   "transform str to JPath " should " OK" in {
-    val root = JPathObject("root",
+    val root = JPathObject(rootName,
       Set(
         JPathObject("f1",
           Set(JPathObject("o1", Set(
@@ -39,7 +39,7 @@ class PathExtensionTest extends AnyFlatSpec with should.Matchers {
   }
 
   "transform str to JPath " should " no ERR when dublicate" in {
-    val root = JPathObject("root",
+    val root = JPathObject(rootName,
       Set(
         JPathObject("f1",
           Set(JPathObject("o1", Set(

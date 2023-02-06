@@ -10,7 +10,9 @@ import ru.vtb.uasp.common.mask.JPath.PathFactory
 class MaskedTest extends AnyFlatSpec with should.Matchers {
 
   def maskData(jsObject: JsValue, path: JPath): JsValue = {
-
+    path match {
+      case JPathObject(name, inner) =>
+    }
 
     ???
   }

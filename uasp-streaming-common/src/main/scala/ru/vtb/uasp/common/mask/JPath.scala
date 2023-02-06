@@ -1,9 +1,11 @@
 package ru.vtb.uasp.common.mask
 
+import play.api.libs.json.JsValue
+
 import scala.annotation.tailrec
 
 sealed trait JPath{
-  def fullPath: String
+//  def fullPath: String
 
   def addNew(pathNodeList: List[String]): JPath
 
@@ -11,10 +13,14 @@ sealed trait JPath{
 
 object JPath{
 
+
+  val rootName = "__root__"
+
   implicit class PathFactory(val self: List[MaskedStrPath]) extends AnyVal {
 
     def toJsonPath(): JPath ={
-      listToJsonPath(self, JPathObject("root", Set()))
+
+      listToJsonPath(self, JPathObject(rootName, Set()))
     }
 
   }
@@ -34,12 +40,12 @@ object JPath{
 }
 
 case class JPathObject(name: String,
-                       inner: Set[JPath]) extends JPath{
-  override def fullPath: String =  inner
-    .map {
-      case JPathObject(value, inner) => inner.map(q => value + "." + q.fullPath).mkString("")
-      case JPathValue(value) => value
-    } .mkString("\n")
+                       inner: Set[JPath])  extends JPath{
+//  override def fullPath: String =  inner
+//    .map {
+//      case JPathObject(value, inner) => inner.map(q => value + "." + q.fullPath).mkString("")
+//      case JPathValue(value) => value
+//    } .mkString("\n")
 
   def addNew(pathNodeList: List[String]): JPath =
     pathNodeList match {
@@ -47,7 +53,7 @@ case class JPathObject(name: String,
       case head :: xs => {
         val maybePath = inner
           .find {
-            case JPathValue(name) => name == head
+            case JPathValue(name, _) => name == head
             case JPathObject(name, _) => name == head
           }
         maybePath match {
@@ -68,14 +74,15 @@ case class JPathObject(name: String,
 
 }
 
-case class JPathValue(name: String) extends JPath {
-  override def fullPath: String = name
+case class JPathValue(name: String, maskFun: JsValue => JsValue = {q => q}) extends JPath {
+//  override def fullPath: String = name
 
   override def addNew(pathNodeList: List[String]): JPath =
     pathNodeList match {
       case Nil => this
       case x::xs => {
         val newJsPath = JPathValue(x).addNew(xs)
+
         JPathObject(name, Set(newJsPath))
       }
     }
