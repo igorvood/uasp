@@ -15,7 +15,7 @@ case class MaskedStrPathWithFunName(strPath: String, maskedFunc: String){
       value3
     }
     value match {
-      case Failure(exception) => Left(s"unable to load class $maskedFunc for $strPath. Cause ${exception.getMessage}" )
+      case Failure(exception) => Left(List(JsMaskedPathError(s"unable to load class $maskedFunc for $strPath. Cause ${exception.getMessage}" )))
       case Success(value) => Right(value)
     }
 

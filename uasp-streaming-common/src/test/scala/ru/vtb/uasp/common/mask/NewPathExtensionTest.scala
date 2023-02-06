@@ -13,7 +13,7 @@ class NewPathExtensionTest extends AnyFlatSpec with should.Matchers {
     val expected = JsMaskedPathObject(
       Map("f1" -> JsMaskedPathObject(
         Map("o1" -> JsMaskedPathObject(
-          Map("d1" -> JsMaskedPathValue())))))
+          Map("d1" -> JsMaskedPathValue({ q => q}))))))
     )
 
     val paths = Map("f1.o1.d1" -> "Asdsad")
@@ -29,10 +29,10 @@ class NewPathExtensionTest extends AnyFlatSpec with should.Matchers {
     val expected = JsMaskedPathObject(
       Map("f1" -> JsMaskedPathObject(
         Map("o1" -> JsMaskedPathObject(
-          Map("d1" -> JsMaskedPathValue())))),
+          Map("d1" -> JsMaskedPathValue({ q => q}))))),
         "f2" -> JsMaskedPathObject(
           Map("o1" -> JsMaskedPathObject(
-            Map("d1" -> JsMaskedPathValue()))))
+            Map("d1" -> JsMaskedPathValue({ q => q})))))
       )
     )
 
@@ -60,8 +60,8 @@ class NewPathExtensionTest extends AnyFlatSpec with should.Matchers {
       Map("f1" -> JsMaskedPathObject(
         Map("o1" -> JsMaskedPathObject(
           Map(
-            "d1" -> JsMaskedPathValue(),
-            "d2" -> JsMaskedPathValue(),
+            "d1" -> JsMaskedPathValue({ q => q}),
+            "d2" -> JsMaskedPathValue({ q => q}),
           )))))
     )
 

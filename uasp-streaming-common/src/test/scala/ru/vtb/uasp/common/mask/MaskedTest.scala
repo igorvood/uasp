@@ -18,22 +18,17 @@ class MaskedTest extends AnyFlatSpec with should.Matchers {
       case (JsObject(values), JsMaskedPathObject(masked)) => {
         val newVals = values
           .map(vv => {
-            masked
+            val tuple: (String, JsValue) = masked
               .get(vv._1)
               .map(q => vv._1 -> maskData(vv._2, q))
               .getOrElse(vv)
+            tuple
           }
           )
         JsObject(newVals)
       }
-      case (value, JsMaskedPathValue(masked)) => {
-        val string = value match {
-          case JsString(value) => JsString("masked " + value)
-          case _ => throw new IllegalArgumentException("bad")
-        }
-        string
-      }
-      case (_, _) => throw new IllegalArgumentException("bad 2")
+      case (JsString(value), JsStringMaskedPathValue(masked)) => masked(JsString(value))
+      case (q, w) => throw new IllegalArgumentException("bad 2 " + q.getClass + " -> "+w.getClass)
     }
 
     value1
@@ -58,11 +53,12 @@ class MaskedTest extends AnyFlatSpec with should.Matchers {
 //    println(jsObject)
 
     val path = Map(
-      "id" -> "asdasd",
-      "dataString.7" -> "asdasd",
+      "id" -> "ru.vtb.uasp.common.mask.StringMaskAll",
+      "dataString.7" -> "ru.vtb.uasp.common.mask.StringMaskAll",
     )
       .map(q => MaskedStrPathWithFunName(q._1, q._2))
       .toJsonPath()
+      .right.get
 
     val value1 = maskData(jsObject, path)
 
