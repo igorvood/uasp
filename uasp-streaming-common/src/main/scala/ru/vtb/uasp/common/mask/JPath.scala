@@ -9,6 +9,8 @@ sealed trait JPath{
 
   def addNew(pathNodeList: List[String]): JPath
 
+  def mutate(jsValue: JsValue):JsValue
+
 }
 
 object JPath{
@@ -47,6 +49,10 @@ case class JPathObject(name: String,
 //      case JPathValue(value) => value
 //    } .mkString("\n")
 
+  def mutate(jsValue: JsValue):JsValue = {
+    ???
+  }
+
   def addNew(pathNodeList: List[String]): JPath =
     pathNodeList match {
       case Nil => this
@@ -76,6 +82,11 @@ case class JPathObject(name: String,
 
 case class JPathValue(name: String, maskFun: JsValue => JsValue = {q => q}) extends JPath {
 //  override def fullPath: String = name
+
+  def mutate(jsValue: JsValue):JsValue = {
+    ???
+  }
+
 
   override def addNew(pathNodeList: List[String]): JPath =
     pathNodeList match {
