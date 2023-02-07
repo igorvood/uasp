@@ -5,7 +5,7 @@ import org.scalatest.matchers.should
 import play.api.libs.json.{JsBoolean, JsNumber, JsObject, JsString, JsValue, Json}
 import ru.vtb.uasp.common
 import ru.vtb.uasp.common.dto.UaspDto
-import ru.vtb.uasp.common.mask.MaskedPredef.MaskJsValuePredef
+import ru.vtb.uasp.common.mask.MaskedPredef.{MaskJsValuePredef, PathFactory}
 import ru.vtb.uasp.common.mask.dto.{JsBooleanMaskedPathValue, JsMaskedPath, JsMaskedPathObject, JsNumberMaskedPathValue, JsStringMaskedPathValue}
 
 import scala.annotation.tailrec
@@ -13,29 +13,6 @@ import scala.annotation.tailrec
 
 
 class MaskedTest extends AnyFlatSpec with should.Matchers {
-
-  def maskData(jsObject: JsValue, path: JsMaskedPath): JsValue = {
-    val value1: JsValue = (jsObject, path) match {
-      case (JsObject(values), JsMaskedPathObject(masked)) => {
-        val newVals = values
-          .map(vv => {
-            val tuple: (String, JsValue) = masked
-              .get(vv._1)
-              .map(q => vv._1 -> maskData(vv._2, q))
-              .getOrElse(vv)
-            tuple
-          }
-          )
-        JsObject(newVals)
-      }
-      case (JsString(value), JsStringMaskedPathValue(masked)) => masked.mask(value)
-      case (JsNumber(value), JsNumberMaskedPathValue(masked)) => masked.mask(value)
-      case (JsBoolean(value), JsBooleanMaskedPathValue(masked)) => masked.mask(value)
-      case (q, w) => throw new IllegalArgumentException(s"Unable to masked value '$q' wrapper class  ${q.getClass} with function -> ${w.getClass}")
-    }
-
-    value1
-  }
 
   "mask all existing fields " should " OK" in {
 
@@ -69,7 +46,7 @@ class MaskedTest extends AnyFlatSpec with should.Matchers {
       .toJsonPath()
       .right.get
 
-    val value1 = maskData(jsObject, path)
+    val value1 = jsObject.toMaskedJson(path).right.get
 
     val value2 = value1.validate[UaspDto]
 

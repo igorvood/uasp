@@ -1,9 +1,10 @@
 package ru.vtb.uasp.common.mask
 
-import play.api.libs.json.JsValue
-import ru.vtb.uasp.common.mask.dto.{JsMaskedPath, JsMaskedPathError, JsMaskedPathObject}
+import play.api.libs.json.{JsBoolean, JsNumber, JsObject, JsString, JsValue}
+import ru.vtb.uasp.common.mask.dto.{JsBooleanMaskedPathValue, JsMaskedPath, JsMaskedPathError, JsMaskedPathObject, JsNumberMaskedPathValue, JsStringMaskedPathValue}
 
 import scala.annotation.tailrec
+import scala.util.{Failure, Success, Try}
 
 object MaskedPredef {
 
@@ -17,13 +18,39 @@ object MaskedPredef {
   }
 
 
-  implicit class MaskJsValuePredef(val self: Iterable[MaskedStrPathWithFunName]) extends AnyVal {
+  implicit class MaskJsValuePredef(val self: JsValue) extends AnyVal {
 
-    def toJsonPath(): Either[List[JsMaskedPathError], JsMaskedPath] = {
-
-      listToJsonPath(self, Right(JsMaskedPathObject(Map())))
+    def toMaskedJson(maskedRule: JsMaskedPath): Either[List[JsMaskedPathError], JsValue] = {
+      val res = Try {
+        maskData(self, maskedRule)
+      } match {
+        case Failure(exception) => Left(List(JsMaskedPathError(exception.getMessage)))
+        case Success(value) => Right(value)
+      }
+      res
     }
+  }
 
+  private def maskData(jsObject: JsValue, path: JsMaskedPath): JsValue = {
+    val value1: JsValue = (jsObject, path) match {
+      case (JsObject(values), JsMaskedPathObject(masked)) => {
+        val newVals = values
+          .map(vv => {
+            val tuple: (String, JsValue) = masked
+              .get(vv._1)
+              .map(q => vv._1 -> maskData(vv._2, q))
+              .getOrElse(vv)
+            tuple
+          }
+          )
+        JsObject(newVals)
+      }
+      case (JsString(value), JsStringMaskedPathValue(masked)) => masked.mask(value)
+      case (JsNumber(value), JsNumberMaskedPathValue(masked)) => masked.mask(value)
+      case (JsBoolean(value), JsBooleanMaskedPathValue(masked)) => masked.mask(value)
+      case (q, w) => throw new IllegalArgumentException(s"Unable to masked value '$q' wrapper class  ${q.getClass} with function -> ${w.getClass}")
+    }
+    value1
   }
 
   @tailrec
@@ -31,17 +58,13 @@ object MaskedPredef {
     l match {
       case Nil => path
       case x :: xs => {
-
         val either = x.maskedFunFactory[IN, T]()
         val res =
           for {
             maskedFun <- either
             p <- path
           } yield (p.addWithFun[IN, T](x.strPath.split("\\.").toList, maskedFun))
-
-
         listToJsonPath(xs, res)
-
       }
     }
 

@@ -2,7 +2,7 @@ package ru.vtb.uasp.common.mask
 
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should
-import ru.vtb.uasp.common.mask.MaskedPredef.MaskJsValuePredef
+import ru.vtb.uasp.common.mask.MaskedPredef.{MaskJsValuePredef, PathFactory}
 import ru.vtb.uasp.common.mask.dto.JsMaskedPathObject
 import ru.vtb.uasp.common.mask.dto.{JsNumberMaskedPathValue, JsStringMaskedPathValue}
 import ru.vtb.uasp.common.mask.fun.{NumberMaskAll, StringMaskAll}
