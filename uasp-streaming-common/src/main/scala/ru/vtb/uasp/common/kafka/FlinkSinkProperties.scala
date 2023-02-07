@@ -2,6 +2,7 @@ package ru.vtb.uasp.common.kafka
 
 import org.apache.flink.streaming.api.functions.sink.SinkFunction
 import org.apache.flink.streaming.connectors.kafka.FlinkKafkaProducer
+import ru.vtb.uasp.common.mask.dto.JsMaskedPath
 import ru.vtb.uasp.common.service.dto.KafkaDto
 import ru.vtb.uasp.common.utils.config.PropertyUtil._
 import ru.vtb.uasp.common.utils.config.kafka.KafkaPrdProperty
@@ -10,8 +11,9 @@ import ru.vtb.uasp.common.utils.config.{AllApplicationProperties, ConfigurationI
 case class FlinkSinkProperties(
                                 toTopicName: String,
                                 producerProps: KafkaPrdProperty,
-                                producerSemantic: Option[FlinkKafkaProducer.Semantic] = None,
-                                kafkaProducerPoolSize: Option[Int] = None
+                                producerSemantic: Option[FlinkKafkaProducer.Semantic],
+                                kafkaProducerPoolSize: Option[Int] = None,
+                                jsMaskedPath: Option[JsMaskedPath]
                               ) extends MetricForKafka {
 
 
@@ -40,7 +42,14 @@ object FlinkSinkProperties extends PropertyCombiner[FlinkSinkProperties] {
       producerProps <- KafkaPrdProperty.create(s"$prf.toTopic.prd")
       producerSemantic <- propertyValOptional[FlinkKafkaProducer.Semantic](prf, "producerSemantic")(appProps, configurationInitialise, { v => FlinkKafkaProducer.Semantic.valueOf(v) })
       kafkaProducerPoolSize <- propertyValOptional[Int](prf, "kafkaProducerPoolSize")
+      jsMaskedPath <- createByClassOption(prf, JsMaskedPath.getClass, { p =>
+        JsMaskedPath.create(p)
+      })
     } yield new FlinkSinkProperties(
-      appTopicName, producerProps, producerSemantic, kafkaProducerPoolSize
+      toTopicName = appTopicName,
+      producerProps = producerProps,
+      producerSemantic = producerSemantic,
+      kafkaProducerPoolSize = kafkaProducerPoolSize,
+      jsMaskedPath = jsMaskedPath
     )
 }
