@@ -10,9 +10,6 @@ sealed trait JsMaskedPath {
 }
 
 
-
-
-
 case class JsMaskedPathObject(
                                inner: Map[String, JsMaskedPath] = Map()) extends JsMaskedPath {
 
@@ -54,8 +51,7 @@ case class JsMaskedPathObject(
     }
     product
   }
-  }
-
+}
 
 
 trait JsMaskedPathValueTrait extends JsMaskedPath {

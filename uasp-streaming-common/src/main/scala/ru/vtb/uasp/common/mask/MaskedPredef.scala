@@ -1,7 +1,7 @@
 package ru.vtb.uasp.common.mask
 
-import play.api.libs.json.{JsBoolean, JsNumber, JsObject, JsString, JsValue}
-import ru.vtb.uasp.common.mask.dto.{JsBooleanMaskedPathValue, JsMaskedPath, JsMaskedPathError, JsMaskedPathObject, JsNumberMaskedPathValue, JsStringMaskedPathValue}
+import play.api.libs.json._
+import ru.vtb.uasp.common.mask.dto._
 
 import scala.annotation.tailrec
 import scala.util.{Failure, Success, Try}
