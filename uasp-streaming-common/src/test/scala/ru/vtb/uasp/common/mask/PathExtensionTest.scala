@@ -2,7 +2,7 @@ package ru.vtb.uasp.common.mask
 
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should
-import ru.vtb.uasp.common.mask.JsMaskedPath.PathFactory
+import ru.vtb.uasp.common.mask.JsMaskedPath.{JsMaskedPathObject, PathFactory}
 
 import scala.util.{Failure, Success, Try}
 

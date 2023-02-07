@@ -1,13 +1,12 @@
 package ru.vtb.uasp.common.mask
 
 import play.api.libs.json.JsValue
+import ru.vtb.uasp.common.mask.JsMaskedPath.JsMaskedPathObject
 
 import scala.annotation.tailrec
 
 sealed trait JsMaskedPath {
   def addWithFun[IN, T <: JsValue](pathNodeList: List[String], maskedFun: MaskedFun[IN, T]): JsMaskedPath
-
-  def add(pathNodeList: List[String]): JsMaskedPath
 
 }
 
@@ -39,20 +38,6 @@ object JsMaskedPath {
 
         listToJsonPath(xs, res)
 
-        //        val either = x.maskedFunFactory[JsValue]()
-        //          .map(mf => )
-        //
-        //
-        //        val stringOrPath: Either[String, JsMaskedPath] = for {
-        //          maskedFun <- x.maskedFunFactory[JsValue]()
-        //          pa <- path.addWithFun(x.strPath.split("\\.").toList, maskedFun)
-        ////          path1 = pa.addWithFun(x.strPath.split("\\.").toList, maskedFun)
-        //        } yield listToJsonPath(xs, Right(path1))
-        //        println(stringOrPath)
-        //
-        //        val path1 = path.add(x.strPath.split("\\.").toList)
-        //        listToJsonPath(xs, path1)
-      }
     }
   }
 
@@ -100,92 +85,24 @@ case class JsMaskedPathObject(
     }
     product
   }
-
-  def add(pathNodeList: List[String]): JsMaskedPath = {
-    ???
-//    val product = pathNodeList match {
-//      case Nil => this
-//      case head :: Nil =>
-//        inner.get(head)
-//          .map(_ => throw throw new IllegalArgumentException(s"Wrong structure '${head}' it is value, but '${inner.keys}' all ready registered like object")
-//          )
-//          .getOrElse(JsMaskedPathObject(inner = inner ++ Map(head -> JsMaskedPathValue({ q => q }))))
-//
-//      case head :: xs => {
-//        val maybePath1 = inner
-//          .get(head)
-//        val path = JsMaskedPathObject(inner = Map()).add(xs)
-//        val maybePath = maybePath1
-//          .map(j =>
-//            j match {
-//              case JsMaskedPathObject(_) => JsMaskedPathObject(inner ++ Map(head -> j.add(xs)))
-//              case JsMaskedPathValue(_) => throw new IllegalArgumentException(s"Wrong structure '${(head :: xs).mkString(".")}' it is object, but '${head}' all ready registered like value")
-//            }
-//          )
-//          .getOrElse(
-//            JsMaskedPathObject(inner = inner ++ Map(head -> path))
-//          )
-//        maybePath
-//      }
-//
-//    }
-//    product
   }
 
 }
 
-sealed trait JsMaskedPathValueTrait extends JsMaskedPath {
+trait JsMaskedPathValueTrait extends JsMaskedPath {
 
-
-
-  //  override def addWithFun[Q, T1<: JsValue](pathNodeList: List[String], maskedFun: MaskedFun[Q, T]): JsMaskedPath =  pathNodeList match {
-  //    case Nil => this
-  //    case x::Nil => JsMaskedPathObject( inner = Map(x -> this /*JsMaskedPathStringValue(maskFun)*/))
-  //    case x::xs =>  throw new IllegalArgumentException("UNABLE TO ADD")
-  //  }
-
-  override def add(pathNodeList: List[String]): JsMaskedPath = ???
-
-  //  override def addWithFun[IN, T <: JsValue](pathNodeList: List[String], maskedFun: MaskedFun[IN, T]): JsMaskedPath = {
-  //    pathNodeList match {
-  //          case Nil => this
-  //          case x::Nil => JsMaskedPathObject( inner = Map(x -> this /*JsMaskedPathStringValue(maskFun)*/))
-  //          case x::xs =>  throw new IllegalArgumentException("UNABLE TO ADD")
-  //  }
-
-
-  //  override def add(pathNodeList: List[String]): JsMaskedPath =
-  //    pathNodeList match {
-  //      case Nil => this
-  //      case x::Nil => JsMaskedPathObject( inner = Map(x -> this /*JsMaskedPathStringValue(maskFun)*/))
-  //      case x::xs =>  throw new IllegalArgumentException("UNABLE TO ADD")
-  //    }
-
-}
-
-case class JsStringMaskedPathValue(maskFun: JsStringMaskedFun) extends JsMaskedPathValueTrait {
   override def addWithFun[IN, T <: JsValue](pathNodeList: List[String], maskedFun: MaskedFun[IN, T]): JsMaskedPath =
     pathNodeList match {
       case Nil => this
-      case x :: Nil => JsMaskedPathObject(inner = Map(x -> this /*JsMaskedPathStringValue(maskFun)*/))
+      case x :: Nil => JsMaskedPathObject(inner = Map(x -> this))
       case x :: xs => throw new IllegalArgumentException("UNABLE TO ADD")
     }
+
+
 }
 
-case class JsNumberMaskedPathValue(maskFun: JsNumberMaskedFun) extends JsMaskedPathValueTrait {
-  override def addWithFun[IN, T <: JsValue](pathNodeList: List[String], maskedFun: MaskedFun[IN, T]): JsMaskedPath =
-    pathNodeList match {
-      case Nil => this
-      case x :: Nil => JsMaskedPathObject(inner = Map(x -> this /*JsMaskedPathStringValue(maskFun)*/))
-      case x :: xs => throw new IllegalArgumentException("UNABLE TO ADD")
-    }
-}
+case class JsStringMaskedPathValue(maskFun: JsStringMaskedFun) extends JsMaskedPathValueTrait
 
-case class JsBooleanMaskedPathValue(maskFun: JsBooleanMaskedFun) extends JsMaskedPathValueTrait {
-  override def addWithFun[IN, T <: JsValue](pathNodeList: List[String], maskedFun: MaskedFun[IN, T]): JsMaskedPath =
-    pathNodeList match {
-      case Nil => this
-      case x :: Nil => JsMaskedPathObject(inner = Map(x -> this /*JsMaskedPathStringValue(maskFun)*/))
-      case x :: xs => throw new IllegalArgumentException("UNABLE TO ADD")
-    }
-}
+case class JsNumberMaskedPathValue(maskFun: JsNumberMaskedFun) extends JsMaskedPathValueTrait
+
+case class JsBooleanMaskedPathValue(maskFun: JsBooleanMaskedFun) extends JsMaskedPathValueTrait

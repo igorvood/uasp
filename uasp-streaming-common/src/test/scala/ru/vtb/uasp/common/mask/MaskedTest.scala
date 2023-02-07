@@ -5,7 +5,7 @@ import org.scalatest.matchers.should
 import play.api.libs.json.{JsBoolean, JsNumber, JsObject, JsString, JsValue, Json}
 import ru.vtb.uasp.common
 import ru.vtb.uasp.common.dto.UaspDto
-import ru.vtb.uasp.common.mask.JsMaskedPath.PathFactory
+import ru.vtb.uasp.common.mask.JsMaskedPath.{JsMaskedPathObject, PathFactory}
 
 import scala.annotation.tailrec
 
