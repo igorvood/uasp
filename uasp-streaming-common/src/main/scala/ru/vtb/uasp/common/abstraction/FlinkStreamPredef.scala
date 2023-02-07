@@ -53,10 +53,9 @@ object FlinkStreamPredef {
 
       sinkDlqFunction
         .foreach(sf => {
-          myBeDlq
+          val value = myBeDlq
             .getSideOutput(process.dlqOutPut)
-            .map(sf.prometheusMetric[KafkaDto](serviceData))
-            .addSink(sf.createSinkFunction(producerFactory))
+          createProducerWithMetric(value,serviceData,sf,producerFactory)
         }
         )
       myBeDlq
