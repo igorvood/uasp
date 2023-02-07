@@ -91,14 +91,18 @@ object PropertyUtil extends Serializable {
   }
 
 
-  def asProperty(propPrefix: String)(implicit appPropImplicit: AllApplicationProperties, configurationInitialise: ConfigurationInitialise[_]): Either[ReadConfigErrors, Properties] = {
+  def asMap(propPrefix: String)(implicit appPropImplicit: AllApplicationProperties, configurationInitialise: ConfigurationInitialise[_]): Either[ReadConfigErrors, Map[String, String]] = {
     val prf = fullPrefix(propPrefix)
     val usedKey = appPropImplicit.prop.keys.filter(key => key.contains(prf))
     usedKey
       .foreach(k => configurationInitialise.readKey.add(k))
 
-    val stringToString = filterAndMap(prf, appPropImplicit.prop)
-    Right(getPropsFromMap(stringToString))
+    Right(filterAndMap(prf, appPropImplicit.prop))
+
+  }
+
+  def asProperty(propPrefix: String)(implicit appPropImplicit: AllApplicationProperties, configurationInitialise: ConfigurationInitialise[_]): Either[ReadConfigErrors, Properties] = {
+    asMap(propPrefix).map(a => getPropsFromMap(a))
   }
 
   def mapProperty[T](prefix: String,

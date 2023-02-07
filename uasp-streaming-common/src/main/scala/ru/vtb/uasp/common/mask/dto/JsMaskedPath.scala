@@ -1,11 +1,32 @@
 package ru.vtb.uasp.common.mask.dto
 
 import play.api.libs.json.JsValue
+import ru.vtb.uasp.common.mask.MaskedPredef.PathFactory
+import ru.vtb.uasp.common.mask.MaskedStrPathWithFunName
 import ru.vtb.uasp.common.mask.fun.{JsBooleanMaskedFun, JsNumberMaskedFun, JsStringMaskedFun, MaskedFun}
+import ru.vtb.uasp.common.utils.config.PropertyUtil.asMap
+import ru.vtb.uasp.common.utils.config.{AllApplicationProperties, ConfigurationInitialise, PropertyCombiner, ReadConfigErrors}
+
+import scala.collection.immutable
 
 
 sealed trait JsMaskedPath {
   def addWithFun[IN, T <: JsValue](pathNodeList: List[String], maskedFun: MaskedFun[IN, T]): JsMaskedPath
+
+}
+
+object JsMaskedPath extends PropertyCombiner[JsMaskedPath] {
+
+  override protected def createMayBeErr[CONFIGURATION](prf: String)(implicit appProps: AllApplicationProperties, configurationInitialise: ConfigurationInitialise[CONFIGURATION]): Either[ReadConfigErrors, JsMaskedPath] = {
+    val errorsOrProperties: Either[ReadConfigErrors, immutable.Iterable[MaskedStrPathWithFunName]] = asMap(prf).map(mapProp => mapProp.map(prop => MaskedStrPathWithFunName(prop._1, prop._2)))
+    errorsOrProperties match {
+      case Left(readConfigErrors) => Left(readConfigErrors)
+      case Right(maskedStrPathWithFunNames) => maskedStrPathWithFunNames.toJsonPath() match {
+        case Left(jsMaskedPathErrors) => Left(ReadConfigErrors(jsMaskedPathErrors.map(a => a.error)))
+        case Right(jsMaskedPath) => Right(jsMaskedPath)
+      }
+    }
+  }
 
 }
 

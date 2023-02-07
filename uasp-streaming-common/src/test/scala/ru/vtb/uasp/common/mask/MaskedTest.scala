@@ -2,9 +2,14 @@ package ru.vtb.uasp.common.mask
 
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should
-import play.api.libs.json.{JsValue, Json}
+import play.api.libs.json.{JsBoolean, JsNumber, JsObject, JsString, JsValue, Json}
+import ru.vtb.uasp.common
 import ru.vtb.uasp.common.dto.UaspDto
 import ru.vtb.uasp.common.mask.MaskedPredef.{MaskJsValuePredef, PathFactory}
+import ru.vtb.uasp.common.mask.dto.{JsBooleanMaskedPathValue, JsMaskedPath, JsMaskedPathObject, JsNumberMaskedPathValue, JsStringMaskedPathValue}
+
+import scala.annotation.tailrec
+
 
 
 class MaskedTest extends AnyFlatSpec with should.Matchers {
@@ -54,12 +59,13 @@ class MaskedTest extends AnyFlatSpec with should.Matchers {
       dataDouble = Map("5" -> 0),
       dataDecimal = Map("6" -> 0),
       dataString = Map("7" -> "***MASKED***"),
-      dataBoolean = Map("8" -> false),
+      dataBoolean= Map("8" -> false),
       process_timestamp = value2.get.process_timestamp)
 
     assertResult(dto1)(value2.get)
 
   }
+
 
 
 }
