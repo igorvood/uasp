@@ -26,6 +26,7 @@ class PerfomanceMaskedTest extends AnyFlatSpec with should.Matchers {
         "passportNum" -> "12 345678",
         "passportDepartment" -> "Отделом милиции №12 УВД №12 г. Петропавлоск-Камчатский",
         "phoneNum" -> "+7 965 123 45 67",
+        "address" -> "Спас-Угол Калязинского уезда Тверской губернии дом 15"
       ),
       dataBoolean = Map("8" -> true),
       uuid = "uuid",
@@ -39,6 +40,7 @@ class PerfomanceMaskedTest extends AnyFlatSpec with should.Matchers {
       "dataString.passportNum" -> "ru.vtb.uasp.common.mask.fun.PassportNumberInStrMaskService",
       "dataString.passportDepartment" -> "ru.vtb.uasp.common.mask.fun.PassportDepartmentMaskService",
       "dataString.phoneNum" -> "ru.vtb.uasp.common.mask.fun.PhoneStrMaskService",
+      "dataString.address" -> "ru.vtb.uasp.common.mask.fun.AddressMaskService"
     )
       .map(q => MaskedStrPathWithFunName(q._1, q._2))
       .toJsonPath()
