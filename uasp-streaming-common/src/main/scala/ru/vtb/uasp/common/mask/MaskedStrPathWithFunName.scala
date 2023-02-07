@@ -6,13 +6,12 @@ import scala.util.{Failure, Success, Try}
 
 case class MaskedStrPathWithFunName(strPath: String, maskedFunc: String){
 
-
   def maskedFunFactory[Q, TT<:JsValue]() = {
     val value = Try{
-      val value1 = Class.forName(maskedFunc)
-      val value2 = value1.getDeclaredConstructor().newInstance()
-      val value3 = value2.asInstanceOf[MaskedFun[Q, TT]]
-      value3
+      val jClass = Class.forName(maskedFunc)
+      val instance = jClass.getDeclaredConstructor().newInstance()
+      val castedInstance = instance.asInstanceOf[MaskedFun[Q, TT]]
+      castedInstance
     }
     value match {
       case Failure(exception) => Left(List(JsMaskedPathError(s"unable to load class $maskedFunc for $strPath. Cause ${exception.getMessage}" )))
