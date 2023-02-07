@@ -1,14 +1,23 @@
 package ru.vtb.uasp.common.mask
 
 import play.api.libs.json.JsValue
-import ru.vtb.uasp.common.mask.dto.JsMaskedPath.{JsMaskedPathObject, listToJsonPath}
-import ru.vtb.uasp.common.mask.dto.{JsMaskedPath, JsMaskedPathError}
+import ru.vtb.uasp.common.mask.dto.{JsMaskedPath, JsMaskedPathError, JsMaskedPathObject}
 
 import scala.annotation.tailrec
 
 object MaskedPredef {
 
   implicit class PathFactory(val self: Iterable[MaskedStrPathWithFunName]) extends AnyVal {
+
+    def toJsonPath(): Either[List[JsMaskedPathError], JsMaskedPath] = {
+
+      listToJsonPath(self, Right(JsMaskedPathObject(Map())))
+    }
+
+  }
+
+
+  implicit class MaskJsValuePredef(val self: Iterable[MaskedStrPathWithFunName]) extends AnyVal {
 
     def toJsonPath(): Either[List[JsMaskedPathError], JsMaskedPath] = {
 

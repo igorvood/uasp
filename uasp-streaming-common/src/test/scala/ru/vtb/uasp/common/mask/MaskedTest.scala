@@ -5,8 +5,8 @@ import org.scalatest.matchers.should
 import play.api.libs.json.{JsBoolean, JsNumber, JsObject, JsString, JsValue, Json}
 import ru.vtb.uasp.common
 import ru.vtb.uasp.common.dto.UaspDto
-import ru.vtb.uasp.common.mask.dto.{JsBooleanMaskedPathValue, JsMaskedPath, JsNumberMaskedPathValue, JsStringMaskedPathValue}
-import ru.vtb.uasp.common.mask.dto.JsMaskedPath.{JsMaskedPathObject, PathFactory}
+import ru.vtb.uasp.common.mask.MaskedPredef.MaskJsValuePredef
+import ru.vtb.uasp.common.mask.dto.{JsBooleanMaskedPathValue, JsMaskedPath, JsMaskedPathObject, JsNumberMaskedPathValue, JsStringMaskedPathValue}
 
 import scala.annotation.tailrec
 

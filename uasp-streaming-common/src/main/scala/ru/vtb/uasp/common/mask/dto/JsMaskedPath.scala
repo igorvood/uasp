@@ -1,50 +1,17 @@
 package ru.vtb.uasp.common.mask.dto
 
 import play.api.libs.json.JsValue
-import ru.vtb.uasp.common.mask.MaskedStrPathWithFunName
-import ru.vtb.uasp.common.mask.dto.JsMaskedPath.JsMaskedPathObject
 import ru.vtb.uasp.common.mask.fun.{JsBooleanMaskedFun, JsNumberMaskedFun, JsStringMaskedFun, MaskedFun}
 
-import scala.annotation.tailrec
 
 sealed trait JsMaskedPath {
   def addWithFun[IN, T <: JsValue](pathNodeList: List[String], maskedFun: MaskedFun[IN, T]): JsMaskedPath
 
 }
 
-object JsMaskedPath {
 
 
-  implicit class PathFactory(val self: Iterable[MaskedStrPathWithFunName]) extends AnyVal {
 
-    def toJsonPath(): Either[List[JsMaskedPathError], JsMaskedPath] = {
-
-      listToJsonPath(self, Right(JsMaskedPathObject(Map())))
-    }
-
-  }
-
-  @tailrec
-  private def listToJsonPath[IN, T <: JsValue](l: Iterable[MaskedStrPathWithFunName], path: Either[List[JsMaskedPathError], JsMaskedPath]): Either[List[JsMaskedPathError], JsMaskedPath] = {
-    l match {
-      case Nil => path
-      case x :: xs => {
-
-        val either = x.maskedFunFactory[IN, T]()
-        val res =
-          for {
-            maskedFun <- either
-            p <- path
-          } yield (p.addWithFun[IN, T](x.strPath.split("\\.").toList, maskedFun))
-
-
-        listToJsonPath(xs, res)
-
-    }
-  }
-
-
-}
 
 case class JsMaskedPathObject(
                                inner: Map[String, JsMaskedPath] = Map()) extends JsMaskedPath {
@@ -89,7 +56,7 @@ case class JsMaskedPathObject(
   }
   }
 
-}
+
 
 trait JsMaskedPathValueTrait extends JsMaskedPath {
 
