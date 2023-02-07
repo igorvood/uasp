@@ -6,11 +6,6 @@ import play.api.libs.json.{JsBoolean, JsNumber, JsObject, JsString, JsValue, Jso
 import ru.vtb.uasp.common
 import ru.vtb.uasp.common.dto.UaspDto
 import ru.vtb.uasp.common.mask.MaskedPredef.{MaskJsValuePredef, PathFactory}
-import ru.vtb.uasp.common.mask.dto.{JsBooleanMaskedPathValue, JsMaskedPath, JsMaskedPathObject, JsNumberMaskedPathValue, JsStringMaskedPathValue}
-
-import scala.annotation.tailrec
-
-
 
 class MaskedTest extends AnyFlatSpec with should.Matchers {
 

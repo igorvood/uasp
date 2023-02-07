@@ -30,28 +30,6 @@ case class NameMaskService() extends JsStringMaskedFun {
         }
         maskedSimpleName
       }
-
-
-
-
-
-
-//    val difficultName = in.split("-")
-//
-//    val value = if (difficultName.length == 1) {
-//      val simpleName = difficultName(0)
-//      val maskedSimpleName = simpleName match {
-//        case n if n.length > 7 => n(0) + "***" + n.substring(n.length - 2)
-//        case n if n.length >= 5 => n(0) + (0 until n.length-1).map(_ => "*").mkString
-//        case n => (0 until n.length).map(_ => "*").mkString
-//      }
-//      maskedSimpleName
-//    } else{
-//      difficultName.toList
-//        .map(n =>
-//          n(0) + (0 until 3).map(_ => "*").mkString
-//        ).mkString("-")
-//    }
     JsString(value)
   }
 
