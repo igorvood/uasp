@@ -13,7 +13,7 @@ case class FlinkSinkProperties(
                                 producerProps: KafkaPrdProperty,
                                 producerSemantic: Option[FlinkKafkaProducer.Semantic],
                                 kafkaProducerPoolSize: Option[Int] = None,
-                                jsMaskedPath: Option[JsMaskedPath]
+                                jsMaskedPath: Option[JsMaskedPath],
                               ) extends MetricForKafka {
 
 
@@ -42,7 +42,7 @@ object FlinkSinkProperties extends PropertyCombiner[FlinkSinkProperties] {
       producerProps <- KafkaPrdProperty.create(s"$prf.toTopic.prd")
       producerSemantic <- propertyValOptional[FlinkKafkaProducer.Semantic](prf, "producerSemantic")(appProps, configurationInitialise, { v => FlinkKafkaProducer.Semantic.valueOf(v) })
       kafkaProducerPoolSize <- propertyValOptional[Int](prf, "kafkaProducerPoolSize")
-      jsMaskedPath <- createByClassOption(prf, JsMaskedPath.getClass, { p =>
+      jsMaskedPathOption <- createByClassOption(prf, JsMaskedPath.getClass, { p =>
         JsMaskedPath.create(p)
       })
     } yield new FlinkSinkProperties(
@@ -50,6 +50,6 @@ object FlinkSinkProperties extends PropertyCombiner[FlinkSinkProperties] {
       producerProps = producerProps,
       producerSemantic = producerSemantic,
       kafkaProducerPoolSize = kafkaProducerPoolSize,
-      jsMaskedPath = jsMaskedPath
+      jsMaskedPath = jsMaskedPathOption,
     )
 }
