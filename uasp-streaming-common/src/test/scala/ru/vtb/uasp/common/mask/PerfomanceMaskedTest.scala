@@ -32,8 +32,6 @@ class PerfomanceMaskedTest extends AnyFlatSpec with should.Matchers {
       process_timestamp = 18
     )
 
-    val jsObject: JsValue = Json.toJsObject(dto)
-
     val path = Map(
       "dataString.serName" -> "ru.vtb.uasp.common.mask.fun.NameMaskService",
       "dataString.name" -> "ru.vtb.uasp.common.mask.fun.NameMaskService",
