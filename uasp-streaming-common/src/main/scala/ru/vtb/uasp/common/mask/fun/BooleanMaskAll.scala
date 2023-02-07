@@ -1,4 +1,4 @@
-package ru.vtb.uasp.common.mask
+package ru.vtb.uasp.common.mask.fun
 
 import play.api.libs.json.{JsBoolean, JsFalse}
 

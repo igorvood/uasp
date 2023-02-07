@@ -1,6 +1,8 @@
 package ru.vtb.uasp.common.mask
 
 import play.api.libs.json.JsValue
+import ru.vtb.uasp.common.mask.dto.JsMaskedPathError
+import ru.vtb.uasp.common.mask.fun.MaskedFun
 
 import scala.util.{Failure, Success, Try}
 

@@ -5,7 +5,8 @@ import org.scalatest.matchers.should
 import play.api.libs.json.{JsBoolean, JsNumber, JsObject, JsString, JsValue, Json}
 import ru.vtb.uasp.common
 import ru.vtb.uasp.common.dto.UaspDto
-import ru.vtb.uasp.common.mask.JsMaskedPath.{JsMaskedPathObject, PathFactory}
+import ru.vtb.uasp.common.mask.dto.{JsBooleanMaskedPathValue, JsMaskedPath, JsNumberMaskedPathValue, JsStringMaskedPathValue}
+import ru.vtb.uasp.common.mask.dto.JsMaskedPath.{JsMaskedPathObject, PathFactory}
 
 import scala.annotation.tailrec
 
@@ -54,14 +55,14 @@ class MaskedTest extends AnyFlatSpec with should.Matchers {
     val jsObject: JsValue = Json.toJsObject(dto)
 
     val path = Map(
-      "id" -> "ru.vtb.uasp.common.mask.StringMaskAll",
-      "dataInt.2" -> "ru.vtb.uasp.common.mask.NumberMaskAll",
-      "dataLong.3" -> "ru.vtb.uasp.common.mask.NumberMaskAll",
-      "dataFloat.4" -> "ru.vtb.uasp.common.mask.NumberMaskAll",
-      "dataDouble.5" -> "ru.vtb.uasp.common.mask.NumberMaskAll",
-      "dataDecimal.6" -> "ru.vtb.uasp.common.mask.NumberMaskAll",
-      "dataString.7" -> "ru.vtb.uasp.common.mask.StringMaskAll",
-      "dataBoolean.8" -> "ru.vtb.uasp.common.mask.BooleanMaskAll",
+      "id" -> "ru.vtb.uasp.common.mask.fun.StringMaskAll",
+      "dataInt.2" -> "ru.vtb.uasp.common.mask.fun.NumberMaskAll",
+      "dataLong.3" -> "ru.vtb.uasp.common.mask.fun.NumberMaskAll",
+      "dataFloat.4" -> "ru.vtb.uasp.common.mask.fun.NumberMaskAll",
+      "dataDouble.5" -> "ru.vtb.uasp.common.mask.fun.NumberMaskAll",
+      "dataDecimal.6" -> "ru.vtb.uasp.common.mask.fun.NumberMaskAll",
+      "dataString.7" -> "ru.vtb.uasp.common.mask.fun.StringMaskAll",
+      "dataBoolean.8" -> "ru.vtb.uasp.common.mask.fun.BooleanMaskAll",
 
     )
       .map(q => MaskedStrPathWithFunName(q._1, q._2))

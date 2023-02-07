@@ -1,7 +1,9 @@
-package ru.vtb.uasp.common.mask
+package ru.vtb.uasp.common.mask.dto
 
 import play.api.libs.json.JsValue
-import ru.vtb.uasp.common.mask.JsMaskedPath.JsMaskedPathObject
+import ru.vtb.uasp.common.mask.MaskedStrPathWithFunName
+import ru.vtb.uasp.common.mask.dto.JsMaskedPath.JsMaskedPathObject
+import ru.vtb.uasp.common.mask.fun.{JsBooleanMaskedFun, JsNumberMaskedFun, JsStringMaskedFun, MaskedFun}
 
 import scala.annotation.tailrec
 
