@@ -4,7 +4,7 @@ import org.apache.flink.api.scala.createTypeInformation
 import ru.vtb.uasp.common.abstraction.DlqProcessFunction
 import ru.vtb.uasp.common.dto.UaspDto
 import ru.vtb.uasp.common.service.JsonConvertOutService.JsonPredef
-import ru.vtb.uasp.common.service.dto.{KafkaDto, NewOutDtoWithErrors, ServiceDataDto}
+import ru.vtb.uasp.common.service.dto.{KafkaDto, OutDtoWithErrors, ServiceDataDto}
 
 case class UaspDeserializationProcessFunction(implicit val serviceDataDto: ServiceDataDto) extends DlqProcessFunction[Array[Byte], UaspDto, KafkaDto] {
 
@@ -16,7 +16,7 @@ case class UaspDeserializationProcessFunction(implicit val serviceDataDto: Servi
         val value1 = errorsOrDto match {
           case Left(uaspDtoMaskConvertValue) => {
             val products = uaspDtoConvertValue.errors ++ uaspDtoMaskConvertValue.map( q=> q.error)
-            val value = NewOutDtoWithErrors[UaspDto](
+            val value = OutDtoWithErrors[UaspDto](
               serviceDataDto,
               Some(UaspDeserializationProcessFunction.getClass.getName), products, None)
               .serializeToBytes
@@ -30,5 +30,5 @@ case class UaspDeserializationProcessFunction(implicit val serviceDataDto: Servi
     }
   }
 
-  def convert(value: Array[Byte]): Either[NewOutDtoWithErrors[UaspDto], UaspDto] = JsonConvertInService.deserialize[UaspDto](value)
+  def convert(value: Array[Byte]): Either[OutDtoWithErrors[UaspDto], UaspDto] = JsonConvertInService.deserialize[UaspDto](value)
 }

@@ -1,15 +1,15 @@
 package ru.vtb.uasp.common.service
 
 import play.api.libs.json._
-import ru.vtb.uasp.common.service.dto.{NewOutDtoWithErrors, ServiceDataDto}
+import ru.vtb.uasp.common.service.dto.{OutDtoWithErrors, ServiceDataDto}
 
 import java.nio.charset.StandardCharsets
 import scala.util.{Failure, Success, Try}
 
 object JsonConvertInService extends Serializable {
 
-  def deserialize[T](value: Array[Byte])(implicit reads: Reads[T], serviceDataDto: ServiceDataDto): Either[NewOutDtoWithErrors[T], T] = {
-    val either: scala.util.Either[NewOutDtoWithErrors[T], T] = for {
+  def deserialize[T](value: Array[Byte])(implicit reads: Reads[T], serviceDataDto: ServiceDataDto): Either[OutDtoWithErrors[T], T] = {
+    val either: scala.util.Either[OutDtoWithErrors[T], T] = for {
       extr <- extractJsValue[T](value)
       value1 = extr.validate[T]
       res <- value1 match {
@@ -18,7 +18,7 @@ object JsonConvertInService extends Serializable {
           val errStr = errors
             .map(err => "error by path " + (err._1 -> err._2.map(e => e.message).mkString(",")))
             .mkString("\n")
-          Left(NewOutDtoWithErrors[T](
+          Left(OutDtoWithErrors[T](
             serviceDataDto,
             Some(this.getClass.getName),
             List(errStr),
@@ -36,7 +36,7 @@ object JsonConvertInService extends Serializable {
     Option(value).map(k => new String(k, StandardCharsets.UTF_8)).orNull
   }
 
-  def extractJsValue[T](value: Array[Byte])(implicit serviceDataDto: ServiceDataDto): Either[NewOutDtoWithErrors[T], JsValue] = {
+  def extractJsValue[T](value: Array[Byte])(implicit serviceDataDto: ServiceDataDto): Either[OutDtoWithErrors[T], JsValue] = {
     val jsonString = byteToStr(value)
     val tryData = Try {
       Json.parse(jsonString)
@@ -44,7 +44,7 @@ object JsonConvertInService extends Serializable {
     val errorsOrDto = tryData match {
       case Success(d) => Right(d)
       case Failure(exception) => Left(
-        NewOutDtoWithErrors[T](
+        OutDtoWithErrors[T](
           serviceDataDto,
           Some(this.getClass.getName),
           List(exception.getMessage),

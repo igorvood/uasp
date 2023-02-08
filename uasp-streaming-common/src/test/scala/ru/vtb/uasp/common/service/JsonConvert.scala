@@ -4,7 +4,7 @@ import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should
 import ru.vtb.uasp.common.dto.UaspDto
 import ru.vtb.uasp.common.service.JsonConvert.{jsonStr, uasp_dto}
-import ru.vtb.uasp.common.service.dto.{NewOutDtoWithErrors, ServiceDataDto}
+import ru.vtb.uasp.common.service.dto.{OutDtoWithErrors, ServiceDataDto}
 
 class JsonConvert extends AnyFlatSpec with should.Matchers {
 
@@ -34,7 +34,7 @@ class JsonConvert extends AnyFlatSpec with should.Matchers {
     val newUasp = JsonConvertInService.deserialize[UaspDto]("dtoBytes.value".getBytes())
 
     val value1 = newUasp.left.get
-    assertResult(NewOutDtoWithErrors(serviceDataDto,
+    assertResult(OutDtoWithErrors(serviceDataDto,
       Some("ru.vtb.uasp.common.service.JsonConvertInService$"),
       List("Unrecognized token 'dtoBytes': was expecting (JSON String, Number, Array, Object or token 'null', 'true' or 'false')\n at [Source: (String)\"dtoBytes.value\"; line: 1, column: 9]"),
       None
