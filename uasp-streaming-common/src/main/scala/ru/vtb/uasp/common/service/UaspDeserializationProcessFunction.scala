@@ -11,22 +11,21 @@ case class UaspDeserializationProcessFunction(implicit val serviceDataDto: Servi
   override def processWithDlq(dto: Array[Byte]): Either[KafkaDto, UaspDto] = {
     convert(dto) match {
       case Right(value) => Right(value)
-      case Left(uaspDtoConvertValue) => {
+      case Left(uaspDtoConvertValue) =>
         val errorsOrDto = uaspDtoConvertValue.serializeToBytes(None)
         val value1 = errorsOrDto match {
-          case Left(uaspDtoMaskConvertValue) => {
-            val products = uaspDtoConvertValue.errors ++ uaspDtoMaskConvertValue.map( q=> q.error)
-            val value = OutDtoWithErrors[UaspDto](
-              serviceDataDto,
-              Some(UaspDeserializationProcessFunction.getClass.getName), products, None)
-              .serializeToBytes
-            value
-          }
+          case Left(uaspDtoMaskConvertValue) =>
+            OutDtoWithErrors[UaspDto](
+             serviceDataDto = serviceDataDto,
+             errorPosition = Some(UaspDeserializationProcessFunction.getClass.getName),
+              errors = uaspDtoConvertValue.errors ++ uaspDtoMaskConvertValue.map( q=> q.error),
+              data = None
+            )
+             .serializeToBytes
           case Right(value) => value
         }
 
         Left(value1)
-      }
     }
   }
 
