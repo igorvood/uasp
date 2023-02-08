@@ -4,11 +4,14 @@ import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should
 import ru.vtb.uasp.common.dto.UaspDto
 import ru.vtb.uasp.common.service.JsonConvert.{jsonStr, uasp_dto}
-import ru.vtb.uasp.common.service.dto.OutDtoWithErrors
+import ru.vtb.uasp.common.service.dto.{NewOutDtoWithErrors, ServiceDataDto}
 
 class JsonConvert extends AnyFlatSpec with should.Matchers {
 
+  implicit val serviceDataDto = ServiceDataDto("asd", "asd", "asd")
   behavior of "JsonConvert"
+
+
 
   it should "be serialized without modification" in {
     val dtoStr = JsonConvertOutService.serializeToStr(uasp_dto, None).right.get
@@ -30,10 +33,13 @@ class JsonConvert extends AnyFlatSpec with should.Matchers {
   it should "be deserialized with list err" in {
     val newUasp = JsonConvertInService.deserialize[UaspDto]("dtoBytes.value".getBytes())
 
-    assertResult(OutDtoWithErrors("dtoBytes.value",
-      List("Unrecognized token 'dtoBytes': was expecting (JSON String, Number, Array, Object or token 'null', 'true' or 'false')\n at [Source: (String)\"dtoBytes.value\"; line: 1, column: 9]")
+    val value1 = newUasp.left.get
+    assertResult(NewOutDtoWithErrors(serviceDataDto,
+      Some("ru.vtb.uasp.common.service.JsonConvertInService$"),
+      List("Unrecognized token 'dtoBytes': was expecting (JSON String, Number, Array, Object or token 'null', 'true' or 'false')\n at [Source: (String)\"dtoBytes.value\"; line: 1, column: 9]"),
+      None
     )
-    )(newUasp.left.get)
+    )(value1)
   }
 
 

@@ -32,6 +32,8 @@ object JsonConvertOutService extends Serializable {
 
   implicit class IdentityPredef[T <: Identity](val self: T) extends AnyVal {
 
+    def serializeToBytes(implicit oWrites: OWrites[T]): KafkaDto = JsonConvertOutService.serializeToBytes(self, None).right.get
+
     def serializeToBytes(maskedRule: Option[JsMaskedPath])(implicit oWrites: OWrites[T]): Either[List[JsMaskedPathError], KafkaDto] = JsonConvertOutService.serializeToBytes(self, maskedRule)
 
     def serializeToStr(maskedRule: Option[JsMaskedPath])(implicit oWrites: OWrites[T]): Either[List[JsMaskedPathError], KafkaStrDto] = JsonConvertOutService.serializeToStr(self, maskedRule)
@@ -40,7 +42,11 @@ object JsonConvertOutService extends Serializable {
 
   implicit class JsonPredef[T](val self: T) extends AnyVal {
 
-    def serializeToBytes( maskedRule: Option[JsMaskedPath])(implicit oWrites: OWrites[T]): Either[List[JsMaskedPathError], KafkaDto] =
+    def serializeToBytes(implicit oWrites: OWrites[T]): KafkaDto = {
+      serializeToBytes(None).right.get
+    }
+
+    def serializeToBytes(maskedRule: Option[JsMaskedPath])(implicit oWrites: OWrites[T]): Either[List[JsMaskedPathError], KafkaDto] =
       serializeToBytes(java.util.UUID.randomUUID().toString, maskedRule)
 
     def serializeToBytes(id: String, maskedRule: Option[JsMaskedPath])(implicit oWrites: OWrites[T]): Either[List[JsMaskedPathError], KafkaDto] = {
@@ -51,7 +57,7 @@ object JsonConvertOutService extends Serializable {
 
     }
 
-    def serializeToStr(maskedRule: Option[JsMaskedPath])(implicit oWrites: OWrites[T]): Either[List[JsMaskedPathError], String] = JsonConvertOutService.serializeToStr("", self, maskedRule).map(v =>v.value)
+    def serializeToStr(maskedRule: Option[JsMaskedPath])(implicit oWrites: OWrites[T]): Either[List[JsMaskedPathError], String] = JsonConvertOutService.serializeToStr("", self, maskedRule).map(v => v.value)
 
   }
 
