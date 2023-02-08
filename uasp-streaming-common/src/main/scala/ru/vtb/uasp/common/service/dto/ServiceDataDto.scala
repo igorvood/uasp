@@ -1,6 +1,7 @@
 package ru.vtb.uasp.common.service.dto
 
 
+import play.api.libs.json.{Json, OWrites, Reads}
 import ru.vtb.uasp.common.utils.config.PropertyUtil.{propertyVal, s}
 import ru.vtb.uasp.common.utils.config.{AllApplicationProperties, ConfigurationInitialise, PropertyCombiner, ReadConfigErrors}
 
@@ -31,4 +32,8 @@ object ServiceDataDto extends PropertyCombiner[ServiceDataDto] {
     } yield new ServiceDataDto(
       serviceName, serviceProfile, serviceVersion
     )
+
+
+  implicit val serviceDataDtoJsonReads: Reads[ServiceDataDto] = Json.reads[ServiceDataDto]
+  implicit val serviceDataDtoJsonWrites: OWrites[ServiceDataDto] = Json.writes[ServiceDataDto]
 }
