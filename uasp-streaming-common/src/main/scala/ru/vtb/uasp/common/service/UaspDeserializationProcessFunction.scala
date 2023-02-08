@@ -11,7 +11,8 @@ case class UaspDeserializationProcessFunction() extends DlqProcessFunction[Array
   override def processWithDlq(dto: Array[Byte]): Either[KafkaDto, UaspDto] = {
     convert(dto) match {
       case Right(value) => Right(value)
-      case Left(value) => Left(value.serializeToBytes)
+      //TODO надо избавиться от right.get
+      case Left(value) => Left(value.serializeToBytes(None).right.get)
     }
   }
 
