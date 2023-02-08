@@ -2,7 +2,6 @@ package ru.vtb.uasp.common.extension
 
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should
-
 import ru.vtb.uasp.common.extension.CommonExtension.Also
 
 class CommonExtensionTest extends AnyFlatSpec with should.Matchers {

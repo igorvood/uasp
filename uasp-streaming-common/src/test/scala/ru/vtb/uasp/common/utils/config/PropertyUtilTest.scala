@@ -15,8 +15,8 @@ class PropertyUtilTest extends AnyFlatSpec {
   it should " replaceDifficultPlaceHolders ok" in {
 
     SomeClassName.resolvablePlaceHolders.clear()
-    SomeClassName.resolvablePlaceHolders.put("PH_1" , "val1")
-    SomeClassName.resolvablePlaceHolders.put("PH_2" , "val2")
+    SomeClassName.resolvablePlaceHolders.put("PH_1", "val1")
+    SomeClassName.resolvablePlaceHolders.put("PH_2", "val2")
 
     implicit val name = SomeClassName
 
@@ -29,7 +29,7 @@ class PropertyUtilTest extends AnyFlatSpec {
 
   it should " replaceDifficultPlaceHolders part resolve " in {
     SomeClassName.resolvablePlaceHolders.clear()
-    SomeClassName.resolvablePlaceHolders.put("PH_1" , "val1")
+    SomeClassName.resolvablePlaceHolders.put("PH_1", "val1")
 
     implicit val name = SomeClassName
     val strings = replaceDifficultPlaceHolders("SOME_CONST_${PH_1}_${PH_2}_${PH_1}_end_const")

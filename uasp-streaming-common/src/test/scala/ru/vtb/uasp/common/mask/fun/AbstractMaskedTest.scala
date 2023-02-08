@@ -9,7 +9,7 @@ abstract class AbstractMaskedTest extends AnyFlatSpec {
   val maskService: JsStringMaskedFun
 
 
-  val testCases : Map[String, String]
+  val testCases: Map[String, String]
 
 
   "mask all existing fields " should " OK" in {

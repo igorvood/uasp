@@ -10,11 +10,29 @@ import ru.vtb.uasp.common.utils.config.{AllApplicationProperties, ConfigurationI
 import scala.collection.immutable
 
 
+/**
+ * Рекурсивная структура хранит данные для маскирования
+ */
 sealed trait JsMaskedPath {
+  /** Добавляет к текущей структуре новое поле для маскирования
+   * @param pathNodeList json путь к полю данные в котором надо маскировать,
+   * @param maskedFun ф-ция маскирования, будет применена к значению в этом поле
+   * @tparam IN исходное значение обычно это строка, но в принципе маскировать можно и иные типы данных
+   * @tparam T возвращаемое значение JsValue
+   * @return возвращает новую структуру с добавленным полем
+   */
   def addWithFun[IN, T <: JsValue](pathNodeList: List[String], maskedFun: MaskedFun[IN, T]): JsMaskedPath
 
 }
 
+/** стандарный комбайнер свойств.
+ * по указаному префиксу prf должны находтся свойства в след формате
+ * prf.f1.d2.g3=ru.vtb.uasp.common.mask.fun.PassportDepartmentMaskService
+ * prf.f2.d3.g4=ru.vtb.uasp.common.mask.fun.PassportDepartmentMaskService
+ * где все что после prf - json путь к полю которое требует маскирования
+ * и полное имя ф-ции маскирования
+ * таких путей для маскирования может быть не ограниченное кол-во
+ */
 object JsMaskedPath extends PropertyCombiner[JsMaskedPath] {
 
   override protected def createMayBeErr[CONFIGURATION](prf: String)(implicit appProps: AllApplicationProperties, configurationInitialise: ConfigurationInitialise[CONFIGURATION]): Either[ReadConfigErrors, JsMaskedPath] = {

@@ -3,9 +3,7 @@ package ru.vtb.uasp.common.service
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
 import ru.vtb.uasp.common.dto.UaspDto
-import ru.vtb.uasp.common.utils.json.{JsonConverter, JsonUtil}
-
-import scala.io.Source
+import ru.vtb.uasp.common.utils.json.JsonConverter
 
 
 class JsonConverterTest extends AnyFlatSpec with Matchers {
@@ -28,9 +26,9 @@ class JsonConverterTest extends AnyFlatSpec with Matchers {
 
   }
 
-//  "test files" should "be" in {
-//
-//   JsonUtil.getFieldsForCases("src/test/resources/cases")
+  //  "test files" should "be" in {
+  //
+  //   JsonUtil.getFieldsForCases("src/test/resources/cases")
 
-//  }
+  //  }
 }

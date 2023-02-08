@@ -1,26 +1,26 @@
 package ru.vtb.uasp.common.kafka
 
 import org.scalatest.flatspec.AnyFlatSpec
-import ru.vtb.uasp.common.mask.dto.{JsMaskedPath, JsMaskedPathObject, JsStringMaskedPathValue}
+import ru.vtb.uasp.common.mask.dto.{JsMaskedPathObject, JsStringMaskedPathValue}
 import ru.vtb.uasp.common.mask.fun.{PhoneStrMaskService, StringMaskAll}
 import ru.vtb.uasp.common.utils.config.AllApplicationProperties
 import ru.vtb.uasp.common.utils.config.kafka.KafkaPrdProperty
 
 import java.util.Properties
 import scala.collection.JavaConverters.mapAsJavaMapConverter
-import scala.collection.{immutable, mutable}
+import scala.collection.mutable
 
-class FlinkSinkPropertiesTest  extends AnyFlatSpec {
+class FlinkSinkPropertiesTest extends AnyFlatSpec {
 
   "FlinkSinkProperties reads " should " OK" in {
 
     val PRD = "prefix.FlinkSinkProperties$.toTopic.prd."
     val map = Map(
-      "prefix.FlinkSinkProperties$.toTopic"->"asd",
-      PRD + "bootstrap.servers"->"asd",
+      "prefix.FlinkSinkProperties$.toTopic" -> "asd",
+      PRD + "bootstrap.servers" -> "asd",
 
-      "prefix.FlinkSinkProperties$.JsMaskedPath$.f1"->"ru.vtb.uasp.common.mask.fun.StringMaskAll",
-      "prefix.FlinkSinkProperties$.JsMaskedPath$.f2"->"ru.vtb.uasp.common.mask.fun.PhoneStrMaskService",
+      "prefix.FlinkSinkProperties$.JsMaskedPath$.f1" -> "ru.vtb.uasp.common.mask.fun.StringMaskAll",
+      "prefix.FlinkSinkProperties$.JsMaskedPath$.f2" -> "ru.vtb.uasp.common.mask.fun.PhoneStrMaskService",
     )
     val props = SomeAppProps.defaultConfiguration("prefix")(AllApplicationProperties(map), mutable.Set[String]())
 
@@ -49,7 +49,6 @@ class FlinkSinkPropertiesTest  extends AnyFlatSpec {
         )
       )
     )(props)
-
 
 
   }

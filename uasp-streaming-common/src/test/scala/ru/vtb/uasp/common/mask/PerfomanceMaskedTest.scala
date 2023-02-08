@@ -2,7 +2,7 @@ package ru.vtb.uasp.common.mask
 
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should
-import play.api.libs.json.{JsValue, Json}
+import play.api.libs.json.Json
 import ru.vtb.uasp.common.dto.UaspDto
 import ru.vtb.uasp.common.mask.MaskedPredef.{MaskJsValuePredef, PathFactory}
 

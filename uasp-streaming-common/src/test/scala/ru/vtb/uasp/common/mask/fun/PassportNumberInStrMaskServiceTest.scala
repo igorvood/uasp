@@ -1,7 +1,6 @@
 package ru.vtb.uasp.common.mask.fun
 
 
-
 class PassportNumberInStrMaskServiceTest extends AbstractMaskedTest {
 
   val maskService = PassportNumberInStrMaskService()
