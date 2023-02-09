@@ -5,12 +5,8 @@ import org.apache.flink.api.scala.createTypeInformation
 import org.apache.flink.streaming.api.datastream.DataStreamSink
 import org.apache.flink.streaming.api.functions.sink.SinkFunction
 import org.apache.flink.streaming.api.scala.DataStream
-import play.api.libs.json.Format.GenericFormat
-import play.api.libs.json.OFormat.oFormatFromReadsAndOWrites
-import play.api.libs.json.OWrites
 import ru.vtb.uasp.common.kafka.FlinkSinkProperties
-import ru.vtb.uasp.common.mask.dto.{JsMaskedPath, JsMaskedPathError}
-import ru.vtb.uasp.common.service.JsonConvertOutService.JsonPredef
+import ru.vtb.uasp.common.mask.dto.JsMaskedPathError
 import ru.vtb.uasp.common.service.dto.{KafkaDto, OutDtoWithErrors, ServiceDataDto}
 
 object NewFlinkStreamPredef {
@@ -34,19 +30,19 @@ object NewFlinkStreamPredef {
                                                                              sinkDlqFunction: Option[FlinkSinkProperties],
                                                                              producerFactory: FlinkSinkProperties => SinkFunction[KafkaDto],
                                                                              abstractOutDtoWithErrorsSerializeService: AbstractOutDtoWithErrorsMaskedSerializeService[IN]
-                                                                         ): DataStream[OUT] = {
+                                                                            ): DataStream[OUT] = {
 
     val myBeDlq = self
       .process[OUT](process)
 
     sinkDlqFunction
-      .foreach{sf => {
+      .foreach { sf => {
         val value1 = myBeDlq
           .getSideOutput(process.dlqOutPut)
         val dlqStream = value1
           .map { d: OutDtoWithErrors[IN] => {
             val errorsOrDto: Either[List[JsMaskedPathError], KafkaDto] = abstractOutDtoWithErrorsSerializeService.map(d)
-             errorsOrDto match {
+            errorsOrDto match {
               case Left(value) =>
                 val value2 = new OutDtoWithErrors[IN](
                   serviceDataDto = serviceData,
