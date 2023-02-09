@@ -6,28 +6,29 @@ import org.scalatest.flatspec.AnyFlatSpec
 import play.api.libs.json.Format.GenericFormat
 import play.api.libs.json.OFormat.oFormatFromReadsAndOWrites
 import ru.vtb.uasp.common.abstraction.MiniPipeLineTrait.valuesTestDataDto
-import ru.vtb.uasp.common.abstraction.NewFlinkStreamPredefTest.{dlqProcessFunctionError, flinkSinkProperties, flinkSinkPropertiesDlq, serviceDataDto}
+import ru.vtb.uasp.common.abstraction.NewFlinkStreamPredefTest.{dlqProcessFunctionError, flinkSinkProperties, flinkSinkPropertiesDlq, listTestDataDto, outDtoWithErrors, serviceDataDto, testDataDto}
 import ru.vtb.uasp.common.kafka.FlinkSinkProperties
+import ru.vtb.uasp.common.service.JsonConvertInService
 import ru.vtb.uasp.common.service.dto.{KafkaDto, OutDtoWithErrors, ServiceDataDto}
 import ru.vtb.uasp.common.utils.config.kafka.KafkaPrdProperty
 
 import java.util.Properties
 import scala.collection.JavaConverters.mapAsJavaMapConverter
+import scala.tools.jline_embedded.internal.Log.error
 
 class NewFlinkStreamPredefTest extends AnyFlatSpec with MiniPipeLineTrait with Serializable {
 
 
-  "NewFlinkStreamPredef.createProducerWithMetric " should " OK" in {
+    "NewFlinkStreamPredef.createProducerWithMetric " should " OK" in {
 
     val flinkPipe: DataStream[TestDataDto] => Unit = { ds =>
       NewFlinkStreamPredef.privateCreateProducerWithMetric(ds, serviceData = serviceDataDto, flinkSinkProperties, producerFactory)
     }
 
-    pipeRun(List(TestDataDto("st1", 12)), flinkPipe)
+    pipeRun(listTestDataDto, flinkPipe)
 
     assertResult(1)(valuesTestDataDto.size)
     val dtoes = topicDataArray[TestDataDto](flinkSinkProperties)
-
     assertResult(1)(dtoes.size)
   }
 
@@ -45,15 +46,19 @@ class NewFlinkStreamPredefTest extends AnyFlatSpec with MiniPipeLineTrait with S
       value.print()
     }
 
-
-
-    pipeRun(List(TestDataDto("st1", 12)), flinkPipe)
+    pipeRun(listTestDataDto, flinkPipe)
 
     assertResult(1)(valuesTestDataDto.size)
 
-    val dtoes = topicDataArray[TestDataDto](flinkSinkPropertiesDlq)
+    val dtoes1 = topicDataArray[TestDataDto](flinkSinkProperties)
+    assertResult(0)(dtoes1.size)
 
+    val dtoes = topicDataArray[KafkaDto](flinkSinkPropertiesDlq)
     assertResult(1)(dtoes.size)
+    val either = JsonConvertInService.deserialize[OutDtoWithErrors[TestDataDto]](dtoes.head.value)(OutDtoWithErrors.outDtoWithErrorsJsonReads, serviceDataDto)
+    val unit = outDtoWithErrors(Some(testDataDto))
+    assertResult(unit)( either.right.get)
+
   }
 
 
@@ -61,15 +66,18 @@ class NewFlinkStreamPredefTest extends AnyFlatSpec with MiniPipeLineTrait with S
 
 object NewFlinkStreamPredefTest{
 
+  private val testDataDto: TestDataDto = TestDataDto("st1", 12)
+  private val listTestDataDto: List[TestDataDto] = List(testDataDto)
+
   protected val flinkSinkProperties = producerProps("topicName")
   protected val flinkSinkPropertiesDlq = producerProps("dlq_topicName")
 
-  protected val serviceDataDto = ServiceDataDto("1", "2", "3")
+  protected implicit val serviceDataDto = ServiceDataDto("1", "2", "3")
 
-  protected def error[IN](in: Some[IN])= OutDtoWithErrors[IN](serviceDataDto, Some(this.getClass.getName),List("test error"), in)
+  protected def outDtoWithErrors[IN](in: Some[IN])= OutDtoWithErrors[IN](serviceDataDto, Some(this.getClass.getName),List("test error"), in)
 
   protected val dlqProcessFunctionError: DlqProcessFunction[TestDataDto, TestDataDto, OutDtoWithErrors[TestDataDto]] = new DlqProcessFunction[TestDataDto, TestDataDto, OutDtoWithErrors[TestDataDto]] {
-    override def processWithDlq(dto: TestDataDto): Either[OutDtoWithErrors[TestDataDto], TestDataDto] = Left(error(Some(dto)))
+    override def processWithDlq(dto: TestDataDto): Either[OutDtoWithErrors[TestDataDto], TestDataDto] = Left(outDtoWithErrors(Some(dto)))
   }
 
   private def producerProps(topicName: String) = {

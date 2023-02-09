@@ -5,6 +5,7 @@ import org.apache.flink.api.scala.createTypeInformation
 import org.apache.flink.streaming.api.datastream.DataStreamSink
 import org.apache.flink.streaming.api.functions.sink.SinkFunction
 import org.apache.flink.streaming.api.scala.DataStream
+import play.api.libs.json.OWrites
 import ru.vtb.uasp.common.kafka.FlinkSinkProperties
 import ru.vtb.uasp.common.mask.dto.JsMaskedPathError
 import ru.vtb.uasp.common.service.dto.{KafkaDto, OutDtoWithErrors, ServiceDataDto}
@@ -23,6 +24,28 @@ object NewFlinkStreamPredef {
     value
   }
 
+//  def createProducerWithMetric[IN: TypeInformation, OUT: TypeInformation](self: DataStream[IN],
+//                                                           serviceData: ServiceDataDto,
+//                                                           sinkProperty: FlinkSinkProperties,
+//                                                            producerFactory: FlinkSinkProperties => SinkFunction[OUT],
+//                                                           sinkDlqFunction: Option[FlinkSinkProperties],
+//
+//                                                           abstractOutDtoWithErrorsSerializeService: AbstractMaskedSerializeService[IN, OUT]
+//                                                         ): DataStreamSink[OUT] = {
+//    val value1 =
+//      self
+//        .map(abstractOutDtoWithErrorsSerializeService)
+//
+//
+//
+//    val metricsFunction = sinkProperty.prometheusMetric[IN](serviceData)
+//    val value = self
+//      .map[IN](metricsFunction)
+//      .addSink(sinkProperty.createSinkFunction(producerFactory))
+//    value
+//  }
+
+
 
 
   def processAndDlqSinkWithMetric[IN: TypeInformation, OUT: TypeInformation](self: DataStream[IN],
@@ -35,7 +58,6 @@ object NewFlinkStreamPredef {
 
     val myBeDlq = self
       .process[OUT](process)
-
     sinkDlqFunction
       .foreach { sf => {
         val value1 = myBeDlq
