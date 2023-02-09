@@ -12,7 +12,7 @@ import scala.collection.JavaConverters.iterableAsScalaIterableConverter
 
 trait MiniPipeLineTrait extends Serializable {
 
-  protected def producerFactory: FlinkSinkProperties => SinkFunction[TestDataDto] = { fp => CollectByteSink(fp) }
+  protected def producerFactory[OUT]: FlinkSinkProperties => SinkFunction[OUT] = { fp => CollectByteSink[OUT](fp) }
 
   private def prodPrint: FlinkSinkProperties => SinkFunction[TestDataDto] = { fp => CollectByteSink(fp) }
 
@@ -29,7 +29,7 @@ trait MiniPipeLineTrait extends Serializable {
   def pipeRun[IN: TypeInformation](inData: List[IN],
                                    flinkPipe: DataStream[IN] => Unit
                                   ) = {
-
+    valuesTestDataDto.clear()
     val env = StreamExecutionEnvironment.getExecutionEnvironment
 
     val dataStream = env.fromCollection[IN](inData)

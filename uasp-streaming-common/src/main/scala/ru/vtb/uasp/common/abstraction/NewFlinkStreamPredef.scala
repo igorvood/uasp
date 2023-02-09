@@ -26,25 +26,26 @@ object NewFlinkStreamPredef {
   }
 
 
-  def processAndDlqSinkWithMetric[O: TypeInformation, T: TypeInformation](self: DataStream[T],
-                                                                          serviceData: ServiceDataDto,
-                                                                          process: DlqProcessFunction[T, O, OutDtoWithErrors[T]],
-                                                                          sinkDlqFunction: Option[FlinkSinkProperties],
-                                                                          producerFactory: FlinkSinkProperties => SinkFunction[KafkaDto],
-                                                                          maskedRule: Option[JsMaskedPath]
-                                                                         )(implicit oWrites: OWrites[T]): DataStream[O] = {
+  def processAndDlqSinkWithMetric[IN: TypeInformation, OUT: TypeInformation](self: DataStream[IN],
+                                                                             serviceData: ServiceDataDto,
+                                                                             process: DlqProcessFunction[IN, OUT, OutDtoWithErrors[IN]],
+                                                                             sinkDlqFunction: Option[FlinkSinkProperties],
+                                                                             producerFactory: FlinkSinkProperties => SinkFunction[KafkaDto],
+                                                                             maskedRule: Option[JsMaskedPath]
+                                                                         )(implicit oWrites: OWrites[OutDtoWithErrors[IN]]): DataStream[OUT] = {
 
     val myBeDlq = self
       .process(process)
 
     sinkDlqFunction
       .foreach{sf => {
-        val dlqStream = myBeDlq
+        val value1 = myBeDlq
           .getSideOutput(process.dlqOutPut)
-          .map[KafkaDto] { d: OutDtoWithErrors[T] => {
+        val dlqStream = value1
+          .map { d: OutDtoWithErrors[IN] => {
             val errorsOrDto = d.serializeToBytes(maskedRule)
              errorsOrDto match {
-              case Left(value) => new OutDtoWithErrors[T](
+              case Left(value) => new OutDtoWithErrors[IN](
                 serviceDataDto = serviceData,
                 errorPosition = Some(this.getClass.getName),
                 errors = value.map(q => q.error) ::: List("Error when try masked value"),
