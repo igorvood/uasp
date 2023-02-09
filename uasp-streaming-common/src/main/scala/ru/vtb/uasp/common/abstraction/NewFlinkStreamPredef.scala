@@ -35,7 +35,7 @@ object NewFlinkStreamPredef {
                                                                          )(implicit oWrites: OWrites[OutDtoWithErrors[IN]]): DataStream[OUT] = {
 
     val myBeDlq = self
-      .process(process)
+      .process[OUT](process)
 
     sinkDlqFunction
       .foreach{sf => {
