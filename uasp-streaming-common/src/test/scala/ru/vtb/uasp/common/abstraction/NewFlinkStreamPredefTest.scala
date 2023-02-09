@@ -20,7 +20,7 @@ class NewFlinkStreamPredefTest extends AnyFlatSpec with MiniPipeLineTrait with S
   "NewFlinkStreamPredef.createProducerWithMetric " should " OK" in {
 
     val flinkPipe: DataStream[TestDataDto] => Unit = { ds =>
-      NewFlinkStreamPredef.createProducerWithMetric(ds, serviceData = serviceDataDto, flinkSinkProperties, producerFactory)
+      NewFlinkStreamPredef.privateCreateProducerWithMetric(ds, serviceData = serviceDataDto, flinkSinkProperties, producerFactory)
     }
 
     pipeRun(List(TestDataDto("st1", 12)), flinkPipe)

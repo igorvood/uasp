@@ -11,7 +11,7 @@ import ru.vtb.uasp.common.service.dto.{KafkaDto, OutDtoWithErrors, ServiceDataDt
 
 object NewFlinkStreamPredef {
 
-  def createProducerWithMetric[T: TypeInformation](self: DataStream[T],
+  def privateCreateProducerWithMetric[T: TypeInformation](self: DataStream[T],
                                                    serviceData: ServiceDataDto,
                                                    sinkProperty: FlinkSinkProperties,
                                                    producerFactory: FlinkSinkProperties => SinkFunction[T]
@@ -22,6 +22,7 @@ object NewFlinkStreamPredef {
       .addSink(sinkProperty.createSinkFunction(producerFactory))
     value
   }
+
 
 
   def processAndDlqSinkWithMetric[IN: TypeInformation, OUT: TypeInformation](self: DataStream[IN],
@@ -55,7 +56,7 @@ object NewFlinkStreamPredef {
           }
 
           }
-        createProducerWithMetric(dlqStream, serviceData, sf, producerFactory)
+        privateCreateProducerWithMetric(dlqStream, serviceData, sf, producerFactory)
       }
 
 
