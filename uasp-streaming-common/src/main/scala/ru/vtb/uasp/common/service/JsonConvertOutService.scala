@@ -59,8 +59,6 @@ object JsonConvertOutService extends Serializable {
 
     }
 
-    def serializeToStr(maskedRule: Option[JsMaskedPath])(implicit oWrites: OWrites[T]): Either[List[JsMaskedPathError], String] = JsonConvertOutService.serializeToStr("", self, maskedRule).map(v => v.value)
-
   }
 
 

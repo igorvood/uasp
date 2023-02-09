@@ -5,9 +5,11 @@ import org.apache.flink.api.scala.createTypeInformation
 import org.apache.flink.streaming.api.datastream.DataStreamSink
 import org.apache.flink.streaming.api.functions.sink.SinkFunction
 import org.apache.flink.streaming.api.scala.DataStream
+import play.api.libs.json.Format.GenericFormat
+import play.api.libs.json.OFormat.oFormatFromReadsAndOWrites
 import play.api.libs.json.OWrites
 import ru.vtb.uasp.common.kafka.FlinkSinkProperties
-import ru.vtb.uasp.common.mask.dto.JsMaskedPath
+import ru.vtb.uasp.common.mask.dto.{JsMaskedPath, JsMaskedPathError}
 import ru.vtb.uasp.common.service.JsonConvertOutService.JsonPredef
 import ru.vtb.uasp.common.service.dto.{KafkaDto, OutDtoWithErrors, ServiceDataDto}
 
@@ -31,9 +33,8 @@ object NewFlinkStreamPredef {
                                                                              process: DlqProcessFunction[IN, OUT, OutDtoWithErrors[IN]],
                                                                              sinkDlqFunction: Option[FlinkSinkProperties],
                                                                              producerFactory: FlinkSinkProperties => SinkFunction[KafkaDto],
-                                                                             maskedRule: Option[JsMaskedPath]
-                                                                         )
-                                                                           (implicit oWrites: OWrites[OutDtoWithErrors[IN]])  : DataStream[OUT] = {
+                                                                             abstractOutDtoWithErrorsSerializeService: AbstractOutDtoWithErrorsMaskedSerializeService[IN]
+                                                                         ): DataStream[OUT] = {
 
     val myBeDlq = self
       .process[OUT](process)
@@ -44,14 +45,15 @@ object NewFlinkStreamPredef {
           .getSideOutput(process.dlqOutPut)
         val dlqStream = value1
           .map { d: OutDtoWithErrors[IN] => {
-            val errorsOrDto = d.serializeToBytes(maskedRule)
+            val errorsOrDto: Either[List[JsMaskedPathError], KafkaDto] = abstractOutDtoWithErrorsSerializeService.map(d)
              errorsOrDto match {
-              case Left(value) => new OutDtoWithErrors[IN](
-                serviceDataDto = serviceData,
-                errorPosition = Some(this.getClass.getName),
-                errors = value.map(q => q.error) ::: List("Error when try masked value"),
-                data = None)
-                .serializeToBytes
+              case Left(value) =>
+                val value2 = new OutDtoWithErrors[IN](
+                  serviceDataDto = serviceData,
+                  errorPosition = Some(this.getClass.getName),
+                  errors = value.map(q => q.error) ::: List("Error when try masked value"),
+                  data = None)
+                abstractOutDtoWithErrorsSerializeService.map(value2).right.get
               case Right(masked) => masked
             }
           }
