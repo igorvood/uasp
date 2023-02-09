@@ -17,8 +17,6 @@ import scala.collection.JavaConverters.mapAsJavaMapConverter
 class NewFlinkStreamPredefTest extends AnyFlatSpec with MiniPipeLineTrait with Serializable {
 
 
-
-
   "NewFlinkStreamPredef.createProducerWithMetric " should " OK" in {
 
     val flinkPipe: DataStream[TestDataDto] => Unit = { ds =>
@@ -55,16 +53,6 @@ class NewFlinkStreamPredefTest extends AnyFlatSpec with MiniPipeLineTrait with S
     val dtoes = topicDataArray[TestDataDto](flinkSinkPropertiesDlq)
 
     assertResult(1)(dtoes.size)
-  }
-
-
-
-  private def producerProps(topicName: String) = {
-    val properties = new Properties()
-    properties.putAll(Map("bootstrap.servers" -> "bootstrap.servers").asJava)
-
-    val kafkaPrdProperty = KafkaPrdProperty(properties)
-    FlinkSinkProperties(topicName, kafkaPrdProperty, None, None, None)
   }
 
 

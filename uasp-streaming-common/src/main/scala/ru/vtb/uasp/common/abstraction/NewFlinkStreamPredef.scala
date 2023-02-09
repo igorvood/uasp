@@ -32,7 +32,8 @@ object NewFlinkStreamPredef {
                                                                              sinkDlqFunction: Option[FlinkSinkProperties],
                                                                              producerFactory: FlinkSinkProperties => SinkFunction[KafkaDto],
                                                                              maskedRule: Option[JsMaskedPath]
-                                                                         )(implicit oWrites: OWrites[OutDtoWithErrors[IN]]): DataStream[OUT] = {
+                                                                         )
+                                                                           (implicit oWrites: OWrites[OutDtoWithErrors[IN]])  : DataStream[OUT] = {
 
     val myBeDlq = self
       .process[OUT](process)
