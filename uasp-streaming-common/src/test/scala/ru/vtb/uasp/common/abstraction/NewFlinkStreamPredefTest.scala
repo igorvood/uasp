@@ -6,7 +6,7 @@ import org.scalatest.flatspec.AnyFlatSpec
 import play.api.libs.json.Format.GenericFormat
 import play.api.libs.json.OFormat.oFormatFromReadsAndOWrites
 import ru.vtb.uasp.common.abstraction.MiniPipeLineTrait.valuesTestDataDto
-import ru.vtb.uasp.common.abstraction.NewFlinkStreamPredefTest.{dlqProcessFunctionError, flinkSinkProperties, flinkSinkPropertiesDlq, jsMaskedPath, listTestDataDto, outDtoWithErrorsFun, serviceDataDto, testDataDto}
+import ru.vtb.uasp.common.abstraction.NewFlinkStreamPredefTest.{dlqProcessFunction, dlqProcessFunctionError, flinkSinkProperties, flinkSinkPropertiesDlq, jsMaskedPath, listTestDataDto, outDtoWithErrorsFun, serviceDataDto, testDataDto}
 import ru.vtb.uasp.common.kafka.FlinkSinkProperties
 import ru.vtb.uasp.common.mask.MaskedPredef.PathFactory
 import ru.vtb.uasp.common.mask.MaskedStrPathWithFunName
@@ -62,6 +62,34 @@ class NewFlinkStreamPredefTest extends AnyFlatSpec with MiniPipeLineTrait with S
 
   }
 
+  "NewFlinkStreamPredef.processAndDlqSinkWithMetric нет ошибки, но маскирование не настроено" should " OK" in {
+
+    val flinkPipe: DataStream[TestDataDto] => Unit = { ds =>
+      val value = NewFlinkStreamPredef.processAndDlqSinkWithMetric[TestDataDto, TestDataDto](
+        ds,
+        serviceData = serviceDataDto,
+        dlqProcessFunction,
+        Some(flinkSinkPropertiesDlq),
+        producerFactory[KafkaDto],
+        new TestDataDtoMaskedSerializeService(jsMaskedPath = None))
+    }
+
+    pipeRun(listTestDataDto, flinkPipe)
+
+    assertResult(1)(valuesTestDataDto.size)
+
+    val dtoes1 = topicDataArray[TestDataDto](flinkSinkProperties)
+    assertResult(0)(dtoes1.size)
+
+    val dtoes = topicDataArray[KafkaDto](flinkSinkPropertiesDlq)
+    assertResult(1)(dtoes.size)
+    val either = JsonConvertInService.deserialize[OutDtoWithErrors[TestDataDto]](dtoes.head.value)(OutDtoWithErrors.outDtoWithErrorsJsonReads, serviceDataDto)
+    val unit = outDtoWithErrorsFun(Some(testDataDto))
+    assertResult(unit)( either.right.get)
+
+  }
+
+
   "NewFlinkStreamPredef.processAndDlqSinkWithMetric Ошибка, маскирование настроено" should " OK" in {
 
     val flinkPipe: DataStream[TestDataDto] => Unit = { ds =>
@@ -110,6 +138,11 @@ object NewFlinkStreamPredefTest{
   protected val dlqProcessFunctionError: DlqProcessFunction[TestDataDto, TestDataDto, OutDtoWithErrors[TestDataDto]] = new DlqProcessFunction[TestDataDto, TestDataDto, OutDtoWithErrors[TestDataDto]] {
     override def processWithDlq(dto: TestDataDto): Either[OutDtoWithErrors[TestDataDto], TestDataDto] = Left(outDtoWithErrorsFun(Some(dto)))
   }
+
+  protected val dlqProcessFunction: DlqProcessFunction[TestDataDto, TestDataDto, OutDtoWithErrors[TestDataDto]] = new DlqProcessFunction[TestDataDto, TestDataDto, OutDtoWithErrors[TestDataDto]] {
+    override def processWithDlq(dto: TestDataDto): Either[OutDtoWithErrors[TestDataDto], TestDataDto] = Right(dto)
+  }
+
 
   private def producerProps(topicName: String) = {
     val properties = new Properties()
