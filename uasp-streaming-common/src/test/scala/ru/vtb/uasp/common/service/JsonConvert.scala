@@ -22,7 +22,7 @@ class JsonConvert extends AnyFlatSpec with should.Matchers {
   }
 
   it should "be deserialized without modification" in {
-    val dtoBytes = JsonConvertOutService.serializeToBytes(uasp_dto, None).right.get
+    val dtoBytes = JsonConvertOutService.serializeToBytesIdentity(uasp_dto, None).right.get
 
 
     val newUasp = JsonConvertInService.deserialize[UaspDto](dtoBytes.value)

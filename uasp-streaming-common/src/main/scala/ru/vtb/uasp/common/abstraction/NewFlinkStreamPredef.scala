@@ -7,7 +7,6 @@ import org.apache.flink.streaming.api.functions.sink.SinkFunction
 import org.apache.flink.streaming.api.scala.DataStream
 import ru.vtb.uasp.common.kafka.FlinkSinkProperties
 import ru.vtb.uasp.common.mask.dto.{JsMaskedPath, JsMaskedPathError}
-import ru.vtb.uasp.common.service.JsonConvertOutService.JsonPredef
 import ru.vtb.uasp.common.service.dto.{KafkaDto, OutDtoWithErrors, ServiceDataDto}
 
 object NewFlinkStreamPredef {
@@ -27,17 +26,17 @@ object NewFlinkStreamPredef {
   private[common] def createProducerWithMetric[IN: TypeInformation](self: DataStream[IN],
                                                                     serviceData: ServiceDataDto,
                                                                     sinkProperty: FlinkSinkProperties,
-                                                                    maskedFun: IN => Either[List[JsMaskedPathError], KafkaDto],
-                                                                    sinkDlqProperty: Option[(FlinkSinkProperties, OutDtoWithErrors[IN] => Either[List[JsMaskedPathError], KafkaDto])],
+                                                                    maskedFun: (IN, Option[JsMaskedPath]) => Either[List[JsMaskedPathError], KafkaDto],
+                                                                    sinkDlqProperty: Option[(FlinkSinkProperties, (OutDtoWithErrors[IN], Option[JsMaskedPath]) => Either[List[JsMaskedPathError], KafkaDto])],
                                                                     producerFactory: FlinkSinkProperties => SinkFunction[KafkaDto],
                                                                    ): DataStreamSink[KafkaDto] = {
 
     val dlqProcessFunction = new DlqProcessFunction[IN, KafkaDto, OutDtoWithErrors[IN]] {
       override def processWithDlq(dto: IN): Either[OutDtoWithErrors[IN], KafkaDto] = {
-        val errorsOrDto = maskedFun(dto)
+        val errorsOrDto = maskedFun(dto, sinkProperty.jsMaskedPath)
 
         val either = errorsOrDto match {
-          case Left(value) => Left(OutDtoWithErrors[IN](serviceData, Some(this.getClass.getName), s"Unable to mask dto ${dto.getClass.getName}" :: value.map(q => q.error), Some(dto)))
+          case Left(value) => Left(OutDtoWithErrors[IN](serviceData, Some(this.getClass.getName), s"Unable to mask dto ${dto.getClass.getName}. Masked rule ${sinkProperty.jsMaskedPath}" :: value.map(q => q.error), Some(dto)))
           case Right(value) => Right(value)
         }
 
@@ -55,7 +54,7 @@ object NewFlinkStreamPredef {
   private[common] def processAndDlqSinkWithMetric[IN: TypeInformation, OUT: TypeInformation](self: DataStream[IN],
                                                                                              serviceData: ServiceDataDto,
                                                                                              process: DlqProcessFunction[IN, OUT, OutDtoWithErrors[IN]],
-                                                                                             sinkDlqProperty: Option[(FlinkSinkProperties, OutDtoWithErrors[IN] => Either[List[JsMaskedPathError], KafkaDto])],
+                                                                                             sinkDlqProperty: Option[(FlinkSinkProperties, (OutDtoWithErrors[IN], Option[JsMaskedPath]) => Either[List[JsMaskedPathError], KafkaDto])],
                                                                                              producerFactory: FlinkSinkProperties => SinkFunction[KafkaDto],
                                                                                             ): DataStream[OUT] = {
     val myBeDlq = self
@@ -64,7 +63,7 @@ object NewFlinkStreamPredef {
       .foreach { sf => {
         val maskedDLQSerializeService: AbstractOutDtoWithErrorsMaskedSerializeService[IN] = new AbstractOutDtoWithErrorsMaskedSerializeService[IN](sf._1.jsMaskedPath) {
 
-          override def convert(value: OutDtoWithErrors[IN], jsMaskedPath: Option[JsMaskedPath]): Either[List[JsMaskedPathError], KafkaDto] = sf._2(value)
+          override def convert(value: OutDtoWithErrors[IN], jsMaskedPath: Option[JsMaskedPath]): Either[List[JsMaskedPathError], KafkaDto] = sf._2(value, sf._1.jsMaskedPath)
         }
 
 

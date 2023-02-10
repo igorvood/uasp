@@ -8,10 +8,15 @@ import ru.vtb.uasp.common.service.dto.{KafkaDto, KafkaStrDto}
 
 object JsonConvertOutService extends Serializable {
 
-  def serializeToBytes[T <: Identity](value: T, maskedRule: Option[JsMaskedPath])(implicit oWrites: OWrites[T]): Either[List[JsMaskedPathError], KafkaDto] = {
+  def serializeToBytesIdentity[T <: Identity](value: T, maskedRule: Option[JsMaskedPath])(implicit oWrites: OWrites[T]): Either[List[JsMaskedPathError], KafkaDto] = {
     serializeToStr(value, maskedRule)
       .map(d => KafkaDto(d.id.getBytes(), d.value.getBytes()))
   }
+
+  def serializeToBytes[T](value: T, maskedRule: Option[JsMaskedPath])(implicit oWrites: OWrites[T]): Either[List[JsMaskedPathError], KafkaDto] = {
+    value.serializeToBytes(maskedRule)
+  }
+
 
   def serializeToStr[T <: Identity](value: T, maskedRule: Option[JsMaskedPath])(implicit oWrites: OWrites[T]): Either[List[JsMaskedPathError], KafkaStrDto] = {
     serializeToStr(value.id, value, maskedRule)
@@ -33,9 +38,9 @@ object JsonConvertOutService extends Serializable {
   implicit class IdentityPredef[T <: Identity](val self: T) extends AnyVal {
 
     // TODO этот метод должен быть виден только в этой либе
-    def serializeToBytes(implicit oWrites: OWrites[T]): KafkaDto = JsonConvertOutService.serializeToBytes(self, None).right.get
+    def serializeToBytes(implicit oWrites: OWrites[T]): KafkaDto = JsonConvertOutService.serializeToBytesIdentity(self, None).right.get
 
-    def serializeToBytes(maskedRule: Option[JsMaskedPath])(implicit oWrites: OWrites[T]): Either[List[JsMaskedPathError], KafkaDto] = JsonConvertOutService.serializeToBytes(self, maskedRule)
+    def serializeToBytes(maskedRule: Option[JsMaskedPath])(implicit oWrites: OWrites[T]): Either[List[JsMaskedPathError], KafkaDto] = JsonConvertOutService.serializeToBytesIdentity(self, maskedRule)
 
     def serializeToStr(maskedRule: Option[JsMaskedPath])(implicit oWrites: OWrites[T]): Either[List[JsMaskedPathError], KafkaStrDto] = JsonConvertOutService.serializeToStr(self, maskedRule)
 
@@ -61,6 +66,5 @@ object JsonConvertOutService extends Serializable {
     }
 
   }
-
 
 }
