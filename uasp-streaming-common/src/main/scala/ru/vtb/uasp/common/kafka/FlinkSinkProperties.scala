@@ -2,8 +2,9 @@ package ru.vtb.uasp.common.kafka
 
 import org.apache.flink.streaming.api.functions.sink.SinkFunction
 import org.apache.flink.streaming.connectors.kafka.FlinkKafkaProducer
-import ru.vtb.uasp.common.mask.dto.JsMaskedPath
-import ru.vtb.uasp.common.service.dto.KafkaDto
+import ru.vtb.uasp.common.abstraction.{AbstractDtoMaskedSerializeService, AbstractMaskedSerializeService, AbstractOutDtoWithErrorsMaskedSerializeService}
+import ru.vtb.uasp.common.mask.dto.{JsMaskedPath, JsMaskedPathError}
+import ru.vtb.uasp.common.service.dto.{KafkaDto, OutDtoWithErrors}
 import ru.vtb.uasp.common.utils.config.PropertyUtil._
 import ru.vtb.uasp.common.utils.config.kafka.KafkaPrdProperty
 import ru.vtb.uasp.common.utils.config.{AllApplicationProperties, ConfigurationInitialise, PropertyCombiner, ReadConfigErrors}
@@ -18,6 +19,13 @@ case class FlinkSinkProperties(
 
 
   def createSinkFunction[T](factory: FlinkSinkProperties => SinkFunction[T]): SinkFunction[T] = factory(this)
+
+
+  def maskedSerializeService[IN](f: IN => Either[List[JsMaskedPathError], KafkaDto]): AbstractDtoMaskedSerializeService[IN] =
+
+        new AbstractDtoMaskedSerializeService[IN](jsMaskedPath){
+          override def convert(value: IN, jsMaskedPath: Option[JsMaskedPath]): Either[List[JsMaskedPathError], KafkaDto] = f(value)
+        }
 
 }
 
