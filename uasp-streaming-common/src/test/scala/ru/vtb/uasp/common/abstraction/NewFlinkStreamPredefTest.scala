@@ -6,8 +6,11 @@ import org.scalatest.flatspec.AnyFlatSpec
 import play.api.libs.json.Format.GenericFormat
 import play.api.libs.json.OFormat.oFormatFromReadsAndOWrites
 import ru.vtb.uasp.common.abstraction.MiniPipeLineTrait.valuesTestDataDto
-import ru.vtb.uasp.common.abstraction.NewFlinkStreamPredefTest.{dlqProcessFunctionError, flinkSinkProperties, flinkSinkPropertiesDlq, listTestDataDto, outDtoWithErrors, serviceDataDto, testDataDto}
+import ru.vtb.uasp.common.abstraction.NewFlinkStreamPredefTest.{dlqProcessFunctionError, flinkSinkProperties, flinkSinkPropertiesDlq, jsMaskedPath, listTestDataDto, outDtoWithErrorsFun, serviceDataDto, testDataDto}
 import ru.vtb.uasp.common.kafka.FlinkSinkProperties
+import ru.vtb.uasp.common.mask.MaskedPredef.PathFactory
+import ru.vtb.uasp.common.mask.MaskedStrPathWithFunName
+import ru.vtb.uasp.common.mask.dto.JsMaskedPath
 import ru.vtb.uasp.common.service.JsonConvertInService
 import ru.vtb.uasp.common.service.dto.{KafkaDto, OutDtoWithErrors, ServiceDataDto}
 import ru.vtb.uasp.common.utils.config.kafka.KafkaPrdProperty
@@ -32,7 +35,7 @@ class NewFlinkStreamPredefTest extends AnyFlatSpec with MiniPipeLineTrait with S
     assertResult(1)(dtoes.size)
   }
 
-  "NewFlinkStreamPredef.processAndDlqSinkWithMetric " should " OK" in {
+  "NewFlinkStreamPredef.processAndDlqSinkWithMetric Ошибка, но маскирование не настроено" should " OK" in {
 
     val flinkPipe: DataStream[TestDataDto] => Unit = { ds =>
       val value = NewFlinkStreamPredef.processAndDlqSinkWithMetric[TestDataDto, TestDataDto](
@@ -42,8 +45,6 @@ class NewFlinkStreamPredefTest extends AnyFlatSpec with MiniPipeLineTrait with S
         Some(flinkSinkPropertiesDlq),
         producerFactory[KafkaDto],
         new TestDataDtoMaskedSerializeService(jsMaskedPath = None))
-
-      value.print()
     }
 
     pipeRun(listTestDataDto, flinkPipe)
@@ -56,8 +57,35 @@ class NewFlinkStreamPredefTest extends AnyFlatSpec with MiniPipeLineTrait with S
     val dtoes = topicDataArray[KafkaDto](flinkSinkPropertiesDlq)
     assertResult(1)(dtoes.size)
     val either = JsonConvertInService.deserialize[OutDtoWithErrors[TestDataDto]](dtoes.head.value)(OutDtoWithErrors.outDtoWithErrorsJsonReads, serviceDataDto)
-    val unit = outDtoWithErrors(Some(testDataDto))
+    val unit = outDtoWithErrorsFun(Some(testDataDto))
     assertResult(unit)( either.right.get)
+
+  }
+
+  "NewFlinkStreamPredef.processAndDlqSinkWithMetric Ошибка, маскирование настроено" should " OK" in {
+
+    val flinkPipe: DataStream[TestDataDto] => Unit = { ds =>
+      val value = NewFlinkStreamPredef.processAndDlqSinkWithMetric[TestDataDto, TestDataDto](
+        ds,
+        serviceData = serviceDataDto,
+        dlqProcessFunctionError,
+        Some(flinkSinkPropertiesDlq),
+        producerFactory[KafkaDto],
+        new TestDataDtoMaskedSerializeService(jsMaskedPath = jsMaskedPath))
+    }
+
+    pipeRun(listTestDataDto, flinkPipe)
+
+    assertResult(1)(valuesTestDataDto.size)
+
+    val dtoes1 = topicDataArray[TestDataDto](flinkSinkProperties)
+    assertResult(0)(dtoes1.size)
+
+    val dtoes = topicDataArray[KafkaDto](flinkSinkPropertiesDlq)
+    assertResult(1)(dtoes.size)
+    val outDto: OutDtoWithErrors[TestDataDto] = JsonConvertInService.deserialize[OutDtoWithErrors[TestDataDto]](dtoes.head.value)(OutDtoWithErrors.outDtoWithErrorsJsonReads, serviceDataDto).right.get
+    val outDtoWith = outDtoWithErrorsFun(Some(testDataDto.copy(srt = "***MASKED***")))
+    assertResult(outDtoWith)( outDto)
 
   }
 
@@ -72,12 +100,15 @@ object NewFlinkStreamPredefTest{
   protected val flinkSinkProperties = producerProps("topicName")
   protected val flinkSinkPropertiesDlq = producerProps("dlq_topicName")
 
+
+  protected val  jsMaskedPath = Some(List(MaskedStrPathWithFunName("data.srt", "ru.vtb.uasp.common.mask.fun.StringMaskAll")).toJsonPath().right.get)
+
   protected implicit val serviceDataDto = ServiceDataDto("1", "2", "3")
 
-  protected def outDtoWithErrors[IN](in: Some[IN])= OutDtoWithErrors[IN](serviceDataDto, Some(this.getClass.getName),List("test error"), in)
+  protected def outDtoWithErrorsFun[IN](in: Some[IN])= OutDtoWithErrors[IN](serviceDataDto, Some(this.getClass.getName),List("test error"), in)
 
   protected val dlqProcessFunctionError: DlqProcessFunction[TestDataDto, TestDataDto, OutDtoWithErrors[TestDataDto]] = new DlqProcessFunction[TestDataDto, TestDataDto, OutDtoWithErrors[TestDataDto]] {
-    override def processWithDlq(dto: TestDataDto): Either[OutDtoWithErrors[TestDataDto], TestDataDto] = Left(outDtoWithErrors(Some(dto)))
+    override def processWithDlq(dto: TestDataDto): Either[OutDtoWithErrors[TestDataDto], TestDataDto] = Left(outDtoWithErrorsFun(Some(dto)))
   }
 
   private def producerProps(topicName: String) = {
