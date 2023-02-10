@@ -184,6 +184,21 @@ class NewFlinkStreamPredefTest extends AnyFlatSpec with MiniPipeLineTrait with S
 
   }
 
+  private def processWithMaskedDqlErrMasked(flinkPipe: DataStream[TestDataDto] => Unit) = {
+    pipeRun(listTestDataDto, flinkPipe)
+
+    assertResult(1)(valuesTestDataDto.size)
+
+    val dtoes1 = topicDataArray[TestDataDto](flinkSinkProperties)
+    assertResult(0)(dtoes1.size)
+
+    val dtoes = topicDataArray[KafkaDto](flinkSinkPropertiesDlq)
+    assertResult(1)(dtoes.size)
+    val outDto: OutDtoWithErrors[TestDataDto] = JsonConvertInService.deserialize[OutDtoWithErrors[TestDataDto]](dtoes.head.value)(OutDtoWithErrors.outDtoWithErrorsJsonReads, serviceDataDto).right.get
+    val outDtoWith = outDtoWithErrorsFun(Some(testDataDto.copy(srt = "***MASKED***")))
+    assertResult(outDtoWith)(outDto)
+  }
+
   "maskedProducerF Ошибка при маскировании основного сообщения, маскирование DLQ без ошибки " should " OK" in {
 
     val flinkPipe: DataStream[TestDataDto] => Unit = { ds =>
@@ -270,20 +285,7 @@ class NewFlinkStreamPredefTest extends AnyFlatSpec with MiniPipeLineTrait with S
     assertResult(listTestDataDto.head.copy(srt = "***MASKED***"))(outDto)
   }
 
-  private def processWithMaskedDqlErrMasked(flinkPipe: DataStream[TestDataDto] => Unit) = {
-    pipeRun(listTestDataDto, flinkPipe)
 
-    assertResult(1)(valuesTestDataDto.size)
-
-    val dtoes1 = topicDataArray[TestDataDto](flinkSinkProperties)
-    assertResult(0)(dtoes1.size)
-
-    val dtoes = topicDataArray[KafkaDto](flinkSinkPropertiesDlq)
-    assertResult(1)(dtoes.size)
-    val outDto: OutDtoWithErrors[TestDataDto] = JsonConvertInService.deserialize[OutDtoWithErrors[TestDataDto]](dtoes.head.value)(OutDtoWithErrors.outDtoWithErrorsJsonReads, serviceDataDto).right.get
-    val outDtoWith = outDtoWithErrorsFun(Some(testDataDto.copy(srt = "***MASKED***")))
-    assertResult(outDtoWith)(outDto)
-  }
 }
 
 object NewFlinkStreamPredefTest {
