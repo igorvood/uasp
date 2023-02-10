@@ -44,7 +44,8 @@ object JsonConvertOutService extends Serializable {
   implicit class JsonPredef[T](val self: T) extends AnyVal {
 
     // TODO этот метод должен быть виден только в этой либе
-    def serializeToBytes(implicit oWrites: OWrites[T]): KafkaDto = {
+    @deprecated("Не используй этот метод его нужно сделать не доступным для использования ")
+    private[common] def serializeToBytes(implicit oWrites: OWrites[T]): KafkaDto = {
       serializeToBytes(None).right.get
     }
 
