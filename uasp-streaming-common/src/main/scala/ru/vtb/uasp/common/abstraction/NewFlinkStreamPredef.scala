@@ -63,58 +63,8 @@ object NewFlinkStreamPredef {
 
 
 
-
-//    val value1 = processAndDlqSinkWithMetric(
-//      self,
-//      serviceData,
-//      new DlqProcessFunction[IN,IN, OutDtoWithErrors[IN]]() {
-//        override def processWithDlq(dto: IN): Either[OutDtoWithErrors[IN], IN] = {
-//          val errorsOrIn = abstractOutDtoWithErrorsSerializeService.map(dto)
-//          val value2 = errorsOrIn match {
-//            case Left(value) => Left(OutDtoWithErrors[IN](serviceData, Some(this.getClass.getName), value.map(d=>d.error) ::: List("asd"), None))
-//            case Right(value) => Right(value)
-//          }
-//          value2
-//
-//        }
-//      },
-//      sinkDlqFunction,
-//      producerFactory,
-//
-//
-//
-//    )
-//
-//
-//    val value = self
-//      .map(d => abstractOutDtoWithErrorsSerializeService.map(d))
-
     ???
   }
-
-//  def createProducerWithMetric[IN: TypeInformation, OUT: TypeInformation](self: DataStream[IN],
-//                                                           serviceData: ServiceDataDto,
-//                                                           sinkProperty: FlinkSinkProperties,
-//                                                            producerFactory: FlinkSinkProperties => SinkFunction[OUT],
-//                                                           sinkDlqFunction: Option[FlinkSinkProperties],
-//
-//                                                           abstractOutDtoWithErrorsSerializeService: AbstractMaskedSerializeService[IN, OUT]
-//                                                         ): DataStreamSink[OUT] = {
-//    val value1 =
-//      self
-//        .map(abstractOutDtoWithErrorsSerializeService)
-//
-//
-//
-//    val metricsFunction = sinkProperty.prometheusMetric[IN](serviceData)
-//    val value = self
-//      .map[IN](metricsFunction)
-//      .addSink(sinkProperty.createSinkFunction(producerFactory))
-//    value
-//  }
-
-
-
 
   def processAndDlqSinkWithMetric[IN: TypeInformation, OUT: TypeInformation](self: DataStream[IN],
                                                                              serviceData: ServiceDataDto,
