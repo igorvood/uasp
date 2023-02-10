@@ -72,6 +72,8 @@ class NewFlinkStreamPredefTest extends AnyFlatSpec with MiniPipeLineTrait with S
         Some(flinkSinkPropertiesDlq),
         producerFactory[KafkaDto],
         new TestDataDtoMaskedSerializeService(jsMaskedPath = None))
+
+      NewFlinkStreamPredef.privateCreateProducerWithMetric(value, serviceData = serviceDataDto, flinkSinkProperties, producerFactory)
     }
 
     pipeRun(listTestDataDto, flinkPipe)
@@ -79,13 +81,12 @@ class NewFlinkStreamPredefTest extends AnyFlatSpec with MiniPipeLineTrait with S
     assertResult(1)(valuesTestDataDto.size)
 
     val dtoes1 = topicDataArray[TestDataDto](flinkSinkProperties)
-    assertResult(0)(dtoes1.size)
+    assertResult(1)(dtoes1.size)
+
+    assertResult(testDataDto)(dtoes1.head)
 
     val dtoes = topicDataArray[KafkaDto](flinkSinkPropertiesDlq)
-    assertResult(1)(dtoes.size)
-    val either = JsonConvertInService.deserialize[OutDtoWithErrors[TestDataDto]](dtoes.head.value)(OutDtoWithErrors.outDtoWithErrorsJsonReads, serviceDataDto)
-    val unit = outDtoWithErrorsFun(Some(testDataDto))
-    assertResult(unit)( either.right.get)
+    assertResult(0)(dtoes.size)
 
   }
 
