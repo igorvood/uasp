@@ -106,10 +106,6 @@ class NewFlinkStreamPredefTest extends AnyFlatSpec with MiniPipeLineTrait with S
 
   "processWithMaskedDqlF нет ошибки, но маскирование не настроено" should " OK" in {
 
-    val service = new TestDataDtoMaskedSerializeService(jsMaskedPath = None)
-
-    val value1: MaskProducerDTO[OutDtoWithErrors[TestDataDto], KafkaDto] = flinkSinkPropertiesDlq.maskProducer[OutDtoWithErrors[TestDataDto]](s => s.serializeToBytes(jsMaskedPath))
-
     val flinkPipe: DataStream[TestDataDto] => Unit = { ds =>
 
       val value = ds.processWithMaskedDqlF(serviceDataDto, dlqProcessFunction, Some(flinkSinkPropertiesDlq -> (s => s.serializeToBytes(jsMaskedPath))), producerFactory[KafkaDto])
@@ -123,10 +119,9 @@ class NewFlinkStreamPredefTest extends AnyFlatSpec with MiniPipeLineTrait with S
 
   "processWithMaskedDql нет ошибки, но маскирование не настроено" should " OK" in {
 
-    val service = new TestDataDtoMaskedSerializeService(jsMaskedPath = None)
-
     val flinkPipe: DataStream[TestDataDto] => Unit = { ds =>
 
+      val service = new TestDataDtoMaskedSerializeService(jsMaskedPath )
       val value = ds.processWithMaskedDql(serviceDataDto, dlqProcessFunction, Some(flinkSinkPropertiesDlq -> service), producerFactory[KafkaDto])
 
       NewFlinkStreamPredef.privateCreateProducerWithMetric(value, serviceData = serviceDataDto, flinkSinkProperties, producerFactory)
@@ -153,7 +148,6 @@ class NewFlinkStreamPredefTest extends AnyFlatSpec with MiniPipeLineTrait with S
 
   "NewFlinkStreamPredef.processAndDlqSinkWithMetric Ошибка, маскирование настроено" should " OK" in {
 
-    val service = new TestDataDtoMaskedSerializeService(jsMaskedPath = jsMaskedPath)
     val flinkPipe: DataStream[TestDataDto] => Unit = { ds =>
 
       val value = NewFlinkStreamPredef.processAndDlqSinkWithMetric[TestDataDto, TestDataDto](
@@ -171,7 +165,6 @@ class NewFlinkStreamPredefTest extends AnyFlatSpec with MiniPipeLineTrait with S
 
   "processWithMaskedDqlF Ошибка, маскирование настроено" should " OK" in {
 
-    val service = new TestDataDtoMaskedSerializeService(jsMaskedPath = jsMaskedPath)
     val flinkPipe: DataStream[TestDataDto] => Unit = { ds =>
       val value1 = ds.processWithMaskedDqlF(serviceDataDto, dlqProcessFunctionError, Some(flinkSinkPropertiesDlq.copy(jsMaskedPath = jsMaskedPath) -> (s => s.serializeToBytes(jsMaskedPath))), producerFactory[KafkaDto])
     }
@@ -182,7 +175,7 @@ class NewFlinkStreamPredefTest extends AnyFlatSpec with MiniPipeLineTrait with S
 
   "processWithMaskedDql Ошибка, маскирование настроено" should " OK" in {
 
-    val service = new TestDataDtoMaskedSerializeService(jsMaskedPath = jsMaskedPath)
+    val service = new TestDataDtoMaskedSerializeService(jsMaskedPath )
     val flinkPipe: DataStream[TestDataDto] => Unit = { ds =>
       val value1 = ds.processWithMaskedDql(serviceDataDto, dlqProcessFunctionError, Some(flinkSinkPropertiesDlq.copy(jsMaskedPath = jsMaskedPath) -> service), producerFactory[KafkaDto])
     }
