@@ -36,7 +36,12 @@ object NewFlinkStreamPredef {
         val errorsOrDto = maskedFun(dto, sinkProperty.jsMaskedPath)
 
         val either = errorsOrDto match {
-          case Left(value) => Left(OutDtoWithErrors[IN](serviceData, Some(this.getClass.getName), s"Unable to mask dto ${dto.getClass.getName}. Masked rule ${sinkProperty.jsMaskedPath}" :: value.map(q => q.error), Some(dto)))
+          case Left(value) => Left(OutDtoWithErrors[IN](
+            serviceDataDto = serviceData,
+            errorPosition = Some(this.getClass.getName),
+            errors = s"createProducerWithMetric: Unable to mask dto ${dto.getClass.getName}. Masked rule ${sinkProperty.jsMaskedPath}" :: value.map(q => q.error),
+            data = Some(dto))
+          )
           case Right(value) => Right(value)
         }
 
@@ -77,7 +82,7 @@ object NewFlinkStreamPredef {
                 val value2 = new OutDtoWithErrors[IN](
                   serviceDataDto = serviceData,
                   errorPosition = Some(this.getClass.getName),
-                  errors = value.map(q => q.error) ::: List("Error when try masked value"),
+                  errors = s"processAndDlqSinkWithMetric: Unable to mask dto ${d.getClass.getName}. Masked rule ${maskedDLQSerializeService.jsMaskedPath}" :: value.map(q => q.error) ,
                   data = None)
                 maskedDLQSerializeService.convert(value2, maskedDLQSerializeService.jsMaskedPath).right.get
               case Right(masked) => masked
