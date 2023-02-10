@@ -7,7 +7,7 @@ import play.api.libs.json.Format.GenericFormat
 import play.api.libs.json.OFormat.oFormatFromReadsAndOWrites
 import ru.vtb.uasp.common.abstraction.MiniPipeLineTrait.valuesTestDataDto
 import ru.vtb.uasp.common.abstraction.NewFlinkStreamPredefTest.{dlqProcessFunction, dlqProcessFunctionError, flinkSinkProperties, flinkSinkPropertiesDlq, jsMaskedPath, listTestDataDto, outDtoWithErrorsFun, serviceDataDto, testDataDto}
-import ru.vtb.uasp.common.kafka.FlinkSinkProperties
+import ru.vtb.uasp.common.kafka.{FlinkSinkProperties, MaskProducerDTO}
 import ru.vtb.uasp.common.mask.MaskedPredef.PathFactory
 import ru.vtb.uasp.common.mask.MaskedStrPathWithFunName
 import ru.vtb.uasp.common.mask.dto.JsMaskedPath
@@ -68,7 +68,11 @@ class NewFlinkStreamPredefTest extends AnyFlatSpec with MiniPipeLineTrait with S
 
     val service = new TestDataDtoMaskedSerializeService(jsMaskedPath = None)
 
+    val value1: MaskProducerDTO[OutDtoWithErrors[TestDataDto], KafkaDto] = flinkSinkPropertiesDlq.maskProducer[OutDtoWithErrors[TestDataDto]](s => s.serializeToBytes(jsMaskedPath))
+
     val flinkPipe: DataStream[TestDataDto] => Unit = { ds =>
+
+
 
       val value = NewFlinkStreamPredef.processAndDlqSinkWithMetric[TestDataDto, TestDataDto](
         ds,
