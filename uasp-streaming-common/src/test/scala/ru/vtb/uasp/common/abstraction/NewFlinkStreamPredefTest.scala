@@ -46,7 +46,6 @@ class NewFlinkStreamPredefTest extends AnyFlatSpec with MiniPipeLineTrait with S
         dlqProcessFunctionError,
         Some(flinkSinkPropertiesDlq -> (s => s.serializeToBytes(None))),
         producerFactory[KafkaDto],
-//        service
       )
     }
 

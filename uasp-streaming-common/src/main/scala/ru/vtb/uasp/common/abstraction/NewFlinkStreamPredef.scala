@@ -71,7 +71,6 @@ object NewFlinkStreamPredef {
                                                                              process: DlqProcessFunction[IN, OUT, OutDtoWithErrors[IN]],
                                                                              sinkDlqFunction: Option[(FlinkSinkProperties, OutDtoWithErrors[IN] => Either[List[JsMaskedPathError], KafkaDto])],
                                                                              producerFactory: FlinkSinkProperties => SinkFunction[KafkaDto],
-//                                                                             abstractOutDtoWithErrorsSerializeService: AbstractOutDtoWithErrorsMaskedSerializeService[IN]
                                                                             ): DataStream[OUT] = {
 
 
@@ -81,8 +80,9 @@ object NewFlinkStreamPredef {
       .process[OUT](process)
     sinkDlqFunction
       .foreach { sf => {
-        val maskedDLQSerializeService: AbstractOutDtoWithErrorsMaskedSerializeService[IN] = new AbstractOutDtoWithErrorsMaskedSerializeService[IN](sf._1.jsMaskedPath) {
-          override def convert(value: OutDtoWithErrors[IN], jsMaskedPath: Option[JsMaskedPath]): Either[List[JsMaskedPathError], KafkaDto] = sf._2(value)
+        val maskedDLQSerializeService: AbstractOutDtoWithErrorsMaskedSerializeService[IN] = new AbstractOutDtoWithErrorsMaskedSerializeService[IN]( sf._1.jsMaskedPath) {
+
+                    override def convert(value: OutDtoWithErrors[IN], jsMaskedPath: Option[JsMaskedPath]): Either[List[JsMaskedPathError], KafkaDto] = sf._2(value)
         }
 
 
@@ -91,7 +91,7 @@ object NewFlinkStreamPredef {
           .getSideOutput(process.dlqOutPut)
         val dlqStream = value1
           .map { d: OutDtoWithErrors[IN] => {
-            val errorsOrDto: Either[List[JsMaskedPathError], KafkaDto] = maskedDLQSerializeService.map(d)
+            val errorsOrDto: Either[List[JsMaskedPathError], KafkaDto] = maskedDLQSerializeService.convert(d, maskedDLQSerializeService.jsMaskedPath)
             errorsOrDto match {
               case Left(value) =>
                 val value2 = new OutDtoWithErrors[IN](
@@ -99,7 +99,7 @@ object NewFlinkStreamPredef {
                   errorPosition = Some(this.getClass.getName),
                   errors = value.map(q => q.error) ::: List("Error when try masked value"),
                   data = None)
-                maskedDLQSerializeService.map(value2).right.get
+                maskedDLQSerializeService.convert(value2, maskedDLQSerializeService.jsMaskedPath).right.get
               case Right(masked) => masked
             }
           }
