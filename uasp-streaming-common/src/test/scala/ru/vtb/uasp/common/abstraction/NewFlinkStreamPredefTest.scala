@@ -6,7 +6,7 @@ import org.scalatest.flatspec.AnyFlatSpec
 import play.api.libs.json.OFormat.oFormatFromReadsAndOWrites
 import ru.vtb.uasp.common.abstraction.FlinkStreamProducerPredef.StreamFactory
 import ru.vtb.uasp.common.abstraction.MiniPipeLineTrait.valuesTestDataDto
-import ru.vtb.uasp.common.abstraction.NewFlinkStreamPredefTest.{dlqProcessFunction, dlqProcessFunctionError, flinkSinkProperties, flinkSinkPropertiesDlq, jsMaskedPath, listTestDataDto, outDtoWithErrorsFun, serviceDataDto, testDataDto}
+import ru.vtb.uasp.common.abstraction.NewFlinkStreamPredefTest.{dlqProcessFunction, dlqProcessFunctionError, flinkSinkProperties, flinkSinkPropertiesDlq, jsMaskedPath, jsMaskedPathErr, listTestDataDto, outDtoWithErrorsFun, serviceDataDto, testDataDto}
 import ru.vtb.uasp.common.kafka.{FlinkSinkProperties, MaskProducerDTO}
 import ru.vtb.uasp.common.mask.MaskedPredef.PathFactory
 import ru.vtb.uasp.common.mask.MaskedStrPathWithFunName
@@ -184,6 +184,42 @@ class NewFlinkStreamPredefTest extends AnyFlatSpec with MiniPipeLineTrait with S
 
   }
 
+  "maskedProducerF Ошибка, маскирование настроено" should " OK" in {
+
+    val flinkPipe: DataStream[TestDataDto] => Unit = { ds =>
+
+      val value = ds.maskedProducerF(
+        serviceDataDto,
+        flinkSinkProperties,
+        { s => s.serializeToBytes(jsMaskedPathErr) },
+        Some(flinkSinkPropertiesDlq.copy(jsMaskedPath = jsMaskedPath) -> { s => s.serializeToBytes(jsMaskedPath) }),
+        producerFactory[KafkaDto]
+      )
+
+
+    }
+    pipeRun(listTestDataDto, flinkPipe)
+
+    assertResult(1)(valuesTestDataDto.size)
+
+    val kafkaDtos = topicDataArray[KafkaDto](flinkSinkPropertiesDlq)
+    assertResult(1)(kafkaDtos.size)
+    val outDto: OutDtoWithErrors[TestDataDto] = JsonConvertInService.deserialize[OutDtoWithErrors[TestDataDto]](kafkaDtos.head.value)(OutDtoWithErrors.outDtoWithErrorsJsonReads, serviceDataDto).right.get
+
+    val outDtoWith = outDtoWithErrorsFun(Some(testDataDto.copy(srt = "***MASKED***")))
+      .copy(
+        errorPosition = outDto.errorPosition,
+        errors = List(
+          "Unable to mask dto ru.vtb.uasp.common.abstraction.TestDataDto",
+          "Unable to masked value wrapper class  class play.api.libs.json.JsString with function -> class ru.vtb.uasp.common.mask.dto.JsNumberMaskedPathValue"
+        )
+      )
+    assertResult(outDtoWith)(outDto)
+
+
+
+  }
+
 
   private def processWithMaskedDqlErrMasked(flinkPipe: DataStream[TestDataDto] => Unit) = {
     pipeRun(listTestDataDto, flinkPipe)
@@ -211,6 +247,7 @@ object NewFlinkStreamPredefTest {
 
 
   protected val jsMaskedPath = Some(List(MaskedStrPathWithFunName("data.srt", "ru.vtb.uasp.common.mask.fun.StringMaskAll")).toJsonPath().right.get)
+  protected val jsMaskedPathErr = Some(List(MaskedStrPathWithFunName("srt", "ru.vtb.uasp.common.mask.fun.NumberMaskAll")).toJsonPath().right.get)
 
   protected implicit val serviceDataDto = ServiceDataDto("1", "2", "3")
 

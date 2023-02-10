@@ -55,7 +55,7 @@ object MaskedPredef {
       case (JsString(value), JsStringMaskedPathValue(masked)) => masked.mask(value)
       case (JsNumber(value), JsNumberMaskedPathValue(masked)) => masked.mask(value)
       case (JsBoolean(value), JsBooleanMaskedPathValue(masked)) => masked.mask(value)
-      case (q, w) => throw new IllegalArgumentException(s"Unable to masked value '$q' wrapper class  ${q.getClass} with function -> ${w.getClass}")
+      case (q, w) => throw new IllegalArgumentException(s"Unable to masked value wrapper class  ${q.getClass} with function -> ${w.getClass}")
     }
     value1
   }

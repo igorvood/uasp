@@ -6,7 +6,7 @@ trait MaskedFun[-IN, +T <: JsValue] {
 
   def mask(in: IN): T
 
-  val name = this.getClass.getName
+  val name: String = this.getClass.getName
 
 }
 

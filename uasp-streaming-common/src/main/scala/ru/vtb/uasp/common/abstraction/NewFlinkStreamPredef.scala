@@ -7,6 +7,7 @@ import org.apache.flink.streaming.api.functions.sink.SinkFunction
 import org.apache.flink.streaming.api.scala.DataStream
 import ru.vtb.uasp.common.kafka.FlinkSinkProperties
 import ru.vtb.uasp.common.mask.dto.{JsMaskedPath, JsMaskedPathError}
+import ru.vtb.uasp.common.service.JsonConvertOutService.JsonPredef
 import ru.vtb.uasp.common.service.dto.{KafkaDto, OutDtoWithErrors, ServiceDataDto}
 
 object NewFlinkStreamPredef {
@@ -36,7 +37,7 @@ object NewFlinkStreamPredef {
         val errorsOrDto = maskedFun(dto)
 
         val either = errorsOrDto match {
-          case Left(value) => Left(OutDtoWithErrors[IN](serviceData, Some(this.getClass.getName), value.map(q => q.error) ::: List("asdsad"), Some(dto)))
+          case Left(value) => Left(OutDtoWithErrors[IN](serviceData, Some(this.getClass.getName), s"Unable to mask dto ${dto.getClass.getName}" :: value.map(q => q.error), Some(dto)))
           case Right(value) => Right(value)
         }
 
