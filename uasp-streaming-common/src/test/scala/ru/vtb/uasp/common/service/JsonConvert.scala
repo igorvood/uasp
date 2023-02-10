@@ -2,6 +2,7 @@ package ru.vtb.uasp.common.service
 
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should
+import play.api.libs.json.{JsObject, Json}
 import ru.vtb.uasp.common.dto.UaspDto
 import ru.vtb.uasp.common.service.JsonConvert.{jsonStr, uasp_dto}
 import ru.vtb.uasp.common.service.dto.{OutDtoWithErrors, ServiceDataDto}
@@ -28,6 +29,14 @@ class JsonConvert extends AnyFlatSpec with should.Matchers {
     val newUasp = JsonConvertInService.deserialize[UaspDto](dtoBytes.value)
 
     assertResult(uasp_dto)(newUasp.right.get)
+  }
+
+  it should " Некоторые сервисы работают с JsObject, как с ДТО если перевести  JsObject в JsObject должно получиться тоже самое " in {
+    val jsObject: JsObject = Json.toJsObject(uasp_dto)
+
+    val jsObject1 = Json.toJsObject(jsObject)
+    assertResult(jsObject)(jsObject1)
+
   }
 
   it should "be deserialized with list err" in {
