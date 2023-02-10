@@ -6,7 +6,7 @@ import org.scalatest.flatspec.AnyFlatSpec
 import play.api.libs.json.OFormat.oFormatFromReadsAndOWrites
 import ru.vtb.uasp.common.abstraction.FlinkStreamProducerPredef.StreamFactory
 import ru.vtb.uasp.common.abstraction.MiniPipeLineTrait.valuesTestDataDto
-import ru.vtb.uasp.common.abstraction.NewFlinkStreamPredefTest._
+import ru.vtb.uasp.common.abstraction.FlinkKafkaFunTest._
 import ru.vtb.uasp.common.kafka.{FlinkSinkProperties, MaskProducerDTO}
 import ru.vtb.uasp.common.mask.MaskedPredef.PathFactory
 import ru.vtb.uasp.common.mask.MaskedStrPathWithFunName
@@ -18,13 +18,13 @@ import ru.vtb.uasp.common.utils.config.kafka.KafkaPrdProperty
 import java.util.Properties
 import scala.collection.JavaConverters.mapAsJavaMapConverter
 
-class NewFlinkStreamPredefTest extends AnyFlatSpec with MiniPipeLineTrait with Serializable {
+class FlinkKafkaFunTest extends AnyFlatSpec with MiniPipeLineTrait with Serializable {
 
 
   "NewFlinkStreamPredef.createProducerWithMetric " should " OK" in {
 
     val flinkPipe: DataStream[TestDataDto] => Unit = { ds =>
-      NewFlinkStreamPredef.privateCreateProducerWithMetric(ds, serviceData = serviceDataDto, flinkSinkProperties, producerFactory)
+      FlinkKafkaFun.privateCreateProducerWithMetric(ds, serviceData = serviceDataDto, flinkSinkProperties, producerFactory)
     }
 
     pipeRun(listTestDataDto, flinkPipe)
@@ -37,7 +37,7 @@ class NewFlinkStreamPredefTest extends AnyFlatSpec with MiniPipeLineTrait with S
   "NewFlinkStreamPredef.processAndDlqSinkWithMetric Ошибка, но маскирование не настроено" should " OK" in {
 
     val flinkPipe: DataStream[TestDataDto] => Unit = { ds =>
-      val value = NewFlinkStreamPredef.processAndDlqSinkWithMetric[TestDataDto, TestDataDto](
+      val value = FlinkKafkaFun.processAndDlqSinkWithMetric[TestDataDto, TestDataDto](
         ds,
         serviceData = serviceDataDto,
         dlqProcessFunctionError,
@@ -88,7 +88,7 @@ class NewFlinkStreamPredefTest extends AnyFlatSpec with MiniPipeLineTrait with S
     val flinkPipe: DataStream[TestDataDto] => Unit = { ds =>
 
 
-      val value = NewFlinkStreamPredef.processAndDlqSinkWithMetric[TestDataDto, TestDataDto](
+      val value = FlinkKafkaFun.processAndDlqSinkWithMetric[TestDataDto, TestDataDto](
         ds,
         serviceData = serviceDataDto,
         dlqProcessFunction,
@@ -97,7 +97,7 @@ class NewFlinkStreamPredefTest extends AnyFlatSpec with MiniPipeLineTrait with S
 
       )
 
-      NewFlinkStreamPredef.privateCreateProducerWithMetric(value, serviceData = serviceDataDto, flinkSinkProperties, producerFactory)
+      FlinkKafkaFun.privateCreateProducerWithMetric(value, serviceData = serviceDataDto, flinkSinkProperties, producerFactory)
     }
 
     processWithMaskedDqlNoErrNoMasked(flinkPipe)
@@ -110,7 +110,7 @@ class NewFlinkStreamPredefTest extends AnyFlatSpec with MiniPipeLineTrait with S
 
       val value = ds.processWithMaskedDqlF(serviceDataDto, dlqProcessFunction, Some(flinkSinkPropertiesDlq -> serializeToBytes[OutDtoWithErrors[TestDataDto]]), producerFactory[KafkaDto])
 
-      NewFlinkStreamPredef.privateCreateProducerWithMetric(value, serviceData = serviceDataDto, flinkSinkProperties, producerFactory)
+      FlinkKafkaFun.privateCreateProducerWithMetric(value, serviceData = serviceDataDto, flinkSinkProperties, producerFactory)
     }
 
     processWithMaskedDqlNoErrNoMasked(flinkPipe)
@@ -124,7 +124,7 @@ class NewFlinkStreamPredefTest extends AnyFlatSpec with MiniPipeLineTrait with S
       val service = new TestDataDtoMaskedSerializeServiceDLQ(jsMaskedPathDLQOk )
       val value = ds.processWithMaskedDql(serviceDataDto, dlqProcessFunction, Some(flinkSinkPropertiesDlq -> service), producerFactory[KafkaDto])
 
-      NewFlinkStreamPredef.privateCreateProducerWithMetric(value, serviceData = serviceDataDto, flinkSinkProperties, producerFactory)
+      FlinkKafkaFun.privateCreateProducerWithMetric(value, serviceData = serviceDataDto, flinkSinkProperties, producerFactory)
     }
 
     processWithMaskedDqlNoErrNoMasked(flinkPipe)
@@ -150,7 +150,7 @@ class NewFlinkStreamPredefTest extends AnyFlatSpec with MiniPipeLineTrait with S
 
     val flinkPipe: DataStream[TestDataDto] => Unit = { ds =>
 
-      val value = NewFlinkStreamPredef.processAndDlqSinkWithMetric[TestDataDto, TestDataDto](
+      val value = FlinkKafkaFun.processAndDlqSinkWithMetric[TestDataDto, TestDataDto](
         ds,
         serviceData = serviceDataDto,
         dlqProcessFunctionError,
@@ -307,7 +307,7 @@ class NewFlinkStreamPredefTest extends AnyFlatSpec with MiniPipeLineTrait with S
 
 }
 
-object NewFlinkStreamPredefTest {
+object FlinkKafkaFunTest {
 
   private val testDataDto: TestDataDto = TestDataDto("st1", 12)
   private val listTestDataDto: List[TestDataDto] = List(testDataDto)

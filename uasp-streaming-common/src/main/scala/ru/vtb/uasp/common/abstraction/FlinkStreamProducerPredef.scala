@@ -22,7 +22,7 @@ object FlinkStreamProducerPredef {
                                                     producerFactory: FlinkSinkProperties => SinkFunction[KafkaDto],
                                                    ): DataStream[OUT] = {
       implicit val typeInformationIn: TypeInformation[IN] = self.dataType
-      NewFlinkStreamPredef.processAndDlqSinkWithMetric(self, serviceData, process, sinkDlqProperty, producerFactory)
+      FlinkKafkaFun.processAndDlqSinkWithMetric(self, serviceData, process, sinkDlqProperty, producerFactory)
     }
 
     @deprecated("use processWithMaskedDqlF")
@@ -45,7 +45,7 @@ object FlinkStreamProducerPredef {
                         producerFactory: FlinkSinkProperties => SinkFunction[KafkaDto],
                        ): DataStreamSink[KafkaDto] = {
       implicit val typeInformationIn: TypeInformation[IN] = self.dataType
-      NewFlinkStreamPredef.createProducerWithMetric(
+      FlinkKafkaFun.createProducerWithMetric(
         self,
         serviceData,
         sinkProperty,

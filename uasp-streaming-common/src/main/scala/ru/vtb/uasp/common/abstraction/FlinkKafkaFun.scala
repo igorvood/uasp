@@ -9,7 +9,7 @@ import ru.vtb.uasp.common.kafka.FlinkSinkProperties
 import ru.vtb.uasp.common.mask.dto.{JsMaskedPath, JsMaskedPathError}
 import ru.vtb.uasp.common.service.dto.{KafkaDto, OutDtoWithErrors, ServiceDataDto}
 
-object NewFlinkStreamPredef {
+object FlinkKafkaFun {
 
   private[common] def privateCreateProducerWithMetric[T: TypeInformation](self: DataStream[T],
                                                                           serviceData: ServiceDataDto,
