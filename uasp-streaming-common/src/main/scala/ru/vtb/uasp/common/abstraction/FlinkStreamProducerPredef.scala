@@ -85,7 +85,7 @@ object FlinkStreamProducerPredef {
                 val strings: List[String] = "Masked error" :: value.map(_.error)
                 mf(OutDtoWithErrors[DLQ](
                   serviceData,
-                  Some(this.getClass().getName),
+                  Some("processWithMaskedDql1"),
                   strings,
                   None), flinkSinkProperties.jsMaskedPath).right.get
               case Right(value) => value
