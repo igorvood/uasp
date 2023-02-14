@@ -62,7 +62,7 @@ object FlinkStreamProducerPredef {
       FlinkKafkaFun.processAndDlqSinkWithMetric(self, serviceData, process, sinkDlqProperty, producerFactory)
     }
 
-    def processWithMaskedDql[OUT: TypeInformation, DLQ: TypeInformation](serviceData: ServiceDataDto,
+    def processWithMaskedDql1[OUT: TypeInformation, DLQ: TypeInformation](serviceData: ServiceDataDto,
                                                     process: DlqProcessFunction[IN, OUT, OutDtoWithErrors[DLQ]],
                                                     sinkDlqProperty: Option[(FlinkSinkProperties, (OutDtoWithErrors[DLQ], Option[JsMaskedPath]) => Either[List[JsMaskedPathError], KafkaDto])],
                                                     producerFactory: FlinkSinkProperties => SinkFunction[KafkaDto],

@@ -16,24 +16,28 @@ import ru.vtb.uasp.mdm.enrichment.utils.config.enrich.intf.{EnrichProperty, Enri
 
 class ExtractKeyFunction(
                           val enrichProperty: EnrichProperty with EnrichPropertyWithDlq with EnrichPropertyFields with FormatSwitcher
-                        ) extends DlqProcessFunction[JsValue, KeyedCAData, KafkaDto] {
+                        ) extends DlqProcessFunction[JsValue, KeyedCAData, OutDtoWithErrors[JsValue]] {
 
-  override def processWithDlq(jsValue: JsValue): Either[KafkaDto, KeyedCAData] = {
 
-    val mayBeValidDataState: Either[String, KeyedCAData] = enrichProperty.inputDataFormat match {
-      case FlatJsonFormat => enrichProperty.validateFieldsAndExtractData(jsValue)
-      case UaspDtoFormat =>
-        jsValue.validate[UaspDto] match {
-          case JsSuccess(uaspDto, _) => enrichProperty.validateFieldsAndExtractData(uaspDto)
-          case JsError(errors) => Left(errors.extractStringError())
-        }
-    }
+//  override def processWithDlq(jsValue: JsValue): Either[KafkaDto, KeyedCAData] = {
+//
+//    val mayBeValidDataState: Either[String, KeyedCAData] = enrichProperty.inputDataFormat match {
+//      case FlatJsonFormat => enrichProperty.validateFieldsAndExtractData(jsValue)
+//      case UaspDtoFormat =>
+//        jsValue.validate[UaspDto] match {
+//          case JsSuccess(uaspDto, _) => enrichProperty.validateFieldsAndExtractData(uaspDto)
+//          case JsError(errors) => Left(errors.extractStringError())
+//        }
+//    }
+//
+//    val dtoOrData = mayBeValidDataState match {
+//      case Right(value) => Right(value)
+//      case Left(value) => ???
+////      case Left(value) => Left(OutDtoWithErrors(Json.stringify(jsValue), List(value)).serializeToBytes)
+//    }
+//    dtoOrData
+//
+//  }
 
-    val dtoOrData = mayBeValidDataState match {
-      case Right(value) => Right(value)
-      case Left(value) => Left(OutDtoWithErrors(Json.stringify(jsValue), List(value)).serializeToBytes)
-    }
-    dtoOrData
-
-  }
+  override def processWithDlq(dto: JsValue): Either[OutDtoWithErrors[JsValue], KeyedCAData] = ???
 }

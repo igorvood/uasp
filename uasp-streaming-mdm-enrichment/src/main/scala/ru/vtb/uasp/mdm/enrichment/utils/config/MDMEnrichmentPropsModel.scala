@@ -30,7 +30,7 @@ case class MDMEnrichmentPropsModel(
   // common services
   lazy val keyCommonEnrichmentMapService: Option[KeyedEnrichCommonCoProcessService] = allEnrichProperty.commonEnrichProperty
     .map(cp =>
-      new KeyedEnrichCommonCoProcessService(cp)
+      new KeyedEnrichCommonCoProcessService(serviceData, cp)
     )
 
   lazy val commonValidateProcessFunction: Option[ExtractKeyFunction] = allEnrichProperty.commonEnrichProperty
@@ -39,7 +39,7 @@ case class MDMEnrichmentPropsModel(
   // global id services
   lazy val keyGlobalIdEnrichmentMapService: Option[KeyGlobalIdEnrichmentMapService] =
     allEnrichProperty.globalIdEnrichProperty
-      .map(glbProp => new KeyGlobalIdEnrichmentMapService(
+      .map(glbProp => new KeyGlobalIdEnrichmentMapService(serviceData,
         glbProp,
         appSavepointPref))
 
