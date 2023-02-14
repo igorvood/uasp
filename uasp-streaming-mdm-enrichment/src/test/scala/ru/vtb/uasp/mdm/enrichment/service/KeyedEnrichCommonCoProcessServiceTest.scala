@@ -7,6 +7,7 @@ import org.apache.flink.streaming.util.KeyedTwoInputStreamOperatorTestHarness
 import org.scalatest.flatspec.AnyFlatSpec
 import ru.vtb.uasp.common.dto.UaspDto
 import ru.vtb.uasp.common.kafka.{FlinkConsumerProperties, FlinkSinkProperties}
+import ru.vtb.uasp.common.service.dto.{OutDtoWithErrors, ServiceDataDto}
 import ru.vtb.uasp.common.utils.config.kafka.{KafkaCnsProperty, KafkaPrdProperty}
 import ru.vtb.uasp.mdm.enrichment.EnrichmentJob.{keySelectorCa, keySelectorMain}
 import ru.vtb.uasp.mdm.enrichment.TestConst._
@@ -21,12 +22,14 @@ import scala.collection.JavaConverters.collectionAsScalaIterableConverter
 
 class KeyedEnrichCommonCoProcessServiceTest extends AnyFlatSpec {
 
+  implicit val serviceDataDto = ServiceDataDto("", "", "")
+
 
   behavior of "KeyEnrichmentMapServiceTest"
 
   it should " test enrichMainStream with Optional value but it is empty" in {
     val allProperty = enrichPropMap(true)
-    val enrichmentMapService = new KeyedEnrichCommonCoProcessService(allProperty.commonEnrichProperty.get)
+    val enrichmentMapService = new KeyedEnrichCommonCoProcessService(serviceDataDto,allProperty.commonEnrichProperty.get)
     val testHarness = createTestHarness(enrichmentMapService)
 
     testHarness.open()
@@ -49,7 +52,7 @@ class KeyedEnrichCommonCoProcessServiceTest extends AnyFlatSpec {
 
   it should " test enrichMainStream with non Optional value but it is empty" in {
     val allProperty = enrichPropMap(false)
-    val enrichmentMapService = new KeyedEnrichCommonCoProcessService( allProperty.commonEnrichProperty.get)
+    val enrichmentMapService = new KeyedEnrichCommonCoProcessService( serviceDataDto, allProperty.commonEnrichProperty.get)
 
     val testHarness = createTestHarness(enrichmentMapService)
 
@@ -66,9 +69,9 @@ class KeyedEnrichCommonCoProcessServiceTest extends AnyFlatSpec {
 
     assert(actualRichedValue.isLeft)
 
-    assertResult("Value from field String to String_toFieldName is null, but value isn't optional")(actualRichedValue.left.get._2)
+    assertResult("Value from field String to String_toFieldName is null, but value isn't optional")(actualRichedValue.left.get.errors)
 
-    assertResult(uaspDto)(actualRichedValue.left.get._1)
+    assertResult(uaspDto)(actualRichedValue.left.get.data.get)
 
   }
 
@@ -76,7 +79,7 @@ class KeyedEnrichCommonCoProcessServiceTest extends AnyFlatSpec {
     val allProperty = enrichPropMap(false)
 
     val commonEnrichProperty = allProperty.commonEnrichProperty.get
-    val enrichmentMapService = new KeyedEnrichCommonCoProcessService(commonEnrichProperty)
+    val enrichmentMapService = new KeyedEnrichCommonCoProcessService(serviceDataDto, commonEnrichProperty)
 
     val testHarness = createTestHarness(enrichmentMapService)
 
@@ -115,7 +118,7 @@ class KeyedEnrichCommonCoProcessServiceTest extends AnyFlatSpec {
     val allProperty = enrichPropMap(true)
 
     val commonEnrichProperty =  allProperty.commonEnrichProperty.get
-    val enrichmentMapService = new KeyedEnrichCommonCoProcessService(commonEnrichProperty)
+    val enrichmentMapService = new KeyedEnrichCommonCoProcessService(serviceDataDto, commonEnrichProperty)
     val testHarness = createTestHarness(enrichmentMapService)
 
     testHarness.open()
@@ -141,7 +144,7 @@ class KeyedEnrichCommonCoProcessServiceTest extends AnyFlatSpec {
     val commonEnrichProperty = allProperty.commonEnrichProperty.get
 
 
-    val enrichmentMapService = new KeyedEnrichCommonCoProcessService(commonEnrichProperty)
+    val enrichmentMapService = new KeyedEnrichCommonCoProcessService(serviceDataDto,commonEnrichProperty)
 
     val testHarness = createTestHarness(enrichmentMapService)
 
@@ -192,10 +195,10 @@ class KeyedEnrichCommonCoProcessServiceTest extends AnyFlatSpec {
 
   }
 
-  def createTestHarness(globalIdEnrichmentMapService: KeyedCoProcessFunction[String, KeyedUasp, KeyedCAData, Either[(UaspDto, String), UaspDto]]) = {
+  def createTestHarness(globalIdEnrichmentMapService: KeyedCoProcessFunction[String, KeyedUasp, KeyedCAData, Either[OutDtoWithErrors[UaspDto], UaspDto]]) = {
     val keyedCoProcessOperator = new KeyedCoProcessOperator(globalIdEnrichmentMapService)
 
-    val harness = new KeyedTwoInputStreamOperatorTestHarness[String, KeyedUasp, KeyedCAData, Either[(UaspDto, String), UaspDto]](keyedCoProcessOperator, keySelectorMain, keySelectorCa, Types.STRING)
+    val harness = new KeyedTwoInputStreamOperatorTestHarness[String, KeyedUasp, KeyedCAData, Either[OutDtoWithErrors[UaspDto], UaspDto]](keyedCoProcessOperator, keySelectorMain, keySelectorCa, Types.STRING)
 
     harness
   }
@@ -213,7 +216,7 @@ object KeyedEnrichCommonCoProcessServiceTest {
 
   private def mainEnrichProperty: MainEnrichProperty = new MainEnrichProperty(
     fromTopic = FlinkConsumerProperties(calcTopicName("From" + mainStreamName), KafkaCnsProperty(properties)),
-    toTopicProp = FlinkSinkProperties(calcTopicName("To" + mainStreamName), KafkaPrdProperty(properties)) ,
+    toTopicProp = FlinkSinkProperties(calcTopicName("To" + mainStreamName), KafkaPrdProperty(properties), None, None, None) ,
     dlqTopicProp = None
   )
 

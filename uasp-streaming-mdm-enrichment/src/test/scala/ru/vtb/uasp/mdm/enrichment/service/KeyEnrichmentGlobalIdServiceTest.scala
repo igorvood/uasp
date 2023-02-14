@@ -6,6 +6,7 @@ import org.apache.flink.streaming.api.operators.co.KeyedCoProcessOperator
 import org.apache.flink.streaming.util.KeyedTwoInputStreamOperatorTestHarness
 import org.scalatest.flatspec.AnyFlatSpec
 import ru.vtb.uasp.common.dto.UaspDto
+import ru.vtb.uasp.common.service.dto.{OutDtoWithErrors, ServiceDataDto}
 import ru.vtb.uasp.mdm.enrichment.EnrichmentJob.{keySelectorCa, keySelectorMain}
 import ru.vtb.uasp.mdm.enrichment.TestConst._
 import ru.vtb.uasp.mdm.enrichment.service.KeyEnrichmentGlobalIdServiceTest._
@@ -13,11 +14,14 @@ import ru.vtb.uasp.mdm.enrichment.service.dto.{KeyedCAData, KeyedUasp}
 
 class KeyEnrichmentGlobalIdServiceTest extends AnyFlatSpec {
 
+  implicit val dto = ServiceDataDto("", "", "")
+
   behavior of "KeyEnrichmentGlobalIdServiceTest"
 
   it should " set state is ok" in {
     val globalIdEnrichProperty = enrichPropertyMap.globalIdEnrichProperty.get
-    val enrichmentMapService = new KeyGlobalIdEnrichmentMapService(
+
+    val enrichmentMapService = new KeyGlobalIdEnrichmentMapService(dto,
       globalIdEnrichProperty,
       savepointPref)
 
@@ -105,10 +109,10 @@ object KeyEnrichmentGlobalIdServiceTest {
 
   def global_id_from_Mdm = "global_id_from_Mdm"
 
-  private def testHarnessCreator(enrichmentMapService: KeyedCoProcessFunction[String, KeyedUasp, KeyedCAData, Either[(UaspDto, String), UaspDto]]) = {
+  private def testHarnessCreator(enrichmentMapService: KeyedCoProcessFunction[String, KeyedUasp, KeyedCAData, Either[OutDtoWithErrors[UaspDto], UaspDto]]) = {
     val testHarness =
-      new KeyedTwoInputStreamOperatorTestHarness[String, KeyedUasp, KeyedCAData, Either[(UaspDto, String), UaspDto]](
-        new KeyedCoProcessOperator[String, KeyedUasp, KeyedCAData, Either[(UaspDto, String), UaspDto]](enrichmentMapService), keySelectorMain, keySelectorCa, Types.STRING
+      new KeyedTwoInputStreamOperatorTestHarness[String, KeyedUasp, KeyedCAData, Either[OutDtoWithErrors[UaspDto], UaspDto]](
+        new KeyedCoProcessOperator[String, KeyedUasp, KeyedCAData, Either[OutDtoWithErrors[UaspDto], UaspDto]](enrichmentMapService), keySelectorMain, keySelectorCa, Types.STRING
       )
 
     testHarness.open()

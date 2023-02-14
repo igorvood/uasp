@@ -21,7 +21,7 @@ import scala.collection.JavaConverters.mapAsScalaMapConverter
 
 class EnrichmentJobTestFullTest extends AnyFlatSpec with Matchers {
 
-  private val serviceDataDto = ServiceDataDto("", "", "")
+  implicit private val serviceDataDto: ServiceDataDto = ServiceDataDto("", "", "")
   val sinksMap: Map[String, CollectByteSink] =
     List("dlq__TOPIC",
       "ToGlobal Topic",
@@ -86,9 +86,9 @@ class EnrichmentJobTestFullTest extends AnyFlatSpec with Matchers {
 
     assertResult(1)(errUaspList.size)
 
-    val outDtoWithErrors = JsonConvertInService.deserialize[OutDtoWithErrors](errUaspList.get(0).value).right.get
+    val outDtoWithErrors = JsonConvertInService.deserialize[OutDtoWithErrors[UaspDto]](errUaspList.get(0).value).right.get
 
-    assertResult(OutDtoWithErrors(dto.serializeToStr, List("Not found global id in state for id = uasp id")))(outDtoWithErrors)
+    assertResult(OutDtoWithErrors(serviceDataDto, Some("asd"), List("Not found global id in state for id = uasp id"), Some(dto)))(outDtoWithErrors)
 
     value1.print()
 

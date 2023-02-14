@@ -19,12 +19,12 @@ object TestConst {
 
   lazy val mainStreamProperty = new MainEnrichProperty(
     fromTopic = FlinkConsumerProperties(calcTopicName("From" + "mainStreamName"), KafkaCnsProperty(properties)),
-    toTopicProp = FlinkSinkProperties(calcTopicName("To" + "mainStreamName"), KafkaPrdProperty(properties)),
-    dlqTopicProp = Some(FlinkSinkProperties(calcTopicName("Dlq" + "mainStreamName"), KafkaPrdProperty(properties))),
+    toTopicProp = FlinkSinkProperties(calcTopicName("To" + "mainStreamName"), KafkaPrdProperty(properties), None, None, None),
+    dlqTopicProp = Some(FlinkSinkProperties(calcTopicName("Dlq" + "mainStreamName"), KafkaPrdProperty(properties), None, None, None)),
   )
   lazy val globalIdStreamProperty = new GlobalIdEnrichProperty(
     fromTopic = FlinkConsumerProperties(calcTopicName("FromGlobal"), KafkaCnsProperty(properties)),
-    dlqTopicProp = Some(FlinkSinkProperties(calcTopicName("dlqGlobal"), KafkaPrdProperty(properties))),
+    dlqTopicProp = Some(FlinkSinkProperties(calcTopicName("dlqGlobal"), KafkaPrdProperty(properties), None, None, None)),
     globalEnrichFields = EnrichFields(
       fromFieldName = s"global_id",
       fromFieldType = "String",
@@ -57,7 +57,7 @@ object TestConst {
   )
   private lazy val commonStreamProperty = new CommonEnrichProperty(
     fromTopic = FlinkConsumerProperties(calcTopicName("FromHypotec"), KafkaCnsProperty(properties)),
-    dlqTopicProp = Some(FlinkSinkProperties(calcTopicName("dlqGHypotec"), KafkaPrdProperty(properties))),
+    dlqTopicProp = Some(FlinkSinkProperties(calcTopicName("dlqGHypotec"), KafkaPrdProperty(properties), None, None, None)),
     keySelectorMain = KeySelectorProp(true),
     keySelectorEnrich = KeySelectorProp(true),
     fields = List[EnrichFields](EnrichFields(
