@@ -3,7 +3,7 @@ package ru.vtb.uasp.common.kafka
 import ru.vtb.uasp.common.metric.{FlowDirection, PrometheusKafkaMetricsFunction}
 import ru.vtb.uasp.common.service.dto.ServiceDataDto
 
-trait MetricForKafka {
+trait MetricForKafka extends Serializable {
 
   def prometheusMetric[T](serviceData: ServiceDataDto): PrometheusKafkaMetricsFunction[T] = {
     this match {

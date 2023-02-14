@@ -13,7 +13,7 @@ import scala.collection.immutable
 /**
  * Рекурсивная структура хранит данные для маскирования
  */
-sealed trait JsMaskedPath {
+sealed trait JsMaskedPath extends Serializable {
   /** Добавляет к текущей структуре новое поле для маскирования
    * @param pathNodeList json путь к полю данные в котором надо маскировать,
    * @param maskedFun ф-ция маскирования, будет применена к значению в этом поле

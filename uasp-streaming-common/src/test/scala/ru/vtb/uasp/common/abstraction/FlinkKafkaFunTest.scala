@@ -274,7 +274,7 @@ class FlinkKafkaFunTest extends AnyFlatSpec with MiniPipeLineTrait with Serializ
       .copy(
         errorPosition = outDto.errorPosition,
         errors = List(
-          "processAndDlqSinkWithMetric: Unable to mask dto ru.vtb.uasp.common.service.dto.OutDtoWithErrors. Masked rule Some(JsMaskedPathObject(Map(data -> JsMaskedPathObject(Map(srt -> JsNumberMaskedPathValue(NumberMaskAll()))))))",
+          "processAndDlqSinkWithMetric: Unable to mask dto scala.collection.immutable.$colon$colon. Masked rule Some(JsMaskedPathObject(Map(data -> JsMaskedPathObject(Map(srt -> JsNumberMaskedPathValue(NumberMaskAll()))))))",
           "Unable to masked value wrapper class  class play.api.libs.json.JsString with function -> class ru.vtb.uasp.common.mask.dto.JsNumberMaskedPathValue"
         ),
         data = None

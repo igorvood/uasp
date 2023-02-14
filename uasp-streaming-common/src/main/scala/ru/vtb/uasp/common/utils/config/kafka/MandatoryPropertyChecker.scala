@@ -2,7 +2,7 @@ package ru.vtb.uasp.common.utils.config.kafka
 
 import java.util.Properties
 
-trait MandatoryPropertyChecker {
+trait MandatoryPropertyChecker extends Serializable {
 
   def requiredProperty: Set[String]
 

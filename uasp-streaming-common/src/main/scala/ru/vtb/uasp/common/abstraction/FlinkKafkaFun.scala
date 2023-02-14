@@ -1,5 +1,6 @@
 package ru.vtb.uasp.common.abstraction
 
+import org.apache.flink.api.common.functions.RichMapFunction
 import org.apache.flink.api.common.typeinfo.TypeInformation
 import org.apache.flink.api.scala.createTypeInformation
 import org.apache.flink.streaming.api.datastream.DataStreamSink
@@ -66,30 +67,36 @@ object FlinkKafkaFun {
       .process[OUT](process)
     sinkDlqProperty
       .foreach { sf => {
-        val maskedDLQSerializeService: AbstractOutDtoWithErrorsMaskedSerializeService[IN] = new AbstractOutDtoWithErrorsMaskedSerializeService[IN](sf._1.jsMaskedPath) {
 
-          override def convert(value: OutDtoWithErrors[IN], jsMaskedPath: Option[JsMaskedPath]): Either[List[JsMaskedPathError], KafkaDto] = sf._2(value, sf._1.jsMaskedPath)
+
+
+        val value1 = new RichMapFunction[OutDtoWithErrors[IN], KafkaDto] {
+          override def map(value: OutDtoWithErrors[IN]): KafkaDto = {
+            val maskedDLQSerializeService: AbstractOutDtoWithErrorsMaskedSerializeService[IN] = new AbstractOutDtoWithErrorsMaskedSerializeService[IN](sf._1.jsMaskedPath) {
+
+              override def convert(value: OutDtoWithErrors[IN], jsMaskedPath: Option[JsMaskedPath]): Either[List[JsMaskedPathError], KafkaDto] = sf._2(value, sf._1.jsMaskedPath)
+            }
+
+            {
+              val errorsOrDto: Either[List[JsMaskedPathError], KafkaDto] = maskedDLQSerializeService.convert(value, maskedDLQSerializeService.jsMaskedPath)
+              errorsOrDto match {
+                case Left(value) =>
+                  val value2 = new OutDtoWithErrors[IN](
+                    serviceDataDto = serviceData,
+                    errorPosition = Some(this.getClass.getName),
+                    errors = s"processAndDlqSinkWithMetric: Unable to mask dto ${value.getClass.getName}. Masked rule ${maskedDLQSerializeService.jsMaskedPath}" :: value.map(q => q.error),
+                    data = None)
+                  maskedDLQSerializeService.convert(value2, maskedDLQSerializeService.jsMaskedPath).right.get
+                case Right(masked) => masked
+              }
+            }
+          }
         }
-
 
         val dlq = myBeDlq
           .getSideOutput(process.dlqOutPut)
         val dlqStream = dlq
-          .map { d: OutDtoWithErrors[IN] => {
-            val errorsOrDto: Either[List[JsMaskedPathError], KafkaDto] = maskedDLQSerializeService.convert(d, maskedDLQSerializeService.jsMaskedPath)
-            errorsOrDto match {
-              case Left(value) =>
-                val value2 = new OutDtoWithErrors[IN](
-                  serviceDataDto = serviceData,
-                  errorPosition = Some(this.getClass.getName),
-                  errors = s"processAndDlqSinkWithMetric: Unable to mask dto ${d.getClass.getName}. Masked rule ${maskedDLQSerializeService.jsMaskedPath}" :: value.map(q => q.error) ,
-                  data = None)
-                maskedDLQSerializeService.convert(value2, maskedDLQSerializeService.jsMaskedPath).right.get
-              case Right(masked) => masked
-            }
-          }
-
-          }
+          .map (value1)
         privateCreateProducerWithMetric(dlqStream, serviceData, sf._1, producerFactory)
       }
 
