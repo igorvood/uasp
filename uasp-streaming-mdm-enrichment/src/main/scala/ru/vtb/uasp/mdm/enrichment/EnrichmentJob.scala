@@ -5,10 +5,9 @@ import org.apache.flink.streaming.api.datastream.DataStreamSink
 import org.apache.flink.streaming.api.functions.sink.SinkFunction
 import org.apache.flink.streaming.api.scala.{DataStream, StreamExecutionEnvironment, createTypeInformation}
 import org.slf4j.LoggerFactory
-import play.api.libs.json.{JsObject, JsValue, Json, OWrites, Writes}
+import play.api.libs.json.{JsObject, JsValue, OWrites}
 import ru.vtb.uasp.common.abstraction.DlqProcessFunction
-import ru.vtb.uasp.common.abstraction.FlinkStreamProducerPredef.StreamExecutionEnvironmentPredef
-import ru.vtb.uasp.common.abstraction.FlinkStreamProducerPredef.StreamFactory
+import ru.vtb.uasp.common.abstraction.FlinkStreamProducerPredef.{StreamExecutionEnvironmentPredef, StreamFactory}
 import ru.vtb.uasp.common.base.EnrichFlinkDataStream.EnrichFlinkDataStreamSink
 import ru.vtb.uasp.common.dto.UaspDto
 import ru.vtb.uasp.common.extension.CommonExtension.Also
@@ -122,35 +121,15 @@ object EnrichmentJob {
               producerFabric: FlinkSinkProperties => SinkFunction[KafkaDto] = producerFactoryDefault
              ): OutStreams = {
 
-    implicit val value1 = Json.writes[JsValue]
-    implicit val value11 = ru.vtb.uasp.common.service.dto.OutDtoWithErrors.outDtoWithErrorsJsonWrites[JsValue]
+    //    implicit val value1: OWrites[JsValue] = Json.writes[JsValue]
 
-//    implicit val value = Json.writes[Right[(UaspDto, String),UaspDto]]
-//    implicit val value3 = Json.writes[Left[(UaspDto, String), UaspDto]]
-//
-//    implicit val value2 = Json.writes[Either[(UaspDto, String), UaspDto]]
-
-
-    implicit  val writes: OWrites[Either[(UaspDto, String), UaspDto]] = new OWrites[Either[(UaspDto, String), UaspDto]] {
-
-      //    override def writes(o: When): JsValue = Json.obj(
-      //      o.when.fold(
-      //        duration => "duration" -> duration.getMillis,
-      //        dateTime => "dateTime" -> dateTime.getMillis
-      //      )
-      //    )
-
-      override def writes(o: Either[(UaspDto, String), UaspDto]): JsObject = Json.obj(
-        o match {
-          case Left(value) => "err"->value._2
-          case Right(value) => "err" -> Json.toJsObject(value)
-        }
-      )
+    implicit val value1: OWrites[JsValue] = new OWrites[JsValue] {
+      override def writes(o: JsValue): JsObject = o.asInstanceOf[JsObject]
     }
 
-//    implicit val value = OWrites.of(writes)
 
-        implicit val value22 = ru.vtb.uasp.common.service.dto.OutDtoWithErrors.outDtoWithErrorsJsonWrites[Either[(UaspDto, String), UaspDto]](writes)
+    //    implicit val value11 = ru.vtb.uasp.common.service.dto.OutDtoWithErrors.outDtoWithErrorsJsonWrites[JsValue]
+
 
     val mainDlqProp = mDMEnrichmentPropsModel.allEnrichProperty.mainEnrichProperty.dlqTopicProp
 
@@ -173,37 +152,24 @@ object EnrichmentJob {
               .processWithMaskedDqlF(
                 mDMEnrichmentPropsModel.serviceData,
                 service,
-                dlqGlobalIdProp.map(sp => sp -> {(q,w) => q.serializeToBytes(w) }),
+                dlqGlobalIdProp.map(sp => sp -> { (q, w) => q.serializeToBytes(w) }),
                 producerFabric)
 
-            val value2 = mainDs
+             mainDs
               .processWithMaskedDqlF(
                 mDMEnrichmentPropsModel.serviceData,
                 keyedMainStreamSrv,
                 mainDlqProp.map(sp => sp -> { (q, w) => q.serializeToBytes(w) }),
                 producerFabric)
               .keyBy(keySelectorMain)
-            val value3 = value2
               .connect(validatedGlobalIdStream.keyBy(d => d.key))
-            val value: DataStream[Either[OutDtoWithErrors[UaspDto], UaspDto]] = value3
               .process(keyGlobalSrv)
-
-            // TODO тут добвавить откидывание в dLQ
-            val value4 = value.process(mDMEnrichmentPropsModel.throwToDlqService)
-//            val value5 = value4
-//              .getSideOutput(mDMEnrichmentPropsModel.throwToDlqService.dlqOutPut)
-//              .maskedProducerF(
-//                mDMEnrichmentPropsModel.serviceData,
-//
-//              )
-
-//            value
-//              .processWithMaskedDqlF(
-//                mDMEnrichmentPropsModel.serviceData,
-//                mDMEnrichmentPropsModel.throwToDlqService,
-//                mainDlqProp.map(sp => sp -> {(q,w)=> q.serializeToBytes(w)}),
-//                producerFabric)
-            value4
+              .processWithMaskedDql1[UaspDto, UaspDto](
+                mDMEnrichmentPropsModel.serviceData,
+                mDMEnrichmentPropsModel.throwToDlqService,
+                mainDlqProp.map(sp => sp -> { (q, w) => q.serializeToBytes(w) }),
+                producerFabric
+              )
           }.getOrElse(mainDs)
       }
     val streamCommon = streamGlobal
@@ -225,9 +191,9 @@ object EnrichmentJob {
               .processWithMaskedDqlF(
                 mDMEnrichmentPropsModel.serviceData,
                 commonValidateProcessFunction,
-                dlqGlobalIdProp.map(sp => sp-> {(q,w)=> q.serializeToBytes(w)}), producerFabric)
+                dlqGlobalIdProp.map(sp => sp -> { (q, w) => q.serializeToBytes(w) }), producerFabric)
 
-            val value: DataStream[Either[OutDtoWithErrors[UaspDto], UaspDto]] = mainDs
+            mainDs
               .processWithMaskedDqlF(
                 mDMEnrichmentPropsModel.serviceData,
                 keyedMainStreamSrv,
@@ -235,22 +201,12 @@ object EnrichmentJob {
               .keyBy(keySelectorMain)
               .connect(validatedGlobalIdStream.keyBy(d => d.key))
               .process(keyCommonEnrichmentMapService)
-
-            val value2: DlqProcessFunction[Either[OutDtoWithErrors[UaspDto], UaspDto], UaspDto, OutDtoWithErrors[UaspDto]] = new DlqProcessFunction[Either[OutDtoWithErrors[UaspDto], UaspDto], UaspDto, OutDtoWithErrors[UaspDto]] {
-              override def processWithDlq(dto: Either[OutDtoWithErrors[UaspDto], UaspDto]): Either[OutDtoWithErrors[UaspDto], UaspDto] = dto
-            }
-            val value3 = value.processWithMaskedDql1[UaspDto, UaspDto](
-              mDMEnrichmentPropsModel.serviceData,
-              value2,
-              mainDlqProp.map(sp => sp -> { (q, w) => q.serializeToBytes(w) }),
-              producerFabric
-            )
-            value3
-//            value
-//              .processWithMaskedDqlF(
-//                mDMEnrichmentPropsModel.serviceData,
-//                mDMEnrichmentPropsModel.throwToDlqService,
-//                mainDlqProp.map(sp => sp -> {(q,w)=>q.serializeToBytes(w)}), producerFabric)
+              .processWithMaskedDql1[UaspDto, UaspDto](
+                mDMEnrichmentPropsModel.serviceData,
+                mDMEnrichmentPropsModel.throwToDlqService,
+                mainDlqProp.map(sp => sp -> { (q, w) => q.serializeToBytes(w) }),
+                producerFabric
+              )
           }.getOrElse(mainDs)
       }
 

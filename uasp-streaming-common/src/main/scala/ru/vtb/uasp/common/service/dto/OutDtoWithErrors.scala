@@ -3,7 +3,7 @@ package ru.vtb.uasp.common.service.dto
 import play.api.libs.functional.FunctionalBuilder
 import play.api.libs.functional.syntax.{toFunctionalBuilderOps, unlift}
 import play.api.libs.json.OFormat.oFormatFromReadsAndOWrites
-import play.api.libs.json.{JsPath, OWrites, Reads}
+import play.api.libs.json.{JsObject, JsPath, JsValue, OWrites, Reads}
 
 case class OutDtoWithErrors[T](
                                    serviceDataDto: ServiceDataDto,
@@ -15,6 +15,10 @@ case class OutDtoWithErrors[T](
 
 
 object OutDtoWithErrors {
+
+  implicit val writesJsValue: OWrites[JsValue] = new OWrites[JsValue] {
+    override def writes(o: JsValue): JsObject = o.asInstanceOf[JsObject]
+  }
 
   implicit def outDtoWithErrorsJsonReads[T](implicit fmt: Reads[T]): Reads[OutDtoWithErrors[T]] = json =>
     for {

@@ -6,6 +6,7 @@ import ru.vtb.uasp.common.dto.UaspDto
 import ru.vtb.uasp.common.service.JsonConvertOutService.{IdentityPredef, JsonPredef}
 import ru.vtb.uasp.common.service.dto.{KafkaDto, OutDtoWithErrors}
 
+@deprecated
 class ThrowToDlqService extends DlqProcessFunction[Either[OutDtoWithErrors[UaspDto], UaspDto], UaspDto, OutDtoWithErrors[UaspDto]] {
 
 
