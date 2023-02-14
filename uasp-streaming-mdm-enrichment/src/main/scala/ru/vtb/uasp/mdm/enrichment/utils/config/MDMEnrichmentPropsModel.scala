@@ -26,10 +26,10 @@ case class MDMEnrichmentPropsModel(
 
   //  Вытаскивание ключевого значсения для основного потока, для обогащения глобальным идентификатором
   lazy val globalMainStreamExtractKeyFunction = allEnrichProperty.globalIdEnrichProperty
-    .map { g => new MainStreamExtractKeyFunction(g) }
+    .map { g => new MainStreamExtractKeyFunction(serviceData, g) }
 
   lazy val commonMainStreamExtractKeyFunction = allEnrichProperty.commonEnrichProperty
-    .map { c => new MainStreamExtractKeyFunction(c) }
+    .map { c => new MainStreamExtractKeyFunction(serviceData, c) }
 
   // common services
   lazy val keyCommonEnrichmentMapService: Option[KeyedEnrichCommonCoProcessService] = allEnrichProperty.commonEnrichProperty
@@ -38,7 +38,7 @@ case class MDMEnrichmentPropsModel(
     )
 
   lazy val commonValidateProcessFunction: Option[ExtractKeyFunction] = allEnrichProperty.commonEnrichProperty
-    .map(cp => new ExtractKeyFunction(cp))
+    .map(cp => new ExtractKeyFunction(serviceData, cp))
 
   // global id services
   lazy val keyGlobalIdEnrichmentMapService: Option[KeyGlobalIdEnrichmentMapService] =
@@ -48,7 +48,7 @@ case class MDMEnrichmentPropsModel(
         appSavepointPref))
 
   lazy val validateGlobalIdService: Option[ExtractKeyFunction] = allEnrichProperty.globalIdEnrichProperty
-    .map(glbProp => new ExtractKeyFunction(glbProp))
+    .map(glbProp => new ExtractKeyFunction(serviceData, glbProp))
 
 
   lazy val flinkSinkPropertiesMainProducer: FlinkSinkProperties = allEnrichProperty.mainEnrichProperty.toTopicProp

@@ -6,19 +6,17 @@ import ru.vtb.uasp.common.abstraction.DlqProcessFunction
 import ru.vtb.uasp.common.mask.dto.JsMaskedPathError
 import ru.vtb.uasp.common.service.JsonConvertInService
 import ru.vtb.uasp.common.service.JsonConvertOutService.JsonPredef
-import ru.vtb.uasp.common.service.dto.KafkaDto
+import ru.vtb.uasp.common.service.dto.{KafkaDto, ServiceDataDto}
 
-class JsValueConsumer extends DlqProcessFunction[Array[Byte], JsValue, JsMaskedPathError] {
+class JsValueConsumer(val serviceDataDto: ServiceDataDto) extends DlqProcessFunction[Array[Byte], JsValue, JsMaskedPathError] {
 
   override def processWithDlq(dto: Array[Byte]): Either[JsMaskedPathError, JsValue] = {
-
-//    val value = JsonConvertInService.extractJsValue(dto)
-//    val dtoOrValue = value match {
-//      case Right(v) => Right(v)
-//      case Left(value) => Left(value.serializeToBytes)
-//    }
-//    dtoOrValue
-???
+    val value = JsonConvertInService.extractJsValue[JsMaskedPathError](dto)(serviceDataDto)
+        val dtoOrValue = value match {
+          case Right(v) => Right(v)
+          case Left(value) => Left(JsMaskedPathError(value.errors.mkString("\n")))
+        }
+    dtoOrValue
   }
 
 

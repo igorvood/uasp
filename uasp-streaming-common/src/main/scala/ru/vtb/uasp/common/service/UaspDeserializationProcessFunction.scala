@@ -7,32 +7,14 @@ import ru.vtb.uasp.common.mask.dto.JsMaskedPathError
 import ru.vtb.uasp.common.service.JsonConvertOutService.JsonPredef
 import ru.vtb.uasp.common.service.dto.{KafkaDto, OutDtoWithErrors, ServiceDataDto}
 
-case class UaspDeserializationProcessFunction(implicit val serviceDataDto: ServiceDataDto) extends DlqProcessFunction[Array[Byte], UaspDto, JsMaskedPathError] {
+case class UaspDeserializationProcessFunction(implicit val serviceData: ServiceDataDto) extends DlqProcessFunction[Array[Byte], UaspDto, JsMaskedPathError] {
 
-
-
-//  override def processWithDlq(dto: Array[Byte]): Either[KafkaDto, UaspDto] = {
-//    convert(dto) match {
-//      case Right(value) => Right(value)
-//      case Left(uaspDtoConvertValue) =>
-//        val errorsOrDto = uaspDtoConvertValue.serializeToBytes(None)
-//        val value1 = errorsOrDto match {
-//          case Left(uaspDtoMaskConvertValue) =>
-//            OutDtoWithErrors[UaspDto](
-//             serviceDataDto = serviceDataDto,
-//             errorPosition = Some(UaspDeserializationProcessFunction.getClass.getName),
-//              errors = uaspDtoConvertValue.errors ++ uaspDtoMaskConvertValue.map( q=> q.error),
-//              data = None
-//            )
-//             .serializeToBytes
-//          case Right(value) => value
-//        }
-//
-//        Left(value1)
-//    }
-//  }
-
-  override def processWithDlq(dto: Array[Byte]): Either[JsMaskedPathError, UaspDto] = ???
+  override def processWithDlq(dto: Array[Byte]): Either[JsMaskedPathError, UaspDto] = {
+    convert(dto) match {
+      case Left(value) => Left(JsMaskedPathError(value.errors.mkString("\n")))
+      case Right(value) => Right(value)
+    }
+  }
 
   def convert(value: Array[Byte]): Either[OutDtoWithErrors[UaspDto], UaspDto] = JsonConvertInService.deserialize[UaspDto](value)
 }

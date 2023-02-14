@@ -28,36 +28,6 @@ class KeyGlobalIdEnrichmentMapService( val serviceDataDto: ServiceDataDto,
 
   private var dataState: ValueState[Map[String, String]] = _
 
-
-//  override def processElement1(value: KeyedUasp, ctx: KeyedCoProcessFunction[String, KeyedUasp, KeyedCAData, Either[(UaspDto, String), UaspDto]]#Context, out: Collector[Either[(UaspDto, String), UaspDto]]): Unit = {
-//    val maybeEnrichment: Either[String, KeyedUasp] = for {
-//      withId <- Option(globalIdState.value())
-//        .map { global_id => Right(value.copy(localId = global_id, uaspDto = value.uaspDto.enrichGlobalId(global_id, globalIdStreamProperty.globalEnrichFields))) }
-//        .getOrElse(Left("Not found global id in state for id = " + value.uaspDto.id))
-//
-//      enrichmentUasp <- withId.enrichMainStream(globalIdStreamProperty.fields) { fieldKey => Option(dataState.value()).getOrElse(Map.empty).get(fieldKey) }
-//
-//    } yield enrichmentUasp
-//
-//    val maybeOk = maybeEnrichment match {
-//      case Right(ok) => Right(ok.uaspDto)
-//      case Left(err) => Left(value.uaspDto -> err)
-//    }
-//
-//    out.collect(maybeOk)
-//  }
-//
-//  override def processElement2(value: KeyedCAData, ctx: KeyedCoProcessFunction[String, KeyedUasp, KeyedCAData, Either[(UaspDto, String), UaspDto]]#Context, out: Collector[Either[(UaspDto, String), UaspDto]]): Unit = {
-//
-//    value.newId
-//      .map { globalId => globalIdState.update(globalId) }
-//      .getOrElse {
-//        throw new IllegalStateException(" не возможная ситуация, до этого провалидировали все ID")
-//      }
-//
-//    dataState.update(value.data)
-//  }
-
   override def processElement1(value: KeyedUasp, ctx: KeyedCoProcessFunction[String, KeyedUasp, KeyedCAData, Either[OutDtoWithErrors[UaspDto], UaspDto]]#Context, out: Collector[Either[OutDtoWithErrors[UaspDto], UaspDto]]): Unit = {
         val maybeEnrichment: Either[String, KeyedUasp] = for {
           withId <- Option(globalIdState.value())

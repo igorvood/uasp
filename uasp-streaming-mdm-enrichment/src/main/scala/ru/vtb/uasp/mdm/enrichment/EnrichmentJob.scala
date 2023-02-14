@@ -15,7 +15,7 @@ import ru.vtb.uasp.common.kafka.FlinkSinkProperties
 import ru.vtb.uasp.common.kafka.FlinkSinkProperties.producerFactoryDefault
 import ru.vtb.uasp.common.mask.dto.JsMaskedPathError
 import ru.vtb.uasp.common.service.JsonConvertOutService.{IdentityPredef, JsonPredef}
-import ru.vtb.uasp.common.service.UaspDeserializationProcessFunction
+import ru.vtb.uasp.common.service.{JsonConvertInService, UaspDeserializationProcessFunction}
 import ru.vtb.uasp.common.service.dto.{KafkaDto, OutDtoWithErrors}
 import ru.vtb.uasp.mdm.enrichment.service.JsValueConsumer
 import ru.vtb.uasp.mdm.enrichment.service.dto.{FlinkDataStreams, KeyedCAData, KeyedUasp, OutStreams}
@@ -71,20 +71,16 @@ object EnrichmentJob {
 
     implicit val serviceData = propsModel.serviceData
 
-    val serialisationProcessFunction = UaspDeserializationProcessFunction()
+    val uaspDeserializationProcessFunction = UaspDeserializationProcessFunction()
 
-    val value = new DlqProcessFunction[Array[Byte], UaspDto, JsMaskedPathError]() {
-      override def processWithDlq(dto: Array[Byte]): Either[JsMaskedPathError, UaspDto] = ???
-    }
-
-    val serialisationProcessFunctionJsValue = new JsValueConsumer()
+    val serialisationProcessFunctionJsValue = new JsValueConsumer(serviceData)
 
     val mainDataStream = env
       .registerConsumerWithMetric1(
         propsModel.serviceData,
         propsModel.allEnrichProperty.mainEnrichProperty.fromTopic,
         propsModel.allEnrichProperty.mainEnrichProperty.dlqTopicProp,
-        value,
+        uaspDeserializationProcessFunction,
         producerFabric)
 
 
