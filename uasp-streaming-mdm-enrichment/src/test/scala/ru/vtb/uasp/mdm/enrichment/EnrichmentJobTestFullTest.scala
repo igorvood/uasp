@@ -84,7 +84,10 @@ class EnrichmentJobTestFullTest extends AnyFlatSpec with Matchers {
 
     val outDtoWithErrors = JsonConvertInService.deserialize[OutDtoWithErrors[UaspDto]](errUaspList.get(0).value).right.get
 
-    assertResult(OutDtoWithErrors(serviceDataDto, Some("asd"), List("Not found global id in state for id = uasp id"), Some(dto)))(outDtoWithErrors)
+    assertResult(OutDtoWithErrors(
+      serviceDataDto,
+      Some("ru.vtb.uasp.mdm.enrichment.service.KeyGlobalIdEnrichmentMapService"),
+      List("Not found global id in state for id = uasp id"), Some(dto)))(outDtoWithErrors)
 
     value1.print()
 

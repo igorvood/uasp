@@ -13,8 +13,8 @@ import ru.vtb.uasp.common.extension.CommonExtension.Also
 import ru.vtb.uasp.common.kafka.FlinkSinkProperties
 import ru.vtb.uasp.common.kafka.FlinkSinkProperties.producerFactoryDefault
 import ru.vtb.uasp.common.service.JsonConvertOutService.{IdentityPredef, JsonPredef}
-import ru.vtb.uasp.common.service.UaspDeserializationProcessFunction
-import ru.vtb.uasp.common.service.dto.KafkaDto
+import ru.vtb.uasp.common.service.{JsonConvertOutService, UaspDeserializationProcessFunction}
+import ru.vtb.uasp.common.service.dto.{KafkaDto, OutDtoWithErrors}
 import ru.vtb.uasp.mdm.enrichment.service.JsValueConsumer
 import ru.vtb.uasp.mdm.enrichment.service.dto.{FlinkDataStreams, KeyedCAData, KeyedUasp, OutStreams}
 import ru.vtb.uasp.mdm.enrichment.utils.config.MDMEnrichmentPropsModel.appPrefixDefaultName
@@ -146,6 +146,8 @@ object EnrichmentJob extends Serializable {
                 mDMEnrichmentPropsModel.serviceData,
                 validateGlobalIdService,
                 dlqGlobalIdProp.map(sp => sp -> { (q, w) => q.serializeToBytes(w) }),
+//                dlqGlobalIdProp.map(sp => sp -> { (q, w) => JsonConvertOutService.serializeToBytes[OutDtoWithErrors[JsValue]](q, w)(OutDtoWithErrors.) }),
+//                dlqGlobalIdProp.map(sp => sp -> JsonConvertOutService.serializeToBytes[OutDtoWithErrors[JsValue]]),
                 producerFabric)
 
             mainDs
@@ -157,7 +159,7 @@ object EnrichmentJob extends Serializable {
               .keyBy(keySelectorMain)
               .connect(validatedGlobalIdStream.keyBy(d => d.key))
               .process(keyGlobalSrv)
-              .processWithMaskedDql1[UaspDto, UaspDto](
+              .processWithMaskedDqlFC[UaspDto, UaspDto](
                 mDMEnrichmentPropsModel.serviceData,
                 mDMEnrichmentPropsModel.throwToDlqService,
                 mainDlqProp.map(sp => sp -> { (q, w) => q.serializeToBytes(w) }),
@@ -194,7 +196,7 @@ object EnrichmentJob extends Serializable {
               .keyBy(keySelectorMain)
               .connect(validatedGlobalIdStream.keyBy(d => d.key))
               .process(keyCommonEnrichmentMapService)
-              .processWithMaskedDql1[UaspDto, UaspDto](
+              .processWithMaskedDqlFC[UaspDto, UaspDto](
                 mDMEnrichmentPropsModel.serviceData,
                 mDMEnrichmentPropsModel.throwToDlqService,
                 mainDlqProp.map(sp => sp -> { (q, w) => q.serializeToBytes(w) }),

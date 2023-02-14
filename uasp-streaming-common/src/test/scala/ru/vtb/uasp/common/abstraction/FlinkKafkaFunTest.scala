@@ -3,6 +3,7 @@ package ru.vtb.uasp.common.abstraction
 import org.apache.flink.api.scala.createTypeInformation
 import org.apache.flink.streaming.api.scala.DataStream
 import org.scalatest.flatspec.AnyFlatSpec
+import play.api.libs.json.{JsValue, Json}
 import play.api.libs.json.OFormat.oFormatFromReadsAndOWrites
 import ru.vtb.uasp.common.abstraction.FlinkKafkaFunTest._
 import ru.vtb.uasp.common.abstraction.FlinkStreamProducerPredef.StreamFactory
@@ -10,7 +11,7 @@ import ru.vtb.uasp.common.abstraction.MiniPipeLineTrait.valuesTestDataDto
 import ru.vtb.uasp.common.kafka.FlinkSinkProperties
 import ru.vtb.uasp.common.mask.MaskedPredef.PathFactory
 import ru.vtb.uasp.common.mask.MaskedStrPathWithFunName
-import ru.vtb.uasp.common.service.JsonConvertInService
+import ru.vtb.uasp.common.service.{JsonConvertInService, JsonConvertOutService}
 import ru.vtb.uasp.common.service.JsonConvertOutService.serializeToBytes
 import ru.vtb.uasp.common.service.dto.{KafkaDto, OutDtoWithErrors, ServiceDataDto}
 import ru.vtb.uasp.common.utils.config.kafka.KafkaPrdProperty
@@ -52,10 +53,70 @@ class FlinkKafkaFunTest extends AnyFlatSpec with MiniPipeLineTrait with Serializ
   "processWithMaskedDqlF Ошибка, но маскирование не настроено" should " OK" in {
 
     val flinkPipe: DataStream[TestDataDto] => Unit = { ds =>
-      val value1 = ds.processWithMaskedDqlF(serviceDataDto, dlqProcessFunctionError, Some(flinkSinkPropertiesDlq -> serializeToBytes[OutDtoWithErrors[TestDataDto]]), producerFactory[KafkaDto])
+      val value1 = ds.processWithMaskedDqlF(
+        serviceDataDto,
+        dlqProcessFunctionError,
+        Some(flinkSinkPropertiesDlq -> serializeToBytes[OutDtoWithErrors[TestDataDto]]),
+        producerFactory[KafkaDto]
+      )
     }
 
     processWithMaskedDqlErrNoMasked(flinkPipe)
+  }
+
+
+
+  "processWithMaskedDqlF jsValue Ошибка, но маскирование не настроено" should " OK" in {
+
+    val values = listTestDataDto
+      .map(d => Json.toJson(d))
+
+    val flinkPipe: DataStream[JsValue] => Unit = { ds =>
+
+      val value1 = ds.processWithMaskedDqlF(
+        serviceDataDto,
+        dlqProcessFunctionErrorJs,
+        Some(flinkSinkPropertiesDlq -> {(q,w) => {
+          implicit  val value2 = OutDtoWithErrors.writesJsValue
+          implicit val value = OutDtoWithErrors.outDtoWithErrorsJsonWrites[JsValue](value2)
+
+          serializeToBytes[OutDtoWithErrors[JsValue]](q, w)(value)
+        }}),
+        producerFactory[KafkaDto]
+      )
+    }
+
+
+    pipeRun(values, flinkPipe)
+
+    assertResult(1)(valuesTestDataDto.size)
+
+    val dtoes1 = topicDataArray[TestDataDto](flinkSinkProperties)
+    assertResult(0)(dtoes1.size)
+
+    val dtoes = topicDataArray[KafkaDto](flinkSinkPropertiesDlq)
+    assertResult(1)(dtoes.size)
+    val either = JsonConvertInService.deserialize[OutDtoWithErrors[TestDataDto]](dtoes.head.value)(OutDtoWithErrors.outDtoWithErrorsJsonReads, serviceDataDto)
+    val unit = outDtoWithErrorsFun(Some(testDataDto))
+    assertResult(unit)(either.right.get)
+
+
+
+    //    val flinkPipe: DataStream[TestDataDto] => Unit = { ds =>
+//      implicit val value2 = OutDtoWithErrors.outDtoWithErrorsJsonWrites[JsValue](OutDtoWithErrors.writesJsValue)
+//
+//      val value = ds.map(q =>
+//        Json.toJsObject(q).asInstanceOf[JsValue]
+//      )
+//      val value1 = value.processWithMaskedDqlF(
+//        serviceDataDto,
+//        dlqProcessFunctionErrorJs,
+//        Some(flinkSinkPropertiesDlq -> JsonConvertOutService.serializeToBytes[OutDtoWithErrors[JsValue]]),
+//        producerFactory[KafkaDto]
+//      )
+//    }
+//
+//    processWithMaskedDqlErrNoMasked(flinkPipe)
   }
 
   "processWithMaskedDql1 Ошибка, но маскирование не настроено" should " OK" in {
@@ -339,6 +400,10 @@ object FlinkKafkaFunTest {
 
   protected val dlqProcessFunctionError: DlqProcessFunction[TestDataDto, TestDataDto, OutDtoWithErrors[TestDataDto]] = new DlqProcessFunction[TestDataDto, TestDataDto, OutDtoWithErrors[TestDataDto]] {
     override def processWithDlq(dto: TestDataDto): Either[OutDtoWithErrors[TestDataDto], TestDataDto] = Left(outDtoWithErrorsFun(Some(dto)))
+  }
+
+  protected val dlqProcessFunctionErrorJs: DlqProcessFunction[JsValue, JsValue, OutDtoWithErrors[JsValue]] = new DlqProcessFunction[JsValue, JsValue, OutDtoWithErrors[JsValue]] {
+    override def processWithDlq(dto: JsValue): Either[OutDtoWithErrors[JsValue], JsValue] = Left(outDtoWithErrorsFun(Some(dto)))
   }
 
   protected val dlqProcessFunction: DlqProcessFunction[TestDataDto, TestDataDto, OutDtoWithErrors[TestDataDto]] = new DlqProcessFunction[TestDataDto, TestDataDto, OutDtoWithErrors[TestDataDto]] {

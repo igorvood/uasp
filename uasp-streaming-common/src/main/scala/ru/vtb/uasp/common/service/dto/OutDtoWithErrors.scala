@@ -20,6 +20,12 @@ object OutDtoWithErrors {
     override def writes(o: JsValue): JsObject = o.asInstanceOf[JsObject]
   }
 
+  implicit val readsJsValue: Reads[JsValue] = new Reads[JsValue] {
+
+    override def reads(json: JsValue): JsResult[JsValue] = new JsSuccess(json)
+  }
+
+
   implicit def outDtoWithErrorsJsonReads[T](implicit fmt: Reads[T]): Reads[OutDtoWithErrors[T]] = json =>
     for {
       serviceDataDto <- (json \ "serviceDataDto").validate[ServiceDataDto]
@@ -37,6 +43,12 @@ object OutDtoWithErrors {
         (JsPath \ "data").writeNullable[T](fmt)
     value(unlift(OutDtoWithErrors.unapply[T]))
   }
+
+  implicit val writesJsValueWithErr: OWrites[OutDtoWithErrors[JsValue]] = outDtoWithErrorsJsonWrites(writesJsValue)
+
+  implicit val readsJsValueWithErr: Reads[OutDtoWithErrors[JsValue]]  = outDtoWithErrorsJsonReads(readsJsValue)
+
+
 
 
   //  implicit def eitherWrites[L, R](implicit fmtL: OWrites[R], fmtL: OWrites[R] ): OWrites[Either[L, R]]={
