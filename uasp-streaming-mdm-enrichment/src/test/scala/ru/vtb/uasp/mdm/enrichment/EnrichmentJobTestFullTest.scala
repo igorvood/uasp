@@ -7,16 +7,13 @@ import org.scalatest.matchers.should.Matchers
 import play.api.libs.json.{JsValue, Json}
 import ru.vtb.uasp.common.dto.UaspDto
 import ru.vtb.uasp.common.service.JsonConvertInService
-import ru.vtb.uasp.common.service.JsonConvertOutService.JsonPredef
 import ru.vtb.uasp.common.service.dto.{KafkaDto, OutDtoWithErrors, ServiceDataDto}
-import ru.vtb.uasp.common.utils.config.kafka.KafkaPrdProperty
 import ru.vtb.uasp.mdm.enrichment.TestConst._
 import ru.vtb.uasp.mdm.enrichment.service.dto.FlinkDataStreams
 import ru.vtb.uasp.mdm.enrichment.utils.config._
-import ru.vtb.uasp.mdm.enrichment.utils.config.enrich.AllEnrichProperty
 
 import java.util
-import java.util.{Collections, Properties}
+import java.util.Collections
 import scala.collection.JavaConverters.mapAsScalaMapConverter
 
 class EnrichmentJobTestFullTest extends AnyFlatSpec with Matchers {
@@ -57,7 +54,6 @@ class EnrichmentJobTestFullTest extends AnyFlatSpec with Matchers {
     env.execute("executionEnvironmentProperty.appServiceName")
 
   }
-
 
 
   it should " fill error if not found global id" in {

@@ -6,8 +6,6 @@ import ru.vtb.uasp.mdm.enrichment.perfomance.ExtractPerformanceTest.{inJsonStrVa
 import ru.vtb.uasp.mdm.enrichment.perfomance.NodeTest.metaJsonProperty
 import ru.vtb.uasp.mdm.enrichment.utils.config.enrich.flat.json._
 
-import scala.util.{Failure, Try}
-
 
 class ExtractTest extends AnyFlatSpec {
 

@@ -6,24 +6,22 @@ import org.apache.flink.streaming.api.functions.sink.SinkFunction
 import org.apache.flink.streaming.api.scala.{DataStream, StreamExecutionEnvironment, createTypeInformation}
 import org.slf4j.LoggerFactory
 import play.api.libs.json.{JsObject, JsValue, OWrites}
-import ru.vtb.uasp.common.abstraction.DlqProcessFunction
 import ru.vtb.uasp.common.abstraction.FlinkStreamProducerPredef.{StreamExecutionEnvironmentPredef, StreamFactory}
 import ru.vtb.uasp.common.base.EnrichFlinkDataStream.EnrichFlinkDataStreamSink
 import ru.vtb.uasp.common.dto.UaspDto
 import ru.vtb.uasp.common.extension.CommonExtension.Also
 import ru.vtb.uasp.common.kafka.FlinkSinkProperties
 import ru.vtb.uasp.common.kafka.FlinkSinkProperties.producerFactoryDefault
-import ru.vtb.uasp.common.mask.dto.JsMaskedPathError
 import ru.vtb.uasp.common.service.JsonConvertOutService.{IdentityPredef, JsonPredef}
-import ru.vtb.uasp.common.service.{JsonConvertInService, UaspDeserializationProcessFunction}
-import ru.vtb.uasp.common.service.dto.{KafkaDto, OutDtoWithErrors}
+import ru.vtb.uasp.common.service.UaspDeserializationProcessFunction
+import ru.vtb.uasp.common.service.dto.KafkaDto
 import ru.vtb.uasp.mdm.enrichment.service.JsValueConsumer
 import ru.vtb.uasp.mdm.enrichment.service.dto.{FlinkDataStreams, KeyedCAData, KeyedUasp, OutStreams}
 import ru.vtb.uasp.mdm.enrichment.utils.config.MDMEnrichmentPropsModel.appPrefixDefaultName
 import ru.vtb.uasp.mdm.enrichment.utils.config._
 
 
-object EnrichmentJob {
+object EnrichmentJob extends Serializable {
 
   val keySelectorMain: KeySelector[KeyedUasp, String] =
     (in: KeyedUasp) => {
@@ -150,7 +148,7 @@ object EnrichmentJob {
                 dlqGlobalIdProp.map(sp => sp -> { (q, w) => q.serializeToBytes(w) }),
                 producerFabric)
 
-             mainDs
+            mainDs
               .processWithMaskedDqlF(
                 mDMEnrichmentPropsModel.serviceData,
                 keyedMainStreamSrv,

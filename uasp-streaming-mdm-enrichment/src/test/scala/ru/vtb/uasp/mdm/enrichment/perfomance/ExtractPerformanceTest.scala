@@ -2,8 +2,8 @@ package ru.vtb.uasp.mdm.enrichment.perfomance
 
 import org.scalatest.flatspec.AnyFlatSpec
 import play.api.libs.json.Json
-import ru.vtb.uasp.mdm.enrichment.perfomance.NodeTest.metaJsonProperty
 import ru.vtb.uasp.mdm.enrichment.perfomance.ExtractPerformanceTest.{inJsonStrValid, packageServiceInDto}
+import ru.vtb.uasp.mdm.enrichment.perfomance.NodeTest.metaJsonProperty
 import ru.vtb.uasp.mdm.enrichment.utils.config.enrich.flat.json.NodeJsonMeta
 
 import java.util.Date

@@ -1,5 +1,6 @@
 package ru.vtb.uasp.mdm.enrichment.utils.config
 
+import org.apache.flink.streaming.api.scala.createTypeInformation
 import ru.vtb.uasp.common.abstraction.DlqProcessFunction
 import ru.vtb.uasp.common.dto.UaspDto
 import ru.vtb.uasp.common.kafka.FlinkSinkProperties
@@ -8,7 +9,6 @@ import ru.vtb.uasp.common.utils.config.PropertyUtil._
 import ru.vtb.uasp.common.utils.config.{AllApplicationProperties, ConfigurationInitialise, PropertyCombiner, ReadConfigErrors}
 import ru.vtb.uasp.mdm.enrichment.service._
 import ru.vtb.uasp.mdm.enrichment.utils.config.enrich.AllEnrichProperty
-import org.apache.flink.streaming.api.scala.{DataStream, StreamExecutionEnvironment, createTypeInformation}
 
 import scala.collection.mutable
 
@@ -21,8 +21,8 @@ case class MDMEnrichmentPropsModel(
 
   require(appSyncParallelism > 0, "appSyncParallelism must be grater than zero")
 
-//  @deprecated
-//  lazy val throwToDlqService = new ThrowToDlqService
+  //  @deprecated
+  //  lazy val throwToDlqService = new ThrowToDlqService
 
   //  Вытаскивание ключевого значсения для основного потока, для обогащения глобальным идентификатором
   lazy val globalMainStreamExtractKeyFunction = allEnrichProperty.globalIdEnrichProperty

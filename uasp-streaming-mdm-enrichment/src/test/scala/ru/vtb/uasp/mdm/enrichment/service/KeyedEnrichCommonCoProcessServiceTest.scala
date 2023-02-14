@@ -16,7 +16,6 @@ import ru.vtb.uasp.mdm.enrichment.service.dto.{KeyedCAData, KeyedUasp}
 import ru.vtb.uasp.mdm.enrichment.utils.config.enrich._
 import ru.vtb.uasp.mdm.enrichment.utils.config.enrich.intf.InputFormatEnum._
 
-import java.util.Properties
 import scala.annotation.tailrec
 import scala.collection.JavaConverters.collectionAsScalaIterableConverter
 
@@ -29,7 +28,7 @@ class KeyedEnrichCommonCoProcessServiceTest extends AnyFlatSpec {
 
   it should " test enrichMainStream with Optional value but it is empty" in {
     val allProperty = enrichPropMap(true)
-    val enrichmentMapService = new KeyedEnrichCommonCoProcessService(serviceDataDto,allProperty.commonEnrichProperty.get)
+    val enrichmentMapService = new KeyedEnrichCommonCoProcessService(serviceDataDto, allProperty.commonEnrichProperty.get)
     val testHarness = createTestHarness(enrichmentMapService)
 
     testHarness.open()
@@ -52,7 +51,7 @@ class KeyedEnrichCommonCoProcessServiceTest extends AnyFlatSpec {
 
   it should " test enrichMainStream with non Optional value but it is empty" in {
     val allProperty = enrichPropMap(false)
-    val enrichmentMapService = new KeyedEnrichCommonCoProcessService( serviceDataDto, allProperty.commonEnrichProperty.get)
+    val enrichmentMapService = new KeyedEnrichCommonCoProcessService(serviceDataDto, allProperty.commonEnrichProperty.get)
 
     val testHarness = createTestHarness(enrichmentMapService)
 
@@ -117,7 +116,7 @@ class KeyedEnrichCommonCoProcessServiceTest extends AnyFlatSpec {
   it should " test data for stream with Optional value but it is empty" in {
     val allProperty = enrichPropMap(true)
 
-    val commonEnrichProperty =  allProperty.commonEnrichProperty.get
+    val commonEnrichProperty = allProperty.commonEnrichProperty.get
     val enrichmentMapService = new KeyedEnrichCommonCoProcessService(serviceDataDto, commonEnrichProperty)
     val testHarness = createTestHarness(enrichmentMapService)
 
@@ -144,7 +143,7 @@ class KeyedEnrichCommonCoProcessServiceTest extends AnyFlatSpec {
     val commonEnrichProperty = allProperty.commonEnrichProperty.get
 
 
-    val enrichmentMapService = new KeyedEnrichCommonCoProcessService(serviceDataDto,commonEnrichProperty)
+    val enrichmentMapService = new KeyedEnrichCommonCoProcessService(serviceDataDto, commonEnrichProperty)
 
     val testHarness = createTestHarness(enrichmentMapService)
 
@@ -216,7 +215,7 @@ object KeyedEnrichCommonCoProcessServiceTest {
 
   private def mainEnrichProperty: MainEnrichProperty = new MainEnrichProperty(
     fromTopic = FlinkConsumerProperties(calcTopicName("From" + mainStreamName), KafkaCnsProperty(properties)),
-    toTopicProp = FlinkSinkProperties(calcTopicName("To" + mainStreamName), KafkaPrdProperty(properties), None, None, None) ,
+    toTopicProp = FlinkSinkProperties(calcTopicName("To" + mainStreamName), KafkaPrdProperty(properties), None, None, None),
     dlqTopicProp = None
   )
 

@@ -11,9 +11,9 @@ import ru.vtb.uasp.mdm.enrichment.dao.UaspDtoPredef.PreDef
 import ru.vtb.uasp.mdm.enrichment.service.dto.{KeyedCAData, KeyedUasp}
 import ru.vtb.uasp.mdm.enrichment.utils.config.enrich.GlobalIdEnrichProperty
 
-class KeyGlobalIdEnrichmentMapService( val serviceDataDto: ServiceDataDto,
-                                       val globalIdStreamProperty: GlobalIdEnrichProperty,
-                                       val appSavepointPref: String
+class KeyGlobalIdEnrichmentMapService(val serviceDataDto: ServiceDataDto,
+                                      val globalIdStreamProperty: GlobalIdEnrichProperty,
+                                      val appSavepointPref: String
                                      ) extends KeyedCoProcessFunction[String, KeyedUasp, KeyedCAData, Either[OutDtoWithErrors[UaspDto], UaspDto]] {
 
   val crossLinkMdmDataStateDescriptor: ValueStateDescriptor[String] =
@@ -29,33 +29,33 @@ class KeyGlobalIdEnrichmentMapService( val serviceDataDto: ServiceDataDto,
   private var dataState: ValueState[Map[String, String]] = _
 
   override def processElement1(value: KeyedUasp, ctx: KeyedCoProcessFunction[String, KeyedUasp, KeyedCAData, Either[OutDtoWithErrors[UaspDto], UaspDto]]#Context, out: Collector[Either[OutDtoWithErrors[UaspDto], UaspDto]]): Unit = {
-        val maybeEnrichment: Either[String, KeyedUasp] = for {
-          withId <- Option(globalIdState.value())
-            .map { global_id => Right(value.copy(localId = global_id, uaspDto = value.uaspDto.enrichGlobalId(global_id, globalIdStreamProperty.globalEnrichFields))) }
-            .getOrElse(Left("Not found global id in state for id = " + value.uaspDto.id))
+    val maybeEnrichment: Either[String, KeyedUasp] = for {
+      withId <- Option(globalIdState.value())
+        .map { global_id => Right(value.copy(localId = global_id, uaspDto = value.uaspDto.enrichGlobalId(global_id, globalIdStreamProperty.globalEnrichFields))) }
+        .getOrElse(Left("Not found global id in state for id = " + value.uaspDto.id))
 
-          enrichmentUasp <- withId.enrichMainStream(globalIdStreamProperty.fields) { fieldKey => Option(dataState.value()).getOrElse(Map.empty).get(fieldKey) }
+      enrichmentUasp <- withId.enrichMainStream(globalIdStreamProperty.fields) { fieldKey => Option(dataState.value()).getOrElse(Map.empty).get(fieldKey) }
 
-        } yield enrichmentUasp
+    } yield enrichmentUasp
 
-        val maybeOk = maybeEnrichment match {
-          case Right(ok) => Right(ok.uaspDto)
-          case Left(err) => Left(OutDtoWithErrors[UaspDto](serviceDataDto, Some(this.getClass.getName), List(err), Some(value.uaspDto)))
-        }
+    val maybeOk = maybeEnrichment match {
+      case Right(ok) => Right(ok.uaspDto)
+      case Left(err) => Left(OutDtoWithErrors[UaspDto](serviceDataDto, Some(this.getClass.getName), List(err), Some(value.uaspDto)))
+    }
 
-        out.collect(maybeOk)
-      }
+    out.collect(maybeOk)
+  }
 
   override def processElement2(value: KeyedCAData, ctx: KeyedCoProcessFunction[String, KeyedUasp, KeyedCAData, Either[OutDtoWithErrors[UaspDto], UaspDto]]#Context, out: Collector[Either[OutDtoWithErrors[UaspDto], UaspDto]]): Unit = {
 
-        value.newId
-          .map { globalId => globalIdState.update(globalId) }
-          .getOrElse {
-            throw new IllegalStateException(" не возможная ситуация, до этого провалидировали все ID")
-          }
-
-        dataState.update(value.data)
+    value.newId
+      .map { globalId => globalIdState.update(globalId) }
+      .getOrElse {
+        throw new IllegalStateException(" не возможная ситуация, до этого провалидировали все ID")
       }
+
+    dataState.update(value.data)
+  }
 
   override def open(parameters: Configuration): Unit = {
     globalIdState = getRuntimeContext.getState(crossLinkMdmDataStateDescriptor)

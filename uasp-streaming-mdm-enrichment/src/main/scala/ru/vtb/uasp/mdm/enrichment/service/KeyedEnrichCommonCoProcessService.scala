@@ -20,7 +20,7 @@ class KeyedEnrichCommonCoProcessService(val serviceDataDto: ServiceDataDto,
   )
   private var dataState: ValueState[Map[String, String]] = _
 
-   override def processElement1(value: KeyedUasp, ctx: KeyedCoProcessFunction[String, KeyedUasp, KeyedCAData, Either[OutDtoWithErrors[UaspDto], UaspDto]]#Context, out: Collector[Either[OutDtoWithErrors[UaspDto], UaspDto]]): Unit = {
+  override def processElement1(value: KeyedUasp, ctx: KeyedCoProcessFunction[String, KeyedUasp, KeyedCAData, Either[OutDtoWithErrors[UaspDto], UaspDto]]#Context, out: Collector[Either[OutDtoWithErrors[UaspDto], UaspDto]]): Unit = {
     val mapState = Option(dataState.value()).getOrElse(Map.empty)
     val fieldsList = commonEnrichProperty.fields
     val mayBeError = value.enrichMainStream(fieldsList) { fieldKey => mapState.get(fieldKey) }

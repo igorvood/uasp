@@ -2,16 +2,12 @@ package ru.vtb.uasp.mdm.enrichment.service
 
 import org.scalatest.flatspec.AnyFlatSpec
 import play.api.libs.json.{JsValue, Json}
-import ru.vtb.uasp.common.service.JsonConvertInService
-import ru.vtb.uasp.common.service.JsonConvertOutService.JsonPredef
 import ru.vtb.uasp.common.service.dto.{OutDtoWithErrors, ServiceDataDto}
 import ru.vtb.uasp.mdm.enrichment.TestConst.globalIdStreamProperty
 import ru.vtb.uasp.mdm.enrichment.service.KeyEnrichmentGlobalIdServiceTest._
 import ru.vtb.uasp.mdm.enrichment.service.dto.KeyedCAData
 import ru.vtb.uasp.mdm.enrichment.utils.config.enrich.intf.InputFormatEnum.FlatJsonFormat
 import ru.vtb.uasp.mdm.enrichment.utils.config.enrich.{GlobalIdEnrichProperty, KeySelectorProp}
-
-import java.nio.charset.StandardCharsets
 
 class ExtractKeyFunctionTest extends AnyFlatSpec {
 
@@ -49,7 +45,7 @@ class ExtractKeyFunctionTest extends AnyFlatSpec {
       globalIdStreamProp = globalIdStreamProperty,
       jsValue = jsValue,
       Left(outDtoWithErrors)
-//      expected = Left(OutDtoWithErrors(newMsg.serializeToStr, List("Not found new id for Uasp field name global_id field type String")))
+      //      expected = Left(OutDtoWithErrors(newMsg.serializeToStr, List("Not found new id for Uasp field name global_id field type String")))
     )
 
   }
@@ -87,7 +83,7 @@ class ExtractKeyFunctionTest extends AnyFlatSpec {
       globalIdStreamProp = globalIdStreamProperty.copy(keySelectorEnrich = KeySelectorProp(false, Some("STRING"), Some(stringKey))),
       jsValue = value,
       Left(outDtoWithErrors)
-//      expected = Left(OutDtoWithErrors(getMdmUaspDto.serializeToStr, List("Unable to read key from field StringKey with type STRING")))
+      //      expected = Left(OutDtoWithErrors(getMdmUaspDto.serializeToStr, List("Unable to read key from field StringKey with type STRING")))
     )
 
   }
@@ -103,7 +99,7 @@ class ExtractKeyFunctionTest extends AnyFlatSpec {
       globalIdStreamProp = globalIdStreamProperty,
       jsValue = jsValue,
       Left(outDtoWithErrors)
-//      expected = Left(OutDtoWithErrors(Json.stringify(jsValue), List("Field 'id' in UaspDto is null, unable to use it on key")))
+      //      expected = Left(OutDtoWithErrors(Json.stringify(jsValue), List("Field 'id' in UaspDto is null, unable to use it on key")))
     )
   }
 
@@ -207,7 +203,7 @@ class ExtractKeyFunctionTest extends AnyFlatSpec {
 
 
   private def runTest(globalIdStreamProp: GlobalIdEnrichProperty, jsValue: JsValue, expected: Either[OutDtoWithErrors[JsValue], KeyedCAData]) = {
-    val enrichmentMapService = new ExtractKeyFunction(serviceDataDto ,globalIdStreamProp)
+    val enrichmentMapService = new ExtractKeyFunction(serviceDataDto, globalIdStreamProp)
 
     val dtoOrData: Either[OutDtoWithErrors[JsValue], KeyedCAData] = enrichmentMapService.processWithDlq(jsValue)
 

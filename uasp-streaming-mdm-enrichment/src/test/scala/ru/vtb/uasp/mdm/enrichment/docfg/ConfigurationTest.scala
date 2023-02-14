@@ -11,14 +11,14 @@ class ConfigurationTest extends AnyFlatSpec {
 
   private implicit val profiles: List[Profile] = List(
     Profile("way4"),
-//    Profile("profile-tx-step1"),
-//    Profile("profile-tx-step2"),
-//    Profile("prof-tx-case-71"),
-//    Profile("prof-auth"),
-//    Profile("way4-card-agreement"),
-//    Profile("prof-auth-packNM"),
-//    Profile("case-68"),
-//    Profile("case-68_agrement"),
+    //    Profile("profile-tx-step1"),
+    //    Profile("profile-tx-step2"),
+    //    Profile("prof-tx-case-71"),
+    //    Profile("prof-auth"),
+    //    Profile("way4-card-agreement"),
+    //    Profile("prof-auth-packNM"),
+    //    Profile("case-68"),
+    //    Profile("case-68_agrement"),
   )
 
   behavior of "Create and check Configuration"
