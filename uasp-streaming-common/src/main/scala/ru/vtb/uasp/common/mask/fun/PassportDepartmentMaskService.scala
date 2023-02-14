@@ -8,14 +8,13 @@ import play.api.libs.json.JsString
  * ii. полученное значение делим на четыре, округляем до целых любым способом. Результат считаем номером позиции от которой начинается маскирование.
  * iii. Число номера позиции, от которой начинается маскирование умножаем на три. Результат считаем номером позиции на которой заканчивается маскирование.
  * iv. Все символы на позициях до ii и после iii оставляем. Остальные символы, подлежащие маскированию, удаляем и заменяем на пять «звездочек», отделённых пробелами с двух сторон
-* */
+ * */
 case class PassportDepartmentMaskService() extends JsStringMaskedFun {
 
   override def mask(in: String): JsString = {
     val i = in.length / 4
-    JsString(in.substring(0, i)+" ***** "+in.substring(i*3))
+    JsString(in.substring(0, i) + " ***** " + in.substring(i * 3))
   }
-
 
 
 }

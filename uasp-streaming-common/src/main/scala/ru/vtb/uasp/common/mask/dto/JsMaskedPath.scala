@@ -15,10 +15,11 @@ import scala.collection.immutable
  */
 sealed trait JsMaskedPath extends Serializable {
   /** Добавляет к текущей структуре новое поле для маскирования
+   *
    * @param pathNodeList json путь к полю данные в котором надо маскировать,
-   * @param maskedFun ф-ция маскирования, будет применена к значению в этом поле
+   * @param maskedFun    ф-ция маскирования, будет применена к значению в этом поле
    * @tparam IN исходное значение обычно это строка, но в принципе маскировать можно и иные типы данных
-   * @tparam T возвращаемое значение JsValue
+   * @tparam T  возвращаемое значение JsValue
    * @return возвращает новую структуру с добавленным полем
    */
   def addWithFun[IN, T <: JsValue](pathNodeList: List[String], maskedFun: MaskedFun[IN, T]): JsMaskedPath

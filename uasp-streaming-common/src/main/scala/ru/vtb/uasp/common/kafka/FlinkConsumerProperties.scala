@@ -23,7 +23,7 @@ case class FlinkConsumerProperties(fromTopic: String,
   def createConsumer[T](deserializationSchema: KafkaDeserializationSchema[T]): FlinkKafkaConsumer[T] =
     ConsumerFactory.getKafkaConsumer(
       topic = fromTopic,
-       deserializationSchema,
+      deserializationSchema,
       properties = kafkaCnsProperty.property)
 
 }

@@ -3,15 +3,15 @@ package ru.vtb.uasp.common.service.dto
 import play.api.libs.functional.FunctionalBuilder
 import play.api.libs.functional.syntax.{toFunctionalBuilderOps, unlift}
 import play.api.libs.json.OFormat.oFormatFromReadsAndOWrites
-import play.api.libs.json.{JsObject, JsPath, JsValue, OWrites, Reads}
+import play.api.libs.json._
 
 case class OutDtoWithErrors[T](
-                                   serviceDataDto: ServiceDataDto,
-                                   errorPosition: Option[String],
-                                   errors: List[String],
-                                   data: Option[T],
+                                serviceDataDto: ServiceDataDto,
+                                errorPosition: Option[String],
+                                errors: List[String],
+                                data: Option[T],
 
-                                 )
+                              )
 
 
 object OutDtoWithErrors {
@@ -39,28 +39,28 @@ object OutDtoWithErrors {
   }
 
 
-//  implicit def eitherWrites[L, R](implicit fmtL: OWrites[R], fmtL: OWrites[R] ): OWrites[Either[L, R]]={
-//
-//    new Writes[Either[L, R]]{
-//
-//    }
-//
-//    ???
-//  }
-//
-//  val reads: Reads[Either] =
-//    (__ \ "dateTime").read[Long].map(millis => When(Left(new DateTime(millis)))) |
-//      (__ \ "duration").read[Long].map(millis => When(Right(new Duration(millis))))
-//
-//  val writes: Writes[When] = new Writes[When] {
-//    override def writes(o: When): JsValue = Json.obj(
-//      o.when.fold(
-//        duration => "duration" -> duration.getMillis,
-//        dateTime => "dateTime" -> dateTime.getMillis
-//      )
-//    )
-//  }
-//
-//  implicit val format = Format(reads, writes)
+  //  implicit def eitherWrites[L, R](implicit fmtL: OWrites[R], fmtL: OWrites[R] ): OWrites[Either[L, R]]={
+  //
+  //    new Writes[Either[L, R]]{
+  //
+  //    }
+  //
+  //    ???
+  //  }
+  //
+  //  val reads: Reads[Either] =
+  //    (__ \ "dateTime").read[Long].map(millis => When(Left(new DateTime(millis)))) |
+  //      (__ \ "duration").read[Long].map(millis => When(Right(new Duration(millis))))
+  //
+  //  val writes: Writes[When] = new Writes[When] {
+  //    override def writes(o: When): JsValue = Json.obj(
+  //      o.when.fold(
+  //        duration => "duration" -> duration.getMillis,
+  //        dateTime => "dateTime" -> dateTime.getMillis
+  //      )
+  //    )
+  //  }
+  //
+  //  implicit val format = Format(reads, writes)
 
 }

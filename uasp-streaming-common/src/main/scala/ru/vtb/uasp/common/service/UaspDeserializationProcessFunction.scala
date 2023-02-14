@@ -4,8 +4,7 @@ import org.apache.flink.api.scala.createTypeInformation
 import ru.vtb.uasp.common.abstraction.DlqProcessFunction
 import ru.vtb.uasp.common.dto.UaspDto
 import ru.vtb.uasp.common.mask.dto.JsMaskedPathError
-import ru.vtb.uasp.common.service.JsonConvertOutService.JsonPredef
-import ru.vtb.uasp.common.service.dto.{KafkaDto, OutDtoWithErrors, ServiceDataDto}
+import ru.vtb.uasp.common.service.dto.{OutDtoWithErrors, ServiceDataDto}
 
 case class UaspDeserializationProcessFunction(implicit val serviceData: ServiceDataDto) extends DlqProcessFunction[Array[Byte], UaspDto, JsMaskedPathError] {
 

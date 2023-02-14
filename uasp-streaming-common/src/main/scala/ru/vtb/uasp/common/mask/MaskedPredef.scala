@@ -11,6 +11,7 @@ object MaskedPredef {
   implicit class PathFactory(val self: Iterable[MaskedStrPathWithFunName]) extends AnyVal {
 
     /** преобразует коллекцию MaskedStrPathWithFunName в JsMaskedPath
+     *
      * @return
      */
     def toJsonPath(): Either[List[JsMaskedPathError], JsMaskedPath] = {
@@ -24,6 +25,7 @@ object MaskedPredef {
   implicit class MaskJsValuePredef(val self: JsValue) extends AnyVal {
 
     /** маскирует поля у входящего JsValue
+     *
      * @param maskedRule правила маскирования
      * @return JsValue с маскированными полями
      */

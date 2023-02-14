@@ -69,7 +69,6 @@ object FlinkKafkaFun {
       .foreach { sf => {
 
 
-
         val value1 = new RichMapFunction[OutDtoWithErrors[IN], KafkaDto] {
           override def map(value: OutDtoWithErrors[IN]): KafkaDto = {
             val maskedDLQSerializeService: AbstractOutDtoWithErrorsMaskedSerializeService[IN] = new AbstractOutDtoWithErrorsMaskedSerializeService[IN](sf._1.jsMaskedPath) {
@@ -96,7 +95,7 @@ object FlinkKafkaFun {
         val dlq = myBeDlq
           .getSideOutput(process.dlqOutPut)
         val dlqStream = dlq
-          .map (value1)
+          .map(value1)
         privateCreateProducerWithMetric(dlqStream, serviceData, sf._1, producerFactory)
       }
 
