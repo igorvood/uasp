@@ -143,11 +143,10 @@ object EnrichmentJob {
             val (keyedMainStreamSrv, validateGlobalIdService, keyGlobalSrv, globalIdStream) = tuple
             val dlqGlobalIdProp = mDMEnrichmentPropsModel.allEnrichProperty.globalIdEnrichProperty.flatMap(a => a.dlqTopicProp)
 
-            val service = validateGlobalIdService
             val validatedGlobalIdStream = globalIdStream
               .processWithMaskedDqlF(
                 mDMEnrichmentPropsModel.serviceData,
-                service,
+                validateGlobalIdService,
                 dlqGlobalIdProp.map(sp => sp -> { (q, w) => q.serializeToBytes(w) }),
                 producerFabric)
 

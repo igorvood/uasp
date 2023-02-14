@@ -21,7 +21,7 @@ import scala.collection.JavaConverters.mapAsScalaMapConverter
 
 class EnrichmentJobTestFullTest extends AnyFlatSpec with Matchers {
 
-  implicit private val serviceDataDto: ServiceDataDto = ServiceDataDto("", "", "")
+  implicit private val serviceDataDto: ServiceDataDto = ServiceDataDto("йц", "ук", "ке")
   val sinksMap: Map[String, CollectByteSink] =
     List("dlq__TOPIC",
       "ToGlobal Topic",

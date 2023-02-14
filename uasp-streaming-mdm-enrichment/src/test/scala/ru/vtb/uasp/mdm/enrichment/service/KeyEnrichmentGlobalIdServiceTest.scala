@@ -14,7 +14,7 @@ import ru.vtb.uasp.mdm.enrichment.service.dto.{KeyedCAData, KeyedUasp}
 
 class KeyEnrichmentGlobalIdServiceTest extends AnyFlatSpec {
 
-  implicit val dto = ServiceDataDto("", "", "")
+  implicit val dto = ServiceDataDto("йц", "ук", "ке")
 
   behavior of "KeyEnrichmentGlobalIdServiceTest"
 

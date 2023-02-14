@@ -18,7 +18,7 @@ class ExtractKeyFunctionTest extends AnyFlatSpec {
   val stringKey = "StringKey"
   val someStrValue = "Какое-то значение"
 
-  implicit private val serviceDataDto: ServiceDataDto = ServiceDataDto("", "", "")
+  implicit private val serviceDataDto: ServiceDataDto = ServiceDataDto("йц", "ук", "ке")
   behavior of " validate UaspDto"
 
 
@@ -39,7 +39,11 @@ class ExtractKeyFunctionTest extends AnyFlatSpec {
 
     val newMsg = getMdmUaspDto.copy(dataString = Map(stringKey -> someStrValue))
     val jsValue = Json.toJson(newMsg)
-    val outDtoWithErrors = OutDtoWithErrors[JsValue](serviceDataDto, Some("asd"), List("asd"), None /*Json.stringify(jsValue), List("Unable to find key value Some(uniqueKey)")*/)
+    val outDtoWithErrors = OutDtoWithErrors[JsValue](
+      serviceDataDto,
+      Some("ru.vtb.uasp.mdm.enrichment.service.ExtractKeyFunction"),
+      List("Not found new id for Uasp field name global_id field type String"),
+      Some(Json.toJson(newMsg)) /*Json.stringify(jsValue), List("Unable to find key value Some(uniqueKey)")*/)
 
     runTest(
       globalIdStreamProp = globalIdStreamProperty,
@@ -71,11 +75,17 @@ class ExtractKeyFunctionTest extends AnyFlatSpec {
   }
 
   it should " validate is error on key from MAP" in {
-    val outDtoWithErrors = OutDtoWithErrors[JsValue](serviceDataDto, Some("asd"), List("asd"), None /*Json.stringify(jsValue), List("Unable to find key value Some(uniqueKey)")*/)
+    val value = Json.toJson(getMdmUaspDto)
+    val outDtoWithErrors = OutDtoWithErrors[JsValue](
+      serviceDataDto,
+      Some("ru.vtb.uasp.mdm.enrichment.service.ExtractKeyFunction"),
+      List("Unable to read key from field StringKey with type STRING"),
+      Some(value) /*Json.stringify(jsValue), List("Unable to find key value Some(uniqueKey)")*/)
+
 
     runTest(
       globalIdStreamProp = globalIdStreamProperty.copy(keySelectorEnrich = KeySelectorProp(false, Some("STRING"), Some(stringKey))),
-      jsValue = Json.toJson(getMdmUaspDto),
+      jsValue = value,
       Left(outDtoWithErrors)
 //      expected = Left(OutDtoWithErrors(getMdmUaspDto.serializeToStr, List("Unable to read key from field StringKey with type STRING")))
     )
@@ -84,7 +94,11 @@ class ExtractKeyFunctionTest extends AnyFlatSpec {
 
   it should " validate is error on key null" in {
     val jsValue = Json.toJson(getMdmUaspDto.copy(id = null))
-    val outDtoWithErrors = OutDtoWithErrors[JsValue](serviceDataDto, Some("asd"), List("asd"), None /*Json.stringify(jsValue), List("Unable to find key value Some(uniqueKey)")*/)
+    val outDtoWithErrors = OutDtoWithErrors[JsValue](
+      serviceDataDto,
+      Some("ru.vtb.uasp.mdm.enrichment.service.ExtractKeyFunction"),
+      List("Field 'id' in UaspDto is null, unable to use it on key"),
+      Some(jsValue))
     runTest(
       globalIdStreamProp = globalIdStreamProperty,
       jsValue = jsValue,
@@ -96,8 +110,11 @@ class ExtractKeyFunctionTest extends AnyFlatSpec {
   it should " validate is error wrong structure" in {
 
     val jsValue = Json.parse("{}")
-//    val outDtoWithErrors = OutDtoWithErrors(Json.stringify(jsValue), List("error by path (/uuid,error.path.missing)\nerror by path (/dataDecimal,error.path.missing)\nerror by path (/dataFloat,error.path.missing)\nerror by path (/dataLong,error.path.missing)\nerror by path (/process_timestamp,error.path.missing)\nerror by path (/id,error.path.missing)\nerror by path (/dataInt,error.path.missing)\nerror by path (/dataBoolean,error.path.missing)\nerror by path (/dataDouble,error.path.missing)\nerror by path (/dataString,error.path.missing)"))
-    val outDtoWithErrors = OutDtoWithErrors[JsValue](serviceDataDto, Some("asd"), List("asd"), None /*Json.stringify(jsValue), List("Unable to find key value Some(uniqueKey)")*/)
+    val outDtoWithErrors = OutDtoWithErrors[JsValue](
+      serviceDataDto,
+      Some("ru.vtb.uasp.mdm.enrichment.service.ExtractKeyFunction"),
+      List("error by path (/uuid,error.path.missing)\nerror by path (/dataDecimal,error.path.missing)\nerror by path (/dataFloat,error.path.missing)\nerror by path (/dataLong,error.path.missing)\nerror by path (/process_timestamp,error.path.missing)\nerror by path (/id,error.path.missing)\nerror by path (/dataInt,error.path.missing)\nerror by path (/dataBoolean,error.path.missing)\nerror by path (/dataDouble,error.path.missing)\nerror by path (/dataString,error.path.missing)"),
+      Some(jsValue))
     runTest(
       globalIdStreamProp = globalIdStreamProperty,
       jsValue = jsValue,
@@ -131,12 +148,15 @@ class ExtractKeyFunctionTest extends AnyFlatSpec {
 
     val flatJsonTestDtoNoID = flatJsonTestDto.copy(global_id = null)
     val jsValue = Json.toJson(flatJsonTestDtoNoID)
-    val outDtoWithErrors = OutDtoWithErrors[JsValue](serviceDataDto, Some("asd"), List("asd"), None /*Json.stringify(jsValue), List("Unable to find key value Some(uniqueKey)")*/)
+    val outDtoWithErrors = OutDtoWithErrors[JsValue](
+      serviceDataDto,
+      Some("ru.vtb.uasp.mdm.enrichment.service.ExtractKeyFunction"),
+      List("Value for key global_id is null, but value isn't optional"),
+      Some(jsValue))
     runTest(
       globalIdStreamProp = globalIdEnrichPropertyFlatJsonFormat,
       jsValue = jsValue,
       Left(outDtoWithErrors)
-//      expected = Left(OutDtoWithErrors(flatJsonTestDtoNoID.serializeToStr, List("Value for key global_id is null, but value isn't optional")))
     )
 
   }
@@ -153,13 +173,17 @@ class ExtractKeyFunctionTest extends AnyFlatSpec {
   }
 
   it should " validate is error on key from MAP" in {
-    val outDtoWithErrors = OutDtoWithErrors[JsValue](serviceDataDto, Some("asd"), List("asd"), None /*Json.stringify(jsValue), List("Unable to find key value Some(uniqueKey)")*/)
     val jsValue = Json.toJson(flatJsonTestDto)
+    val outDtoWithErrors = OutDtoWithErrors[JsValue](
+      serviceDataDto,
+      Some("ru.vtb.uasp.mdm.enrichment.service.ExtractKeyFunction"),
+      List("Unable to find key value Some(StringKey_ads)"),
+      Some(jsValue))
+
     runTest(
       globalIdStreamProp = globalIdEnrichPropertyFlatJsonFormat.copy(keySelectorEnrich = KeySelectorProp(false, Some("STRING"), Some(stringKey + "_ads"))),
       jsValue = jsValue,
       Left(outDtoWithErrors)
-//      expected = Left(OutDtoWithErrors(flatJsonTestDto.serializeToStr, List("Unable to find key value Some(StringKey_ads)")))
     )
 
   }
@@ -167,7 +191,11 @@ class ExtractKeyFunctionTest extends AnyFlatSpec {
   it should " validate is error wrong structure" in {
 
     val jsValue = Json.parse("{}")
-    val outDtoWithErrors = OutDtoWithErrors[JsValue](serviceDataDto, Some("asd"), List("asd"), None /*Json.stringify(jsValue), List("Unable to find key value Some(uniqueKey)")*/)
+    val outDtoWithErrors = OutDtoWithErrors[JsValue](
+      serviceDataDto,
+      Some("ru.vtb.uasp.mdm.enrichment.service.ExtractKeyFunction"),
+      List("Unable to find key value Some(uniqueKey)"),
+      Some(jsValue))
 
     runTest(
       globalIdStreamProp = globalIdEnrichPropertyFlatJsonFormat,

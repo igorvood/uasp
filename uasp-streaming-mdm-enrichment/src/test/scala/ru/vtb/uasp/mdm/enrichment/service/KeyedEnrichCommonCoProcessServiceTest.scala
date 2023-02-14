@@ -22,7 +22,7 @@ import scala.collection.JavaConverters.collectionAsScalaIterableConverter
 
 class KeyedEnrichCommonCoProcessServiceTest extends AnyFlatSpec {
 
-  implicit val serviceDataDto = ServiceDataDto("", "", "")
+  implicit val serviceDataDto = ServiceDataDto("йц", "ук", "ке")
 
 
   behavior of "KeyEnrichmentMapServiceTest"
@@ -69,7 +69,7 @@ class KeyedEnrichCommonCoProcessServiceTest extends AnyFlatSpec {
 
     assert(actualRichedValue.isLeft)
 
-    assertResult("Value from field String to String_toFieldName is null, but value isn't optional")(actualRichedValue.left.get.errors)
+    assertResult(List("Value from field String to String_toFieldName is null, but value isn't optional"))(actualRichedValue.left.get.errors)
 
     assertResult(uaspDto)(actualRichedValue.left.get.data.get)
 
