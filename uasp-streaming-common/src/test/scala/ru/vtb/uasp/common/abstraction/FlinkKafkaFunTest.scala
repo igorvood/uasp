@@ -60,7 +60,7 @@ class FlinkKafkaFunTest extends AnyFlatSpec with MiniPipeLineTrait with Serializ
 
   "processWithMaskedDql1 Ошибка, но маскирование не настроено" should " OK" in {
     val flinkPipe: DataStream[TestDataDto] => Unit = { ds =>
-      val value1 = ds.processWithMaskedDql1(
+      val value1 = ds.processWithMaskedDqlFC(
         serviceDataDto,
         dlqProcessFunctionError,
         Some(flinkSinkPropertiesDlq -> {(q,w) => serializeToBytes[OutDtoWithErrors[TestDataDto]](q, w)}),

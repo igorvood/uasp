@@ -17,41 +17,6 @@ import scala.collection.immutable
 
 object FlinkStreamProducerPredef {
 
-
-//  implicit class StreamFactoryWithErr[IN](val self: DataStream[Either[OutDtoWithErrors[IN], IN]]) extends AnyVal {
-//
-//    def processWithMaskedDqlF1[OUT: TypeInformation](serviceData: ServiceDataDto,
-////                                                    process: DlqProcessFunction[IN, OUT, OutDtoWithErrors[IN]],
-////                                                    sinkDlqProperty: Option[(FlinkSinkProperties, (OutDtoWithErrors[IN], Option[JsMaskedPath]) => Either[List[JsMaskedPathError], KafkaDto])],
-//                                                    sinkDlqProperty: Option[FlinkSinkProperties],
-//                                                    producerFactory: FlinkSinkProperties => SinkFunction[KafkaDto],
-//                                                   ): DataStream[OUT] = {
-//      implicit val typeInformationIn: TypeInformation[Either[OutDtoWithErrors[IN], IN]] = self.dataType
-//
-//      val value: DlqProcessFunction[Either[OutDtoWithErrors[IN], IN], IN, OutDtoWithErrors[IN]] = new DlqProcessFunction[Either[OutDtoWithErrors[IN], IN], IN, OutDtoWithErrors[IN]] {
-//        override def processWithDlq(dto: Either[OutDtoWithErrors[IN], IN]): Either[OutDtoWithErrors[IN], IN] = dto
-//      }
-//
-//
-//
-//
-//      implicit val oWrites: OWrites[OutDtoWithErrors[IN]] = OutDtoWithErrors.outDtoWithErrorsJsonWrites[IN]
-//      FlinkKafkaFun.processAndDlqSinkWithMetric(
-//        self,
-//        serviceData,
-//        value,
-//        sinkDlqProperty.map(sp => sp -> {(q,w) =>
-//
-//          q.serializeToBytes(sp.jsMaskedPath)(oWrites)})
-//      )
-//
-//
-//      FlinkKafkaFun.processAndDlqSinkWithMetric(self, serviceData, process, sinkDlqProperty, producerFactory)
-//    }
-//
-//  }
-
-
   implicit class StreamFactory[IN](val self: DataStream[IN]) extends AnyVal {
     def processWithMaskedDqlF[OUT: TypeInformation](serviceData: ServiceDataDto,
                                                     process: DlqProcessFunction[IN, OUT, OutDtoWithErrors[IN]],
@@ -62,10 +27,10 @@ object FlinkStreamProducerPredef {
       FlinkKafkaFun.processAndDlqSinkWithMetric(self, serviceData, process, sinkDlqProperty, producerFactory)
     }
 
-    def processWithMaskedDql1[OUT: TypeInformation, DLQ: TypeInformation](serviceData: ServiceDataDto,
-                                                    process: DlqProcessFunction[IN, OUT, OutDtoWithErrors[DLQ]],
-                                                    sinkDlqProperty: Option[(FlinkSinkProperties, (OutDtoWithErrors[DLQ], Option[JsMaskedPath]) => Either[List[JsMaskedPathError], KafkaDto])],
-                                                    producerFactory: FlinkSinkProperties => SinkFunction[KafkaDto],
+    def processWithMaskedDqlFC[OUT: TypeInformation, DLQ: TypeInformation](serviceData: ServiceDataDto,
+                                                                           process: DlqProcessFunction[IN, OUT, OutDtoWithErrors[DLQ]],
+                                                                           sinkDlqProperty: Option[(FlinkSinkProperties, (OutDtoWithErrors[DLQ], Option[JsMaskedPath]) => Either[List[JsMaskedPathError], KafkaDto])],
+                                                                           producerFactory: FlinkSinkProperties => SinkFunction[KafkaDto],
                                                    ): DataStream[OUT] = {
       implicit val typeInformationIn: TypeInformation[IN] = self.dataType
 
