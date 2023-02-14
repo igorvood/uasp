@@ -4,14 +4,14 @@ import org.apache.flink.api.scala.createTypeInformation
 import org.apache.flink.streaming.api.scala.DataStream
 import org.scalatest.flatspec.AnyFlatSpec
 import play.api.libs.json.OFormat.oFormatFromReadsAndOWrites
+import ru.vtb.uasp.common.abstraction.FlinkKafkaFunTest._
 import ru.vtb.uasp.common.abstraction.FlinkStreamProducerPredef.StreamFactory
 import ru.vtb.uasp.common.abstraction.MiniPipeLineTrait.valuesTestDataDto
-import ru.vtb.uasp.common.abstraction.FlinkKafkaFunTest._
-import ru.vtb.uasp.common.kafka.{FlinkSinkProperties, MaskProducerDTO}
+import ru.vtb.uasp.common.kafka.FlinkSinkProperties
 import ru.vtb.uasp.common.mask.MaskedPredef.PathFactory
 import ru.vtb.uasp.common.mask.MaskedStrPathWithFunName
-import ru.vtb.uasp.common.service.{JsonConvertInService, JsonConvertOutService}
-import ru.vtb.uasp.common.service.JsonConvertOutService.{JsonPredef, serializeToBytes}
+import ru.vtb.uasp.common.service.JsonConvertInService
+import ru.vtb.uasp.common.service.JsonConvertOutService.serializeToBytes
 import ru.vtb.uasp.common.service.dto.{KafkaDto, OutDtoWithErrors, ServiceDataDto}
 import ru.vtb.uasp.common.utils.config.kafka.KafkaPrdProperty
 
@@ -63,7 +63,7 @@ class FlinkKafkaFunTest extends AnyFlatSpec with MiniPipeLineTrait with Serializ
       val value1 = ds.processWithMaskedDqlFC(
         serviceDataDto,
         dlqProcessFunctionError,
-        Some(flinkSinkPropertiesDlq -> {(q,w) => serializeToBytes[OutDtoWithErrors[TestDataDto]](q, w)}),
+        Some(flinkSinkPropertiesDlq -> { (q, w) => serializeToBytes[OutDtoWithErrors[TestDataDto]](q, w) }),
         producerFactory[KafkaDto]
       )
     }
@@ -134,7 +134,7 @@ class FlinkKafkaFunTest extends AnyFlatSpec with MiniPipeLineTrait with Serializ
 
     val flinkPipe: DataStream[TestDataDto] => Unit = { ds =>
 
-      val service = new TestDataDtoMaskedSerializeServiceDLQ(jsMaskedPathDLQOk )
+      val service = new TestDataDtoMaskedSerializeServiceDLQ(jsMaskedPathDLQOk)
       val value = ds.processWithMaskedDql(serviceDataDto, dlqProcessFunction, Some(flinkSinkPropertiesDlq -> service), producerFactory[KafkaDto])
 
       FlinkKafkaFun.privateCreateProducerWithMetric(value, serviceData = serviceDataDto, flinkSinkProperties, producerFactory)
@@ -188,7 +188,7 @@ class FlinkKafkaFunTest extends AnyFlatSpec with MiniPipeLineTrait with Serializ
 
   "processWithMaskedDql Ошибка, маскирование настроено" should " OK" in {
 
-    val service = new TestDataDtoMaskedSerializeServiceDLQ(jsMaskedPathDLQOk )
+    val service = new TestDataDtoMaskedSerializeServiceDLQ(jsMaskedPathDLQOk)
     val flinkPipe: DataStream[TestDataDto] => Unit = { ds =>
       val value1 = ds.processWithMaskedDql(serviceDataDto, dlqProcessFunctionError, Some(flinkSinkPropertiesDlq.copy(jsMaskedPath = jsMaskedPathDLQOk) -> service), producerFactory[KafkaDto])
     }

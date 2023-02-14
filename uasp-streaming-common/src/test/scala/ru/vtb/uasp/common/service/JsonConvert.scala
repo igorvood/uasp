@@ -13,7 +13,6 @@ class JsonConvert extends AnyFlatSpec with should.Matchers {
   behavior of "JsonConvert"
 
 
-
   it should "be serialized without modification" in {
     val dtoStr = JsonConvertOutService.serializeToStr(uasp_dto, None).right.get
 

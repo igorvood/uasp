@@ -10,7 +10,7 @@ class TestDataDtoMaskedSerializeServiceDLQ(jsMaskedPath: Option[JsMaskedPath]) e
   }
 }
 
-class TestDataDtoMaskedSerializeServiceMain(jsMaskedPath: Option[JsMaskedPath]) extends AbstractDtoMaskedSerializeService[TestDataDto](jsMaskedPath){
+class TestDataDtoMaskedSerializeServiceMain(jsMaskedPath: Option[JsMaskedPath]) extends AbstractDtoMaskedSerializeService[TestDataDto](jsMaskedPath) {
   override def convert(value: TestDataDto, jsMaskedPath: Option[JsMaskedPath]): Either[List[JsMaskedPathError], KafkaDto] = value.serializeToBytes(jsMaskedPath)
 }
 

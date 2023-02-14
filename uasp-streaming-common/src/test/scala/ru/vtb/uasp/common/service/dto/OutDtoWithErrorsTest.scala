@@ -6,13 +6,13 @@ import play.api.libs.json.Json
 import play.api.libs.json.OFormat.oFormatFromReadsAndOWrites
 import ru.vtb.uasp.common.service.dto.ServiceDataDto.serviceDataDtoJsonReads
 
-class OutDtoWithErrorsTest extends AnyFlatSpec  {
+class OutDtoWithErrorsTest extends AnyFlatSpec {
 
   val serviceDataDto = ServiceDataDto("1", "2", "3")
 
   val ad = List(
     OutDtoWithErrors(serviceDataDto, Some("Asdasd"), List("qwerty"), Some(serviceDataDto)),
-      OutDtoWithErrors[ServiceDataDto](serviceDataDto, None, List("qwerty"), None)
+    OutDtoWithErrors[ServiceDataDto](serviceDataDto, None, List("qwerty"), None)
 
   )
 
@@ -24,12 +24,9 @@ class OutDtoWithErrorsTest extends AnyFlatSpec  {
       val value = Json.parse(jsObjectString)
       val value1 = Json.fromJson[OutDtoWithErrors[ServiceDataDto]](value).get
 
-      assertResult(d)( value1)
+      assertResult(d)(value1)
       println(jsObjectString)
     }
-
-
-
 
 
   }
