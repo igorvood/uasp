@@ -1,0 +1,43 @@
+beg:
+  producer:
+    configType: LOCAL
+    # Kafka producer properties
+    kafka:
+      bootstrap.servers: localhost:29092
+    fileSchemaRegistryClient:
+      path: classpath:schemaRegistry
+    fileTransportStateManagerClient:
+      path:
+    # List of static transport states for LocalTransportManagerClient
+    transportStates:
+      - name: SimpleBusinessEvent_1
+        topicName: simple_event_topic
+        kafkaAddress: localhost:29092
+        lastUpdateTimestamp: 0
+        enabled: true
+      - name: SimpleBusinessEvent_2
+        topicName: simple_event_topic
+        kafkaAddress: localhost:29092
+        lastUpdateTimestamp: 0
+        enabled: true
+      - name: SimpleBusinessEvent_3
+        topicName: simple_event_topic
+        kafkaAddress: localhost:29092
+        lastUpdateTimestamp: 0
+        enabled: false
+      - name: SimpleBusinessEvent_4
+        topicName: wrong_topic
+        kafkaAddress: localhost:29092
+        lastUpdateTimestamp: 0
+        enabled: true
+
+server:
+  servlet.context-path: /
+  port: ${APPLICATION_PORT:8100}
+
+logging:
+  level:
+    root: WARN
+    ru.vtb.uasp.beg: DEBUG
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} ${LOG_LEVEL_PATTERN:-%5p} ${PID:-} [%t] %logger:%line: %m%n${LOG_EXCEPTION_CONVERSION_WORD:%wEx}"

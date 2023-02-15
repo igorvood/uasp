@@ -1,0 +1,46 @@
+beg:
+  producer:
+    configType: REMOTE
+    # Kafka producer properties
+    kafka:
+      bootstrap.servers: localhost:29092
+      acks: all
+    httpSchemaRegistryClient:
+      url: http://localhost:8102/api/schema
+      jwtToken:
+    remoteTransportStateManagerClient:
+      httpSupplierBaseUrl: http://localhost:8101
+      httpSupplierJwtToken:
+      kafkaSupplierProperties:
+      kafkaSupplierAddress: ${beg.producer.kafka.bootstrap.servers}
+      kafkaSupplierTopic: control
+      kafkaSupplierGroup: group1
+    fileSchemaRegistryClient:
+      path: classpath:schemaRegistry
+    fileTransportStateManagerClient:
+      path:
+    # Producer settings
+    batches: 10
+    batchSize: 1000
+    batchInterval: 1m
+    randomEvent: true
+    randomBatchSize: true
+    # List of static transport states for LocalTransportManagerClient
+    transportStates:
+      - name: first
+        topicName: first_topic
+        kafkaAddress: localhost:29092
+        lastUpdateTimestamp: 0
+        enabled: true
+      - name: second
+        topicName: second_topic
+        kafkaAddress: localhost:29092
+        lastUpdateTimestamp: 0
+        enabled: true
+
+logging:
+  level:
+    root: WARN
+    ru.vtb.uasp.beg: DEBUG
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} ${LOG_LEVEL_PATTERN:-%5p} ${PID:-} [%t] %logger:%line: %m%n${LOG_EXCEPTION_CONVERSION_WORD:%wEx}"

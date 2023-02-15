@@ -1,0 +1,37 @@
+beg:
+  producer:
+    configType: LOCAL
+    kafka:
+      bootstrap.servers: localhost:29092
+    httpSchemaRegistryClient:
+      url: http://localhost:8102/api/schema
+      jwtToken:
+    remoteTransportStateManagerClient:
+      httpSupplierBaseUrl: http://localhost:8101
+      httpSupplierJwtToken:
+      kafkaSupplierProperties:
+      kafkaSupplierAddress: ${beg.producer.kafka.bootstrap.servers}
+      kafkaSupplierTopic: control
+      kafkaSupplierGroup: group1
+    fileSchemaRegistryClient:
+      path: classpath:schemaRegistry
+    fileTransportStateManagerClient:
+      path: classpath:transportStateManager/transportStates.json
+    # List of static transport states for LocalTransportManagerClient
+    transportStates:
+      - name: sample
+        topicName: sample_topic
+        kafkaAddress: localhost:29092
+        lastUpdateTimestamp: 0
+        enabled: true
+
+spring:
+  application.name: simple
+
+logging:
+  level:
+    root: WARN
+    ru.vtb.uasp.beg: DEBUG
+    #reactor.kafka.receiver: DEBUG
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} ${LOG_LEVEL_PATTERN:-%5p} ${PID:-} [%t] %logger:%line: %m%n${LOG_EXCEPTION_CONVERSION_WORD:%wEx}"

@@ -1,0 +1,15 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "SimpleBusinessEvent_1",
+  "description": "A simple business event #1 schema",
+  "type": "object",
+  "properties": {
+    "x": {
+      "description": "Some numeric value",
+      "type": "integer"
+    }
+  },
+  "required": [
+    "x"
+  ]
+}

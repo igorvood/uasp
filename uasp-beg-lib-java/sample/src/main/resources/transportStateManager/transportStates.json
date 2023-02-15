@@ -1,0 +1,9 @@
+[
+  {
+    "name": "another_sample",
+    "topicName": "another_sample_event_topic",
+    "kafkaAddress": "localhost:29092",
+    "lastUpdateTimestamp": 0,
+    "enabled": true
+  }
+]

@@ -1,0 +1,32 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "First",
+  "description": "A First business event v1",
+  "type": "object",
+  "properties": {
+    "id": {
+      "description": "Id",
+      "type": "integer"
+    },
+    "name": {
+      "description": "Name",
+      "type": "string"
+    },
+    "description": {
+      "description": "Description",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    "timestamp": {
+      "description": "Timestamp",
+      "type": "integer"
+    }
+  },
+  "required": [
+    "id",
+    "name",
+    "timestamp"
+  ]
+}

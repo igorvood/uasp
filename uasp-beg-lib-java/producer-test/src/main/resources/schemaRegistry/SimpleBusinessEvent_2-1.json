@@ -1,0 +1,35 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "SimpleBusinessEvent_2",
+  "description": "A simple business event #2 schema",
+  "type": "object",
+  "properties": {
+    "id": {
+      "description": "Id",
+      "type": "integer"
+    },
+    "x": {
+      "description": "Some numeric value",
+      "type": "integer"
+    },
+    "y": {
+      "description": "Some string value",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    "dt": {
+      "description": "ISO Date and time",
+      "type": [
+        "null",
+        "string"
+      ],
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "id",
+    "x"
+  ]
+}

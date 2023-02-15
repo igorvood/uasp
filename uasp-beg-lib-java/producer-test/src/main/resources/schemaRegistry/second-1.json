@@ -1,0 +1,46 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "Second",
+  "description": "A Second business event v1",
+  "type": "object",
+  "properties": {
+    "id": {
+      "description": "Id",
+      "type": "integer"
+    },
+    "name": {
+      "description": "Name",
+      "type": "string"
+    },
+    "intValue": {
+      "description": "Integer value",
+      "type": [
+        "null",
+        "integer"
+      ]
+    },
+    "doubleValue": {
+      "description": "Double value",
+      "type": [
+        "null",
+        "number"
+      ]
+    },
+    "byteValue": {
+      "description": "Byte value",
+      "type": [
+        "null",
+        "integer"
+      ]
+    },
+    "timestamp": {
+      "description": "Timestamp",
+      "type": "integer"
+    }
+  },
+  "required": [
+    "id",
+    "name",
+    "timestamp"
+  ]
+}

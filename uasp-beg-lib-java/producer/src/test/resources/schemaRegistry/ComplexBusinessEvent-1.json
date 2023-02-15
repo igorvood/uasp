@@ -1,0 +1,530 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "ComplexBusinessEvent",
+  "description": "A complex business event schema",
+  "type": "object",
+  "properties": {
+    "booleanField1": {
+      "description": "Some boolean value",
+      "type": "boolean"
+    },
+    "booleanField2": {
+      "description": "Some boolean value",
+      "type": "boolean"
+    },
+    "booleanField3": {
+      "description": "Some boolean value",
+      "type": "boolean"
+    },
+    "booleanField4": {
+      "description": "Some boolean value",
+      "type": "boolean"
+    },
+    "booleanField5": {
+      "description": "Some boolean value",
+      "type": "boolean"
+    },
+    "booleanField6": {
+      "description": "Some boolean value",
+      "type": "boolean"
+    },
+    "booleanField7": {
+      "description": "Some boolean value",
+      "type": "boolean"
+    },
+    "booleanField8": {
+      "description": "Some boolean value",
+      "type": "boolean"
+    },
+    "booleanField9": {
+      "description": "Some boolean value",
+      "type": "boolean"
+    },
+    "booleanField10": {
+      "description": "Some boolean value",
+      "type": "boolean"
+    },
+    "byteField1": {
+      "description": "Some byte value",
+      "type": "integer"
+    },
+    "byteField2": {
+      "description": "Some byte value",
+      "type": "integer"
+    },
+    "byteField3": {
+      "description": "Some byte value",
+      "type": "integer"
+    },
+    "byteField4": {
+      "description": "Some byte value",
+      "type": "integer"
+    },
+    "byteField5": {
+      "description": "Some byte value",
+      "type": "integer"
+    },
+    "byteField6": {
+      "description": "Some byte value",
+      "type": "integer"
+    },
+    "byteField7": {
+      "description": "Some byte value",
+      "type": "integer"
+    },
+    "byteField8": {
+      "description": "Some byte value",
+      "type": "integer"
+    },
+    "byteField9": {
+      "description": "Some byte value",
+      "type": "integer"
+    },
+    "byteField10": {
+      "description": "Some byte value",
+      "type": "integer"
+    },
+    "charField1": {
+      "description": "Some char value",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    "charField2": {
+      "description": "Some char value",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    "charField3": {
+      "description": "Some char value",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    "charField4": {
+      "description": "Some char value",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    "charField5": {
+      "description": "Some char value",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    "charField6": {
+      "description": "Some char value",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    "charField7": {
+      "description": "Some char value",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    "charField8": {
+      "description": "Some char value",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    "charField9": {
+      "description": "Some char value",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    "charField10": {
+      "description": "Some char value",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    "doubleField1": {
+      "description": "Some double value",
+      "type": [
+        "null",
+        "number"
+      ]
+    },
+    "doubleField2": {
+      "description": "Some double value",
+      "type": [
+        "null",
+        "number"
+      ]
+    },
+    "doubleField3": {
+      "description": "Some double value",
+      "type": [
+        "null",
+        "number"
+      ]
+    },
+    "doubleField4": {
+      "description": "Some double value",
+      "type": [
+        "null",
+        "number"
+      ]
+    },
+    "doubleField5": {
+      "description": "Some double value",
+      "type": [
+        "null",
+        "number"
+      ]
+    },
+    "doubleField6": {
+      "description": "Some double value",
+      "type": [
+        "null",
+        "number"
+      ]
+    },
+    "doubleField7": {
+      "description": "Some double value",
+      "type": [
+        "null",
+        "number"
+      ]
+    },
+    "doubleField8": {
+      "description": "Some double value",
+      "type": [
+        "null",
+        "number"
+      ]
+    },
+    "doubleField9": {
+      "description": "Some double value",
+      "type": [
+        "null",
+        "number"
+      ]
+    },
+    "doubleField10": {
+      "description": "Some double value",
+      "type": [
+        "null",
+        "number"
+      ]
+    },
+    "floatField1": {
+      "description": "Some float value",
+      "type": [
+        "null",
+        "number"
+      ]
+    },
+    "floatField2": {
+      "description": "Some float value",
+      "type": [
+        "null",
+        "number"
+      ]
+    },
+    "floatField3": {
+      "description": "Some float value",
+      "type": [
+        "null",
+        "number"
+      ]
+    },
+    "floatField4": {
+      "description": "Some float value",
+      "type": [
+        "null",
+        "number"
+      ]
+    },
+    "floatField5": {
+      "description": "Some float value",
+      "type": [
+        "null",
+        "number"
+      ]
+    },
+    "floatField6": {
+      "description": "Some float value",
+      "type": [
+        "null",
+        "number"
+      ]
+    },
+    "floatField7": {
+      "description": "Some float value",
+      "type": [
+        "null",
+        "number"
+      ]
+    },
+    "floatField8": {
+      "description": "Some float value",
+      "type": [
+        "null",
+        "number"
+      ]
+    },
+    "floatField9": {
+      "description": "Some float value",
+      "type": [
+        "null",
+        "number"
+      ]
+    },
+    "floatField10": {
+      "description": "Some float value",
+      "type": [
+        "null",
+        "number"
+      ]
+    },
+    "intField1": {
+      "description": "Some integer value",
+      "type": [
+        "null",
+        "integer"
+      ]
+    },
+    "intField2": {
+      "description": "Some integer value",
+      "type": [
+        "null",
+        "integer"
+      ]
+    },
+    "intField3": {
+      "description": "Some integer value",
+      "type": [
+        "null",
+        "integer"
+      ]
+    },
+    "intField4": {
+      "description": "Some integer value",
+      "type": [
+        "null",
+        "integer"
+      ]
+    },
+    "intField5": {
+      "description": "Some integer value",
+      "type": [
+        "null",
+        "integer"
+      ]
+    },
+    "intField6": {
+      "description": "Some integer value",
+      "type": [
+        "null",
+        "integer"
+      ]
+    },
+    "intField7": {
+      "description": "Some integer value",
+      "type": [
+        "null",
+        "integer"
+      ]
+    },
+    "intField8": {
+      "description": "Some integer value",
+      "type": [
+        "null",
+        "integer"
+      ]
+    },
+    "intField9": {
+      "description": "Some integer value",
+      "type": [
+        "null",
+        "integer"
+      ]
+    },
+    "intField10": {
+      "description": "Some integer value",
+      "type": [
+        "null",
+        "integer"
+      ]
+    },
+    "longField1": {
+      "description": "Some long value",
+      "type": [
+        "null",
+        "integer"
+      ]
+    },
+    "longField2": {
+      "description": "Some long value",
+      "type": [
+        "null",
+        "integer"
+      ]
+    },
+    "longField3": {
+      "description": "Some long value",
+      "type": [
+        "null",
+        "integer"
+      ]
+    },
+    "longField4": {
+      "description": "Some long value",
+      "type": [
+        "null",
+        "integer"
+      ]
+    },
+    "longField5": {
+      "description": "Some long value",
+      "type": [
+        "null",
+        "integer"
+      ]
+    },
+    "longField6": {
+      "description": "Some long value",
+      "type": [
+        "null",
+        "integer"
+      ]
+    },
+    "longField7": {
+      "description": "Some long value",
+      "type": [
+        "null",
+        "integer"
+      ]
+    },
+    "longField8": {
+      "description": "Some long value",
+      "type": [
+        "null",
+        "integer"
+      ]
+    },
+    "longField9": {
+      "description": "Some long value",
+      "type": [
+        "null",
+        "integer"
+      ]
+    },
+    "longField10": {
+      "description": "Some long value",
+      "type": [
+        "null",
+        "integer"
+      ]
+    },
+    "shortField1": {
+      "description": "Some short value",
+      "type": [
+        "null",
+        "integer"
+      ]
+    },
+    "shortField2": {
+      "description": "Some short value",
+      "type": [
+        "null",
+        "integer"
+      ]
+    },
+    "shortField3": {
+      "description": "Some short value",
+      "type": [
+        "null",
+        "integer"
+      ]
+    },
+    "shortField4": {
+      "description": "Some short value",
+      "type": [
+        "null",
+        "integer"
+      ]
+    },
+    "shortField5": {
+      "description": "Some short value",
+      "type": [
+        "null",
+        "integer"
+      ]
+    },
+    "shortField6": {
+      "description": "Some short value",
+      "type": [
+        "null",
+        "integer"
+      ]
+    },
+    "shortField7": {
+      "description": "Some short value",
+      "type": [
+        "null",
+        "integer"
+      ]
+    },
+    "shortField8": {
+      "description": "Some short value",
+      "type": [
+        "null",
+        "integer"
+      ]
+    },
+    "shortField9": {
+      "description": "Some short value",
+      "type": [
+        "null",
+        "integer"
+      ]
+    },
+    "shortField10": {
+      "description": "Some short value",
+      "type": [
+        "null",
+        "integer"
+      ]
+    }
+  },
+  "required": [
+    "booleanField1",
+    "booleanField2",
+    "booleanField3",
+    "booleanField4",
+    "booleanField5",
+    "booleanField6",
+    "booleanField7",
+    "booleanField8",
+    "booleanField9",
+    "booleanField10",
+    "byteField1",
+    "byteField2",
+    "byteField3",
+    "byteField4",
+    "byteField5",
+    "byteField6",
+    "byteField7",
+    "byteField8",
+    "byteField9",
+    "byteField10"
+  ]
+}
