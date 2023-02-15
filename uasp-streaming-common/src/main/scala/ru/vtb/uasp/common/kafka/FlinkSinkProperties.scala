@@ -21,18 +21,6 @@ case class FlinkSinkProperties(
   def createSinkFunction[T](factory: FlinkSinkProperties => SinkFunction[T]): SinkFunction[T] = factory(this)
 
 
-  private def maskedSerializeService[IN](f: IN => Either[List[JsMaskedPathError], KafkaDto]): AbstractDtoMaskedSerializeService[IN] =
-
-    new AbstractDtoMaskedSerializeService[IN](jsMaskedPath) {
-      override def convert(value: IN, jsMaskedPath: Option[JsMaskedPath]): Either[List[JsMaskedPathError], KafkaDto] = f(value)
-    }
-
-  def maskProducer[IN](f: IN => Either[List[JsMaskedPathError], KafkaDto]) = {
-
-    MaskProducerDTO(this, maskedSerializeService(f))
-  }
-
-
 }
 
 object FlinkSinkProperties extends PropertyCombiner[FlinkSinkProperties] {

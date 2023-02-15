@@ -74,7 +74,7 @@ object EnrichmentJob extends Serializable {
     val serialisationProcessFunctionJsValue = new JsValueConsumer(serviceData)
 
     val mainDataStream = env
-      .registerConsumerWithMetric1(
+      .registerConsumerWithMetric(
         propsModel.serviceData,
         propsModel.allEnrichProperty.mainEnrichProperty.fromTopic,
         propsModel.allEnrichProperty.mainEnrichProperty.dlqTopicProp,
@@ -86,7 +86,7 @@ object EnrichmentJob extends Serializable {
       .map { cns =>
         val commonEnrichPropertyDlq = propsModel.allEnrichProperty.commonEnrichProperty.flatMap(a => a.dlqTopicProp)
         env
-          .registerConsumerWithMetric1(
+          .registerConsumerWithMetric(
             propsModel.serviceData,
             cns.fromTopic,
             commonEnrichPropertyDlq, serialisationProcessFunctionJsValue, producerFabric)
@@ -96,7 +96,7 @@ object EnrichmentJob extends Serializable {
     val globalIdStream = propsModel.allEnrichProperty.globalIdEnrichProperty
       .map { cns =>
         val globalIdEnrichPropertyDlq = propsModel.allEnrichProperty.globalIdEnrichProperty.flatMap(a => a.dlqTopicProp)
-        env.registerConsumerWithMetric1(
+        env.registerConsumerWithMetric(
           propsModel.serviceData,
           cns.fromTopic,
           globalIdEnrichPropertyDlq,
