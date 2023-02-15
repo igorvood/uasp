@@ -1,6 +1,6 @@
 package ru.vtb.uasp.common.mask
 
-import play.api.libs.json._
+import play.api.libs.json.{JsNull, _}
 import ru.vtb.uasp.common.mask.dto._
 
 import scala.annotation.tailrec
@@ -57,6 +57,7 @@ object MaskedPredef {
       case (JsString(value), JsStringMaskedPathValue(masked)) => masked.mask(value)
       case (JsNumber(value), JsNumberMaskedPathValue(masked)) => masked.mask(value)
       case (JsBoolean(value), JsBooleanMaskedPathValue(masked)) => masked.mask(value)
+      case (JsNull, _) => JsNull
       case (q, w) => throw new IllegalArgumentException(s"Unable to masked value wrapper class  ${q.getClass} with function -> ${w.getClass}")
     }
     value1
