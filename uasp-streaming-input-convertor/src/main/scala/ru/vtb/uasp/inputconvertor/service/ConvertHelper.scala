@@ -47,11 +47,18 @@ object ConvertHelper {
       }
     else cm.avro_message.getOrElse(new Array[Byte](0))*/
 
-    val avroMessage: Array[Byte] =
-      Try(JsonConvertOutService.serializeToBytes(uaspDto)) match {
-        case Success(s) => s.value
-        case Failure(s) => return cm.copy(error = Some("Can't serialize to avro format: " + s.getMessage))
+    val avroMessage: Array[Byte] = {
+      // TODO переработать
+      JsonConvertOutService.serializeToBytes(uaspDto, None) match {
+        case Left(s) => return cm.copy(error = Some("Can't serialize to avro format: " + s.map(_.error).mkString("\n")))
+        case Right(value) => value.value
       }
+
+//      Try(JsonConvertOutService.serializeToBytes(uaspDto, None)) match {
+//        case Success(s) => s.value
+//        case Failure(s) => return cm.copy(error = Some("Can't serialize to avro format: " + s.getMessage))
+//      }
+    }
 
 
     //    val avroMessage : Array [ Byte ] =

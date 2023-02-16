@@ -8,8 +8,9 @@ import ru.vtb.uasp.inputconvertor.entity.CommonMessageType
 
 class DlqPullOut extends RichMapFunction[CommonMessageType, KafkaDto] {
   override def map(element: CommonMessageType): KafkaDto = {
+    // TODO переработать
     Errr(element.message_key, element.message_str, element.json_schemakey, element.json_schema, element.error, element.valid)
-      .serializeToBytes
+      .serializeToBytes(None).right.get
   }
 }
 
