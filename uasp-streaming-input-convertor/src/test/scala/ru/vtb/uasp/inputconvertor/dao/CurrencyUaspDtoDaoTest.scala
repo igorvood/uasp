@@ -32,7 +32,7 @@ object CurrencyUaspDtoDaoTest {
   def getCommonMessageAndProps(args: Array[String] = Array[String]()): (CommonMessageType, InputPropsModel) = {
 
     val allProps: InputPropsModel = new InputPropsModel(
-      serviceName = null,
+      serviceData = null,
       uaspdtoType = "currency",
       consumerProp = null,
       outputSink = null,
@@ -46,7 +46,7 @@ object CurrencyUaspDtoDaoTest {
 
     val jsonMessageStr = getStringFromResourceFile(uaspDtoType + "-test.json")
 
-    val inMessage = InputMessageType(message_key = "78a3b0e4-4221-3020-8bad-080de84de4c6", message = jsonMessageStr.getBytes, Map[String, String]())
+    val inMessage = InputMessageType(message_key = "78a3b0e4-4221-3020-8bad-080de84de4c6", message = jsonMessageStr.getBytes)
 
     val msgCollector = new MsgCollector
     extractJson(inMessage, allProps, msgCollector)

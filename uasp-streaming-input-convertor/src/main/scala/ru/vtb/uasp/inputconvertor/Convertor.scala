@@ -5,6 +5,7 @@ import org.apache.flink.streaming.api.functions.ProcessFunction
 import org.apache.flink.streaming.api.functions.sink.SinkFunction
 import org.apache.flink.streaming.api.scala._
 import org.apache.flink.util.Collector
+import ru.vtb.uasp.common.abstraction.FlinkStreamProducerPredef.StreamExecutionEnvironmentPredef
 import ru.vtb.uasp.common.kafka.FlinkSinkProperties
 import ru.vtb.uasp.common.kafka.FlinkSinkProperties.producerFactoryDefault
 import ru.vtb.uasp.common.service.dto.KafkaDto
@@ -30,17 +31,28 @@ object Convertor {
     // get result
     setSink(mainDataStream, propsModel)
 
-    env.execute(propsModel.serviceName.fullServiceName)
+    env.execute(propsModel.serviceData.fullServiceName)
   }
 
   def initProps(args: Array[String]): InputPropsModel = InputPropsModel.configApp(appPrefixDefaultName, args)
 
   def init(env: StreamExecutionEnvironment, propsModel: InputPropsModel): DataStream[InputMessageType] = {
+
+//    env
+//      .registerConsumerWithMetric(
+//        propsModel.serviceData,
+//        propsModel.consumerProp,
+//        None,//propsModel.allEnrichProperty.mainEnrichProperty.dlqTopicProp,
+//        uaspDeserializationProcessFunction,
+//        producerFabric)
+
+    val prop = propsModel.consumerProp
+
     val consumer = propsModel.consumerProp.createConsumer(propsModel.inputMessageTypeDeserialization)
 
     env
       .addSource(consumer)
-      .map(propsModel.consumerProp.prometheusMetric[InputMessageType](propsModel.serviceName))
+      .map(propsModel.consumerProp.prometheusMetric[InputMessageType](propsModel.serviceData))
       .rebalance
 
   }
@@ -87,7 +99,7 @@ object Convertor {
     val outputTopicName = propsModel.outputSink.createSinkFunction(producerFabric)
     val out = new AvroPullOut()
     mainDataStream
-      .map(propsModel.dlqSink.prometheusMetric[CommonMessageType](propsModel.serviceName))
+      .map(propsModel.dlqSink.prometheusMetric[CommonMessageType](propsModel.serviceData))
       .map(out)
       .addSink(outputTopicName)
   }
@@ -100,7 +112,7 @@ object Convertor {
     val out = new DlqPullOut()
     mainDataStream
       .getSideOutput(outputTag)
-      .map(propsModel.outputSink.prometheusMetric[CommonMessageType](propsModel.serviceName))
+      .map(propsModel.outputSink.prometheusMetric[CommonMessageType](propsModel.serviceData))
       .map(out)
       .addSink(dlqTopicName)
       .name(propsModel.savepointPref + "-sink-outInputConvertorDlq").uid(propsModel.savepointPref + "-sink-outInputConvertorDlq")

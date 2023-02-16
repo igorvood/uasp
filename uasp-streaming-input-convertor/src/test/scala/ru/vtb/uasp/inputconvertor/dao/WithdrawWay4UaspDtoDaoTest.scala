@@ -44,7 +44,7 @@ class WithdrawWay4UaspDtoDaoTest extends AnyFlatSpec with should.Matchers {
 object WithdrawWay4UaspDtoDaoTest {
   def getCommonMessageAndProps(args: Array[String] = Array[String]()): (CommonMessageType, InputPropsModel) = {
     val allProps: InputPropsModel = new InputPropsModel(
-      serviceName = null,
+      serviceData = null,
       uaspdtoType = "way4-withdraw",
       consumerProp = null,
       outputSink = null,
@@ -57,7 +57,7 @@ object WithdrawWay4UaspDtoDaoTest {
 
     val jsonMessageStr = getStringFromResourceFile(uaspDtoType + "-test.json")
 
-    val inMessage = InputMessageType(message_key = "123", message = jsonMessageStr.getBytes, Map[String, String]())
+    val inMessage = InputMessageType(message_key = "123", message = jsonMessageStr.getBytes)
     val msgCollector = new MsgCollector
     extractJson(inMessage, allProps, msgCollector)
     (msgCollector.getAll().get(0), allProps)

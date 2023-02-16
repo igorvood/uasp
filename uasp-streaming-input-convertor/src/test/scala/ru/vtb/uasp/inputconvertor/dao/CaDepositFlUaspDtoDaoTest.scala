@@ -30,7 +30,7 @@ object CaDepositFlUaspDtoDaoTest {
   def getCommonMessageAndProps(args: Array[String] = Array[String]()): (CommonMessageType, InputPropsModel) = {
 
     val allProps: InputPropsModel = new InputPropsModel(
-      serviceName = null,
+      serviceData = null,
       uaspdtoType = "ca-depositfl",
       consumerProp = null,
       outputSink = null,
@@ -44,7 +44,7 @@ object CaDepositFlUaspDtoDaoTest {
 
     val jsonMessageStr = getStringFromResourceFile(uaspDtoType + "-test.json")
 
-    val inMessage = InputMessageType(message_key = "CFT2RS.10000033307567", message = jsonMessageStr.getBytes, Map[String, String]())
+    val inMessage = InputMessageType(message_key = "CFT2RS.10000033307567", message = jsonMessageStr.getBytes)
 
     val msgCollector = new MsgCollector
     extractJson(inMessage, allProps, msgCollector)

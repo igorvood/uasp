@@ -12,7 +12,7 @@ import ru.vtb.uasp.validate.DroolsValidator
 import scala.collection.mutable
 
 case class InputPropsModel(
-                            serviceName: ServiceDataDto,
+                            serviceData: ServiceDataDto,
                             //                            uaspdtoType: UaspdtoTypeEnum.Val ,
                             uaspdtoType: String,
                             consumerProp: FlinkConsumerProperties,
@@ -26,7 +26,7 @@ case class InputPropsModel(
                             jsonSplitElement: Option[String],
 
                           ) {
-  lazy val savepointPref: String = serviceName.serviceNameNoVersion
+  lazy val savepointPref: String = serviceData.serviceNameNoVersion
   lazy val inputMessageTypeDeserialization = new InputMessageTypeDeserialization()
   val droolsValidator = new DroolsValidator(uaspdtoType + "-validation-rules.drl")
   val dtoMap: Map[String, Array[String]] = getPropsFromResourcesFile(s"$uaspdtoType-uaspdto.properties")
@@ -55,7 +55,7 @@ object InputPropsModel extends ConfigurationInitialise[InputPropsModel] {
       jsonSplitElement <- propertyValOptional[String](s"$prf", "json.split.element")(appProps, configurationInitialise, s)
     } yield
       new InputPropsModel(
-        serviceName = serviceName,
+        serviceData = serviceName,
         uaspdtoType = uaspdtoType,
         consumerProp = consumerProp,
         outputSink = outputSink,

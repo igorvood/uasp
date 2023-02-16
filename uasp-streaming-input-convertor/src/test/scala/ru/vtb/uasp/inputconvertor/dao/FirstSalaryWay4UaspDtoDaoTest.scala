@@ -40,7 +40,7 @@ object FirstSalaryWay4UaspDtoDaoTest {
   def getCommonMessageAndProps(args: Array[String] = Array[String]()): (CommonMessageType, InputPropsModel) = {
 
     val allProps: InputPropsModel = new InputPropsModel(
-      serviceName = null,
+      serviceData = null,
       uaspdtoType = "way4-first-salary",
       consumerProp = null,
       outputSink = null,
@@ -54,7 +54,7 @@ object FirstSalaryWay4UaspDtoDaoTest {
 
     val jsonMessageStr = getStringFromResourceFile(uaspDtoType + "-test.json")
 
-    val inMessage = InputMessageType(message_key = "123", message = jsonMessageStr.getBytes, Map[String, String]())
+    val inMessage = InputMessageType(message_key = "123", message = jsonMessageStr.getBytes)
 
     val msgCollector = new MsgCollector
     extractJson(inMessage, allProps, msgCollector)

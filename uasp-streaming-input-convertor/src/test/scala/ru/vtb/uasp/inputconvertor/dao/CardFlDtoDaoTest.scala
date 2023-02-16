@@ -41,7 +41,7 @@ object CardFlDtoDaoTest {
   def getCommonMessageAndProps(args: Array[String] = Array[String]()): (CommonMessageType, InputPropsModel) = {
 
     val allProps: InputPropsModel = new InputPropsModel(
-      serviceName = null,
+      serviceData = null,
       uaspdtoType = "cardfl",
       consumerProp = null,
       outputSink = null,
@@ -56,7 +56,7 @@ object CardFlDtoDaoTest {
 
     val jsonMessageStr = getStringFromResourceFile(uaspDtoType + "-test.json")
 
-    val inMessage = InputMessageType(message_key = "123", message = jsonMessageStr.getBytes, Map[String, String]())
+    val inMessage = InputMessageType(message_key = "123", message = jsonMessageStr.getBytes)
 
     val msgCollector = new MsgCollector
     extractJson(inMessage, allProps, msgCollector)
@@ -65,7 +65,7 @@ object CardFlDtoDaoTest {
 
   def getCommonNullMessageAndProps(args: Array[String] = Array[String]()): (CommonMessageType, InputPropsModel) = {
     val allProps: InputPropsModel = new InputPropsModel(
-      serviceName = null,
+      serviceData = null,
       uaspdtoType = "cardfl",
       consumerProp = null,
       outputSink = null,
@@ -79,7 +79,7 @@ object CardFlDtoDaoTest {
 
     val jsonMessageStr = getStringFromResourceFile(uaspDtoType + "-null-test.json")
 
-    val inMessage = InputMessageType(message_key = "123", message = jsonMessageStr.getBytes, Map[String, String]())
+    val inMessage = InputMessageType(message_key = "123", message = jsonMessageStr.getBytes)
 
     val msgCollector = new MsgCollector
     extractJson(inMessage, allProps, msgCollector)

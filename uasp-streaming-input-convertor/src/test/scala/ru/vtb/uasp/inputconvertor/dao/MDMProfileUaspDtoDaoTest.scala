@@ -41,7 +41,7 @@ object MDMProfileUaspDtoDaoTest {
 
     val jsonMessageStr = getStringFromResourceFile(uaspDtoType + "-test.json")
 
-    val inMessage = InputMessageType(message_key = "123", message = jsonMessageStr.getBytes, Map[String, String]())
+    val inMessage = InputMessageType(message_key = "123", message = jsonMessageStr.getBytes)
     val msgCollector = new MsgCollector
     extractJson(inMessage, allProps, msgCollector)
     (msgCollector.getAll().get(0), allProps)
