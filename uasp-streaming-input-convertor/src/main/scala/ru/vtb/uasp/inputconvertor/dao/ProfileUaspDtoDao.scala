@@ -40,7 +40,8 @@ object ProfileUaspDtoDao {
       dataKBO.equals("731720-00")) "\\d{20}".r.findFirstMatchIn(tcmt).map(_.toString()).getOrElse("********************")
     else "********************"
     lazy val data_transactionDate = date + " " + time
-    lazy val hash_card_number = HashUtils.getHashSHA256PrependingSalt(ztsoatmc, propsModel.sha256salt)
+   // lazy val hash_card_number = HashUtils.getHashSHA256PrependingSalt(ztsoatmc, propsModel.SHA256salt)
+   lazy val hash_card_number = (inMessage \ "SHA_CARD_NUMBER_DKO").extractOrElse[String]("")
     val dataInt = Map[String, Int]()
     val dataLong = Map[String, Long]() ++
       getMap[Long](dtoMap("app.uaspdto.fields.profile.cdt_tim")(0), eventTime)

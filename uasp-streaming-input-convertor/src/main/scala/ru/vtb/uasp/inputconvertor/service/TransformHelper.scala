@@ -77,9 +77,7 @@ object TransformHelper {
         collector.collect(
           cm.copy(error = Some("Error json parsing: "
             + e.getMessage
-            + ", with allProps: "
-
-            //            + allProps.filterKeys(key => !key.contains("password"))
+            + ", with allProps: " + allProps.dtoMap.filterKeys(key => !key.contains("password"))
           )
           )
         )

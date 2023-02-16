@@ -21,9 +21,11 @@ object ProfileAuthUaspDtoDao {
 
     lazy val msgid: String = (inMessage \ "msgid").extract[String]
     lazy val unMaskCardNumber = (inMessage \ "card_number").extract[String]
+    lazy val hashCardNumber = (inMessage \ "SHA_CARD_NUMBER_DKO").extractOrElse[String]("")
+    lazy val hashCardNumberSha256Md5 = (inMessage \ "sha_card_number").extractOrElse[String]("")
     lazy val card_number = findAndMaskNumber(unMaskCardNumber)
-    lazy val hashCardNumber = HashUtils.getHashSHA256PrependingSalt(unMaskCardNumber, propsModel.sha256salt)
-    lazy val hashCardNumberSha256Md5 = HashUtils.getHashSHA256AppendingSalt(HashUtils.getMD5Hash(unMaskCardNumber), propsModel.sha256salt)
+  //  lazy val hashCardNumber = HashUtils.getHashSHA256PrependingSalt(unMaskCardNumber,propsModel.SHA256salt)
+  //  lazy val hashCardNumberSha256Md5 = HashUtils.getHashSHA256AppendingSalt(HashUtils.getMD5Hash(unMaskCardNumber),propsModel.SHA256salt)
     lazy val transaction_amt = BigDecimal((inMessage \ "transaction_amt").extract[String])
     lazy val transaction_currency_cd = (inMessage \ "transaction_currency_cd").extract[String].toInt
     lazy val currency_alpha_code = returnAlphaCode(transaction_currency_cd.toString)
@@ -36,7 +38,7 @@ object ProfileAuthUaspDtoDao {
     //FIXME дата приходит без года?
     lazy val currentYear = Calendar.getInstance.get(Calendar.YEAR)
     //Вычиляем корректность даты, если входящая дата + currentYear больше чем текущая дата то берем предыдущий год для даты
-    lazy val calculatedYear = if (LocalDate.parse(currentYear.toString + "-" + date.substring(0, 2) + "-" + date.substring(2, 4)).
+    lazy val calculatedYear = if (LocalDate.parse(currentYear.toString + "-" + transmission_dttm.substring(0, 2) + "-" + transmission_dttm.substring(2, 4)).
       isAfter(LocalDate.now())) {
       currentYear - 1
     } else currentYear

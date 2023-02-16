@@ -5,7 +5,7 @@
 
     <groupId>ru.vtb.uasp.inputconvertor</groupId>
     <artifactId>uasp-streaming-input-convertor</artifactId>
-    <version>1.5.8</version>
+    <version>1.5.11</version>
     <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>

@@ -12,11 +12,11 @@ object CAFirstSalaryUaspDtoDao {
   def fromJValue(inMessage: JValue, dtoMap: Map[String, Array[String]]): UaspDto = {
     implicit val formats: Formats = DefaultFormats.disallowNull
 
-    lazy val mdmId = (inMessage \ "customer_id").extract[String]
-    lazy val transaction_dttm = (inMessage \ "transaction_dttm").extract[Long]
-    lazy val dataKBO = (inMessage \ "kbo").extract[String]
-    lazy val transaction_amt = BigDecimal((inMessage \ "transaction_amt").extract[String])
-    lazy val source_system_cd = (inMessage \ "source_system_cd").extract[String]
+    lazy val mdmId = (inMessage \ "mdm_id_ca").extract[String]
+    lazy val transaction_dttm = (inMessage \ "event_dttm_ca").extract[Long] * 1000
+    lazy val dataKBO = (inMessage \ "kbo_ca").extract[String]
+    lazy val transaction_amt = BigDecimal((inMessage \ "trans_amount_ca").extract[String])
+    lazy val source_system_cd = (inMessage \ "source_system_ca").extract[String]
 
     val dataInt = Map[String, Int]()
     val dataLong = Map[String, Long]() ++

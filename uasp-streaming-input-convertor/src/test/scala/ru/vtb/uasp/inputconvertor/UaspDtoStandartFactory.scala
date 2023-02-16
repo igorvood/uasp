@@ -187,13 +187,11 @@ private class ProfileUaspDtoStandart extends UaspDtostandard {
       Map("endbal_prf" -> BigDecimal(41496.57)),
     dataString = Map("drcr_prf" -> "DR") ++
       Map("source_system_prf" -> "Profile") ++
-      Map("ztsoatmc" -> "") ++
-      Map("hash_card_number" -> "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855") ++
+      Map("ztsoatmc" -> "111122******4444") ++
+      Map("hash_card_number" -> "f2a6853a6ee5c4a8aafa1f7f50e5aa07022ca0d367764522a977594cffdf442f") ++
       Map("account_type_prf" -> "MS") ++
       Map("currency_code_prf" -> "RUB") ++
       Map("kbo_prf" -> "731800-22") ++
-      Map("ztsoatmc" -> "") ++
-      Map("hash_card_number" -> "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855") ++
       Map("tcmt" -> "tcmtTest 11111111111111111111") ++
       Map("tcmt_account_num" -> "********************") ++
       Map("account_number_prf" -> "401037430091") ++
@@ -210,7 +208,7 @@ private class ProfileAuthUaspDtoStandart extends UaspDtostandard {
   override def getstandardUaspDto(uuid: String): UaspDto = UaspDto(id = "661500000000001509142164448582426848501A",
     dataInt = Map("transaction_currency_cd" -> 643) ++
       Map("typ" -> 1),
-    dataLong = Map("local_transaction_dttm" -> 1644457024000L, "transmission_dttm" -> 1644485824000L),
+    dataLong = Map("local_transaction_dttm" -> 1675993024000L, "transmission_dttm" -> 1676021824000L),
     dataFloat = Map[String, Float](),
     dataDouble = Map[String, Double](),
     dataDecimal = Map("transaction_amt" -> 1),
