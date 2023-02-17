@@ -9,7 +9,7 @@ class AvroPullOut extends RichMapFunction[CommonMessageType, KafkaDto] {
   override def map(element: CommonMessageType): KafkaDto = {
     val dto = KafkaDto(
       element.message_key.getBytes(Config.charset),
-      element.avro_message.get
+      element.outBytes.get
     )
     dto
   }
