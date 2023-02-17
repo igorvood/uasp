@@ -30,9 +30,6 @@ class TransformHelperTest extends AnyFlatSpec with should.Matchers {
     val inMessage = InputMessageType(message_key = "123", message = jsonMessageStr.getBytes)
 
     val result = TransformHelper.extractJson(inMessage, allProps, msgCollector)
-    val doc1 = render(msgCollector.getAll().get(1).json_message.get)
-    val compactJson1 = compact(doc1)
-    val prettyJson1 = pretty(doc1)
 
     msgCollector should not be (null)
     msgCollector.getAll().size() shouldEqual 4
@@ -57,9 +54,6 @@ class TransformHelperTest extends AnyFlatSpec with should.Matchers {
     val inMessage = InputMessageType(message_key = "123", message = jsonMessageStr.getBytes)
 
     val result = TransformHelper.extractJson(inMessage, allProps, msgCollector)
-    val doc1 = render(msgCollector.getAll().get(0).json_message.get)
-    val compactJson1 = compact(doc1)
-    val prettyJson1 = pretty(doc1)
 
     msgCollector should not be (null)
     msgCollector.getAll().size() shouldEqual 1
@@ -86,7 +80,7 @@ class TransformHelperTest extends AnyFlatSpec with should.Matchers {
 
     msgCollector should not be (null)
     msgCollector.getAll().size() shouldEqual 1
-    msgCollector.getAll().get(0).error.get should startWith("Error json parsing: Unrecognized token 'test':")
+    msgCollector.getAll().get(0).left.get.errors.head should startWith("Error json parsing: Unrecognized token 'test':")
   }
   "extractJson type currency" should "be return 40 messages" in new AllureScalatestContext {
 
@@ -107,9 +101,6 @@ class TransformHelperTest extends AnyFlatSpec with should.Matchers {
     val inMessage = InputMessageType(message_key = "123", message = jsonMessageStr.getBytes)
 
     val result = TransformHelper.extractJson(inMessage, allProps, msgCollector)
-    val doc1 = render(msgCollector.getAll().get(1).json_message.get)
-    val compactJson1 = compact(doc1)
-    val prettyJson1 = pretty(doc1)
 
     msgCollector should not be (null)
     msgCollector.getAll().size() shouldEqual 21

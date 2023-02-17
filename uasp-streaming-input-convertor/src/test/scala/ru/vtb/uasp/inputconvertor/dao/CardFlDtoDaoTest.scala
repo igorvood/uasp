@@ -60,7 +60,7 @@ object CardFlDtoDaoTest {
 
     val msgCollector = new MsgCollector
     extractJson(inMessage, allProps, msgCollector)
-    (msgCollector.getAll().get(0), allProps)
+    (msgCollector.getAll().get(0).right.get, allProps)
   }
 
   def getCommonNullMessageAndProps(args: Array[String] = Array[String]()): (CommonMessageType, InputPropsModel) = {
@@ -83,7 +83,7 @@ object CardFlDtoDaoTest {
 
     val msgCollector = new MsgCollector
     extractJson(inMessage, allProps, msgCollector)
-    (msgCollector.getAll().get(0), allProps)
+    (msgCollector.getAll().get(0).right.get, allProps)
   }
 }
 

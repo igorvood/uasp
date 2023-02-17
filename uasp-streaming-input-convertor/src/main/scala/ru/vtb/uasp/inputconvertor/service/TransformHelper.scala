@@ -3,6 +3,8 @@ package ru.vtb.uasp.inputconvertor.service
 import org.apache.flink.util.Collector
 import org.json4s._
 import org.json4s.jackson.JsonMethods._
+import play.api.libs.json.JsValue
+import ru.vtb.uasp.common.service.dto.OutDtoWithErrors
 import ru.vtb.uasp.inputconvertor.constants.Config
 import ru.vtb.uasp.inputconvertor.entity.{CommonMessageType, InputMessageType}
 import ru.vtb.uasp.inputconvertor.utils.config.InputPropsModel
@@ -15,7 +17,7 @@ object TransformHelper {
 
   def extractJson(inputMessage: InputMessageType,
                   allProps: InputPropsModel,
-                  collector: Collector[CommonMessageType]
+                  collector: Collector[Either[OutDtoWithErrors[JsValue], CommonMessageType]]
                  ): Unit = {
 
 
@@ -58,27 +60,31 @@ object TransformHelper {
     try {
       val splitValue = splitMessage(message_str)
       for (value <- splitValue) {
-        val result = if (!inputMessage.message.isEmpty) {
+        val result: Either[OutDtoWithErrors[JsValue], CommonMessageType] = if (!inputMessage.message.isEmpty) {
 
           val parsedValue = value
 
           val message = extractMessage(parsedValue)
-          cm.copy(valid = true, json_message = Some(message))
+          Right(cm.copy(valid = true, json_message = Some(message)))
 
         }
         else
-          cm.copy(error = Some("Message " + inputMessage.message_key + " is empty"))
+          Left(OutDtoWithErrors[JsValue](allProps.serviceData,Some(this.getClass.getName), List("Message " + inputMessage.message_key + " is empty"), None))
 
         collector.collect(result)
       }
     } catch {
       case e: Exception =>
         collector.collect(
-          cm.copy(error = Some("Error json parsing: "
+          Left(OutDtoWithErrors[JsValue](allProps.serviceData,Some(this.getClass.getName), List("Error json parsing: "
             + e.getMessage
-            + ", with allProps: " + allProps.dtoMap.filterKeys(key => !key.contains("password"))
-          )
-          )
+            + ", with allProps: " + allProps.dtoMap.filterKeys(key => !key.contains("password"))), None))
+//          cm.copy(error = Some(
+//                    "Error json parsing: "
+//            + e.getMessage
+//            + ", with allProps: " + allProps.dtoMap.filterKeys(key => !key.contains("password"))
+//          )
+//          )
         )
     }
   }

@@ -43,7 +43,7 @@ object IssuingAccountUaspDtoTest {
 
     val msgCollector = new MsgCollector
     extractJson(inMessage, allProps, msgCollector)
-    (msgCollector.getAll().get(0), allProps)
+    (msgCollector.getAll().get(0).right.get, allProps)
   }
 }
 
