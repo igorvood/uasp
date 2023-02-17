@@ -65,7 +65,7 @@ object TransformHelper {
           val parsedValue = value
 
           val message = extractMessage(parsedValue)
-          Right(cm.copy(valid = true, json_message = Some(message)))
+          Right(cm.copy( json_message = Some(message)))
 
         }
         else

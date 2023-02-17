@@ -13,15 +13,13 @@ import ru.vtb.uasp.common.kafka.FlinkSinkProperties.producerFactoryDefault
 import ru.vtb.uasp.common.service.JsonConvertOutService.JsonPredef
 import ru.vtb.uasp.common.service.dto.{KafkaDto, OutDtoWithErrors}
 import ru.vtb.uasp.inputconvertor.entity.{CommonMessageType, InputMessageType}
-import ru.vtb.uasp.inputconvertor.service.ConvertHelper.validAndTransform
 import ru.vtb.uasp.inputconvertor.service._
+import ru.vtb.uasp.inputconvertor.service.dto.UaspAndKafkaKey
 import ru.vtb.uasp.inputconvertor.utils.config.InputPropsModel
 import ru.vtb.uasp.inputconvertor.utils.config.InputPropsModel.appPrefixDefaultName
-import ru.vtb.uasp.inputconvertor.utils.serialization.{AvroPullOut, DlqPullOut}
+import ru.vtb.uasp.inputconvertor.utils.serialization.{AvroPullOut}
 
 object Convertor {
-
-  private val outputTag = OutputTag[CommonMessageType]("dlq")
 
   def main(args: Array[String]): Unit = {
     val propsModel = initProps(args) // доделать рефакторинг, внедрить модель параметров
@@ -54,7 +52,7 @@ object Convertor {
                messageInputStream: DataStream[InputMessageType],
                propsModel: InputPropsModel,
                producerFabric: FlinkSinkProperties => SinkFunction[KafkaDto] = producerFactoryDefault
-             ): DataStream[CommonMessageType] = {
+             ): DataStream[UaspAndKafkaKey] = {
     val messageParserFlatMap = new MessageParserFlatMap(propsModel)
 
     val extractJsonStream = messageInputStream
@@ -77,54 +75,52 @@ object Convertor {
 //        .name(propsModel.savepointPref + "-flatMap-messageInputStream").uid(propsModel.savepointPref + "-flatMap-messageInputStream")
 
 
-    val commonStream = extractJsonStream
-      //TODO: avro schema inference only once
-      .map(m => validAndTransform(m, propsModel))
-      .name(propsModel.savepointPref + "-map-validAndTransform").uid(propsModel.savepointPref + "-map-validAndTransform")
 
-    //split valid and invalid messages
-    commonStream
-      .process((value: CommonMessageType, ctx: ProcessFunction[CommonMessageType,
-        CommonMessageType]#Context, out: Collector[CommonMessageType]) => if (value.valid) {
-        out.collect(value)
-      } else {
-        ctx.output(outputTag, value)
-      })
-      .name(propsModel.savepointPref + "-process-output-tag-set-CommonMessageType").uid(propsModel.savepointPref + "-process-output-tag-set-CommonMessageType")
+//    val commonStream = extractJsonStream
+//      TODO: avro schema inference only once
+//      .map(m => validAndTransform(m, propsModel))
+//      .name(propsModel.savepointPref + "-map-validAndTransform").uid(propsModel.savepointPref + "-map-validAndTransform")
+
+    val validate = new Validate(propsModel)
+    val value = extractJsonStream
+      .map(q => q.json_message.get)
+      .process(validate)
+      .name(propsModel.savepointPref + "-map-validAndTransform").uid(propsModel.savepointPref + "-map-validAndTransform")
+    value
   }
 
-  def setSink(mainDataStream: DataStream[CommonMessageType],
+  def setSink(mainDataStream: DataStream[UaspAndKafkaKey],
               propsModel: InputPropsModel,
               producerFabric: FlinkSinkProperties => SinkFunction[KafkaDto] = producerFactoryDefault
              ): Unit = {
 
     setMainSink(mainDataStream, propsModel, producerFabric)
-    setOutSideSink(mainDataStream, propsModel, producerFabric)
+//    setOutSideSink(mainDataStream, propsModel, producerFabric)
   }
 
-  def setMainSink(mainDataStream: DataStream[CommonMessageType],
+  def setMainSink(mainDataStream: DataStream[UaspAndKafkaKey],
                   propsModel: InputPropsModel,
                   producerFabric: FlinkSinkProperties => SinkFunction[KafkaDto] = producerFactoryDefault
                  ): DataStreamSink[KafkaDto] = {
     val outputTopicName = propsModel.outputSink.createSinkFunction(producerFabric)
     val out = new AvroPullOut()
     mainDataStream
-      .map(propsModel.dlqSink.prometheusMetric[CommonMessageType](propsModel.serviceData))
+      .map(propsModel.dlqSink.prometheusMetric[UaspAndKafkaKey](propsModel.serviceData))
       .map(out)
       .addSink(outputTopicName)
   }
 
-  def setOutSideSink(mainDataStream: DataStream[CommonMessageType],
-                     propsModel: InputPropsModel,
-                     producerFabric: FlinkSinkProperties => SinkFunction[KafkaDto] = producerFactoryDefault
-                    ): DataStreamSink[KafkaDto] = {
-    val dlqTopicName = propsModel.dlqSink.createSinkFunction(producerFabric)
-    val out = new DlqPullOut()
-    mainDataStream
-      .getSideOutput(outputTag)
-      .map(propsModel.outputSink.prometheusMetric[CommonMessageType](propsModel.serviceData))
-      .map(out)
-      .addSink(dlqTopicName)
-      .name(propsModel.savepointPref + "-sink-outInputConvertorDlq").uid(propsModel.savepointPref + "-sink-outInputConvertorDlq")
-  }
+//  def setOutSideSink(mainDataStream: DataStream[CommonMessageType],
+//                     propsModel: InputPropsModel,
+//                     producerFabric: FlinkSinkProperties => SinkFunction[KafkaDto] = producerFactoryDefault
+//                    ): DataStreamSink[KafkaDto] = {
+//    val dlqTopicName = propsModel.dlqSink.createSinkFunction(producerFabric)
+//    val out = new DlqPullOut()
+//    mainDataStream
+//      .getSideOutput(outputTag)
+//      .map(propsModel.outputSink.prometheusMetric[CommonMessageType](propsModel.serviceData))
+//      .map(out)
+//      .addSink(dlqTopicName)
+//      .name(propsModel.savepointPref + "-sink-outInputConvertorDlq").uid(propsModel.savepointPref + "-sink-outInputConvertorDlq")
+//  }
 }

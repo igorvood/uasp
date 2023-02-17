@@ -7,8 +7,6 @@ import java.time.{LocalDateTime, ZoneId}
 case class CommonMessageType(
                               message_key: String, // используется
                               json_message: Option[JValue] = None,
+                            @deprecated
                               outBytes: Option[Array[Byte]] = None, // используется
-                              error: Option[String] = None,
-                              valid: Boolean = false,
-
                             )
