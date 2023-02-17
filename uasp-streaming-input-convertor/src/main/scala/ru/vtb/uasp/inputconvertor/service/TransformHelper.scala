@@ -30,9 +30,10 @@ object TransformHelper {
         .getOrElse(parsedValue)
     }
 
-    def splitMessage(cm: CommonMessageType) = {
+    def splitMessage(message_str: String) = {
       val list = ListBuffer[JValue]()
-      val parsedMessage = parse(cm.message_str.get)
+
+      val parsedMessage = parse(message_str)
       allProps.jsonSplitElement
         .map(splitter => {
           val contacts = parsedMessage \\ splitter
@@ -52,11 +53,10 @@ object TransformHelper {
       list.toList
     }
 
-    val cm: CommonMessageType = CommonMessageType(message_key = inputMessage.message_key,
-      message = inputMessage.message,
-      message_str = Some(new String(inputMessage.message, Config.charset)))
+    val message_str = new String(inputMessage.message, Config.charset)
+    val cm: CommonMessageType = CommonMessageType(message_key = inputMessage.message_key)
     try {
-      val splitValue = splitMessage(cm)
+      val splitValue = splitMessage(message_str)
       for (value <- splitValue) {
         val result = if (!inputMessage.message.isEmpty) {
 
