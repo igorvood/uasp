@@ -56,7 +56,6 @@ object TransformHelper {
     }
 
     val message_str = new String(inputMessage.message, Config.charset)
-    val cm: CommonMessageType = CommonMessageType(message_key = inputMessage.message_key)
     try {
       val splitValue = splitMessage(message_str)
       for (value <- splitValue) {
@@ -65,7 +64,7 @@ object TransformHelper {
           val parsedValue = value
 
           val message = extractMessage(parsedValue)
-          Right(cm.copy( json_message = Some(message)))
+          Right(CommonMessageType(message_key = inputMessage.message_key, json_message = message) )
 
         }
         else

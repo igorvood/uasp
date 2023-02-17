@@ -83,7 +83,7 @@ object Convertor {
 
     val validate = new Validate(propsModel)
     val value = extractJsonStream
-      .map(q => q.json_message.get)
+      .map(q => q.json_message)
       .process(validate)
       .name(propsModel.savepointPref + "-map-validAndTransform").uid(propsModel.savepointPref + "-map-validAndTransform")
     value

@@ -19,7 +19,7 @@ class PosTransactionWay4UaspDtoDaoTest extends AnyFlatSpec with should.Matchers 
 
     val (commonMessage, allProps) = getCommonMessageAndProps()
 
-    val uaspDto: UaspDto = allProps.uaspDtoParser.fromJValue(commonMessage.json_message.get, allProps.dtoMap)
+    val uaspDto: UaspDto = allProps.uaspDtoParser.fromJValue(commonMessage.json_message, allProps.dtoMap)
 
     private val dto: UaspDto = uaspDto.copy(dataString = uaspDto.dataString - ("source_account_w4", "base_currency_w4"))
 

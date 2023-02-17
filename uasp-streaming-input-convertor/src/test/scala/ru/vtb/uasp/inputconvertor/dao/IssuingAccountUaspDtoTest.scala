@@ -15,7 +15,7 @@ class IssuingAccountUaspDtoTest extends AnyFlatSpec with should.Matchers {
   "The test data" should "be equals standard way4 UaspDto instance" in new AllureScalatestContext {
     val (commonMessage, allProps) = getCommonMessageAndProps()
 
-    val uaspDto: UaspDto = allProps.uaspDtoParser.fromJValue(commonMessage.json_message.get, allProps.dtoMap)
+    val uaspDto: UaspDto = allProps.uaspDtoParser.fromJValue(commonMessage.json_message, allProps.dtoMap)
 
     val standardUaspDto = UaspDtostandardFactory("issuing-account").getstandardUaspDto(uaspDto.uuid).copy(process_timestamp = uaspDto.process_timestamp)
     standardUaspDto shouldEqual uaspDto

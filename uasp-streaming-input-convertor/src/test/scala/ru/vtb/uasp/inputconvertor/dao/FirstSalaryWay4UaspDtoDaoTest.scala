@@ -19,7 +19,7 @@ class FirstSalaryWay4UaspDtoDaoTest extends AnyFlatSpec with should.Matchers {
 
     val (commonMessage, allProps) = getCommonMessageAndProps()
 
-    val uaspDto: UaspDto = allProps.uaspDtoParser.fromJValue(commonMessage.json_message.get, allProps.dtoMap)
+    val uaspDto: UaspDto = allProps.uaspDtoParser.fromJValue(commonMessage.json_message, allProps.dtoMap)
 
     private val dto: UaspDto = uaspDto.copy(
       dataString = uaspDto.dataString - ("card_ps_funding_source", "card_masked_pan", "transaction_currency"))

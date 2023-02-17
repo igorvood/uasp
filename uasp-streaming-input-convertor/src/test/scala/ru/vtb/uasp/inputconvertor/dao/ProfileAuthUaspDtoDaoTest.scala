@@ -17,7 +17,7 @@ class ProfileAuthUaspDtoDaoTest extends AnyFlatSpec with should.Matchers {
     val (commonMessage, allProps) = getCommonMessageAndProps()
 
 
-    val uaspDto: UaspDto = allProps.uaspDtoParser.fromJValue(commonMessage.json_message.get, allProps.dtoMap)
+    val uaspDto: UaspDto = allProps.uaspDtoParser.fromJValue(commonMessage.json_message, allProps.dtoMap)
 
     val standardUaspDto = UaspDtostandardFactory("profile-auth").getstandardUaspDto(uaspDto.uuid).copy(process_timestamp = uaspDto.process_timestamp)
     val validationList = allProps.droolsValidator.validate(List(uaspDto))

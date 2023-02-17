@@ -16,7 +16,7 @@ class IssuingClientUaspDtoTest extends AnyFlatSpec with should.Matchers {
     val (commonMessage, allProps) = getCommonMessageAndProps()
 
 
-    val uaspDto: UaspDto = allProps.uaspDtoParser.fromJValue(commonMessage.json_message.get, allProps.dtoMap)
+    val uaspDto: UaspDto = allProps.uaspDtoParser.fromJValue(commonMessage.json_message, allProps.dtoMap)
 
     val standardUaspDto = UaspDtostandardFactory("issiung-client").getstandardUaspDto(uaspDto.uuid).copy(process_timestamp = uaspDto.process_timestamp)
     standardUaspDto shouldEqual uaspDto

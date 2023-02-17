@@ -13,7 +13,7 @@ class MDMValidateTest extends AnyFlatSpec with should.Matchers {
   val (uaspDto, validator) = {
     val (commonMessage, allProps) = MDMProfileUaspDtoDaoTest.getCommonMessageAndProps()
 
-    val uaspDto: UaspDto = allProps.uaspDtoParser.fromJValue(commonMessage.json_message.get, allProps.dtoMap)
+    val uaspDto: UaspDto = allProps.uaspDtoParser.fromJValue(commonMessage.json_message, allProps.dtoMap)
     (uaspDto, allProps.droolsValidator)
   }
 

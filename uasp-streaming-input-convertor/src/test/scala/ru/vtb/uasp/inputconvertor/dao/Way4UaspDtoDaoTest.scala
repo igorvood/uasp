@@ -21,7 +21,7 @@ class Way4UaspDtoDaoTest extends AnyFlatSpec with should.Matchers {
 
     val (commonMessage, allProp) = getCommonMessageAndProps()
 
-    val uaspDto: UaspDto = allProp.uaspDtoParser.fromJValue(commonMessage.json_message.get, allProp.dtoMap)
+    val uaspDto: UaspDto = allProp.uaspDtoParser.fromJValue(commonMessage.json_message, allProp.dtoMap)
     private val dto: UaspDto = uaspDto.copy(
       dataString = uaspDto.dataString - ("card_ps_funding_source", "transaction_currency", "card_masked_pan",
         "source_account_w4", "base_currency_w4", "source_system_w4"),

@@ -16,7 +16,7 @@ class MDMProfileUaspDtoDaoTest extends AnyFlatSpec with should.Matchers {
 
     val (commonMessage, allProps) = getCommonMessageAndProps()
 
-    val uaspDto: UaspDto = allProps.uaspDtoParser.fromJValue(commonMessage.json_message.get, allProps.dtoMap)
+    val uaspDto: UaspDto = allProps.uaspDtoParser.fromJValue(commonMessage.json_message, allProps.dtoMap)
 
     val standardUaspDto = UaspDtostandardFactory("mdm").getstandardUaspDto(uaspDto.uuid)
     val expectedUaspDto = standardUaspDto.copy(id = "456", dataString = Map("local_id" -> "456", "global_id" -> "10324", "system_number" -> "99995"), process_timestamp = uaspDto.process_timestamp)

@@ -19,7 +19,7 @@ class WithdrawUaspDtoDaoTest extends AnyFlatSpec with should.Matchers {
 
     val (commonMessage, allProp) = getCommonMessageAndProps()
 
-    val uaspDto: UaspDto = allProp.uaspDtoParser.fromJValue(commonMessage.json_message.get, allProp.dtoMap)
+    val uaspDto: UaspDto = allProp.uaspDtoParser.fromJValue(commonMessage.json_message, allProp.dtoMap)
     val standardUaspDto: UaspDto = UaspDtostandardFactory("way4").getstandardUaspDto(uaspDto.uuid)
     private val dto: UaspDto = uaspDto.copy(process_timestamp = 0,
       dataString = uaspDto.dataString - ("card_ps_funding_source", "card_masked_pan", "transaction_currency"))
