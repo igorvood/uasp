@@ -9,7 +9,6 @@ case class CommonMessageType(
                               message: Array[Byte],
                               message_str: Option[String] = None,
                               json_message: Option[JValue] = None,
-                              json_schemakey: Option[String] = None,
                               json_schema: Option[String] = None,
                               avro_message: Option[Array[Byte]] = None, // используется
                               error: Option[String] = None,

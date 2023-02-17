@@ -62,9 +62,8 @@ object TransformHelper {
 
           val parsedValue = value
 
-          val jsonSchemaKey: String = ""
           val message = extractMessage(parsedValue)
-          cm.copy(valid = true, json_message = Some(message), json_schemakey = Some(jsonSchemaKey))
+          cm.copy(valid = true, json_message = Some(message))
 
         }
         else
