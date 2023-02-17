@@ -38,16 +38,6 @@ object Convertor {
 
   def init(env: StreamExecutionEnvironment, propsModel: InputPropsModel): DataStream[InputMessageType] = {
 
-//    env
-//      .registerConsumerWithMetric(
-//        propsModel.serviceData,
-//        propsModel.consumerProp,
-//        None,//propsModel.allEnrichProperty.mainEnrichProperty.dlqTopicProp,
-//        uaspDeserializationProcessFunction,
-//        producerFabric)
-
-    val prop = propsModel.consumerProp
-
     val consumer = propsModel.consumerProp.createConsumer(propsModel.inputMessageTypeDeserialization)
 
     env

@@ -14,5 +14,5 @@ case class CommonMessageType(
                               avro_message: Option[Array[Byte]] = None,
                               error: Option[String] = None,
                               valid: Boolean = false,
-                              check_timestamp: Long = LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant.toEpochMilli
+
                             )
