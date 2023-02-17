@@ -18,13 +18,10 @@ case class InputPropsModel(
                             consumerProp: FlinkConsumerProperties,
                             outputSink: FlinkSinkProperties,
                             dlqSink: FlinkSinkProperties,
-
                             readSourceTopicFromBeginning: Boolean,
                             sha256salt: String,
                             messageJsonPath: Option[String],
-
                             jsonSplitElement: Option[String],
-
                           ) {
   lazy val savepointPref: String = serviceData.serviceNameNoVersion
   lazy val inputMessageTypeDeserialization = new InputMessageTypeDeserialization()
