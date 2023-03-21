@@ -16,7 +16,7 @@ import ru.vtb.uasp.common.service.JsonConvertOutService.{IdentityPredef, JsonPre
 import ru.vtb.uasp.common.service.UaspDeserializationProcessFunction
 import ru.vtb.uasp.common.service.dto.KafkaDto
 import ru.vtb.uasp.mdm.enrichment.service.JsValueConsumer
-import ru.vtb.uasp.mdm.enrichment.service.dto.{NotStandardFlinkDataStreams, KeyedCAData, KeyedUasp, OutStreams}
+import ru.vtb.uasp.mdm.enrichment.service.dto.{NotStandardDataStreams, KeyedCAData, KeyedUasp, OutStreams}
 import ru.vtb.uasp.mdm.enrichment.utils.config.MDMEnrichmentPropsModel.appPrefixDefaultName
 import ru.vtb.uasp.mdm.enrichment.utils.config._
 
@@ -64,7 +64,7 @@ object EnrichmentJob extends Serializable {
     }
   }
 
-  def init(env: StreamExecutionEnvironment, propsModel: MDMEnrichmentPropsModel, producerFabric: FlinkSinkProperties => SinkFunction[KafkaDto] = producerFactoryDefault): NotStandardFlinkDataStreams = {
+  def init(env: StreamExecutionEnvironment, propsModel: MDMEnrichmentPropsModel, producerFabric: FlinkSinkProperties => SinkFunction[KafkaDto] = producerFactoryDefault): NotStandardDataStreams = {
 
 
     implicit val serviceData = propsModel.serviceData
@@ -104,13 +104,13 @@ object EnrichmentJob extends Serializable {
           producerFabric)
       }
 
-    NotStandardFlinkDataStreams(mainDataStream, commonStream, globalIdStream)
+    NotStandardDataStreams(mainDataStream, commonStream, globalIdStream)
   }
 
   /**
    * Заставили под пытками сделать подобный метод, даже боюсь словами описывать его логику.
    */
-  def process(flinkDataStreams: NotStandardFlinkDataStreams,
+  def process(flinkDataStreams: NotStandardDataStreams,
               mDMEnrichmentPropsModel: MDMEnrichmentPropsModel,
               producerFabric: FlinkSinkProperties => SinkFunction[KafkaDto] = producerFactoryDefault
              ): OutStreams = {
