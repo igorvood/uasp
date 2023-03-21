@@ -115,15 +115,7 @@ object EnrichmentJob extends Serializable {
               producerFabric: FlinkSinkProperties => SinkFunction[KafkaDto] = producerFactoryDefault
              ): OutStreams = {
 
-    //    implicit val value1: OWrites[JsValue] = Json.writes[JsValue]
-
-    implicit val value1: OWrites[JsValue] = new OWrites[JsValue] {
-      override def writes(o: JsValue): JsObject = o.asInstanceOf[JsObject]
-    }
-
-
-    //    implicit val value11 = ru.vtb.uasp.common.service.dto.OutDtoWithErrors.outDtoWithErrorsJsonWrites[JsValue]
-
+    implicit val oWritesJsValue: OWrites[JsValue] = (o: JsValue) => o.asInstanceOf[JsObject]
 
     val mainDlqProp = mDMEnrichmentPropsModel.allEnrichProperty.mainEnrichProperty.dlqTopicProp
 
@@ -146,8 +138,6 @@ object EnrichmentJob extends Serializable {
                 mDMEnrichmentPropsModel.serviceData,
                 validateGlobalIdService,
                 dlqGlobalIdProp.map(sp => sp -> { (q, w) => q.serializeToBytes(w) }),
-                //                dlqGlobalIdProp.map(sp => sp -> { (q, w) => JsonConvertOutService.serializeToBytes[OutDtoWithErrors[JsValue]](q, w)(OutDtoWithErrors.) }),
-                //                dlqGlobalIdProp.map(sp => sp -> JsonConvertOutService.serializeToBytes[OutDtoWithErrors[JsValue]]),
                 producerFabric)
 
             mainDs
