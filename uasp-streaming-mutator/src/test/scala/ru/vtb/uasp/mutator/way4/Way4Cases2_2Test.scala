@@ -2,6 +2,7 @@ package ru.vtb.uasp.mutator.way4
 
 import io.qameta.allure.Feature
 import ru.vtb.uasp.common.dto.UaspDto
+import ru.vtb.uasp.mutator.ValidUaspDtoGenerator.serviceDataDto
 import ru.vtb.uasp.mutator.service.BusinessRulesService
 import ru.vtb.uasp.mutator.service.BusinessRulesService.errFieldName
 import ru.vtb.uasp.mutator.service.dto.{ConcatenateStr, StringMap, UaspOperation}
@@ -54,7 +55,7 @@ class Way4Cases2_2Test extends AbstractDroolsTestCase {
 
   "Way4Cases " + testcasePostfix should " be some times error, with field " + addKey + " check all BusinessRulesService" in {
 
-    val businessRulesService = BusinessRulesService(List("way4-case-2_2.drl", "way4-case-2_3.drl", "way4-case-2_4.drl", "way4-case-2_10.drl", "way4-case-5_2.drl", "way4-case-5_3.drl", "way4-case-11_2.drl"))
+    val businessRulesService = BusinessRulesService(serviceDataDto, List("way4-case-2_2.drl", "way4-case-2_3.drl", "way4-case-2_4.drl", "way4-case-2_10.drl", "way4-case-5_2.drl", "way4-case-5_3.drl", "way4-case-11_2.drl"))
     val triedAssertions = testData()
       .map { test =>
         val dtoWithClassification = validUaspDto2_2.copy(dataString = validUaspDto2_2.dataString + (addKey -> "someValue"))

@@ -4,6 +4,7 @@ import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should
 import ru.vtb.uasp.common.dto.UaspDto
 import ru.vtb.uasp.common.extension.CommonExtension.Also
+import ru.vtb.uasp.mutator.ValidUaspDtoGenerator.serviceDataDto
 import ru.vtb.uasp.mutator.configuration.drools.KieBaseService
 import ru.vtb.uasp.mutator.service.BusinessRulesService
 import ru.vtb.uasp.mutator.service.drools.DroolsRunner
@@ -16,7 +17,7 @@ abstract class AbstractDroolsTestCase extends AnyFlatSpec with should.Matchers {
 
   protected def drlFileList: List[String]
 
-  protected val businessRulesService: BusinessRulesService = BusinessRulesService(drlFileList)
+  protected val businessRulesService: BusinessRulesService = BusinessRulesService(serviceDataDto, drlFileList)
 
 
   protected val validator: DroolsRunner = new KieBaseService(drlFileList)

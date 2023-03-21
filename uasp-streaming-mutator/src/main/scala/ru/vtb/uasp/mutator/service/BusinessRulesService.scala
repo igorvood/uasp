@@ -5,7 +5,7 @@ import ru.vtb.uasp.common.abstraction.DlqProcessFunction
 import ru.vtb.uasp.common.dto.UaspDto
 import ru.vtb.uasp.common.extension.CommonExtension.Also
 import ru.vtb.uasp.common.service.JsonConvertOutService.IdentityPredef
-import ru.vtb.uasp.common.service.dto.KafkaDto
+import ru.vtb.uasp.common.service.dto.{KafkaDto, OutDtoWithErrors, ServiceDataDto}
 import ru.vtb.uasp.mutator.configuration.drools.KieBaseService
 import ru.vtb.uasp.mutator.service.BusinessRulesService.errFieldName
 import ru.vtb.uasp.mutator.service.drools.DroolsRunner
@@ -16,23 +16,25 @@ import scala.collection.{Set, mutable}
 import scala.util.{Try, _}
 
 
-class BusinessRulesService(drl: UaspDto => Set[UaspOperation]) extends DlqProcessFunction[UaspDto, UaspDto, KafkaDto] {
+class BusinessRulesService(private val serviceDataDto: ServiceDataDto,
+                            drl: UaspDto => Set[UaspOperation]) extends DlqProcessFunction[UaspDto, UaspDto, OutDtoWithErrors[UaspDto]] {
 
 
-  override def processWithDlq(value: UaspDto): Either[KafkaDto, UaspDto] = {
-    val triedDto = Try {
-      val mutateSet = drl(value)
-      validateOperation(mutateSet)
-      recursiveMutate(value, mutateSet.toList)
-    }
-    val dtoOrDto = triedDto match {
-      case Success(u) => Right(u)
-      case Failure(exception) =>
-        val dto = recursiveMutate(value, List(UaspOperation("put error", StringMap(exception.getMessage), errFieldName, Add())))
-        Left(dto.serializeToBytes)
-    }
-    dtoOrDto
-  }
+  private val className: Some[String] = Some(this.getClass.getName)
+  override def processWithDlq(value: UaspDto): Either[OutDtoWithErrors[UaspDto], UaspDto] = {
+        val triedDto = Try {
+          val mutateSet = drl(value)
+          validateOperation(mutateSet)
+          recursiveMutate(value, mutateSet.toList)
+        }
+        val dtoOrDto = triedDto match {
+          case Success(u) => Right(u)
+          case Failure(exception) =>
+            val dto = recursiveMutate(value, List(UaspOperation("put error", StringMap(exception.getMessage), errFieldName, Add())))
+            Left(OutDtoWithErrors[UaspDto](serviceDataDto, className, List(exception.getMessage), Some(value)))
+        }
+        dtoOrDto
+      }
 
   private def validateOperation(mutateSet: Set[UaspOperation]): Unit = {
     val dublicateFields = mutateSet
@@ -81,11 +83,11 @@ class BusinessRulesService(drl: UaspDto => Set[UaspOperation]) extends DlqProces
 object BusinessRulesService {
   val errFieldName: String = "sys-BussinesRulles-error"
 
-  def apply(kbPaths: List[String]): BusinessRulesService = {
+  def apply(serviceDataDto: ServiceDataDto, kbPaths: List[String]): BusinessRulesService = {
     val service = new KieBaseService(kbPaths)
       .also { q => DroolsRunner(q.kBase) }
       .also { droolsRunner =>
-        new BusinessRulesService({ q =>
+        new BusinessRulesService(serviceDataDto, { q =>
           droolsRunner
             .apply(q, { case x: UaspOperation => x })
         })

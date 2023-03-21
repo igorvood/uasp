@@ -1,6 +1,7 @@
 package ru.vtb.uasp.mutator
 
 import ru.vtb.uasp.common.dto.UaspDto
+import ru.vtb.uasp.common.service.dto.ServiceDataDto
 import ru.vtb.uasp.common.utils.json.JsonUtil.getFieldsForCases
 import ru.vtb.uasp.mutator.way4.Way4Cases2_7Test.testcasePostfix
 
@@ -9,6 +10,8 @@ import scala.util.Random
 
 object ValidUaspDtoGenerator {
 
+
+   val serviceDataDto: ServiceDataDto = ServiceDataDto("1", "!", "2")
   def createValidUaspDto(customerId: String, testcasePostfix: String): UaspDto = {
 
     def caseType = s"way4-case-$testcasePostfix"

@@ -6,6 +6,7 @@ import org.apache.flink.streaming.api.scala.StreamExecutionEnvironment
 import org.scalatest.flatspec.AnyFlatSpec
 import ru.vtb.uasp.common.dto.UaspDto
 import ru.vtb.uasp.mutator.DroolsMutatorJobTestConfiguration.uaspDtoWithFilelds
+import ru.vtb.uasp.mutator.ValidUaspDtoGenerator.serviceDataDto
 import ru.vtb.uasp.mutator.configuration.drools.KieBaseService
 import ru.vtb.uasp.mutator.service.BusinessRulesService
 import ru.vtb.uasp.mutator.service.drools.DroolsRunner
@@ -26,7 +27,7 @@ class DroolsMutatorJobTest extends AnyFlatSpec {
       "way4-case-2_4.drl", "way4-case-2_10.drl", "way4-case-5_2.drl", "way4-case-5_3.drl", "way4-case-11_2.drl"))
 
     val value = preparedStream
-      .process(new BusinessRulesService({ q =>
+      .process(new BusinessRulesService(serviceDataDto, { q =>
         DroolsRunner(validator.kBase)
           .apply(q, { case x: UaspOperation => x })
       }))

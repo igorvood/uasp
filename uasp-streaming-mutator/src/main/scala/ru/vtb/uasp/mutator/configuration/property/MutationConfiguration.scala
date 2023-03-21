@@ -2,6 +2,7 @@ package ru.vtb.uasp.mutator.configuration.property
 
 import ru.vtb.uasp.common.kafka.{FlinkConsumerProperties, FlinkSinkProperties}
 import ru.vtb.uasp.common.service.UaspDeserializationProcessFunction
+import ru.vtb.uasp.common.service.dto.ServiceDataDto
 import ru.vtb.uasp.common.utils.config.PropertyUtil.createByClassOption
 import ru.vtb.uasp.common.utils.config.{AllApplicationProperties, ConfigurationInitialise, ReadConfigErrors}
 import ru.vtb.uasp.filter.configuration.property.{ExecutionFlinkEnvironmentProperty, FilterConfiguration, FilterRule}
@@ -18,14 +19,13 @@ case class MutationConfiguration(consumerPropperty: FlinkConsumerProperties,
                                  flinkSinkPropertiesErr: Option[FlinkSinkProperties],
                                 ) {
 
+  implicit private val serviceDto: ServiceDataDto = businessExecutionEnvironmentProperty.serviceDto
 
-  lazy val newMutateService: BusinessRulesService = BusinessRulesService(businessDroolsList)
+  lazy val newMutateService: BusinessRulesService = BusinessRulesService(businessExecutionEnvironmentProperty.serviceDto, businessDroolsList)
 
   val deserializationProcessFunction = new UaspDeserializationProcessFunction
 
-//  val filterConfiguration = new FilterConfiguration(businessExecutionEnvironmentProperty, null, consumerPropperty, flinkSinkPropertiesOk, flinkSinkPropertiesErr)
-
-  lazy val filterProcessFunction = new FilterProcessFunction(filterRule)
+  lazy val filterProcessFunction = new FilterProcessFunction(filterRule, serviceDto)
 
 }
 

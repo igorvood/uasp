@@ -3,6 +3,8 @@ package ru.vtb.uasp.mutator.service
 import org.scalatest.flatspec.AnyFlatSpec
 import ru.vtb.uasp.common.dto.UaspDto
 import ru.vtb.uasp.common.service.JsonConvertInService
+import ru.vtb.uasp.common.service.dto.OutDtoWithErrors
+import ru.vtb.uasp.mutator.ValidUaspDtoGenerator.serviceDataDto
 import ru.vtb.uasp.mutator.service.BusinessRulesService.errFieldName
 import ru.vtb.uasp.mutator.service.BusinessRulesServiceTest.{dtoNoFields, genUaspOperation}
 import ru.vtb.uasp.mutator.service.dto._
@@ -16,18 +18,18 @@ class BusinessRulesServiceTest extends AnyFlatSpec {
 
   it should "success" in {
     val cnt = 10
-    val dtoAdd = new BusinessRulesService(_ => {
+    val dtoAdd = new BusinessRulesService(serviceDataDto, _ => {
       genUaspOperation(cnt, Set(Add()))
     }).processWithDlq(dtoNoFields).right.get
     assertResult(cnt * 7)(countVals(dtoAdd))
 
-    val dtoMutate = new BusinessRulesService(_ => {
+    val dtoMutate = new BusinessRulesService(serviceDataDto, _ => {
       genUaspOperation(cnt, Set(Mutate()))
     })
       .processWithDlq(dtoAdd).right.get
     assertResult(cnt * 7)(countVals(dtoMutate))
 
-    val dtoDelete = new BusinessRulesService(_ => {
+    val dtoDelete = new BusinessRulesService(serviceDataDto, _ => {
       genUaspOperation(cnt, Set(Delete()))
     })
       .processWithDlq(dtoMutate).right.get
@@ -36,54 +38,55 @@ class BusinessRulesServiceTest extends AnyFlatSpec {
   }
 
   it should "error on adds null value" in {
-    val service = new BusinessRulesService(_ => {
+    val service = new BusinessRulesService(serviceDataDto, _ => {
       Set[UaspOperation](UaspOperation("n", StringMap(null), "asd", Add()))
     })
 
-    val dto = service.processWithDlq(dtoNoFields).left.get
-    val errUasp = JsonConvertInService.deserialize[UaspDto](dto.value).right.get
-    errUasp.dataString.get(errFieldName)
-      .map(d=>assertResult("requirement failed: RuleName 'n': Uncompatitible value 'null' for operation Add() ")(d))
-      .getOrElse(throw new IllegalStateException("not found field "+errFieldName+ " in dataString mal"))
+    val err = service.processWithDlq(dtoNoFields).left.get
+
+    assert(dtoNoFields == err.data.get)
+
+    assert(err.errors.contains("requirement failed: RuleName 'n': Uncompatitible value 'null' for operation Add() "))
+
   }
 
   it should "error on Mutate null value" in {
-    val service = new BusinessRulesService(_ => {
+    val service = new BusinessRulesService(serviceDataDto,_ => {
       Set[UaspOperation](UaspOperation("n", StringMap(null), "asd", Mutate()))
     })
 
-    val dto = service.processWithDlq(dtoNoFields).left.get
-    val errUasp = JsonConvertInService.deserialize[UaspDto](dto.value).right.get
+    val err = service.processWithDlq(dtoNoFields).left.get
 
-    errUasp.dataString.get(errFieldName)
-      .map(d=>assertResult("requirement failed: RuleName 'n': Uncompatitible value 'null' for operation Mutate() ")(d))
-      .getOrElse(throw new IllegalStateException("not found field "+errFieldName+ " in dataString mal"))
+    assert(err.errors.contains( "requirement failed: RuleName 'n': Uncompatitible value 'null' for operation Mutate() "))
 
+    assert(dtoNoFields == err.data.get)
   }
 
   it should "error on Delete not existing key value" in {
-    val service = new BusinessRulesService(_ => {
+    val service = new BusinessRulesService(serviceDataDto, _ => {
       Set[UaspOperation](UaspOperation("n", StringMap(null), "asd", Delete()))
     })
 
-    val dto = service.processWithDlq(dtoNoFields).left.get
-    val errUasp = JsonConvertInService.deserialize[UaspDto](dto.value).right.get
+    val err = service.processWithDlq(dtoNoFields).left.get
 
-    assertResult("For operation class ru.vtb.uasp.mutator.service.dto.Delete field 'asd' not found")(errUasp.dataString("sys-BussinesRulles-error"))
+    assert(err.errors.contains( "For operation class ru.vtb.uasp.mutator.service.dto.Delete field 'asd' not found"))
+
+assert(err.data.get == dtoNoFields)
+
+
   }
 
   it should "error on multiple mutate one field" in {
     val asd = "asd"
-    val service = new BusinessRulesService(_ => {
+    val service = new BusinessRulesService(serviceDataDto, _ => {
       Set[UaspOperation](UaspOperation("n", StringMap(null), asd, Delete()),
         UaspOperation("n", StringMap(null), asd, Add()))
     })
 
-    val dto = service.processWithDlq(dtoNoFields).left.get
-    val errUasp = JsonConvertInService.deserialize[UaspDto](dto.value).right.get
-    errUasp.dataString.get(errFieldName)
-      .map(d=>assertResult("requirement failed: drools should not mutate same field Map((asd,class ru.vtb.uasp.mutator.service.dto.StringMap) -> List(UaspOperation(n,StringMap(null),asd,Delete()), UaspOperation(n,StringMap(null),asd,Add()))) ")(d))
-      .getOrElse(throw new IllegalStateException("not found field "+errFieldName+ " in dataString mal"))
+    val err = service.processWithDlq(dtoNoFields).left.get
+    assert( err.data.get == dtoNoFields)
+
+    assert(err.errors.contains( "requirement failed: drools should not mutate same field Map((asd,class ru.vtb.uasp.mutator.service.dto.StringMap) -> List(UaspOperation(n,StringMap(null),asd,Delete()), UaspOperation(n,StringMap(null),asd,Add()))) "))
 
   }
 

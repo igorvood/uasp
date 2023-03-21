@@ -4,11 +4,11 @@ import org.apache.flink.api.scala.createTypeInformation
 import org.apache.flink.streaming.api.datastream.DataStreamSink
 import org.apache.flink.streaming.api.functions.sink.SinkFunction
 import org.apache.flink.streaming.api.scala.{DataStream, StreamExecutionEnvironment}
-import ru.vtb.uasp.common.abstraction.FlinkStreamPredef.{StreamExecutionEnvironmentPredef, StreamFactory}
+import ru.vtb.uasp.common.abstraction.FlinkStreamProducerPredef.{StreamExecutionEnvironmentPredef, StreamFactory}
 import ru.vtb.uasp.common.dto.UaspDto
 import ru.vtb.uasp.common.kafka.FlinkSinkProperties
 import ru.vtb.uasp.common.kafka.FlinkSinkProperties.producerFactoryDefault
-import ru.vtb.uasp.common.service.JsonConvertOutService.IdentityPredef
+import ru.vtb.uasp.common.service.JsonConvertOutService.{IdentityPredef, JsonPredef}
 import ru.vtb.uasp.common.service.dto.KafkaDto
 import ru.vtb.uasp.filter.configuration.property.FilterConfiguration.appPrefixDefaultName
 import ru.vtb.uasp.mutator.configuration.property.MutationConfiguration
@@ -38,16 +38,16 @@ object DroolsBusinessRullesJob {
                      ) = {
 
     val mutation = uaspDtoStream
-      .processAndDlqSinkWithMetric(
+      .processWithMaskedDqlF(
         serviceData = mutationConfiguration.businessExecutionEnvironmentProperty.serviceDto,
         process = mutationConfiguration.newMutateService,
-        sinkDlqFunction = mutationConfiguration.flinkSinkPropertiesErr,
+        sinkDlqProperty = mutationConfiguration.flinkSinkPropertiesErr.map(sp => sp -> { (q, w) => q.serializeToBytes(w) }),
         producerFactory = producerFabric
       )
-      .processAndDlqSinkWithMetric(
+      .processWithMaskedDqlF(
         serviceData = mutationConfiguration.businessExecutionEnvironmentProperty.serviceDto,
         process = mutationConfiguration.filterProcessFunction,
-        sinkDlqFunction = mutationConfiguration.flinkSinkPropertiesErr,
+        sinkDlqProperty = mutationConfiguration.flinkSinkPropertiesErr.map(sp => sp -> { (q, w) => q.serializeToBytes(w) }),
         producerFactory = producerFabric
       )
     mutation
@@ -64,7 +64,7 @@ object DroolsBusinessRullesJob {
                  ): DataStreamSink[KafkaDto] = {
     val mainSink = configuration.flinkSinkPropertiesOk.createSinkFunction(producerFabric)
     mainDataStream
-      .map(_.serializeToBytes)
+      .map(q => q.serializeToBytes(None).right.get)
       .map(configuration.flinkSinkPropertiesOk.prometheusMetric[KafkaDto](configuration.businessExecutionEnvironmentProperty.serviceDto))
       .addSink(mainSink)
   }
