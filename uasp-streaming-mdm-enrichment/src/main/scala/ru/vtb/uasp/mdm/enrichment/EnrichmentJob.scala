@@ -121,8 +121,6 @@ object EnrichmentJob extends Serializable {
 
     val standartedDataStreams = mDMEnrichmentPropsModel.streamTransformService.transform(flinkDataStreams)
 
-
-
     val mainDlqProp = mDMEnrichmentPropsModel.allEnrichProperty.mainEnrichProperty.dlqTopicProp
 
     val streamGlobal = standartedDataStreams.mainDataStream
