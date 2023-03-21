@@ -24,8 +24,6 @@ case class MDMEnrichmentPropsModel(
 
   require(appSyncParallelism > 0, "appSyncParallelism must be grater than zero")
 
-  //  @deprecated
-  //  lazy val throwToDlqService = new ThrowToDlqService
 
   //  Вытаскивание ключевого значсения для основного потока, для обогащения глобальным идентификатором
   lazy val globalMainStreamExtractKeyFunction = allEnrichProperty.globalIdEnrichProperty
@@ -40,7 +38,7 @@ case class MDMEnrichmentPropsModel(
       new KeyedEnrichCommonCoProcessService(serviceData, cp)
     )
 
-  lazy val commonValidateProcessFunction: Option[ExtractKeyFunction] = allEnrichProperty.commonEnrichProperty
+  private lazy val commonValidateProcessFunction: Option[ExtractKeyFunction] = allEnrichProperty.commonEnrichProperty
     .map(cp => new ExtractKeyFunction(serviceData, cp))
 
   // global id services
@@ -50,7 +48,7 @@ case class MDMEnrichmentPropsModel(
         glbProp,
         appSavepointPref))
 
-  lazy val validateGlobalIdService: Option[ExtractKeyFunction] = allEnrichProperty.globalIdEnrichProperty
+  private lazy val validateGlobalIdService: Option[ExtractKeyFunction] = allEnrichProperty.globalIdEnrichProperty
     .map(glbProp => new ExtractKeyFunction(serviceData, glbProp))
 
 
@@ -60,7 +58,7 @@ case class MDMEnrichmentPropsModel(
     override def processWithDlq(dto: Either[OutDtoWithErrors[UaspDto], UaspDto]): Either[OutDtoWithErrors[UaspDto], UaspDto] = dto
   }
 
-  val streamTransformService = new StreamTransformService(
+  val streamTransformService = new TransformSecondaryStreamService(
     serviceData,
     globalIdValidateService = validateGlobalIdService,
     commonValidateProcessFunction,

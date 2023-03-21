@@ -11,7 +11,7 @@ import ru.vtb.uasp.common.service.JsonConvertOutService.JsonPredef
 import ru.vtb.uasp.common.service.dto.{KafkaDto, OutDtoWithErrors, ServiceDataDto}
 import ru.vtb.uasp.mdm.enrichment.service.dto.{KeyedCAData, NotStandardDataStreams, StandartedDataStreams}
 
-class StreamTransformService(
+class TransformSecondaryStreamService(
                               private val serviceData: ServiceDataDto,
                               private val globalIdValidateService: Option[ExtractKeyFunction],
                               private val commonValidateProcessFunction: Option[ExtractKeyFunction],
