@@ -1,6 +1,7 @@
 package ru.vtb.uasp.filter.service
 
 import ru.vtb.uasp.common.dto.UaspDto
+import ru.vtb.uasp.common.service.dto.ServiceDataDto
 import ru.vtb.uasp.common.utils.config.AllApplicationProperties
 import ru.vtb.uasp.filter.configuration.property.{FilterConfiguration, FilterRule}
 import ru.vtb.uasp.filter.service.dto._
@@ -8,6 +9,8 @@ import ru.vtb.uasp.filter.service.dto._
 import java.util.Calendar
 
 object FilterStreamServiceTestConfiguration {
+
+  val serviceDataDto: ServiceDataDto = ServiceDataDto("1", "1", "!")
 
   val uaspDtoWithFilelds: Array[UaspDto] = (1 to 9)
     .map(q =>

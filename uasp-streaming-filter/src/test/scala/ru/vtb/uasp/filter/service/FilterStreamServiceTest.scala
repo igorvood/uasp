@@ -5,7 +5,7 @@ import org.scalatest.BeforeAndAfter
 import org.scalatest.matchers.should
 import ru.vtb.uasp.common.dto.UaspDto
 import ru.vtb.uasp.filter.configuration.property.FilterRule
-import ru.vtb.uasp.filter.service.FilterStreamServiceTestConfiguration.{dtoNoFields, expectedMap, filterRulesMap, uaspDtoWithFilelds}
+import ru.vtb.uasp.filter.service.FilterStreamServiceTestConfiguration.{dtoNoFields, expectedMap, filterRulesMap, serviceDataDto, uaspDtoWithFilelds}
 import ru.vtb.uasp.filter.service.dto._
 
 class FilterStreamServiceTest extends org.scalatest.flatspec.AnyFlatSpec with should.Matchers with BeforeAndAfter {
@@ -42,7 +42,7 @@ class FilterStreamServiceTest extends org.scalatest.flatspec.AnyFlatSpec with sh
   "test all rules for all operand type" should " throw exception " in {
     filterRulesMap
       .foreach { rule =>
-        val filterProcessFunction = new FilterProcessFunction(rule._2)
+        val filterProcessFunction = new FilterProcessFunction(rule._2, serviceDataDto)
         val harness: OneInputStreamOperatorTestHarness[UaspDto, UaspDto] = ProcessFunctionTestHarnesses.forProcessFunction(filterProcessFunction)
 
         harness.processElement(dtoNoFields, 1)
@@ -61,7 +61,7 @@ class FilterStreamServiceTest extends org.scalatest.flatspec.AnyFlatSpec with sh
     filterRulesMap
       .filter(function)
       .foreach { rule =>
-        val filterProcessFunction = new FilterProcessFunction(rule._2)
+        val filterProcessFunction = new FilterProcessFunction(rule._2, serviceDataDto)
         val harness: OneInputStreamOperatorTestHarness[UaspDto, UaspDto] = ProcessFunctionTestHarnesses.forProcessFunction(filterProcessFunction)
         uaspDtoWithFilelds.foreach { uaspDto =>
           harness.processElement(uaspDto, 1)

@@ -1,7 +1,10 @@
 package ru.vtb.uasp.filter.configuration.property
 
+import ru.vtb.uasp.common.abstraction.DlqProcessFunction
+import ru.vtb.uasp.common.dto.UaspDto
 import ru.vtb.uasp.common.kafka.{FlinkConsumerProperties, FlinkSinkProperties}
 import ru.vtb.uasp.common.service.UaspDeserializationProcessFunction
+import ru.vtb.uasp.common.service.dto.{KafkaDto, OutDtoWithErrors, ServiceDataDto}
 import ru.vtb.uasp.common.utils.config.PropertyUtil._
 import ru.vtb.uasp.common.utils.config.{AllApplicationProperties, ConfigurationInitialise, ReadConfigErrors}
 import ru.vtb.uasp.filter.service.FilterProcessFunction
@@ -16,7 +19,9 @@ case class FilterConfiguration(
                                 flinkSinkPropertiesErr: Option[FlinkSinkProperties],
                               ) {
 
-  lazy val filterProcessFunction = new FilterProcessFunction(filterRule)
+  implicit private val dto: ServiceDataDto = executionEnvironmentProperty.serviceDto
+
+  lazy val filterProcessFunction: DlqProcessFunction[UaspDto, UaspDto, OutDtoWithErrors[UaspDto]] = new FilterProcessFunction(filterRule, executionEnvironmentProperty.serviceDto)
 
   val deserializationProcessFunction = new UaspDeserializationProcessFunction
 
