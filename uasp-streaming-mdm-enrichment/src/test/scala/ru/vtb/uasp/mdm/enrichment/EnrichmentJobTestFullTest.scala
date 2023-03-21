@@ -9,7 +9,7 @@ import ru.vtb.uasp.common.dto.UaspDto
 import ru.vtb.uasp.common.service.JsonConvertInService
 import ru.vtb.uasp.common.service.dto.{KafkaDto, OutDtoWithErrors, ServiceDataDto}
 import ru.vtb.uasp.mdm.enrichment.TestConst._
-import ru.vtb.uasp.mdm.enrichment.service.dto.FlinkDataStreams
+import ru.vtb.uasp.mdm.enrichment.service.dto.NotStandardFlinkDataStreams
 import ru.vtb.uasp.mdm.enrichment.utils.config._
 
 import java.util
@@ -45,7 +45,7 @@ class EnrichmentJobTestFullTest extends AnyFlatSpec with Matchers {
     val hypothecInputDataStream = env.fromCollection(List(Json.toJson(emptyUasp)))
     val globalDataStream = env.fromCollection(List(Json.toJson(emptyUasp)))
 
-    val streams = FlinkDataStreams(mainStream, Some(hypothecInputDataStream), Some(globalDataStream))
+    val streams = NotStandardFlinkDataStreams(mainStream, Some(hypothecInputDataStream), Some(globalDataStream))
 
     val value1 = EnrichmentJob.process(streams, model, { pm => CollectByteSink(pm.toTopicName) })
 
@@ -68,7 +68,7 @@ class EnrichmentJobTestFullTest extends AnyFlatSpec with Matchers {
     val dto = emptyUasp
     val mainStream = env.fromCollection(List(dto))
     val emptyStream = env.fromCollection(List[JsValue]())
-    val streams = FlinkDataStreams(mainStream, Some(emptyStream), Some(emptyStream))
+    val streams = NotStandardFlinkDataStreams(mainStream, Some(emptyStream), Some(emptyStream))
 
     val value1 = EnrichmentJob.process(streams, model, { pm => CollectByteSink(pm.toTopicName) }).mainStream
 
