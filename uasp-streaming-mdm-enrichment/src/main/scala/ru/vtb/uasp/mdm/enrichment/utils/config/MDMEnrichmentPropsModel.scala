@@ -1,10 +1,13 @@
 package ru.vtb.uasp.mdm.enrichment.utils.config
 
 import org.apache.flink.streaming.api.scala.createTypeInformation
+import play.api.libs.json.JsValue
 import ru.vtb.uasp.common.abstraction.DlqProcessFunction
 import ru.vtb.uasp.common.dto.UaspDto
 import ru.vtb.uasp.common.kafka.FlinkSinkProperties
-import ru.vtb.uasp.common.service.dto.{OutDtoWithErrors, ServiceDataDto}
+import ru.vtb.uasp.common.mask.dto.{JsMaskedPath, JsMaskedPathError}
+import ru.vtb.uasp.common.service.JsonConvertOutService.JsonPredef
+import ru.vtb.uasp.common.service.dto.{KafkaDto, OutDtoWithErrors, ServiceDataDto}
 import ru.vtb.uasp.common.utils.config.PropertyUtil._
 import ru.vtb.uasp.common.utils.config.{AllApplicationProperties, ConfigurationInitialise, PropertyCombiner, ReadConfigErrors}
 import ru.vtb.uasp.mdm.enrichment.service._
@@ -56,6 +59,15 @@ case class MDMEnrichmentPropsModel(
   val throwToDlqService: DlqProcessFunction[Either[OutDtoWithErrors[UaspDto], UaspDto], UaspDto, OutDtoWithErrors[UaspDto]] = new DlqProcessFunction[Either[OutDtoWithErrors[UaspDto], UaspDto], UaspDto, OutDtoWithErrors[UaspDto]] {
     override def processWithDlq(dto: Either[OutDtoWithErrors[UaspDto], UaspDto]): Either[OutDtoWithErrors[UaspDto], UaspDto] = dto
   }
+
+  val streamTransformService = new StreamTransformService(
+    serviceData,
+    globalIdValidateService = validateGlobalIdService,
+    commonValidateProcessFunction,
+    allEnrichProperty.globalIdEnrichProperty.flatMap(a => a.dlqTopicProp),
+    allEnrichProperty.commonEnrichProperty.flatMap(a => a.dlqTopicProp),
+  )
+
 
 }
 

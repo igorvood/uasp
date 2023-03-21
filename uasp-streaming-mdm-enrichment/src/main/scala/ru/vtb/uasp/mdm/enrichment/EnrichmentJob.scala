@@ -16,7 +16,7 @@ import ru.vtb.uasp.common.service.JsonConvertOutService.{IdentityPredef, JsonPre
 import ru.vtb.uasp.common.service.UaspDeserializationProcessFunction
 import ru.vtb.uasp.common.service.dto.KafkaDto
 import ru.vtb.uasp.mdm.enrichment.service.JsValueConsumer
-import ru.vtb.uasp.mdm.enrichment.service.dto.{NotStandardDataStreams, KeyedCAData, KeyedUasp, OutStreams}
+import ru.vtb.uasp.mdm.enrichment.service.dto.{KeyedCAData, KeyedUasp, NotStandardDataStreams, OutStreams, StandartedDataStreams}
 import ru.vtb.uasp.mdm.enrichment.utils.config.MDMEnrichmentPropsModel.appPrefixDefaultName
 import ru.vtb.uasp.mdm.enrichment.utils.config._
 
@@ -116,36 +116,33 @@ object EnrichmentJob extends Serializable {
              ): OutStreams = {
 
     implicit val oWritesJsValue: OWrites[JsValue] = (o: JsValue) => o.asInstanceOf[JsObject]
+    implicit val fabric: FlinkSinkProperties => SinkFunction[KafkaDto] = producerFabric
+
+
+    val standartedDataStreams = mDMEnrichmentPropsModel.streamTransformService.transform(flinkDataStreams)
+
+
 
     val mainDlqProp = mDMEnrichmentPropsModel.allEnrichProperty.mainEnrichProperty.dlqTopicProp
 
-    val streamGlobal = flinkDataStreams.mainDataStream
+    val streamGlobal = standartedDataStreams.mainDataStream
       // если настроено обогащение глобальнымнтификатором, то надо обогатить
       .also { mainDs =>
         val maybeGlobal = for {
           keyedMainStreamSrv <- mDMEnrichmentPropsModel.globalMainStreamExtractKeyFunction
           keyGlobalSrv <- mDMEnrichmentPropsModel.keyGlobalIdEnrichmentMapService
-          validateGlobalIdService <- mDMEnrichmentPropsModel.validateGlobalIdService
-          globalIdStream <- flinkDataStreams.globalIdStream
-        } yield (keyedMainStreamSrv, validateGlobalIdService, keyGlobalSrv, globalIdStream)
+          globalIdStream <- standartedDataStreams.globalIdStream
+        } yield (keyedMainStreamSrv,  keyGlobalSrv, globalIdStream)
         maybeGlobal
           .map { tuple =>
-            val (keyedMainStreamSrv, validateGlobalIdService, keyGlobalSrv, globalIdStream) = tuple
-            val dlqGlobalIdProp = mDMEnrichmentPropsModel.allEnrichProperty.globalIdEnrichProperty.flatMap(a => a.dlqTopicProp)
-
-            val validatedGlobalIdStream = globalIdStream
-              .processWithMaskedDqlF(
-                mDMEnrichmentPropsModel.serviceData,
-                validateGlobalIdService,
-                dlqGlobalIdProp.map(sp => sp -> { (q, w) => q.serializeToBytes(w) }),
-                producerFabric)
+            val (keyedMainStreamSrv,  keyGlobalSrv, validatedGlobalIdStream) = tuple
 
             mainDs
               .processWithMaskedDqlF(
                 mDMEnrichmentPropsModel.serviceData,
                 keyedMainStreamSrv,
                 mainDlqProp.map(sp => sp -> { (q, w) => q.serializeToBytes(w) }),
-                producerFabric)
+                fabric)
               .keyBy(keySelectorMain)
               .connect(validatedGlobalIdStream.keyBy(d => d.key))
               .process(keyGlobalSrv)
@@ -153,7 +150,7 @@ object EnrichmentJob extends Serializable {
                 mDMEnrichmentPropsModel.serviceData,
                 mDMEnrichmentPropsModel.throwToDlqService,
                 mainDlqProp.map(sp => sp -> { (q, w) => q.serializeToBytes(w) }),
-                producerFabric
+                fabric
               )
           }.getOrElse(mainDs)
       }
@@ -163,26 +160,18 @@ object EnrichmentJob extends Serializable {
         val maybeCommon = for {
           keyedMainStreamSrv <- mDMEnrichmentPropsModel.commonMainStreamExtractKeyFunction
           keyCommonEnrichmentMapService <- mDMEnrichmentPropsModel.keyCommonEnrichmentMapService
-          commonValidateProcessFunction <- mDMEnrichmentPropsModel.commonValidateProcessFunction
-          commonStream <- flinkDataStreams.commonStream
-        } yield (keyedMainStreamSrv, keyCommonEnrichmentMapService, commonValidateProcessFunction, commonStream)
+          commonStream <- standartedDataStreams.commonStream
+        } yield (keyedMainStreamSrv, keyCommonEnrichmentMapService, commonStream)
 
         maybeCommon
           .map { tuple =>
-            val (keyedMainStreamSrv, keyCommonEnrichmentMapService, commonValidateProcessFunction, commonStream) = tuple
-            val dlqGlobalIdProp = mDMEnrichmentPropsModel.allEnrichProperty.commonEnrichProperty.flatMap(a => a.dlqTopicProp)
-
-            val validatedGlobalIdStream = commonStream
-              .processWithMaskedDqlF(
-                mDMEnrichmentPropsModel.serviceData,
-                commonValidateProcessFunction,
-                dlqGlobalIdProp.map(sp => sp -> { (q, w) => q.serializeToBytes(w) }), producerFabric)
+            val (keyedMainStreamSrv, keyCommonEnrichmentMapService, validatedGlobalIdStream) = tuple
 
             mainDs
               .processWithMaskedDqlF(
                 mDMEnrichmentPropsModel.serviceData,
                 keyedMainStreamSrv,
-                mainDlqProp.map(sp => sp -> { (q, w) => q.serializeToBytes(w) }), producerFabric)
+                mainDlqProp.map(sp => sp -> { (q, w) => q.serializeToBytes(w) }), fabric)
               .keyBy(keySelectorMain)
               .connect(validatedGlobalIdStream.keyBy(d => d.key))
               .process(keyCommonEnrichmentMapService)
@@ -190,7 +179,7 @@ object EnrichmentJob extends Serializable {
                 mDMEnrichmentPropsModel.serviceData,
                 mDMEnrichmentPropsModel.throwToDlqService,
                 mainDlqProp.map(sp => sp -> { (q, w) => q.serializeToBytes(w) }),
-                producerFabric
+                fabric
               )
           }.getOrElse(mainDs)
       }
