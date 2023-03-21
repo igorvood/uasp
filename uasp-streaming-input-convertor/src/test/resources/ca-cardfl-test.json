@@ -18,5 +18,6 @@
   "salary_card_type_flg": "TestString",
   "contract_card_type_cd": "contract_card_type_cd",
   "credit_limit_amt": 10.01,
-  "loan_insurance_flg": "loan_insurance_flg"
+  "loan_insurance_flg": "loan_insurance_flg",
+ "is_deleted": "1"
 }

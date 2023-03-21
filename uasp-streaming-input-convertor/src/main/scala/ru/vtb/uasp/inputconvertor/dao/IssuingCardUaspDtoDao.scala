@@ -1,41 +1,33 @@
 package ru.vtb.uasp.inputconvertor.dao
 
 import com.eatthepath.uuid.FastUUID
-import org.json4s.{DefaultFormats, Formats, JValue}
+import play.api.libs.json.{JsResult, JsValue}
 import ru.vtb.uasp.common.dto.UaspDto
-import ru.vtb.uasp.inputconvertor.dao.CommonDao.getMap
+import ru.vtb.uasp.inputconvertor.dao.CommonDao.getMapEntry
 
 import java.time.{LocalDateTime, ZoneId}
 import java.util.UUID
 
 object IssuingCardUaspDtoDao {
-  def fromJValue(inMessage: JValue, dtoMap: Map[String, Array[String]]): UaspDto = {
-    implicit val formats: Formats = DefaultFormats.disallowNull
+  def fromJValue(inMessage: JsValue, dtoMap: Map[String, Array[String]]): List[JsResult[UaspDto]] = {
+    val value = for {
+      id <- (inMessage \ "id").validate[String]
+      cardClientId <- (inMessage \ "client" \ "id").validate[String]
 
-    lazy val id: String = (inMessage \ "id").extract[String]
-    lazy val cardClientId: String = (inMessage \ "client" \ "id").extract[String]
-
-    val dataInt = Map[String, Int]()
-    val dataLong = Map[String, Long]()
-    val dataFloat = Map[String, Float]()
-    val dataDouble = Map[String, Double]()
-    val dataDecimal = Map[String, BigDecimal]()
-    val dataString = Map[String, String]() ++
-      getMap[String](dtoMap("app.uaspdto.fields.local_id")(0), cardClientId)
-    val dataBoolean = Map[String, Boolean]()
-
-    UaspDto(
+    } yield UaspDto(
       id = id,
       uuid = FastUUID.toString(UUID.randomUUID),
       process_timestamp = LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant.toEpochMilli,
-      dataInt = dataInt,
-      dataLong = dataLong,
-      dataFloat = dataFloat,
-      dataDouble = dataDouble,
-      dataDecimal = dataDecimal,
-      dataString = dataString,
-      dataBoolean = dataBoolean
+      dataInt = Map.empty,
+      dataLong = Map.empty,
+      dataFloat = Map.empty,
+      dataDouble = Map.empty,
+      dataDecimal = Map.empty,
+      dataString = Map(getMapEntry(dtoMap("app.uaspdto.fields.local_id")(0), cardClientId)),
+      dataBoolean = Map.empty
     )
+    List(value)
+
   }
 
 

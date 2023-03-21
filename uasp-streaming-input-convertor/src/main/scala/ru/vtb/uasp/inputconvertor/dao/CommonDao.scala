@@ -1,6 +1,5 @@
 package ru.vtb.uasp.inputconvertor.dao
 
-import org.json4s._
 import org.slf4j.LoggerFactory
 
 import java.text.SimpleDateFormat
@@ -9,7 +8,6 @@ import scala.annotation.tailrec
 
 object CommonDao {
   private val logger = LoggerFactory.getLogger(getClass)
-  implicit val formats: Formats = DefaultFormats.disallowNull
 
   def getMap[T](mapKey: String, mapValue: => T): Map[String, T] = {
     try {
@@ -22,6 +20,17 @@ object CommonDao {
         Map[String, T]()
     }
   }
+
+
+  def getMapO[T](mapKey: String, mapValue: => Option[T]): Map[String, T] = {
+    mapValue.map(res => Map(mapKey -> res)).getOrElse(Map.empty)
+  }
+
+  def getMapEntry[T](mapKey: String, mapValue: => T): (String, T) = {
+    mapKey -> mapValue
+  }
+
+  def mapCollect[T](elems: (String, T)*): Map[String, T] = elems.filter(q => q._2 != null).toMap
 
   def dtStringToLong(inStr: String, fmt: String): Long = new SimpleDateFormat(fmt).parse(inStr).getTime
 

@@ -1,6 +1,6 @@
 package ru.vtb.uasp.inputconvertor.factory
 
-import org.json4s.JValue
+import play.api.libs.json.{JsResult, JsValue}
 import ru.vtb.uasp.common.dto.UaspDto
 import ru.vtb.uasp.inputconvertor.dao._
 import ru.vtb.uasp.inputconvertor.dao.ca._
@@ -9,106 +9,108 @@ import ru.vtb.uasp.inputconvertor.utils.config.InputPropsModel
 import scala.language.implicitConversions
 
 
-trait UaspDtoParser {
+trait UaspDtoParser extends Serializable {
 
   val propsModel: InputPropsModel
 
-  def fromJValue(mes: JValue, dtoMap: Map[String, Array[String]]): UaspDto
+  def fromJValue(mes: JsValue, dtoMap: Map[String, Array[String]]): List[JsResult[UaspDto]]
 }
 
 class Way4UaspDtoParser(override val propsModel: InputPropsModel) extends UaspDtoParser {
-  override def fromJValue(mes: JValue, dtoMap: Map[String, Array[String]]): UaspDto =
+  override def fromJValue(mes: JsValue, dtoMap: Map[String, Array[String]]): List[JsResult[UaspDto]] =
     Way4UaspDtoDao.fromJValue(mes, dtoMap)
 }
 
+// TODO Получить json
 class MDMUaspDtoParser(override val propsModel: InputPropsModel) extends UaspDtoParser {
-  override def fromJValue(mes: JValue, dtoMap: Map[String, Array[String]]): UaspDto =
+  override def fromJValue(mes: JsValue, dtoMap: Map[String, Array[String]]): List[JsResult[UaspDto]] =
     MDMUaspDtoDao.fromJValue(mes, dtoMap, propsModel.uaspdtoType)
 }
 
 class ClientUaspDtoParser(override val propsModel: InputPropsModel) extends UaspDtoParser {
-  override def fromJValue(mes: JValue, dtoMap: Map[String, Array[String]]): UaspDto =
+  override def fromJValue(mes: JsValue, dtoMap: Map[String, Array[String]]): List[JsResult[UaspDto]] =
     IssuingClientUaspDtoDao.fromJValue(mes, dtoMap)
 }
 
 class AccountBalanceUaspDtoParser(override val propsModel: InputPropsModel) extends UaspDtoParser {
-  override def fromJValue(mes: JValue, dtoMap: Map[String, Array[String]]): UaspDto =
+  override def fromJValue(mes: JsValue, dtoMap: Map[String, Array[String]]): List[JsResult[UaspDto]] =
     IssuingAccountBalanceUaspDtoDao.fromJValue(mes, dtoMap)
 }
 
 class AccountUaspDtoParser(override val propsModel: InputPropsModel) extends UaspDtoParser {
-  override def fromJValue(mes: JValue, dtoMap: Map[String, Array[String]]): UaspDto =
+  override def fromJValue(mes: JsValue, dtoMap: Map[String, Array[String]]): List[JsResult[UaspDto]] =
     IssuingAccountUaspDtoDao.fromJValue(mes, dtoMap)
 }
 
 class CardUaspDtoParser(override val propsModel: InputPropsModel) extends UaspDtoParser {
-  override def fromJValue(mes: JValue, dtoMap: Map[String, Array[String]]): UaspDto =
+  override def fromJValue(mes: JsValue, dtoMap: Map[String, Array[String]]): List[JsResult[UaspDto]] =
     IssuingCardUaspDtoDao.fromJValue(mes, dtoMap)
 }
 
+// TODO Получить json
 class CurrencyUaspDtoParser(override val propsModel: InputPropsModel) extends UaspDtoParser {
-  override def fromJValue(mes: JValue, dtoMap: Map[String, Array[String]]): UaspDto =
+  override def fromJValue(mes: JsValue, dtoMap: Map[String, Array[String]]): List[JsResult[UaspDto]] =
     CurrencyUaspDtoDao.fromJValue(mes, dtoMap)
 }
 
 class FirstSalaryUaspDtoParser(override val propsModel: InputPropsModel) extends UaspDtoParser {
-  override def fromJValue(mes: JValue, dtoMap: Map[String, Array[String]]): UaspDto =
+  override def fromJValue(mes: JsValue, dtoMap: Map[String, Array[String]]): List[JsResult[UaspDto]] =
     FirstSalaryUaspDtoDao.fromJValue(mes, propsModel, dtoMap)
 }
 
 class CAFirstSalaryUaspDtoParser(override val propsModel: InputPropsModel) extends UaspDtoParser {
-  override def fromJValue(mes: JValue, dtoMap: Map[String, Array[String]]): UaspDto =
+  override def fromJValue(mes: JsValue, dtoMap: Map[String, Array[String]]): List[JsResult[UaspDto]] =
     CAFirstSalaryUaspDtoDao.fromJValue(mes, dtoMap)
 }
 
 class ProfileUaspDtoParser(override val propsModel: InputPropsModel) extends UaspDtoParser with Serializable {
-  override def fromJValue(mes: JValue, dtoMap: Map[String, Array[String]]): UaspDto =
+  override def fromJValue(mes: JsValue, dtoMap: Map[String, Array[String]]): List[JsResult[UaspDto]] =
     ProfileUaspDtoDao.fromJValue(mes, propsModel, dtoMap)
 }
 
 class ProfileAuthUaspDtoDaoParser(override val propsModel: InputPropsModel) extends UaspDtoParser {
-  override def fromJValue(mes: JValue, dtoMap: Map[String, Array[String]]): UaspDto =
+  override def fromJValue(mes: JsValue, dtoMap: Map[String, Array[String]]): List[JsResult[UaspDto]] =
     ProfileAuthUaspDtoDao.fromJValue(mes, propsModel, dtoMap)
 }
 
 class WithDrawUaspDtoParser(override val propsModel: InputPropsModel) extends UaspDtoParser {
-  override def fromJValue(mes: JValue, dtoMap: Map[String, Array[String]]): UaspDto =
+  override def fromJValue(mes: JsValue, dtoMap: Map[String, Array[String]]): List[JsResult[UaspDto]] =
     WithdrawUaspDtoDao.fromJValue(mes, dtoMap)
 }
 
 class CardFlUaspDtoParser(override val propsModel: InputPropsModel) extends UaspDtoParser {
-  override def fromJValue(mes: JValue, dtoMap: Map[String, Array[String]]): UaspDto =
+  override def fromJValue(mes: JsValue, dtoMap: Map[String, Array[String]]): List[JsResult[UaspDto]] =
     CardFlUaspDtoDao.fromJValue(mes, dtoMap)
 }
 
 class CaCardFlUaspDtoParser(override val propsModel: InputPropsModel) extends UaspDtoParser {
-  override def fromJValue(mes: JValue, dtoMap: Map[String, Array[String]]): UaspDto =
+  override def fromJValue(mes: JsValue, dtoMap: Map[String, Array[String]]): List[JsResult[UaspDto]] =
     CACardFlUaspDtoDao.fromJValue(mes, dtoMap)
 }
 
 class CaDepositFlUaspDtoParser(override val propsModel: InputPropsModel) extends UaspDtoParser {
-  override def fromJValue(mes: JValue, dtoMap: Map[String, Array[String]]): UaspDto =
+  override def fromJValue(mes: JsValue, dtoMap: Map[String, Array[String]]): List[JsResult[UaspDto]] =
     CADepositFlUaspDtoDao.fromJValue(mes, dtoMap)
 }
 
 
 class CustomerPackageUaspDtoStandart(override val propsModel: InputPropsModel) extends UaspDtoParser {
-  override def fromJValue(mes: JValue, dtoMap: Map[String, Array[String]]): UaspDto =
+  override def fromJValue(mes: JsValue, dtoMap: Map[String, Array[String]]): List[JsResult[UaspDto]] =
     CustomerPackageUaspDtoDao.fromJValue(mes, dtoMap)
 }
 
 class CustomerProfileFullUaspDtoStandart(override val propsModel: InputPropsModel) extends UaspDtoParser {
-  override def fromJValue(mes: JValue, dtoMap: Map[String, Array[String]]): UaspDto =
+  override def fromJValue(mes: JsValue, dtoMap: Map[String, Array[String]]): List[JsResult[UaspDto]] =
     CustomerIdProfileFullUaspDtoDao.fromJValue(mes, dtoMap)
 }
 
 class UddsUaspDtoParser(override val propsModel: InputPropsModel) extends UaspDtoParser {
-  override def fromJValue(mes: JValue, dtoMap: Map[String, Array[String]]): UaspDto =
+  override def fromJValue(mes: JsValue, dtoMap: Map[String, Array[String]]): List[JsResult[UaspDto]] =
     UddsUaspDtoDao.fromJValue(mes, propsModel, dtoMap)
 }
 
 class LoyaltyUaspDtoParser(override val propsModel: InputPropsModel) extends UaspDtoParser {
-  override def fromJValue(mes: JValue, dtoMap: Map[String, Array[String]]): UaspDto =
+  override def fromJValue(mes: JsValue, dtoMap: Map[String, Array[String]]): List[JsResult[UaspDto]] =
     LoyaltyUaspDtoDao.fromJValue(mes, propsModel, dtoMap)
 }
 

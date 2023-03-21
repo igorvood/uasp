@@ -1,11 +1,16 @@
 package ru.vtb.uasp.inputconvertor.utils.config
 
+import play.api.libs.json.JsValue
 import ru.vtb.uasp.common.kafka.{FlinkConsumerProperties, FlinkSinkProperties}
-import ru.vtb.uasp.common.service.dto.ServiceDataDto
+import ru.vtb.uasp.common.mask.dto.{JsMaskedPath, JsMaskedPathError}
+import ru.vtb.uasp.common.service.JsonConvertOutService.serializeToBytes
+import ru.vtb.uasp.common.service.dto.{KafkaDto, OutDtoWithErrors, ServiceDataDto}
 import ru.vtb.uasp.common.utils.config.ConfigUtils.getPropsFromResourcesFile
-import ru.vtb.uasp.common.utils.config.PropertyUtil.{propertyVal, propertyValOptional, s}
+import ru.vtb.uasp.common.utils.config.PropertyUtil.{propertyVal, propertyValOptional, s, i}
 import ru.vtb.uasp.common.utils.config.{AllApplicationProperties, ConfigurationInitialise, ReadConfigErrors}
 import ru.vtb.uasp.inputconvertor.factory.{UaspDtoParser, UaspDtoParserFactory}
+import ru.vtb.uasp.inputconvertor.service.UaspDtoConvertService
+import ru.vtb.uasp.inputconvertor.service.dto.UaspAndKafkaKey
 import ru.vtb.uasp.inputconvertor.utils.serialization.InputMessageTypeDeserialization
 import ru.vtb.uasp.validate.DroolsValidator
 
@@ -21,15 +26,29 @@ case class InputPropsModel(
                             readSourceTopicFromBeginning: Boolean,
                             sha256salt: String,
                             messageJsonPath: Option[String],
+                            appSyncParallelism: Int,
+                            @deprecated
                             jsonSplitElement: Option[String],
                           ) {
-  lazy val savepointPref: String = serviceData.serviceNameNoVersion
   lazy val inputMessageTypeDeserialization = new InputMessageTypeDeserialization()
   val droolsValidator = new DroolsValidator(uaspdtoType + "-validation-rules.drl")
-  val dtoMap: Map[String, Array[String]] = getPropsFromResourcesFile(s"$uaspdtoType-uaspdto.properties")
+  lazy val dtoMap: Map[String, Array[String]] = getPropsFromResourcesFile(s"$uaspdtoType-uaspdto.properties")
     .map(map => map.map(m => (m._1, m._2.split("::"))))
     .getOrElse(throw new IllegalArgumentException(s"unable to read resources file $uaspdtoType-uaspdto.properties"))
-  val uaspDtoParser: UaspDtoParser = UaspDtoParserFactory(this)
+  lazy val uaspDtoParser: UaspDtoParser = UaspDtoParserFactory(this)
+
+
+  val uaspDtoConvertService = new UaspDtoConvertService(uaspDtoParser, droolsValidator,serviceData, dtoMap)
+
+  val sinkDlqProperty: Option[(FlinkSinkProperties, (OutDtoWithErrors[JsValue], Option[JsMaskedPath]) => Either[List[JsMaskedPathError], KafkaDto])] =
+    Some(dlqSink -> { (q, w) => serializeToBytes[OutDtoWithErrors[JsValue]](q, w) })
+
+  val sinkDlqPropertyUaspAndKafkaKey: Option[(FlinkSinkProperties, (OutDtoWithErrors[UaspAndKafkaKey], Option[JsMaskedPath]) => Either[List[JsMaskedPathError], KafkaDto])] =
+    Some(dlqSink -> { (q, w) =>
+      val value = serializeToBytes[OutDtoWithErrors[UaspAndKafkaKey]](q, w)
+      value
+    })
+
 }
 
 object InputPropsModel extends ConfigurationInitialise[InputPropsModel] {
@@ -50,6 +69,7 @@ object InputPropsModel extends ConfigurationInitialise[InputPropsModel] {
       sha256salt <- propertyVal[String](s"$prf", "card.number.sha256.salt")(appProps, configurationInitialise, s)
       messageJsonPath <- propertyValOptional[String](s"$prf", "message.json.path")(appProps, configurationInitialise, s)
       jsonSplitElement <- propertyValOptional[String](s"$prf", "json.split.element")(appProps, configurationInitialise, s)
+      appSyncParallelism <- propertyVal[Int](s"$prf", "sync.parallelism")
     } yield
       new InputPropsModel(
         serviceData = serviceName,
@@ -60,7 +80,8 @@ object InputPropsModel extends ConfigurationInitialise[InputPropsModel] {
         readSourceTopicFromBeginning = readSourceTopicFromBeginning,
         sha256salt = sha256salt,
         messageJsonPath = messageJsonPath,
-        jsonSplitElement = jsonSplitElement
+        jsonSplitElement = jsonSplitElement,
+        appSyncParallelism = appSyncParallelism
       )
   }
 }

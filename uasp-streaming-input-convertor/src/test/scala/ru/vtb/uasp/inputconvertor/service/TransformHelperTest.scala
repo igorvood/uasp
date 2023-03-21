@@ -1,108 +1,52 @@
 package ru.vtb.uasp.inputconvertor.service
 
-import io.qameta.allure.scalatest.AllureScalatestContext
-import org.json4s.jackson.JsonMethods.{compact, pretty, render}
 import org.scalatest.flatspec.AnyFlatSpec
-import org.scalatest.matchers.should
-import ru.vtb.uasp.common.utils.config.ConfigUtils.getStringFromResourceFile
-import ru.vtb.uasp.inputconvertor.dao.MsgCollector
-import ru.vtb.uasp.inputconvertor.entity.InputMessageType
-import ru.vtb.uasp.inputconvertor.utils.config.InputPropsModel
+import play.api.libs.json.Json
+import ru.vtb.uasp.inputconvertor.dao.CommonMsgAndProps.jsValueByType
+import ru.vtb.uasp.inputconvertor.dao.dto.{SysDto, SysDtoParam}
+import ru.vtb.uasp.inputconvertor.service.TransformHelper.splitMessage
 
-class TransformHelperTest extends AnyFlatSpec with should.Matchers {
+class TransformHelperTest extends AnyFlatSpec {
 
-  "extractJson type mdm" should "be return 4 messages" in new AllureScalatestContext {
+  "split Success " should "ok" in {
+    val value = jsValueByType("mdm")
 
-    val allProps: InputPropsModel = new InputPropsModel(
-      serviceData = null,
-      uaspdtoType = "mdm",
-      consumerProp = null,
-      outputSink = null,
-      dlqSink = null,
-      readSourceTopicFromBeginning = true,
-      sha256salt = null,
-      messageJsonPath = None,
-      jsonSplitElement = Some("contact"))
+    val seq = splitMessage[SysDtoParam](value, "contact")
 
-    val uaspDtoType = allProps.uaspdtoType
-    val msgCollector = new MsgCollector
-    val jsonMessageStr = getStringFromResourceFile(uaspDtoType + "-test.json")
-    val inMessage = InputMessageType(message_key = "123", message = jsonMessageStr.getBytes)
+    assert(seq.size == 4)
 
-    val result = TransformHelper.extractJson(inMessage, allProps, msgCollector)
-
-    msgCollector should not be (null)
-    msgCollector.getAll().size() shouldEqual 4
+    assert(seq.map(q => q.get).contains(
+      SysDtoParam(
+        "10324",
+        List(
+          SysDto(
+            "95000",
+            "456",
+            "1"
+          )
+        )
+      )
+    )
+    )
   }
 
-  "extractJson type mdm" should "be return 1 messages" in new AllureScalatestContext {
-    //    val allProps = getAllProps(args = Array.empty, "application-mdm.properties")
-    val allProps: InputPropsModel = new InputPropsModel(
-      serviceData = null,
-      uaspdtoType = "mdm",
-      consumerProp = null,
-      outputSink = null,
-      dlqSink = null,
-      readSourceTopicFromBeginning = true,
-      sha256salt = null,
-      messageJsonPath = None,
-      jsonSplitElement = None)
 
-    val uaspDtoType = allProps.uaspdtoType
-    val msgCollector = new MsgCollector
-    val jsonMessageStr = getStringFromResourceFile(uaspDtoType + "-test.json")
-    val inMessage = InputMessageType(message_key = "123", message = jsonMessageStr.getBytes)
+  "split ERR " should "ok" in {
 
-    val result = TransformHelper.extractJson(inMessage, allProps, msgCollector)
+    val sad =
+      """{
+        |  "messageResponse": {
+        |    "contact": null
+        |  }
+        |}""".stripMargin
 
-    msgCollector should not be (null)
-    msgCollector.getAll().size() shouldEqual 1
-  }
+    val value = Json.parse(sad)
 
-  "extractJson type mdm" should "be throw exception" in new AllureScalatestContext {
-    val allProps: InputPropsModel = new InputPropsModel(
-      serviceData = null,
-      uaspdtoType = "mdm",
-      consumerProp = null,
-      outputSink = null,
-      dlqSink = null,
-      readSourceTopicFromBeginning = true,
-      sha256salt = null,
-      messageJsonPath = None,
-      jsonSplitElement = Some("contact"))
+    val seq = splitMessage[SysDtoParam](value, "contact")
+    assert(seq.size == 1)
 
-    val uaspDtoType = allProps.uaspdtoType
-    val msgCollector = new MsgCollector
-    val jsonMessageStr = "test:invalid"
-    val inMessage = InputMessageType(message_key = "123", message = jsonMessageStr.getBytes)
+    val value1 = seq.head.asEither.left.get.head._2.head.message
 
-    val result = TransformHelper.extractJson(inMessage, allProps, msgCollector)
-
-    msgCollector should not be (null)
-    msgCollector.getAll().size() shouldEqual 1
-    msgCollector.getAll().get(0).left.get.errors.head should startWith("Error json parsing: Unrecognized token 'test':")
-  }
-  "extractJson type currency" should "be return 40 messages" in new AllureScalatestContext {
-
-    val allProps: InputPropsModel = new InputPropsModel(
-      serviceData = null,
-      uaspdtoType = "currency",
-      consumerProp = null,
-      outputSink = null,
-      dlqSink = null,
-      readSourceTopicFromBeginning = true,
-      sha256salt = null,
-      messageJsonPath = None,
-      jsonSplitElement = Some("rates"))
-
-    val uaspDtoType = allProps.uaspdtoType
-    val msgCollector = new MsgCollector
-    val jsonMessageStr = getStringFromResourceFile(uaspDtoType + "-test.json")
-    val inMessage = InputMessageType(message_key = "123", message = jsonMessageStr.getBytes)
-
-    val result = TransformHelper.extractJson(inMessage, allProps, msgCollector)
-
-    msgCollector should not be (null)
-    msgCollector.getAll().size() shouldEqual 21
+    assert(value1 == "Unable convert to array contact type JsNull")
   }
 }

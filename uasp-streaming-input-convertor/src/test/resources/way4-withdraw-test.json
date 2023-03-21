@@ -118,7 +118,7 @@
 		"CB_RC": "0",
 		"FNW": "V",
 		"AP_PRTCL": "1",
-		"SORCE_PAY": "UNKNOWN",
+		"SOURCE_PAY": "UNKNOWN",
 		"KBO": "643",
 		"VPD": "0000000005",
 		"AUTH_METHOD": "00",

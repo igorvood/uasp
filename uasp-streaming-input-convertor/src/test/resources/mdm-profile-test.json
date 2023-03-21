@@ -6,7 +6,9 @@
         "cifcontactReference": [
           {
             "externalId": "123",
-            "systemNumber": "IVR"
+            "systemNumber": "IVR",
+            "is_deleted": "1"
+
           }
         ]
       },
@@ -15,7 +17,8 @@
         "cifcontactReference": [
           {
             "externalId": "324",
-            "systemNumber": "OW4"
+            "systemNumber": "OW4",
+            "is_deleted": "1"
           }
         ]
       },
@@ -24,7 +27,8 @@
         "cifcontactReference": [
           {
             "externalId": "456",
-            "systemNumber": "99995"
+            "systemNumber": "99995",
+            "is_deleted": "1"
           }
         ]
       } ,
@@ -33,7 +37,8 @@
         "cifcontactReference": [
           {
             "externalId": "46",
-            "systemNumber": " OW4"
+            "systemNumber": " OW4",
+            "is_deleted": "1"
           }
         ]
       }

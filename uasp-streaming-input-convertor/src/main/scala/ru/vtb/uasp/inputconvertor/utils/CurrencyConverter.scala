@@ -8,17 +8,17 @@ import scala.collection.mutable
 object CurrencyConverter {
 
   val rowsList: List[String] = FileUtils.getRows
-  var CurrencyMap = mutable.Map[String, String]()
+  var currencyMap = mutable.Map[String, String]()
 
   rowsList.forEach(r => {
     val row = r.split(";")
-    CurrencyMap.put(row(0), row(1))
+    currencyMap.put(row(0), row(1))
 
   })
 
   def returnAlphaCode(currNumCode: String): String = {
-    if (CurrencyMap.contains(currNumCode))
-      CurrencyMap(currNumCode) else ""
+    if (currencyMap.contains(currNumCode))
+      currencyMap(currNumCode) else ""
   }
 
 }

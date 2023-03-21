@@ -1,35 +1,18 @@
 package ru.vtb.uasp.inputconvertor.dao
 
 import io.qameta.allure.Feature
-import io.qameta.allure.scalatest.AllureScalatestContext
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should
+import play.api.libs.json.{JsResult, JsSuccess}
 import ru.vtb.uasp.common.dto.UaspDto
-import ru.vtb.uasp.common.utils.config.ConfigUtils.getStringFromResourceFile
-import ru.vtb.uasp.inputconvertor.UaspDtostandardFactory
-import ru.vtb.uasp.inputconvertor.dao.CurrencyUaspDtoDaoTest.getCommonMessageAndProps
-import ru.vtb.uasp.inputconvertor.entity.{CommonMessageType, InputMessageType}
-import ru.vtb.uasp.inputconvertor.service.TransformHelper.extractJson
+import ru.vtb.uasp.inputconvertor.dao.CommonMsgAndProps.jsValueByType
 import ru.vtb.uasp.inputconvertor.utils.config.InputPropsModel
+import ru.vtb.uasp.inputconvertor.{UaspDtostandard, UaspDtostandardFactory}
 
 @Feature("CurrencyUaspDtoDaoTest")
 class CurrencyUaspDtoDaoTest extends AnyFlatSpec with should.Matchers {
 
-  "The test data" should "be equals standard currency UaspDto instance" in new AllureScalatestContext {
-
-    val (commonMessage, allProps) = getCommonMessageAndProps()
-
-
-    val uaspDto: UaspDto = allProps.uaspDtoParser.fromJValue(commonMessage.json_message, allProps.dtoMap)
-
-    val standardUaspDto = UaspDtostandardFactory("currency").getstandardUaspDto(uaspDto.uuid).copy(process_timestamp = uaspDto.process_timestamp)
-    assert(standardUaspDto == uaspDto)
-  }
-
-}
-
-object CurrencyUaspDtoDaoTest {
-  def getCommonMessageAndProps(args: Array[String] = Array[String]()): (CommonMessageType, InputPropsModel) = {
+  "The test data" should "be equals standard currency UaspDto instance" in {
 
     val allProps: InputPropsModel = new InputPropsModel(
       serviceData = null,
@@ -40,17 +23,28 @@ object CurrencyUaspDtoDaoTest {
       readSourceTopicFromBeginning = true,
       sha256salt = "",
       messageJsonPath = None,
-      jsonSplitElement = None)
+      1,
+      jsonSplitElement = Some("rates"))
 
-    val uaspDtoType = allProps.uaspdtoType
+    val commonMessage = jsValueByType(allProps.uaspdtoType)
+    val list: List[JsResult[UaspDto]] = allProps.uaspDtoParser.fromJValue(commonMessage, allProps.dtoMap)
 
-    val jsonMessageStr = getStringFromResourceFile(uaspDtoType + "-test.json")
+    val dtoes: List[UaspDto] = list.collect { case d: JsSuccess[UaspDto] => d.value }
 
-    val inMessage = InputMessageType(message_key = "78a3b0e4-4221-3020-8bad-080de84de4c6", message = jsonMessageStr.getBytes)
+    assert(list.size == dtoes.size)
 
-    val msgCollector = new MsgCollector
-    extractJson(inMessage, allProps, msgCollector)
-    (msgCollector.getAll().get(0).right.get, allProps)
+    dtoes.foreach(d => assert(d.id == dtoes.head.id))
+
+    val dtostandard: UaspDtostandard = UaspDtostandardFactory("currency")
+
+    val dtoes1 = dtoes.filter(q => q.dataString.get("rates_currency_alphaCode").contains("AUD")).head
+
+
+    val expected: UaspDto = dtostandard.getstandardUaspDto(dtoes1.uuid).copy(process_timestamp = dtoes1.process_timestamp)
+    assert(expected == dtoes1)
+
   }
+
 }
+
 

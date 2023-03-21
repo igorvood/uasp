@@ -150,6 +150,7 @@ private class FirstSalaryUaspDtostandard extends UaspDtostandard {
       Map("account_name_cft" -> "Вклад в будущее Прайм") ++
       Map("account_dep_cft" -> "primebodbo") ++
       Map("data_status" -> "Processed") ++
+      Map("data_operationName" -> "Перечисление средств на счет") ++
       Map("transactionId" -> "TS.0000000001240066") ++
       Map("fee_amount_currency" -> "") ++
       Map("transaction_amount_currency" -> "USD") ++

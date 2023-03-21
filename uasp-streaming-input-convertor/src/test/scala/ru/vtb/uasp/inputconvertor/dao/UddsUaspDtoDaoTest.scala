@@ -1,34 +1,16 @@
 package ru.vtb.uasp.inputconvertor.dao
 
-import io.qameta.allure.scalatest.AllureScalatestContext
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should
 import ru.vtb.uasp.common.dto.UaspDto
-import ru.vtb.uasp.common.utils.config.ConfigUtils.getStringFromResourceFile
 import ru.vtb.uasp.inputconvertor.UaspDtostandardFactory
-import ru.vtb.uasp.inputconvertor.dao.UddsUaspDtoDaoTest.getCommonMessageAndProps
-import ru.vtb.uasp.inputconvertor.entity.{CommonMessageType, InputMessageType}
-import ru.vtb.uasp.inputconvertor.service.TransformHelper.extractJson
+import ru.vtb.uasp.inputconvertor.dao.CommonMsgAndProps.jsValueByType
 import ru.vtb.uasp.inputconvertor.utils.config.InputPropsModel
 
 class UddsUaspDtoDaoTest extends AnyFlatSpec with should.Matchers {
 
-  "The result UaspDto" should "be valid" in new AllureScalatestContext {
-
-    val (commonMessage, inputPropsModel) = getCommonMessageAndProps()
-
-    val uaspDto: UaspDto = inputPropsModel.uaspDtoParser.fromJValue(commonMessage.json_message, inputPropsModel.dtoMap)
-
-    val standardUaspDto: UaspDto = UaspDtostandardFactory("udds").getstandardUaspDto(uaspDto.uuid).copy(process_timestamp = uaspDto.process_timestamp)
-
-    assert(standardUaspDto == uaspDto)
-  }
-}
-
-object UddsUaspDtoDaoTest {
-  def getCommonMessageAndProps(args: Array[String] = Array[String]()): (CommonMessageType, InputPropsModel) = {
-
-    val allProps: InputPropsModel = new InputPropsModel(
+  "The result UaspDto" should "be valid" in {
+    val inputPropsModel: InputPropsModel = new InputPropsModel(
       serviceData = null,
       uaspdtoType = "udds",
       consumerProp = null,
@@ -36,20 +18,15 @@ object UddsUaspDtoDaoTest {
       dlqSink = null,
       readSourceTopicFromBeginning = true,
       sha256salt = "",
-      messageJsonPath = None,
+      messageJsonPath = None, 1,
       jsonSplitElement = None)
-    val uaspDtoType = allProps.uaspdtoType
 
+    val commonMessage = jsValueByType(inputPropsModel.uaspdtoType)
 
-    val jsonMessageStr = getStringFromResourceFile(uaspDtoType + "-test.json")
+    val uaspDto: UaspDto = inputPropsModel.uaspDtoParser.fromJValue(commonMessage, inputPropsModel.dtoMap).head.get
 
-    val inMessage = InputMessageType(message_key = "123", message = jsonMessageStr.getBytes)
+    val standardUaspDto: UaspDto = UaspDtostandardFactory("udds").getstandardUaspDto(uaspDto.uuid).copy(process_timestamp = uaspDto.process_timestamp)
 
-    val msgCollector = new MsgCollector
-    extractJson(inMessage, allProps, msgCollector)
-    (msgCollector.getAll().get(0).right.get, allProps)
+    assert(standardUaspDto == uaspDto)
   }
 }
-
-
-

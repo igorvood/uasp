@@ -1,0 +1,102 @@
+{
+  "chain": {
+    "id": "493900",
+    "ref": {
+      "authCode": "3687",
+      "rrn": "4hvECqylkFgW"
+    },
+    "serviceType": "I5",
+    "serviceDateTime": "2021-07-18T18:12:24"
+  },
+  "actionType": "Authorization",
+  "card": {
+    "id": "1084687030",
+    "externalId": "40914810200009000369",
+    "maskedPan": "529938******8812",
+    "cardType": {
+      "paymentScheme": "Mastercard",
+      "memberId": "007703",
+      "bin": "529938",
+      "country": "RUS",
+      "region": "Europe",
+      "serviceCode": "101",
+      "isChip": false,
+      "isLocal": false,
+      "psProduct": "MCS",
+      "psCardBrand": "MCC",
+      "psFundingSource": "Credit"
+    },
+    "plastic": {
+      "expire": "2607",
+      "seqvN": "1"
+    },
+    "client": {
+      "id": "34",
+      "externalId": "ClientNum 681030",
+      "clientCategory": "Private"
+    }
+  },
+  "account": {
+    "id": "1084687020",
+    "iban": "40914810200009000369",
+    "accountNumber": "40914810200009000369",
+    "contractNumber": "9800-P-311661",
+    "client": {
+      "id": "2157291480",
+      "externalId": "ClientNum 681030",
+      "clientCategory": "Private"
+    }
+  },
+  "requestedAmount": {
+    "paymentDirection": "Debit",
+    "transaction": {
+      "amount": "6651.78",
+      "currency": "RUR"
+    },
+    "billing": {
+      "amount": "6651.78",
+      "currency": "RUR"
+    }
+  },
+  "routing": {
+    "direction": "Incoming",
+    "routingType": "OnUs"
+  },
+  "pointOfService": {
+    "terminalId": "11111111",
+    "mcc": "ABCDEFGHIJKLMNOPQRSTUVWXYZABC",
+    "terminalType": "IMPRINTER",
+    "institution": {
+      "bank": "9800",
+      "branch": "9800",
+      "country": "RUS"
+    }
+  },
+  "processing": {
+    "billingDate": "2021-07-01",
+    "availableAmount": {
+      "amount": "19000.00",
+      "currency": "RUR"
+    },
+    "baseAmount": {
+      "amount": "-2300.00",
+      "currency": "RUR"
+    },
+    "resolution": "Accepted",
+    "resultCode": "0",
+    "chainStage": "Authorized",
+    "processedAt": "2021-07-18T18:12:24Z",
+    "effectiveDate": "2021-07-18",
+    "fxRateId": "371860000001"
+  },
+  "taggedData": {
+    "PINR": "0",
+    "TGTCC": "RUS",
+    "PRODUCT_ID": "MCS",
+    "APRPD_IND": "N",
+    "CARD_AFS": "C",
+    "CARD_PTI": "1",
+    "SRCCC": "RUS",
+    "T_USG": "AKR"
+  }
+}

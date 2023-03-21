@@ -1,43 +1,36 @@
 package ru.vtb.uasp.inputconvertor.dao
 
 import com.eatthepath.uuid.FastUUID
-import org.json4s._
+import play.api.libs.json.{JsResult, JsValue}
 import ru.vtb.uasp.common.dto.UaspDto
-import ru.vtb.uasp.inputconvertor.dao.CommonDao.getMap
+import ru.vtb.uasp.inputconvertor.dao.CommonDao.getMapEntry
 
 import java.time.{LocalDateTime, ZoneId}
 import java.util.UUID
 
 object CustomerIdProfileFullUaspDtoDao {
-  def fromJValue(inMessage: JValue, dtoMap: Map[String, Array[String]]): UaspDto = {
-    implicit val formats: Formats = DefaultFormats.disallowNull
+  def fromJValue(inMessage: JsValue, dtoMap: Map[String, Array[String]]): List[JsResult[UaspDto]] = {
 
-    lazy val contractId: String = (inMessage \ "contract_id").extract[String]
-    lazy val customerId: String = (inMessage \ "customer_id").extract[String]
-    lazy val contractNum: String = (inMessage \ "contract_num").extract[String]
-
-    val dataInt = Map[String, Int]()
-    val dataLong = Map[String, Long]()
-    val dataFloat = Map[String, Float]()
-    val dataDouble = Map[String, Double]()
-    val dataDecimal = Map[String, BigDecimal]()
-    val dataString = Map[String, String]() ++
-      getMap[String](dtoMap("app.uaspdto.fields.contract_id")(0), contractId) ++
-      getMap[String](dtoMap("app.uaspdto.fields.customer_id")(0), customerId) ++
-      getMap[String](dtoMap("app.uaspdto.fields.contract_num")(0), contractNum)
-    val dataBoolean = Map[String, Boolean]()
-
-    UaspDto(
+    val value = for {
+      contractId <- (inMessage \ "contract_id").validate[String]
+      customerId <- (inMessage \ "customer_id").validate[String]
+      contractNum <- (inMessage \ "contract_num").validateOpt[String]
+    } yield UaspDto(
       id = contractId,
       uuid = FastUUID.toString(UUID.randomUUID),
       process_timestamp = LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant.toEpochMilli,
-      dataInt = dataInt,
-      dataLong = dataLong,
-      dataFloat = dataFloat,
-      dataDouble = dataDouble,
-      dataDecimal = dataDecimal,
-      dataString = dataString,
-      dataBoolean = dataBoolean
+      dataInt = Map.empty,
+      dataLong = Map.empty,
+      dataFloat = Map.empty,
+      dataDouble = Map.empty,
+      dataDecimal = Map.empty,
+      dataString = Map(getMapEntry[String](dtoMap("app.uaspdto.fields.contract_id")(0), contractId),
+        getMapEntry[String](dtoMap("app.uaspdto.fields.customer_id")(0), customerId),
+        getMapEntry[String](dtoMap("app.uaspdto.fields.contract_num")(0), contractNum.orNull)
+      ),
+      dataBoolean = Map.empty
     )
+    List(value)
+
   }
 }

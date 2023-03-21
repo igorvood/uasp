@@ -1,28 +1,35 @@
 package ru.vtb.uasp.inputconvertor.dao
 
 import io.qameta.allure.Feature
-import io.qameta.allure.scalatest.AllureScalatestContext
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should
 import ru.vtb.uasp.common.dto.UaspDto
-import ru.vtb.uasp.common.utils.config.ConfigUtils.getStringFromResourceFile
 import ru.vtb.uasp.inputconvertor.UaspDtostandardFactory
-import ru.vtb.uasp.inputconvertor.dao.WithdrawWay4UaspDtoDaoTest.getCommonMessageAndProps
-import ru.vtb.uasp.inputconvertor.entity.{CommonMessageType, InputMessageType}
-import ru.vtb.uasp.inputconvertor.service.TransformHelper.extractJson
+import ru.vtb.uasp.inputconvertor.dao.CommonMsgAndProps.jsValueByType
 import ru.vtb.uasp.inputconvertor.utils.config.InputPropsModel
 
 @Feature("WithdrawWay4UaspDtoDaoTest")
 class WithdrawWay4UaspDtoDaoTest extends AnyFlatSpec with should.Matchers {
 
-  "The result UaspDto" should "be contains fields tagged_data_source_pay" in new AllureScalatestContext {
+  "The result UaspDto" should "be contains fields tagged_data_source_pay" in {
 
-    val (commonMessage, allProp) = getCommonMessageAndProps()
+    val allProp: InputPropsModel = new InputPropsModel(
+      serviceData = null,
+      uaspdtoType = "way4-withdraw",
+      consumerProp = null,
+      outputSink = null,
+      dlqSink = null,
+      readSourceTopicFromBeginning = true,
+      sha256salt = null,
+      messageJsonPath = None, 1,
+      jsonSplitElement = None)
 
-    val uaspDto: UaspDto = allProp.uaspDtoParser.fromJValue(commonMessage.json_message, allProp.dtoMap)
+    val commonMessage = jsValueByType(allProp.uaspdtoType)
+
+    val uaspDto: UaspDto = allProp.uaspDtoParser.fromJValue(commonMessage, allProp.dtoMap).head.get
     val standardUaspDto: UaspDto = UaspDtostandardFactory("way4").getstandardUaspDto(uaspDto.uuid)
 
-    private val dto: UaspDto = uaspDto.copy(
+    val dto: UaspDto = uaspDto.copy(
 
       dataString = uaspDto.dataString - ("card_ps_funding_source", "card_masked_pan", "transaction_currency"))
 
@@ -36,31 +43,8 @@ class WithdrawWay4UaspDtoDaoTest extends AnyFlatSpec with should.Matchers {
         "mcc" -> "6051", "audit_srn" -> "M1724298H6H1", "service_type" -> "J6",
         "audit_auth_code" -> "500005", "local_id" -> "1493661370", "terminal_type" -> "ECOMMERCE",
         "tagged_data_KBO" -> "643", "tagged_data_source_pay" -> "UNKNOWN", "merchant_name_w4" -> "Visa Unique",
-        "processing_date_string" -> "2022-06-21T13:21:43Z", "terminal_id" -> "10000015"), process_timestamp = dto.process_timestamp)
+        //        "processing_date_string" -> "2022-06-21T13:21:43Z",
+        "terminal_id" -> "10000015"), process_timestamp = dto.process_timestamp)
     assert(expecteduaspDto == dto)
   }
 }
-
-object WithdrawWay4UaspDtoDaoTest {
-  def getCommonMessageAndProps(args: Array[String] = Array[String]()): (CommonMessageType, InputPropsModel) = {
-    val allProps: InputPropsModel = new InputPropsModel(
-      serviceData = null,
-      uaspdtoType = "way4-withdraw",
-      consumerProp = null,
-      outputSink = null,
-      dlqSink = null,
-      readSourceTopicFromBeginning = true,
-      sha256salt = null,
-      messageJsonPath = None,
-      jsonSplitElement = None)
-    val uaspDtoType = allProps.uaspdtoType
-
-    val jsonMessageStr = getStringFromResourceFile(uaspDtoType + "-test.json")
-
-    val inMessage = InputMessageType(message_key = "123", message = jsonMessageStr.getBytes)
-    val msgCollector = new MsgCollector
-    extractJson(inMessage, allProps, msgCollector)
-    (msgCollector.getAll().get(0).right.get, allProps)
-  }
-}
-
