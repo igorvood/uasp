@@ -48,31 +48,4 @@ object OutDtoWithErrors {
 
   implicit val readsJsValueWithErr: Reads[OutDtoWithErrors[JsValue]]  = outDtoWithErrorsJsonReads(readsJsValue)
 
-
-
-
-  //  implicit def eitherWrites[L, R](implicit fmtL: OWrites[R], fmtL: OWrites[R] ): OWrites[Either[L, R]]={
-  //
-  //    new Writes[Either[L, R]]{
-  //
-  //    }
-  //
-  //    ???
-  //  }
-  //
-  //  val reads: Reads[Either] =
-  //    (__ \ "dateTime").read[Long].map(millis => When(Left(new DateTime(millis)))) |
-  //      (__ \ "duration").read[Long].map(millis => When(Right(new Duration(millis))))
-  //
-  //  val writes: Writes[When] = new Writes[When] {
-  //    override def writes(o: When): JsValue = Json.obj(
-  //      o.when.fold(
-  //        duration => "duration" -> duration.getMillis,
-  //        dateTime => "dateTime" -> dateTime.getMillis
-  //      )
-  //    )
-  //  }
-  //
-  //  implicit val format = Format(reads, writes)
-
 }

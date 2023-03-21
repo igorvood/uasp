@@ -38,8 +38,6 @@ object ConstCreateEnv {
     StandDTO("future", "dev_", "dev_future_", "DSO", "DSO"),
   )
 
-  //  val serviceName = "generated-mdm-enrichment"
-
   def generatorPropList(implicit prfList: List[Profile], clazz: Class[_]): immutable.Seq[GeneratorProp] = List(CreationEnvProp(prefix = "\"--", postFix = " \"", propertyDelimer = "`\n`", keyValueDelimer = " ", headConst(clazz), "env"))
     .flatMap(crProp => standsList.map(stand => stand -> crProp))
     .flatMap(tr => prfList.map(prf => GeneratorProp(tr._2, tr._1, prf)))

@@ -25,6 +25,8 @@ abstract class AbstractMaskedTest extends AnyFlatSpec {
     })
     val errors = value
       .collect { case l: Left[String, (String, String)] => l.value }
+      .toList
+      .sorted
       .mkString("\n")
     assertResult("")(errors)
   }

@@ -40,7 +40,7 @@ object JsMaskedPath extends PropertyCombiner[JsMaskedPath] {
     val errorsOrProperties: Either[ReadConfigErrors, immutable.Iterable[MaskedStrPathWithFunName]] = asMap(prf).map(mapProp => mapProp.map(prop => MaskedStrPathWithFunName(prop._1, prop._2)))
     errorsOrProperties match {
       case Left(readConfigErrors) => Left(readConfigErrors)
-      case Right(maskedStrPathWithFunNames) => maskedStrPathWithFunNames.toJsonPath() match {
+      case Right(maskedStrPathWithFunNames) => maskedStrPathWithFunNames.toJsonPath match {
         case Left(jsMaskedPathErrors) => Left(ReadConfigErrors(jsMaskedPathErrors.map(a => a.error)))
         case Right(jsMaskedPath) => Right(jsMaskedPath)
       }

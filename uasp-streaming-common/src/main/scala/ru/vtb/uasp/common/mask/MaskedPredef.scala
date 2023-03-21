@@ -14,7 +14,7 @@ object MaskedPredef {
      *
      * @return
      */
-    def toJsonPath(): Either[List[JsMaskedPathError], JsMaskedPath] = {
+    def toJsonPath: Either[List[JsMaskedPathError], JsMaskedPath] = {
 
       listToJsonPath(self, Right(JsMaskedPathObject(Map())))
     }
@@ -55,6 +55,7 @@ object MaskedPredef {
         JsObject(newVals)
       }
       case (JsString(value), JsStringMaskedPathValue(masked)) => masked.mask(value)
+      case (JsNumber(value), JsStringMaskedPathValue(masked)) => masked.mask(value.toString())
       case (JsNumber(value), JsNumberMaskedPathValue(masked)) => masked.mask(value)
       case (JsBoolean(value), JsBooleanMaskedPathValue(masked)) => masked.mask(value)
       case (JsNull, _) => JsNull

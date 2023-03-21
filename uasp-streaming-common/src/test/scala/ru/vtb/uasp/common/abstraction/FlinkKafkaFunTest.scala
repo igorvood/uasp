@@ -3,17 +3,18 @@ package ru.vtb.uasp.common.abstraction
 import org.apache.flink.api.scala.createTypeInformation
 import org.apache.flink.streaming.api.scala.DataStream
 import org.scalatest.flatspec.AnyFlatSpec
-import play.api.libs.json.{JsValue, Json}
 import play.api.libs.json.OFormat.oFormatFromReadsAndOWrites
+import play.api.libs.json.{JsValue, Json}
 import ru.vtb.uasp.common.abstraction.FlinkKafkaFunTest._
 import ru.vtb.uasp.common.abstraction.FlinkStreamProducerPredef.StreamFactory
-import ru.vtb.uasp.common.abstraction.MiniPipeLineTrait.valuesTestDataDto
+import ru.vtb.uasp.common.test.MiniPipeLineTrait.valuesTestDataDto
 import ru.vtb.uasp.common.kafka.FlinkSinkProperties
 import ru.vtb.uasp.common.mask.MaskedPredef.PathFactory
 import ru.vtb.uasp.common.mask.MaskedStrPathWithFunName
-import ru.vtb.uasp.common.service.{JsonConvertInService, JsonConvertOutService}
+import ru.vtb.uasp.common.service.JsonConvertInService
 import ru.vtb.uasp.common.service.JsonConvertOutService.serializeToBytes
 import ru.vtb.uasp.common.service.dto.{KafkaDto, OutDtoWithErrors, ServiceDataDto}
+import ru.vtb.uasp.common.test.MiniPipeLineTrait
 import ru.vtb.uasp.common.utils.config.kafka.KafkaPrdProperty
 
 import java.util.Properties
@@ -65,7 +66,6 @@ class FlinkKafkaFunTest extends AnyFlatSpec with MiniPipeLineTrait with Serializ
   }
 
 
-
   "processWithMaskedDqlF jsValue Ошибка, но маскирование не настроено" should " OK" in {
 
     val values = listTestDataDto
@@ -76,12 +76,13 @@ class FlinkKafkaFunTest extends AnyFlatSpec with MiniPipeLineTrait with Serializ
       val value1 = ds.processWithMaskedDqlF(
         serviceDataDto,
         dlqProcessFunctionErrorJs,
-        Some(flinkSinkPropertiesDlq -> {(q,w) => {
-          implicit  val value2 = OutDtoWithErrors.writesJsValue
+        Some(flinkSinkPropertiesDlq -> { (q, w) => {
+          implicit val value2 = OutDtoWithErrors.writesJsValue
           implicit val value = OutDtoWithErrors.outDtoWithErrorsJsonWrites[JsValue](value2)
 
           serializeToBytes[OutDtoWithErrors[JsValue]](q, w)(value)
-        }}),
+        }
+        }),
         producerFactory[KafkaDto]
       )
     }
@@ -103,20 +104,20 @@ class FlinkKafkaFunTest extends AnyFlatSpec with MiniPipeLineTrait with Serializ
 
 
     //    val flinkPipe: DataStream[TestDataDto] => Unit = { ds =>
-//      implicit val value2 = OutDtoWithErrors.outDtoWithErrorsJsonWrites[JsValue](OutDtoWithErrors.writesJsValue)
-//
-//      val value = ds.map(q =>
-//        Json.toJsObject(q).asInstanceOf[JsValue]
-//      )
-//      val value1 = value.processWithMaskedDqlF(
-//        serviceDataDto,
-//        dlqProcessFunctionErrorJs,
-//        Some(flinkSinkPropertiesDlq -> JsonConvertOutService.serializeToBytes[OutDtoWithErrors[JsValue]]),
-//        producerFactory[KafkaDto]
-//      )
-//    }
-//
-//    processWithMaskedDqlErrNoMasked(flinkPipe)
+    //      implicit val value2 = OutDtoWithErrors.outDtoWithErrorsJsonWrites[JsValue](OutDtoWithErrors.writesJsValue)
+    //
+    //      val value = ds.map(q =>
+    //        Json.toJsObject(q).asInstanceOf[JsValue]
+    //      )
+    //      val value1 = value.processWithMaskedDqlF(
+    //        serviceDataDto,
+    //        dlqProcessFunctionErrorJs,
+    //        Some(flinkSinkPropertiesDlq -> JsonConvertOutService.serializeToBytes[OutDtoWithErrors[JsValue]]),
+    //        producerFactory[KafkaDto]
+    //      )
+    //    }
+    //
+    //    processWithMaskedDqlErrNoMasked(flinkPipe)
   }
 
   "processWithMaskedDql1 Ошибка, но маскирование не настроено" should " OK" in {
@@ -389,10 +390,10 @@ object FlinkKafkaFunTest {
   protected val flinkSinkPropertiesDlq = producerProps("dlq_topicName")
 
 
-  protected val jsMaskedPathDLQOk = Some(List(MaskedStrPathWithFunName("data.srt", "ru.vtb.uasp.common.mask.fun.StringMaskAll")).toJsonPath().right.get)
-  protected val jsMaskedPathDLQErr = Some(List(MaskedStrPathWithFunName("data.srt", "ru.vtb.uasp.common.mask.fun.NumberMaskAll")).toJsonPath().right.get)
-  protected val jsMaskedPathErrMainERR = Some(List(MaskedStrPathWithFunName("srt", "ru.vtb.uasp.common.mask.fun.NumberMaskAll")).toJsonPath().right.get)
-  protected val jsMaskedPathErrMainOk = Some(List(MaskedStrPathWithFunName("srt", "ru.vtb.uasp.common.mask.fun.StringMaskAll")).toJsonPath().right.get)
+  protected val jsMaskedPathDLQOk = Some(List(MaskedStrPathWithFunName("data.srt", "ru.vtb.uasp.common.mask.fun.StringMaskAll")).toJsonPath.right.get)
+  protected val jsMaskedPathDLQErr = Some(List(MaskedStrPathWithFunName("data.srt", "ru.vtb.uasp.common.mask.fun.NumberMaskAll")).toJsonPath.right.get)
+  protected val jsMaskedPathErrMainERR = Some(List(MaskedStrPathWithFunName("srt", "ru.vtb.uasp.common.mask.fun.NumberMaskAll")).toJsonPath.right.get)
+  protected val jsMaskedPathErrMainOk = Some(List(MaskedStrPathWithFunName("srt", "ru.vtb.uasp.common.mask.fun.StringMaskAll")).toJsonPath.right.get)
 
   protected implicit val serviceDataDto = ServiceDataDto("1", "2", "3")
 

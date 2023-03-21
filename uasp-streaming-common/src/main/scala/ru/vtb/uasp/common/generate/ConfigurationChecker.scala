@@ -80,7 +80,7 @@ object ConfigurationChecker {
         val placeHolder = placeholders.keySet.filter(p => key.contains(p)).toList
         val newValue = placeHolder match {
           case Nil => ReplaceDto(pr._2)
-          case x :: Nil => ReplaceDto(pr._2, Some(placeholders(x))) //placeholders(x).replaceValue
+          case x :: Nil => ReplaceDto(pr._2, Some(placeholders(x)))
           case x :: xs => throw new IllegalStateException(s"for key $key found several placeholders ${x :: xs}")
         }
         val splittenKey = key.split('.')

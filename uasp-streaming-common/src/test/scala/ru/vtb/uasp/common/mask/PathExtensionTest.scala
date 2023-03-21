@@ -23,7 +23,7 @@ class PathExtensionTest extends AnyFlatSpec with should.Matchers {
 
     val paths = Map("f1.o1.d1" -> "ru.vtb.uasp.common.mask.fun.StringMaskAll")
       .map(q => MaskedStrPathWithFunName(q._1, q._2))
-      .toJsonPath()
+      .toJsonPath
 
     assertResult(expected)(paths.right.get)
 
@@ -45,7 +45,7 @@ class PathExtensionTest extends AnyFlatSpec with should.Matchers {
       "f1.o1.d1" -> "ru.vtb.uasp.common.mask.fun.StringMaskAll",
       "f2.o1.d1" -> "ru.vtb.uasp.common.mask.fun.NumberMaskAll")
       .map(q => MaskedStrPathWithFunName(q._1, q._2))
-      .toJsonPath()
+      .toJsonPath
 
     assertResult(expected)(paths.right.get)
 
@@ -61,7 +61,7 @@ class PathExtensionTest extends AnyFlatSpec with should.Matchers {
       //      "f2.o2.d3",
     )
       .map(q => MaskedStrPathWithFunName(q._1, q._2))
-      .toJsonPath()
+      .toJsonPath
 
     val expected = JsMaskedPathObject(
       Map("f1" -> JsMaskedPathObject(
@@ -83,7 +83,7 @@ class PathExtensionTest extends AnyFlatSpec with should.Matchers {
       .map(q => MaskedStrPathWithFunName(q._1, q._2))
 
     Try(paths1
-      .toJsonPath()) match {
+      .toJsonPath) match {
       case Success(_) => throw new RuntimeException("must fail")
       case Failure(exception) => assertResult("Wrong structure 'd1.q1' it is object, but 'd1' all ready registered like value")(exception.getMessage)
     }
@@ -98,7 +98,7 @@ class PathExtensionTest extends AnyFlatSpec with should.Matchers {
       .map(q => MaskedStrPathWithFunName(q._1, q._2))
 
     Try(paths1
-      .toJsonPath()) match {
+      .toJsonPath) match {
       case Success(_) => throw new RuntimeException("must fail")
       case Failure(exception) => assertResult("Wrong structure 'd1' it is value, but 'Set(d1)' all ready registered like object")(exception.getMessage)
     }

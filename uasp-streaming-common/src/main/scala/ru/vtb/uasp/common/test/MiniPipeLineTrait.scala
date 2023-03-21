@@ -1,10 +1,10 @@
-package ru.vtb.uasp.common.abstraction
+package ru.vtb.uasp.common.test
 
 import org.apache.flink.api.common.typeinfo.TypeInformation
 import org.apache.flink.streaming.api.functions.sink.SinkFunction
 import org.apache.flink.streaming.api.scala.{DataStream, StreamExecutionEnvironment}
-import ru.vtb.uasp.common.abstraction.MiniPipeLineTrait.valuesTestDataDto
 import ru.vtb.uasp.common.kafka.FlinkSinkProperties
+import ru.vtb.uasp.common.test.MiniPipeLineTrait.valuesTestDataDto
 
 import java.util
 import java.util.Collections
@@ -14,17 +14,22 @@ trait MiniPipeLineTrait extends Serializable {
 
   protected def producerFactory[OUT]: FlinkSinkProperties => SinkFunction[OUT] = { fp => CollectByteSink[OUT](fp) }
 
-  private def prodPrint: FlinkSinkProperties => SinkFunction[TestDataDto] = { fp => CollectByteSink(fp) }
+  def topicDataArray[OUT](fp: FlinkSinkProperties): List[OUT] = {
+    val scalaMap = valuesTestDataDto.entrySet()
+      .asScala
+      .map(m => m.getKey -> m.getValue)
+      .toMap
 
-  def topicDataArray[OUT](fp: FlinkSinkProperties) = valuesTestDataDto.entrySet()
-    .asScala
-    .filter { a => a.getKey == fp.toTopicName }
-    .map { d => {
-      val value = d.getValue.asScala.map(e => e.asInstanceOf[OUT])
-      value
-    }.head
+    val maybeList = scalaMap
+      .get(fp.toTopicName)
+      .map { d => {
+        val value = d.asScala.map(e => e.asInstanceOf[OUT])
+        value.toList
+      }
+      }.getOrElse(List.empty)
+    maybeList
 
-    }.toList
+  }
 
   def pipeRun[IN: TypeInformation](inData: List[IN],
                                    flinkPipe: DataStream[IN] => Unit

@@ -43,7 +43,7 @@ class PerfomanceMaskedTest extends AnyFlatSpec with should.Matchers {
       "dataString.address" -> "ru.vtb.uasp.common.mask.fun.AddressMaskService"
     )
       .map(q => MaskedStrPathWithFunName(q._1, q._2))
-      .toJsonPath()
+      .toJsonPath
       .right.get
 
 

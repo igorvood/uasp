@@ -37,8 +37,7 @@ object JsonConvertOutService extends Serializable {
 
   implicit class IdentityPredef[T <: Identity](val self: T) extends AnyVal {
 
-    // TODO этот метод должен быть виден только в этой либе
-    def serializeToBytes(implicit oWrites: OWrites[T]): KafkaDto = JsonConvertOutService.serializeToBytesIdentity(self, None).right.get
+    private [common] def serializeToBytes(implicit oWrites: OWrites[T]): KafkaDto = JsonConvertOutService.serializeToBytesIdentity(self, None).right.get
 
     def serializeToBytes(maskedRule: Option[JsMaskedPath])(implicit oWrites: OWrites[T]): Either[List[JsMaskedPathError], KafkaDto] = JsonConvertOutService.serializeToBytesIdentity(self, maskedRule)
 
@@ -48,8 +47,6 @@ object JsonConvertOutService extends Serializable {
 
   implicit class JsonPredef[T](val self: T) extends AnyVal {
 
-    // TODO этот метод должен быть виден только в этой либе
-    @deprecated("Не используй этот метод его нужно сделать не доступным для использования ")
     private[common] def serializeToBytes(implicit oWrites: OWrites[T]): KafkaDto = {
       serializeToBytes(None).right.get
     }
