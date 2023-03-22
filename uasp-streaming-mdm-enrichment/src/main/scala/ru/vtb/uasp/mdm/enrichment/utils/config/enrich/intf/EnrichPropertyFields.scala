@@ -92,15 +92,17 @@ trait EnrichPropertyFields {
             }
             stringOrStringToString
           }
-
-
           )
-
     }
-
   }
 
   def validateFieldsAndExtractData(uaspDto: UaspDto): Either[String, KeyedCAData] = {
+
+
+    val isDeleted = (for {
+      delField <- isDeletedFieldPath.headOption
+      isDeleted <- uaspDto.dataBoolean.get(delField)
+    } yield isDeleted).getOrElse(false)
 
     val keyValueData: List[Either[String, Option[(String, String)]]] = fields.map { f =>
       val valueForState = uaspDto.getValueFromMap(f)
@@ -134,7 +136,7 @@ trait EnrichPropertyFields {
       }
 
       for {k <- key
-           } yield KeyedCAData(k, None, newStateVal, false)
+           } yield KeyedCAData(k, None, newStateVal, isDeleted)
 
     } else {
       val errs = keyValueData.
