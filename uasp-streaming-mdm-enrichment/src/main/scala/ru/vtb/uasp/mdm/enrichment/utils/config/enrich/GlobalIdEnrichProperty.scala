@@ -36,10 +36,10 @@ case class GlobalIdEnrichProperty(
     } yield noId.copy(newId = Some(id))
   }
 
-  override def validateFieldsAndExtractData(value: JsValue): Either[String, KeyedCAData] = {
+  override def validateFieldsAndExtractData(jsValue: JsValue): Either[String, KeyedCAData] = {
     for {
-      noId <- super.validateFieldsAndExtractData(value)
-      id <- globalFields.validateFieldsAndExtractData(value).map(m => m.data.toList.head._2)
+      noId <- super.validateFieldsAndExtractData(jsValue)
+      id <- globalFields.validateFieldsAndExtractData(jsValue).map(m => m.data.toList.head._2)
     } yield noId.copy(newId = Some(id))
 
 
