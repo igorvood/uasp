@@ -22,6 +22,7 @@ case class GlobalIdEnrichProperty(
 
   require((inputDataFormat == FlatJsonFormat && keySelectorEnrich.isId == false) || inputDataFormat == UaspDtoFormat, s"for inputDataFormat = $inputDataFormat keySelectorEnrich.isId must be only false")
 
+  override val isDeletedFieldPath: List[String] = List()
   lazy val globalFields: EnrichPropertyFields = EnrichPropertyFieldsTemp(keySelectorMain, keySelectorEnrich, List(globalEnrichFields))
 
 
@@ -49,6 +50,7 @@ case class GlobalIdEnrichProperty(
                                                keySelectorEnrich: KeySelectorProp,
                                                fields: List[EnrichFields]
                                              ) extends EnrichPropertyFields {
+    override val isDeletedFieldPath: List[String] = List()
     //    override val flatProperty: NodeJsonMeta = NodeJsonMeta(fields.map(f => f.fromFieldName -> f.fromFieldType.toUpperCase()).toMap)
   }
 }

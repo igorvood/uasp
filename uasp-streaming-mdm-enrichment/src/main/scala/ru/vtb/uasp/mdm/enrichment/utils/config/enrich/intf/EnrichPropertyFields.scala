@@ -1,6 +1,6 @@
 package ru.vtb.uasp.mdm.enrichment.utils.config.enrich.intf
 
-import play.api.libs.json.JsValue
+import play.api.libs.json.{JsBoolean, JsNull, JsObject, JsValue}
 import ru.vtb.uasp.common.dto.UaspDto
 import ru.vtb.uasp.mdm.enrichment.dao.UaspDtoPredef.PreDef
 import ru.vtb.uasp.mdm.enrichment.service.dto.{KeyedCAData, KeyedUasp}
@@ -14,6 +14,8 @@ trait EnrichPropertyFields {
   val keySelectorEnrich: KeySelectorProp
 
   val fields: List[EnrichFields]
+
+  val isDeletedFieldPath: List[String]
 
   lazy val flatProperty: NodeJsonMeta = NodeJsonMeta(fields.map(f => f.fromFieldName -> f.fromFieldType.toUpperCase()).toMap)
 
@@ -76,7 +78,7 @@ trait EnrichPropertyFields {
             meta <- keySelectorEnrichJsonMeta
             m <- meta.extract(value).toOption
             key <- m.get(field)
-          } yield KeyedCAData(key, None, newStateVal)
+          } yield KeyedCAData(key, None, newStateVal, false)
           keyedValue
             .map(d => Right(d))
             .getOrElse(Left(s"Unable to find key value ${keySelectorEnrich.mapKey}"))
@@ -126,7 +128,7 @@ trait EnrichPropertyFields {
       }
 
       for {k <- key
-           } yield KeyedCAData(k, None, newStateVal)
+           } yield KeyedCAData(k, None, newStateVal, false)
 
     } else {
       val errs = keyValueData.
@@ -144,5 +146,29 @@ object EnrichPropertyFields {
 
   val undefined = "undefined"
 
+   def extractIsDeletedValue(value: JsValue, isDeletedFieldPath: List[String]): Either[String, Boolean] = {
+     isDeletedFieldPath match {
+       case Nil => Right(false)
+       case xs => extractIsDeletedValueP(value, xs)
+     }
 
+   }
+
+  protected def extractIsDeletedValueP(value: JsValue, isDeletedFieldPath: List[String]): Either[String, Boolean] = {
+    isDeletedFieldPath match {
+      case Nil =>
+        value match {
+          case JsNull => Right(false)
+          case boolean: JsBoolean => Right(boolean.value)
+          case otherJsVal => Left(s"unable convert ${otherJsVal.getClass} to boolean")
+        }
+      case x :: xs =>
+        value match {
+          case JsNull => Right(false)
+          case JsObject(underlying) => underlying.get(x).map(j => extractIsDeletedValueP(j, xs)).getOrElse(Right(false))
+          case otherJsVal => Left(s"unable convert ${otherJsVal.getClass} to boolean")
+        }
+    }
+  }
 }
+

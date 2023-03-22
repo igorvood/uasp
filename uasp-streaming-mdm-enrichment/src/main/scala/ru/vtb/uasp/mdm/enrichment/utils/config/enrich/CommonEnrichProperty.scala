@@ -14,7 +14,7 @@ case class CommonEnrichProperty(
                                  fields: List[EnrichFields],
                                  inputDataFormat: InputFormatEnum
                                ) extends EnrichProperty with EnrichPropertyWithDlq with EnrichPropertyFields with FormatSwitcher {
-
+  override val isDeletedFieldPath: List[String] = List()
   require((inputDataFormat == FlatJsonFormat && keySelectorEnrich.isId == false) || inputDataFormat == UaspDtoFormat, s"for inputDataFormat = $inputDataFormat keySelectorEnrich.isId must be only false")
   //  lazy val flatProperty: NodeJsonMeta = NodeJsonMeta(fields.map(f => f.fromFieldName -> f.fromFieldType.toUpperCase() ).toMap)
 }

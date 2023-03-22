@@ -26,7 +26,7 @@ class ExtractKeyFunctionTest extends AnyFlatSpec {
     runTest(
       globalIdStreamProp = globalIdStreamProperty,
       jsValue = jsValue,
-      expected = Right(KeyedCAData("LocalId1", Some("global_id_from_Mdm"), Map(stringKey -> someStrValue)))
+      expected = Right(KeyedCAData("LocalId1", Some("global_id_from_Mdm"), Map(stringKey -> someStrValue), false))
     )
 
   }
@@ -56,7 +56,7 @@ class ExtractKeyFunctionTest extends AnyFlatSpec {
     runTest(
       globalIdStreamProp = globalIdStreamProperty,
       jsValue = Json.toJson(getMdmUaspDto.copy(dataString = getMdmUaspDto.dataString - stringKey)),
-      expected = Right(KeyedCAData("LocalId1", Some("global_id_from_Mdm"), Map()))
+      expected = Right(KeyedCAData("LocalId1", Some("global_id_from_Mdm"), Map(), false))
     )
   }
 
@@ -65,7 +65,7 @@ class ExtractKeyFunctionTest extends AnyFlatSpec {
     runTest(
       globalIdStreamProp = globalIdStreamProperty.copy(keySelectorEnrich = KeySelectorProp(false, Some("STRING"), Some(stringKey))),
       jsValue = Json.toJson(getMdmUaspDto.copy(dataString = getMdmUaspDto.dataString + (stringKey -> someStrValue))),
-      expected = Right(KeyedCAData(someStrValue, Some("global_id_from_Mdm"), Map(stringKey -> someStrValue)))
+      expected = Right(KeyedCAData(someStrValue, Some("global_id_from_Mdm"), Map(stringKey -> someStrValue), false))
     )
 
   }
@@ -135,7 +135,7 @@ class ExtractKeyFunctionTest extends AnyFlatSpec {
     runTest(
       globalIdStreamProp = globalIdEnrichPropertyFlatJsonFormat,
       jsValue = jsValue,
-      expected = Right(KeyedCAData("141", Some("12"), Map(stringKey -> someStrValue)))
+      expected = Right(KeyedCAData("141", Some("12"), Map(stringKey -> someStrValue), false))
     )
 
   }
@@ -164,7 +164,7 @@ class ExtractKeyFunctionTest extends AnyFlatSpec {
     runTest(
       globalIdStreamProp = globalIdEnrichPropertyFlatJsonFormat,
       jsValue = jsValue,
-      expected = Right(KeyedCAData("141", Some("12"), Map()))
+      expected = Right(KeyedCAData("141", Some("12"), Map(), false))
     )
   }
 
