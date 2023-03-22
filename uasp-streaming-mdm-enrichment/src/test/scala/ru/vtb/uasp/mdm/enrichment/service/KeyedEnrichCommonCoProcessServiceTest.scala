@@ -192,6 +192,11 @@ class KeyedEnrichCommonCoProcessServiceTest extends AnyFlatSpec {
 
     assertResult(Map("Boolean" -> "true", "Double" -> "5.0", "Bigdecimal" -> "1", "Long" -> "2", "Float" -> "4.0", "Int" -> "3", "String" -> "String1"))(stateWithTwoRec)
 
+    testHarness.processElement2(commonData.copy(isDeleted = true), 0)
+
+    val stateWithTwoRecNull = enrichmentMapService.getRuntimeContext.getState(enrichmentMapService.valueStateDescriptor).value()
+
+    assert(null == stateWithTwoRecNull)
   }
 
   def createTestHarness(globalIdEnrichmentMapService: KeyedCoProcessFunction[String, KeyedUasp, KeyedCAData, Either[OutDtoWithErrors[UaspDto], UaspDto]]) = {

@@ -66,6 +66,15 @@ class KeyEnrichmentGlobalIdServiceTest extends AnyFlatSpec {
 
     assertResult("global_id_from_Mdm")(actualWay4.id)
 
+    testHarness.processElement2(keyedCAData.copy(isDeleted = true), 0)
+
+    val stateValueNull = enrichmentMapService.getRuntimeContext.getState(enrichmentMapService.crossLinkMdmDataStateDescriptor).value()
+
+    val mapStateValueNull = enrichmentMapService.getRuntimeContext.getState(enrichmentMapService.mapStateDescriptor).value()
+
+    assert(null==stateValueNull)
+    assert(null==mapStateValueNull)
+
   }
 
 }

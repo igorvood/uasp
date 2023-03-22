@@ -35,7 +35,13 @@ class KeyedEnrichCommonCoProcessService(val serviceDataDto: ServiceDataDto,
   }
 
   override def processElement2(value: KeyedCAData, ctx: KeyedCoProcessFunction[String, KeyedUasp, KeyedCAData, Either[OutDtoWithErrors[UaspDto], UaspDto]]#Context, out: Collector[Either[OutDtoWithErrors[UaspDto], UaspDto]]): Unit = {
-    dataState.update(value.data)
+    if (value.isDeleted) {
+      dataState.update(null)
+    } else {
+      dataState.update(value.data)
+    }
+
+
   }
 
   override def open(config: Configuration): Unit = {

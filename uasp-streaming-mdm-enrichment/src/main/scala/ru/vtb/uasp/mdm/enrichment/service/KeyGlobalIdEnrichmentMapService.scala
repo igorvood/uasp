@@ -48,13 +48,19 @@ class KeyGlobalIdEnrichmentMapService(val serviceDataDto: ServiceDataDto,
 
   override def processElement2(value: KeyedCAData, ctx: KeyedCoProcessFunction[String, KeyedUasp, KeyedCAData, Either[OutDtoWithErrors[UaspDto], UaspDto]]#Context, out: Collector[Either[OutDtoWithErrors[UaspDto], UaspDto]]): Unit = {
 
-    value.newId
-      .map { globalId => globalIdState.update(globalId) }
-      .getOrElse {
-        throw new IllegalStateException(" не возможная ситуация, до этого провалидировали все ID")
-      }
+    if (value.isDeleted) {
+      globalIdState.update(null)
+      dataState.update(null)
+    } else {
+      value.newId
+        .map { globalId => globalIdState.update(globalId) }
+        .getOrElse {
+          throw new IllegalStateException(" не возможная ситуация, до этого провалидировали все ID")
+        }
 
-    dataState.update(value.data)
+      dataState.update(value.data)
+    }
+
   }
 
   override def open(parameters: Configuration): Unit = {

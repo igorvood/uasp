@@ -98,7 +98,6 @@ trait EnrichPropertyFields {
 
   def validateFieldsAndExtractData(uaspDto: UaspDto): Either[String, KeyedCAData] = {
 
-
     val isDeleted = (for {
       delField <- isDeletedFieldPath.headOption
       isDeleted <- uaspDto.dataBoolean.get(delField)
