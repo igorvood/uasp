@@ -42,7 +42,8 @@ object TestConst {
       ),
 
     ),
-    inputDataFormat = UaspDtoFormat
+    inputDataFormat = UaspDtoFormat,
+    List.empty
   )
   @deprecated
   lazy val mainStreamName1: String = mainStreamProperty.getClass.getSimpleName
@@ -68,9 +69,8 @@ object TestConst {
     )
 
     ),
-    inputDataFormat = UaspDtoFormat
-
-
+    inputDataFormat = UaspDtoFormat,
+    List.empty
   )
 
   def calcTopicName(prf: String) = s"$prf Topic"

@@ -1,7 +1,7 @@
 package ru.vtb.uasp.mdm.enrichment.utils.config.enrich
 
 import ru.vtb.uasp.common.kafka.{FlinkConsumerProperties, FlinkSinkProperties}
-import ru.vtb.uasp.common.utils.config.PropertyUtil.{createByClassOption, mapProperty, propertyVal}
+import ru.vtb.uasp.common.utils.config.PropertyUtil.{createByClassOption, mapProperty, propertyVal, propertyValOptional}
 import ru.vtb.uasp.common.utils.config.{AllApplicationProperties, ConfigurationInitialise, PropertyCombiner, ReadConfigErrors}
 import ru.vtb.uasp.mdm.enrichment.utils.config.enrich.intf.InputFormatEnum._
 import ru.vtb.uasp.mdm.enrichment.utils.config.enrich.intf.{InputFormatEnum, _}
@@ -12,10 +12,15 @@ case class CommonEnrichProperty(
                                  keySelectorMain: KeySelectorProp,
                                  keySelectorEnrich: KeySelectorProp,
                                  fields: List[EnrichFields],
-                                 inputDataFormat: InputFormatEnum
+                                 inputDataFormat: InputFormatEnum,
+                                 isDeletedFieldPath: List[String]
                                ) extends EnrichProperty with EnrichPropertyWithDlq with EnrichPropertyFields with FormatSwitcher {
-  override val isDeletedFieldPath: List[String] = List()
+
   require((inputDataFormat == FlatJsonFormat && keySelectorEnrich.isId == false) || inputDataFormat == UaspDtoFormat, s"for inputDataFormat = $inputDataFormat keySelectorEnrich.isId must be only false")
+  require(
+    inputDataFormat == FlatJsonFormat ||
+      (inputDataFormat == UaspDtoFormat && (isDeletedFieldPath.isEmpty || isDeletedFieldPath.size==1)),
+    s"for $inputDataFormat isDeletedFieldPath must be empty or size equals 1, but $isDeletedFieldPath")
   //  lazy val flatProperty: NodeJsonMeta = NodeJsonMeta(fields.map(f => f.fromFieldName -> f.fromFieldType.toUpperCase() ).toMap)
 }
 
@@ -42,6 +47,7 @@ object CommonEnrichProperty extends PropertyCombiner[CommonEnrichProperty] {
       keySelectorEnrich <- KeySelectorProp.create(s"$prf.keySelectorEnrich")
       fields <- fieldsList
       format <- propertyVal[InputFormatEnum](prf, "inputDataFormat")(appProps, configurationInitialise, { str => InputFormatEnum.withName(str) })
+      isDeletedFieldPath <- propertyValOptional[String](prf, "isDeletedFieldPath").map(prp => prp.map(p => p.split("\\.").toList).getOrElse(List.empty))
 
     } yield new CommonEnrichProperty(
       fromTopic = fromTopic,
@@ -49,7 +55,8 @@ object CommonEnrichProperty extends PropertyCombiner[CommonEnrichProperty] {
       keySelectorMain = keySelectorMain,
       keySelectorEnrich = keySelectorEnrich,
       fields = fields,
-      inputDataFormat = format
+      inputDataFormat = format,
+      isDeletedFieldPath = isDeletedFieldPath
     )
   }
 }

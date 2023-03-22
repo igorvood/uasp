@@ -3,7 +3,7 @@ package ru.vtb.uasp.mdm.enrichment.utils.config.enrich
 import play.api.libs.json.JsValue
 import ru.vtb.uasp.common.dto.UaspDto
 import ru.vtb.uasp.common.kafka.{FlinkConsumerProperties, FlinkSinkProperties}
-import ru.vtb.uasp.common.utils.config.PropertyUtil.{createByClassOption, mapProperty, propertyVal}
+import ru.vtb.uasp.common.utils.config.PropertyUtil.{createByClassOption, mapProperty, propertyVal, propertyValOptional}
 import ru.vtb.uasp.common.utils.config.{AllApplicationProperties, ConfigurationInitialise, PropertyCombiner, ReadConfigErrors}
 import ru.vtb.uasp.mdm.enrichment.dao.UaspDtoPredef.PreDef
 import ru.vtb.uasp.mdm.enrichment.service.dto.KeyedCAData
@@ -17,12 +17,18 @@ case class GlobalIdEnrichProperty(
                                    keySelectorMain: KeySelectorProp,
                                    keySelectorEnrich: KeySelectorProp,
                                    fields: List[EnrichFields],
-                                   inputDataFormat: InputFormatEnum
+                                   inputDataFormat: InputFormatEnum,
+                                   isDeletedFieldPath: List[String]
                                  ) extends EnrichProperty with EnrichPropertyWithDlq with EnrichPropertyFields with FormatSwitcher {
 
   require((inputDataFormat == FlatJsonFormat && keySelectorEnrich.isId == false) || inputDataFormat == UaspDtoFormat, s"for inputDataFormat = $inputDataFormat keySelectorEnrich.isId must be only false")
 
-  override val isDeletedFieldPath: List[String] = List()
+  require(
+    inputDataFormat == FlatJsonFormat ||
+    (inputDataFormat == UaspDtoFormat && (isDeletedFieldPath.isEmpty || isDeletedFieldPath.size==1)),
+    s"for $inputDataFormat isDeletedFieldPath must be empty or size equals 1, but $isDeletedFieldPath")
+
+
   lazy val globalFields: EnrichPropertyFields = EnrichPropertyFieldsTemp(keySelectorMain, keySelectorEnrich, List(globalEnrichFields))
 
 
@@ -78,7 +84,8 @@ object GlobalIdEnrichProperty extends PropertyCombiner[GlobalIdEnrichProperty] {
       keySelectorEnrich <- KeySelectorProp.create(s"$prf.keySelectorEnrich")
       fields <- fieldsList
       format <- propertyVal[InputFormatEnum](prf, "inputDataFormat")(appProps, configurationInitialise, { str => InputFormatEnum.withName(str) })
+      isDeletedFieldPath <- propertyValOptional[String](prf, "isDeletedFieldPath").map(prp => prp.map(p => p.split("\\.").toList).getOrElse(List.empty))
 
-    } yield new GlobalIdEnrichProperty(fromTopic, dlqTopicProp, globalEnrichFields, keySelectorMain, keySelectorEnrich, fields, format)
+    } yield new GlobalIdEnrichProperty(fromTopic, dlqTopicProp, globalEnrichFields, keySelectorMain, keySelectorEnrich, fields, format, isDeletedFieldPath)
   }
 }

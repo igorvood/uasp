@@ -232,7 +232,8 @@ object KeyedEnrichCommonCoProcessServiceTest {
     keySelectorMain = KeySelectorProp(true),
     keySelectorEnrich = KeySelectorProp(true),
     fields = List(),
-    inputDataFormat = UaspDtoFormat
+    inputDataFormat = UaspDtoFormat,
+    List.empty
   )
 
   private def em(isOptional: Boolean): CommonEnrichProperty = {
@@ -251,7 +252,8 @@ object KeyedEnrichCommonCoProcessServiceTest {
       keySelectorMain = KeySelectorProp(true),
       keySelectorEnrich = KeySelectorProp(true),
       fields = fieldses,
-      inputDataFormat = UaspDtoFormat
+      inputDataFormat = UaspDtoFormat,
+      List.empty
     )
 
 
