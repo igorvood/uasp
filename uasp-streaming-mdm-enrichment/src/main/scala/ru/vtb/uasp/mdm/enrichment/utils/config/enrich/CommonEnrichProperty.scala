@@ -21,7 +21,6 @@ case class CommonEnrichProperty(
     inputDataFormat == FlatJsonFormat ||
       (inputDataFormat == UaspDtoFormat && (isDeletedFieldPath.isEmpty || isDeletedFieldPath.size==1)),
     s"for $inputDataFormat isDeletedFieldPath must be empty or size equals 1, but $isDeletedFieldPath")
-  //  lazy val flatProperty: NodeJsonMeta = NodeJsonMeta(fields.map(f => f.fromFieldName -> f.fromFieldType.toUpperCase() ).toMap)
 }
 
 
