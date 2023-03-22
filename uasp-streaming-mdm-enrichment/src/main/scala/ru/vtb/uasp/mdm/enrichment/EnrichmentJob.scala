@@ -4,6 +4,7 @@ import org.apache.flink.api.java.functions.KeySelector
 import org.apache.flink.streaming.api.datastream.DataStreamSink
 import org.apache.flink.streaming.api.functions.sink.SinkFunction
 import org.apache.flink.streaming.api.scala.{DataStream, StreamExecutionEnvironment, createTypeInformation}
+import org.slf4j.LoggerFactory
 import play.api.libs.json.{JsObject, JsValue, OWrites}
 import ru.vtb.uasp.common.abstraction.FlinkStreamProducerPredef.{StreamExecutionEnvironmentPredef, StreamFactory}
 import ru.vtb.uasp.common.base.EnrichFlinkDataStream.EnrichFlinkDataStreamSink
@@ -32,6 +33,7 @@ object EnrichmentJob extends Serializable {
       in.key
     }
 
+  private val logger = LoggerFactory.getLogger(getClass)
 
   def main(args: Array[String]): Unit = {
     val propsModel = MDMEnrichmentPropsModel.configApp(appPrefixDefaultName, args)
