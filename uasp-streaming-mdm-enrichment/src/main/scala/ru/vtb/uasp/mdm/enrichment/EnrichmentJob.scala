@@ -4,7 +4,6 @@ import org.apache.flink.api.java.functions.KeySelector
 import org.apache.flink.streaming.api.datastream.DataStreamSink
 import org.apache.flink.streaming.api.functions.sink.SinkFunction
 import org.apache.flink.streaming.api.scala.{DataStream, StreamExecutionEnvironment, createTypeInformation}
-import org.slf4j.LoggerFactory
 import play.api.libs.json.{JsObject, JsValue, OWrites}
 import ru.vtb.uasp.common.abstraction.FlinkStreamProducerPredef.{StreamExecutionEnvironmentPredef, StreamFactory}
 import ru.vtb.uasp.common.base.EnrichFlinkDataStream.EnrichFlinkDataStreamSink
@@ -16,7 +15,7 @@ import ru.vtb.uasp.common.service.JsonConvertOutService.{IdentityPredef, JsonPre
 import ru.vtb.uasp.common.service.UaspDeserializationProcessFunction
 import ru.vtb.uasp.common.service.dto.KafkaDto
 import ru.vtb.uasp.mdm.enrichment.service.JsValueConsumer
-import ru.vtb.uasp.mdm.enrichment.service.dto.{KeyedCAData, KeyedUasp, NotStandardDataStreams, OutStreams, StandartedDataStreams}
+import ru.vtb.uasp.mdm.enrichment.service.dto.{KeyedCAData, KeyedUasp, NotStandardDataStreams, OutStreams}
 import ru.vtb.uasp.mdm.enrichment.utils.config.MDMEnrichmentPropsModel.appPrefixDefaultName
 import ru.vtb.uasp.mdm.enrichment.utils.config._
 
@@ -34,34 +33,24 @@ object EnrichmentJob extends Serializable {
     }
 
 
-  private val logger = LoggerFactory.getLogger(getClass)
-
   def main(args: Array[String]): Unit = {
-    logger.info("Start app: " + this.getClass.getName)
-    try {
-      val propsModel = MDMEnrichmentPropsModel.configApp(appPrefixDefaultName, args)
+    val propsModel = MDMEnrichmentPropsModel.configApp(appPrefixDefaultName, args)
 
-      val env = StreamExecutionEnvironment.getExecutionEnvironment
-      env.setParallelism(propsModel.appSyncParallelism)
-      //      env.enableCheckpointing(propsModel.initProperty.appStreamCheckpointTimeMilliseconds.value, CheckpointingMode.EXACTLY_ONCE)
+    val env = StreamExecutionEnvironment.getExecutionEnvironment
+    env.setParallelism(propsModel.appSyncParallelism)
+    //      env.enableCheckpointing(propsModel.initProperty.appStreamCheckpointTimeMilliseconds.value, CheckpointingMode.EXACTLY_ONCE)
 
 
-      val flinkDataStreams = init(env, propsModel)
+    val flinkDataStreams = init(env, propsModel)
 
-      val mainDataStream = process(
-        flinkDataStreams = flinkDataStreams,
-        propsModel)
+    val mainDataStream = process(
+      flinkDataStreams = flinkDataStreams,
+      propsModel)
 
-      setSinks(mainDataStream, propsModel)
+    setSinks(mainDataStream, propsModel)
 
-      env.execute(propsModel.serviceData.fullServiceName)
+    env.execute(propsModel.serviceData.fullServiceName)
 
-    } catch {
-      case e: Exception =>
-        e.printStackTrace()
-        logger.error("Error:" + e.getMessage)
-        System.exit(1)
-    }
   }
 
   def init(env: StreamExecutionEnvironment, propsModel: MDMEnrichmentPropsModel, producerFabric: FlinkSinkProperties => SinkFunction[KafkaDto] = producerFactoryDefault): NotStandardDataStreams = {
@@ -130,10 +119,10 @@ object EnrichmentJob extends Serializable {
           keyedMainStreamSrv <- mDMEnrichmentPropsModel.globalMainStreamExtractKeyFunction
           keyGlobalSrv <- mDMEnrichmentPropsModel.keyGlobalIdEnrichmentMapService
           globalIdStream <- standartedDataStreams.globalIdStream
-        } yield (keyedMainStreamSrv,  keyGlobalSrv, globalIdStream)
+        } yield (keyedMainStreamSrv, keyGlobalSrv, globalIdStream)
         maybeGlobal
           .map { tuple =>
-            val (keyedMainStreamSrv,  keyGlobalSrv, validatedGlobalIdStream) = tuple
+            val (keyedMainStreamSrv, keyGlobalSrv, validatedGlobalIdStream) = tuple
 
             mainDs
               .processWithMaskedDqlF(
