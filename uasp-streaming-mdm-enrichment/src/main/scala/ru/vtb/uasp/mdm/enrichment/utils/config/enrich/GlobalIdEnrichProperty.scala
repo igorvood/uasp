@@ -25,7 +25,7 @@ case class GlobalIdEnrichProperty(
 
   require(
     inputDataFormat == FlatJsonFormat ||
-    (inputDataFormat == UaspDtoFormat && (isDeletedFieldPath.isEmpty || isDeletedFieldPath.size==1)),
+      (inputDataFormat == UaspDtoFormat && (isDeletedFieldPath.isEmpty || isDeletedFieldPath.size == 1)),
     s"for $inputDataFormat isDeletedFieldPath must be empty or size equals 1, but $isDeletedFieldPath")
 
 

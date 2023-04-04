@@ -12,12 +12,12 @@ import ru.vtb.uasp.common.service.dto.{KafkaDto, OutDtoWithErrors, ServiceDataDt
 import ru.vtb.uasp.mdm.enrichment.service.dto.{KeyedCAData, NotStandardDataStreams, StandartedDataStreams}
 
 class TransformSecondaryStreamService(
-                              private val serviceData: ServiceDataDto,
-                              private val globalIdValidateService: Option[ExtractKeyFunction],
-                              private val commonValidateProcessFunction: Option[ExtractKeyFunction],
-                              private val dlqGlobalIdProp: Option[FlinkSinkProperties],
-                              private val dlqCommonProp: Option[FlinkSinkProperties],
-                            ) {
+                                       private val serviceData: ServiceDataDto,
+                                       private val globalIdValidateService: Option[ExtractKeyFunction],
+                                       private val commonValidateProcessFunction: Option[ExtractKeyFunction],
+                                       private val dlqGlobalIdProp: Option[FlinkSinkProperties],
+                                       private val dlqCommonProp: Option[FlinkSinkProperties],
+                                     ) {
 
 
   def transform(streams: NotStandardDataStreams)(implicit producerFabric: FlinkSinkProperties => SinkFunction[KafkaDto]): StandartedDataStreams = {

@@ -7,12 +7,12 @@ import ru.vtb.uasp.mdm.enrichment.utils.config.enrich.intf.InputFormatEnum._
 import ru.vtb.uasp.mdm.enrichment.utils.config.enrich.intf.{InputFormatEnum, _}
 
 /**
- * @param fromTopic настройки топика с информацией по обогащению
- * @param dlqTopicProp опциональный dlq топик для ошибок
- * @param keySelectorMain правило для определения ключа у основного потока
- * @param keySelectorEnrich правило для определения ключа у потока с обогащаемой информацией
- * @param fields список полей с правилами обогащения
- * @param inputDataFormat входной формат FlatJsonFormat или UaspDtoFormat
+ * @param fromTopic          настройки топика с информацией по обогащению
+ * @param dlqTopicProp       опциональный dlq топик для ошибок
+ * @param keySelectorMain    правило для определения ключа у основного потока
+ * @param keySelectorEnrich  правило для определения ключа у потока с обогащаемой информацией
+ * @param fields             список полей с правилами обогащения
+ * @param inputDataFormat    входной формат FlatJsonFormat или UaspDtoFormat
  * @param isDeletedFieldPath путь к полю с признаком удаления
  */
 case class CommonEnrichProperty(
@@ -28,7 +28,7 @@ case class CommonEnrichProperty(
   require((inputDataFormat == FlatJsonFormat && keySelectorEnrich.isId == false) || inputDataFormat == UaspDtoFormat, s"for inputDataFormat = $inputDataFormat keySelectorEnrich.isId must be only false")
   require(
     inputDataFormat == FlatJsonFormat ||
-      (inputDataFormat == UaspDtoFormat && (isDeletedFieldPath.isEmpty || isDeletedFieldPath.size==1)),
+      (inputDataFormat == UaspDtoFormat && (isDeletedFieldPath.isEmpty || isDeletedFieldPath.size == 1)),
     s"for $inputDataFormat isDeletedFieldPath must be empty or size equals 1, but $isDeletedFieldPath")
 }
 

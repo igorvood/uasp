@@ -72,8 +72,8 @@ class KeyEnrichmentGlobalIdServiceTest extends AnyFlatSpec {
 
     val mapStateValueNull = enrichmentMapService.getRuntimeContext.getState(enrichmentMapService.mapStateDescriptor).value()
 
-    assert(null==stateValueNull)
-    assert(null==mapStateValueNull)
+    assert(null == stateValueNull)
+    assert(null == mapStateValueNull)
 
   }
 

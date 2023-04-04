@@ -98,7 +98,7 @@ object EnrichPropertyFieldsTest {
                                           keySelectorMain: KeySelectorProp,
                                           keySelectorEnrich: KeySelectorProp,
                                           fields: List[EnrichFields] = List()
-                                        ) extends EnrichPropertyFields{
+                                        ) extends EnrichPropertyFields {
     override val isDeletedFieldPath: List[String] = List()
   }
 

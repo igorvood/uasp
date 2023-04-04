@@ -46,7 +46,7 @@ trait EnrichPropertyFields {
 
   def validateFieldsAndExtractData(jsValue: JsValue): Either[String, KeyedCAData] = {
 
-     extractIsDeletedValue(jsValue, isDeletedFieldPath) match {
+    extractIsDeletedValue(jsValue, isDeletedFieldPath) match {
       case Left(value) => Left(value)
       case Right(isDeleted) =>
         val mapJsValue = flatProperty.extract(jsValue)
@@ -153,13 +153,13 @@ object EnrichPropertyFields {
 
   val undefined = "undefined"
 
-   def extractIsDeletedValue(value: JsValue, isDeletedFieldPath: List[String]): Either[String, Boolean] = {
-     isDeletedFieldPath match {
-       case Nil => Right(false)
-       case xs => extractIsDeletedValueP(value, xs)
-     }
+  def extractIsDeletedValue(value: JsValue, isDeletedFieldPath: List[String]): Either[String, Boolean] = {
+    isDeletedFieldPath match {
+      case Nil => Right(false)
+      case xs => extractIsDeletedValueP(value, xs)
+    }
 
-   }
+  }
 
   protected def extractIsDeletedValueP(value: JsValue, isDeletedFieldPath: List[String]): Either[String, Boolean] = {
     isDeletedFieldPath match {
