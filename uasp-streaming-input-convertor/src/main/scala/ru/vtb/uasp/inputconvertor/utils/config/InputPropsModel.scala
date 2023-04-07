@@ -43,7 +43,9 @@ case class InputPropsModel(
   val sinkDlqProperty: Option[(FlinkSinkProperties, (OutDtoWithErrors[JsValue], Option[JsMaskedPath]) => Either[List[JsMaskedPathError], KafkaDto])] =
     Some(dlqSink -> { (q, w) => serializeToBytes[OutDtoWithErrors[JsValue]](q, w) })
 
-  val sinkDlqPropertyUaspAndKafkaKey: Option[PropertyWithSerializer[OutDtoWithErrors[UaspAndKafkaKey]]] = Some(PropertyWithSerializer[OutDtoWithErrors[UaspAndKafkaKey]](dlqSink , {_.serializeToKafkaJsValue}))
+  val sinkDlqPropertyUaspAndKafkaKey: Option[PropertyWithSerializer[OutDtoWithErrors[UaspAndKafkaKey]]] = Some(PropertyWithSerializer[OutDtoWithErrors[UaspAndKafkaKey]](dlqSink, {
+    _.serializeToKafkaJsValue
+  }))
 
 }
 

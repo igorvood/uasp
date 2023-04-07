@@ -3,12 +3,10 @@ package ru.vtb.uasp.inputconvertor
 import org.apache.flink.streaming.api.datastream.DataStreamSink
 import org.apache.flink.streaming.api.functions.sink.SinkFunction
 import org.apache.flink.streaming.api.scala._
-import play.api.libs.json.Json
 import ru.vtb.uasp.common.abstraction.FlinkStreamProducerPredef.StreamFactory
-import ru.vtb.uasp.common.dto.UaspDto
 import ru.vtb.uasp.common.kafka.FlinkSinkProperties
 import ru.vtb.uasp.common.kafka.FlinkSinkProperties.producerFactoryDefault
-import ru.vtb.uasp.common.service.JsonConvertOutService.{IdentityPredef, JsonPredef}
+import ru.vtb.uasp.common.service.JsonConvertOutService.JsonPredef
 import ru.vtb.uasp.common.service.dto.{KafkaDto, PropertyWithSerializer}
 import ru.vtb.uasp.inputconvertor.entity.InputMessageType
 import ru.vtb.uasp.inputconvertor.service.dto.UaspAndKafkaKey
@@ -73,7 +71,9 @@ object Convertor {
 
     val value = mainDataStream.maskedProducerF(
       propsModel.serviceData,
-      PropertyWithSerializer(propsModel.outputSink, {_.serializeToKafkaJsValue}),
+      PropertyWithSerializer(propsModel.outputSink, {
+        _.serializeToKafkaJsValue
+      }),
       propsModel.sinkDlqPropertyUaspAndKafkaKey,
       producerFabric
     )

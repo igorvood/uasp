@@ -1,7 +1,6 @@
 package ru.vtb.uasp.inputconvertor.factory
 
 import play.api.libs.json.{JsResult, JsValue}
-import ru.vtb.uasp.common.dto.UaspDto
 import ru.vtb.uasp.inputconvertor.dao._
 import ru.vtb.uasp.inputconvertor.dao.ca._
 import ru.vtb.uasp.inputconvertor.utils.config.InputPropsModel

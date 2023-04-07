@@ -8,6 +8,7 @@ case class CloseAccountDto(
                             initAS: String,
                             dateApp: String,
                           )
+
 object CloseAccountDto {
   implicit val reads: Reads[CloseAccountDto] = Json.reads[CloseAccountDto]
   implicit val writes: OWrites[CloseAccountDto] = Json.writes[CloseAccountDto]
