@@ -11,7 +11,7 @@ import ru.vtb.uasp.common.kafka.FlinkSinkProperties
 import ru.vtb.uasp.common.mask.MaskedPredef.PathFactory
 import ru.vtb.uasp.common.mask.MaskedStrPathWithFunName
 import ru.vtb.uasp.common.service.JsonConvertInService
-import ru.vtb.uasp.common.service.JsonConvertOutService.{JsonPredef, serializeToBytes}
+import ru.vtb.uasp.common.service.JsonConvertOutService.{JsonPredef, serializeToBytes, serializeToKafkaJsValue}
 import ru.vtb.uasp.common.service.dto.{KafkaDto, OutDtoWithErrors, PropertyWithSerializer, ServiceDataDto}
 import ru.vtb.uasp.common.test.MiniPipeLineTrait
 import ru.vtb.uasp.common.test.MiniPipeLineTrait.valuesTestDataDto
@@ -43,7 +43,7 @@ class FlinkKafkaFunTest extends AnyFlatSpec with MiniPipeLineTrait with Serializ
         ds,
         serviceData = serviceDataDto,
         dlqProcessFunctionError,
-        Some(flinkSinkPropertiesDlq -> serializeToBytes[OutDtoWithErrors[TestDataDto]]),
+        Some(PropertyWithSerializer(flinkSinkPropertiesDlq ,{_.serializeToKafkaJsValue})),
         producerFactory[KafkaDto],
       )
     }
@@ -57,7 +57,7 @@ class FlinkKafkaFunTest extends AnyFlatSpec with MiniPipeLineTrait with Serializ
       val value1 = ds.processWithMaskedDqlF(
         serviceDataDto,
         dlqProcessFunctionError,
-        Some(flinkSinkPropertiesDlq -> serializeToBytes[OutDtoWithErrors[TestDataDto]]),
+        Some(PropertyWithSerializer(flinkSinkPropertiesDlq ,{_.serializeToKafkaJsValue})),
         producerFactory[KafkaDto]
       )
     }
@@ -76,13 +76,7 @@ class FlinkKafkaFunTest extends AnyFlatSpec with MiniPipeLineTrait with Serializ
       val value1 = ds.processWithMaskedDqlF(
         serviceDataDto,
         dlqProcessFunctionErrorJs,
-        Some(flinkSinkPropertiesDlq -> { (q, w) => {
-          implicit val value2 = OutDtoWithErrors.writesJsValue
-          implicit val value = OutDtoWithErrors.outDtoWithErrorsJsonWrites[JsValue](value2)
-
-          serializeToBytes[OutDtoWithErrors[JsValue]](q, w)(value)
-        }
-        }),
+        Some(PropertyWithSerializer(flinkSinkPropertiesDlq ,{_.serializeToKafkaJsValue})),
         producerFactory[KafkaDto]
       )
     }
@@ -101,23 +95,6 @@ class FlinkKafkaFunTest extends AnyFlatSpec with MiniPipeLineTrait with Serializ
     val unit = outDtoWithErrorsFun(Some(testDataDto))
     assertResult(unit)(either.right.get)
 
-
-
-    //    val flinkPipe: DataStream[TestDataDto] => Unit = { ds =>
-    //      implicit val value2 = OutDtoWithErrors.outDtoWithErrorsJsonWrites[JsValue](OutDtoWithErrors.writesJsValue)
-    //
-    //      val value = ds.map(q =>
-    //        Json.toJsObject(q).asInstanceOf[JsValue]
-    //      )
-    //      val value1 = value.processWithMaskedDqlF(
-    //        serviceDataDto,
-    //        dlqProcessFunctionErrorJs,
-    //        Some(flinkSinkPropertiesDlq -> JsonConvertOutService.serializeToBytes[OutDtoWithErrors[JsValue]]),
-    //        producerFactory[KafkaDto]
-    //      )
-    //    }
-    //
-    //    processWithMaskedDqlErrNoMasked(flinkPipe)
   }
 
   "processWithMaskedDql1 Ошибка, но маскирование не настроено" should " OK" in {
@@ -128,16 +105,6 @@ class FlinkKafkaFunTest extends AnyFlatSpec with MiniPipeLineTrait with Serializ
         Some(flinkSinkPropertiesDlq -> { (q, w) => serializeToBytes[OutDtoWithErrors[TestDataDto]](q, w) }),
         producerFactory[KafkaDto]
       )
-    }
-
-    processWithMaskedDqlErrNoMasked(flinkPipe)
-  }
-
-  "processWithMaskedDql Ошибка, но маскирование не настроено" should " OK" in {
-
-    val flinkPipe: DataStream[TestDataDto] => Unit = { ds =>
-      val service = new TestDataDtoMaskedSerializeServiceDLQ(jsMaskedPath = None)
-      val value1 = ds.processWithMaskedDql(serviceDataDto, dlqProcessFunctionError, Some(flinkSinkPropertiesDlq -> service), producerFactory[KafkaDto])
     }
 
     processWithMaskedDqlErrNoMasked(flinkPipe)
@@ -167,7 +134,7 @@ class FlinkKafkaFunTest extends AnyFlatSpec with MiniPipeLineTrait with Serializ
         ds,
         serviceData = serviceDataDto,
         dlqProcessFunction,
-        Some(flinkSinkPropertiesDlq -> serializeToBytes[OutDtoWithErrors[TestDataDto]]),
+        Some(PropertyWithSerializer[OutDtoWithErrors[TestDataDto]](flinkSinkPropertiesDlq , { _.serializeToKafkaJsValue})),
         producerFactory[KafkaDto],
 
       )
@@ -183,7 +150,11 @@ class FlinkKafkaFunTest extends AnyFlatSpec with MiniPipeLineTrait with Serializ
 
     val flinkPipe: DataStream[TestDataDto] => Unit = { ds =>
 
-      val value = ds.processWithMaskedDqlF(serviceDataDto, dlqProcessFunction, Some(flinkSinkPropertiesDlq -> serializeToBytes[OutDtoWithErrors[TestDataDto]]), producerFactory[KafkaDto])
+      val value = ds.processWithMaskedDqlF(
+        serviceDataDto,
+        dlqProcessFunction,
+        Some(PropertyWithSerializer[OutDtoWithErrors[TestDataDto]](flinkSinkPropertiesDlq , { _.serializeToKafkaJsValue})),
+        producerFactory[KafkaDto])
 
       FlinkKafkaFun.privateCreateProducerWithMetric(value, serviceData = serviceDataDto, flinkSinkProperties, producerFactory)
     }
@@ -191,21 +162,6 @@ class FlinkKafkaFunTest extends AnyFlatSpec with MiniPipeLineTrait with Serializ
     processWithMaskedDqlNoErrNoMasked(flinkPipe)
 
   }
-
-  "processWithMaskedDql нет ошибки, но маскирование не настроено" should " OK" in {
-
-    val flinkPipe: DataStream[TestDataDto] => Unit = { ds =>
-
-      val service = new TestDataDtoMaskedSerializeServiceDLQ(jsMaskedPathDLQOk)
-      val value = ds.processWithMaskedDql(serviceDataDto, dlqProcessFunction, Some(flinkSinkPropertiesDlq -> service), producerFactory[KafkaDto])
-
-      FlinkKafkaFun.privateCreateProducerWithMetric(value, serviceData = serviceDataDto, flinkSinkProperties, producerFactory)
-    }
-
-    processWithMaskedDqlNoErrNoMasked(flinkPipe)
-
-  }
-
 
   private def processWithMaskedDqlNoErrNoMasked(flinkPipe: DataStream[TestDataDto] => Unit) = {
     pipeRun(listTestDataDto, flinkPipe)
@@ -229,7 +185,7 @@ class FlinkKafkaFunTest extends AnyFlatSpec with MiniPipeLineTrait with Serializ
         ds,
         serviceData = serviceDataDto,
         dlqProcessFunctionError,
-        Some(flinkSinkPropertiesDlq.copy(jsMaskedPath = jsMaskedPathDLQOk) -> serializeToBytes[OutDtoWithErrors[TestDataDto]]),
+        Some(PropertyWithSerializer[OutDtoWithErrors[TestDataDto]](flinkSinkPropertiesDlq.copy(jsMaskedPath = jsMaskedPathDLQOk)  , { _.serializeToKafkaJsValue})),
         producerFactory[KafkaDto],
       )
     }
@@ -241,18 +197,12 @@ class FlinkKafkaFunTest extends AnyFlatSpec with MiniPipeLineTrait with Serializ
   "processWithMaskedDqlF Ошибка, маскирование настроено" should " OK" in {
 
     val flinkPipe: DataStream[TestDataDto] => Unit = { ds =>
-      val value1 = ds.processWithMaskedDqlF(serviceDataDto, dlqProcessFunctionError, Some(flinkSinkPropertiesDlq.copy(jsMaskedPath = jsMaskedPathDLQOk) -> serializeToBytes[OutDtoWithErrors[TestDataDto]]), producerFactory[KafkaDto])
-    }
-
-    processWithMaskedDqlErrMasked(flinkPipe)
-
-  }
-
-  "processWithMaskedDql Ошибка, маскирование настроено" should " OK" in {
-
-    val service = new TestDataDtoMaskedSerializeServiceDLQ(jsMaskedPathDLQOk)
-    val flinkPipe: DataStream[TestDataDto] => Unit = { ds =>
-      val value1 = ds.processWithMaskedDql(serviceDataDto, dlqProcessFunctionError, Some(flinkSinkPropertiesDlq.copy(jsMaskedPath = jsMaskedPathDLQOk) -> service), producerFactory[KafkaDto])
+      val value1 = ds.processWithMaskedDqlF(
+        serviceDataDto,
+        dlqProcessFunctionError,
+        Some(PropertyWithSerializer[OutDtoWithErrors[TestDataDto]](flinkSinkPropertiesDlq.copy(jsMaskedPath = jsMaskedPathDLQOk) , { _.serializeToKafkaJsValue})),
+        producerFactory[KafkaDto]
+      )
     }
 
     processWithMaskedDqlErrMasked(flinkPipe)
@@ -271,7 +221,7 @@ class FlinkKafkaFunTest extends AnyFlatSpec with MiniPipeLineTrait with Serializ
     assertResult(1)(dtoes.size)
     val outDto: OutDtoWithErrors[TestDataDto] = JsonConvertInService.deserialize[OutDtoWithErrors[TestDataDto]](dtoes.head.value)(OutDtoWithErrors.outDtoWithErrorsJsonReads, serviceDataDto).right.get
     val outDtoWith = outDtoWithErrorsFun(Some(testDataDto.copy(srt = "***MASKED***")))
-    assertResult(outDtoWith)(outDto)
+    assert(outDtoWith==outDto)
   }
 
   "maskedProducerF Ошибка при маскировании основного сообщения, маскирование DLQ без ошибки " should " OK" in {
@@ -280,51 +230,14 @@ class FlinkKafkaFunTest extends AnyFlatSpec with MiniPipeLineTrait with Serializ
 
       val value = ds.maskedProducerF(
         serviceDataDto,
-        flinkSinkProperties.copy(jsMaskedPath = jsMaskedPathErrMainERR),
-        serializeToBytes[TestDataDto],
-        Some(flinkSinkPropertiesDlq.copy(jsMaskedPath = jsMaskedPathDLQOk) -> serializeToBytes[OutDtoWithErrors[TestDataDto]]),
+        PropertyWithSerializer(flinkSinkProperties.copy(jsMaskedPath = jsMaskedPathErrMainERR),{ _.serializeToKafkaJsValue}),
+        Some(PropertyWithSerializer[OutDtoWithErrors[TestDataDto]](flinkSinkPropertiesDlq.copy(jsMaskedPath = jsMaskedPathDLQOk)  , { _.serializeToKafkaJsValue})),
         producerFactory[KafkaDto]
       )
     }
 
+
     maskedProducerFErrMainDLQOk(flinkPipe)
-  }
-
-  "maskedProducerF маскирование основного сообщения с ошибкой, маскирование DLQ без ошибки " should " OK" in {
-
-    implicit val serviceDataDtoIm = serviceDataDto
-    val flinkPipe: DataStream[OutDtoWithErrors[TestDataDto]] => Unit = { ds =>
-
-
-      val value = ds.maskedProducerF(
-        serviceDataDto,
-        flinkSinkProperties.copy(jsMaskedPath = jsMaskedPathDLQErr),
-        serializeToBytes[OutDtoWithErrors[TestDataDto]],
-        Some(flinkSinkProperties.copy(jsMaskedPath = jsMaskedPathDLQOk) -> { (q, _) =>
-          serializeToBytes[OutDtoWithErrors[OutDtoWithErrors[TestDataDto]]](q.copy(data = None), None)
-        }),
-        producerFactory
-      )
-    }
-    val someString = Some("TEST pos")
-    val dto: List[OutDtoWithErrors[TestDataDto]] = listTestDataDto.map(td => {
-
-      OutDtoWithErrors(serviceDataDto, someString, List("some error"), Some(td))
-    })
-    pipeRun(dto, flinkPipe)
-
-    assertResult(1)(valuesTestDataDto.size)
-
-    val listErrs = topicDataArray[KafkaDto](flinkSinkProperties)
-    val list = listErrs
-      .map { by =>
-        JsonConvertInService.deserialize[OutDtoWithErrors[TestDataDto]](by.value).right.get
-      }
-    assertResult(1)(list.size)
-
-    val errs = list.head
-    assert(errs.data.isEmpty)
-    assert(errs.errorPosition == Some("ru.vtb.uasp.common.abstraction.FlinkKafkaFun$$anon$1"))
   }
 
   "maskedProducerFErr маскирование основного сообщения с ошибкой, маскирование DLQ без ошибки " should " OK" in {
@@ -373,6 +286,22 @@ class FlinkKafkaFunTest extends AnyFlatSpec with MiniPipeLineTrait with Serializ
   }
 
   "maskedProducer Ошибка при маскировании основного сообщения, маскирование DLQ без ошибки " should " OK" in {
+    val flinkPipe: DataStream[TestDataDto] => Unit = { ds =>
+      val value = ds.maskedProducerF(
+        serviceDataDto,
+        PropertyWithSerializer(flinkSinkProperties.copy(jsMaskedPath = jsMaskedPathErrMainERR),{ _.serializeToKafkaJsValue}),
+//        serializeServiceMain,
+//        Some(flinkSinkPropertiesDlq.copy(jsMaskedPath = jsMaskedPathDLQOk) -> serviceJsMaskedPathDLQOk),
+        Some(PropertyWithSerializer(flinkSinkPropertiesDlq.copy(jsMaskedPath = jsMaskedPathDLQOk) , { _.serializeToKafkaJsValue})),
+        producerFactory[KafkaDto]
+      )
+//      Some(PropertyWithSerializer(flinkSinkPropertiesDlq , { _.serializeToKafkaJsValue})),
+    }
+
+    maskedProducerFErrMainDLQOk(flinkPipe)
+  }
+
+/*"maskedProducer Ошибка при маскировании основного сообщения, маскирование DLQ без ошибки " should " OK" in {
     val serviceJsMaskedPathDLQOk = new TestDataDtoMaskedSerializeServiceDLQ(jsMaskedPathDLQOk)
     val serializeServiceMain = new TestDataDtoMaskedSerializeServiceMain(jsMaskedPathErrMainERR)
     val flinkPipe: DataStream[TestDataDto] => Unit = { ds =>
@@ -386,7 +315,7 @@ class FlinkKafkaFunTest extends AnyFlatSpec with MiniPipeLineTrait with Serializ
     }
 
     maskedProducerFErrMainDLQOk(flinkPipe)
-  }
+  }*/
 
   private def maskedProducerFErrMainDLQOk(flinkPipe: DataStream[TestDataDto] => Unit) = {
     pipeRun(listTestDataDto, flinkPipe)
@@ -413,9 +342,8 @@ class FlinkKafkaFunTest extends AnyFlatSpec with MiniPipeLineTrait with Serializ
     val flinkPipe: DataStream[TestDataDto] => Unit = { ds =>
       val value = ds.maskedProducerF(
         serviceDataDto,
-        flinkSinkProperties.copy(jsMaskedPath = jsMaskedPathErrMainERR),
-        serializeToBytes[TestDataDto],
-        Some(flinkSinkPropertiesDlq.copy(jsMaskedPath = jsMaskedPathDLQErr) -> serializeToBytes[OutDtoWithErrors[TestDataDto]]),
+        PropertyWithSerializer(flinkSinkProperties.copy(jsMaskedPath = jsMaskedPathErrMainERR),{ _.serializeToKafkaJsValue}),
+        Some(PropertyWithSerializer(flinkSinkPropertiesDlq.copy(jsMaskedPath = jsMaskedPathDLQErr) , { _.serializeToKafkaJsValue})),
         producerFactory[KafkaDto]
       )
     }
@@ -444,9 +372,8 @@ class FlinkKafkaFunTest extends AnyFlatSpec with MiniPipeLineTrait with Serializ
     val flinkPipe: DataStream[TestDataDto] => Unit = { ds =>
       val value = ds.maskedProducerF(
         serviceDataDto,
-        flinkSinkProperties.copy(jsMaskedPath = jsMaskedPathErrMainOk),
-        serializeToBytes[TestDataDto],
-        Some(flinkSinkPropertiesDlq.copy(jsMaskedPath = jsMaskedPathDLQErr) -> serializeToBytes[OutDtoWithErrors[TestDataDto]]),
+        PropertyWithSerializer(flinkSinkProperties.copy(jsMaskedPath = jsMaskedPathErrMainOk),{ _.serializeToKafkaJsValue}),
+        Some(PropertyWithSerializer(flinkSinkPropertiesDlq.copy(jsMaskedPath = jsMaskedPathDLQErr) , { _.serializeToKafkaJsValue})),
         producerFactory[KafkaDto]
       )
     }
