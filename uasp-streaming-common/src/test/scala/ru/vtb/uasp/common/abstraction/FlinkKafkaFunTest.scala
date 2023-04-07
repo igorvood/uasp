@@ -496,7 +496,8 @@ object FlinkKafkaFunTest {
 
   private def producerProps(topicName: String) = {
     val properties = new Properties()
-    properties.putAll(Map("bootstrap.servers" -> "bootstrap.servers").asJava)
+
+    properties.put("bootstrap.servers" ,  "bootstrap.servers")
 
     val kafkaPrdProperty = KafkaPrdProperty(properties)
     FlinkSinkProperties(topicName, kafkaPrdProperty, None, None, None)

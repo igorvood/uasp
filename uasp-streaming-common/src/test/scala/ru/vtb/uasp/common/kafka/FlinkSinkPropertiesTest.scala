@@ -29,7 +29,8 @@ class FlinkSinkPropertiesTest extends AnyFlatSpec {
       .map(p => p._1.replace(PRD, "") -> p._2)
 
     val properties = new Properties()
-    properties.putAll(stringToString.asJava)
+    stringToString.foreach { q => properties.put(q._1, q._2)}
+//    properties.putAll(stringToString.asJava)
 
     val pathObject = JsMaskedPathObject(Map(
       "f1" -> JsStringMaskedPathValue(StringMaskAll()),

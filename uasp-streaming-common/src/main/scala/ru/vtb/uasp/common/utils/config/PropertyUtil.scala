@@ -149,7 +149,8 @@ object PropertyUtil extends Serializable {
 
     import scala.collection.JavaConverters.mapAsJavaMapConverter
     val properties = new Properties()
-    properties.putAll(replacedPh.asJava)
+    replacedPh.foreach { q => properties.put(q._1, q._2)}
+//    properties.putAll(replacedPh.asJava)
     properties
   }
 
