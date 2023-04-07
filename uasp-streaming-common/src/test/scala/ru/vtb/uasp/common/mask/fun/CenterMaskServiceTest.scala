@@ -2,7 +2,7 @@ package ru.vtb.uasp.common.mask.fun
 
 class CenterMaskServiceTest extends AbstractMaskedTest {
 
-  override val maskService: JsStringMaskedFun = new CenterMaskService("2","3")
+  override val maskService: JsStringMaskedFun = new CenterMaskService("2", "3")
 
   override val testCases: Map[String, String] = Map(
     "" -> "",
@@ -17,7 +17,7 @@ class CenterMaskServiceTest extends AbstractMaskedTest {
 
   "mask with cntEnd = 0 " should " OK" in {
     val service = new CenterMaskService("2", "0")
-    assert("12*****"==service.mask("1234567").value)
+    assert("12*****" == service.mask("1234567").value)
 
   }
 

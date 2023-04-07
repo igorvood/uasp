@@ -3,6 +3,7 @@ package ru.vtb.uasp.inputconvertor.validate
 import io.qameta.allure.Feature
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should
+import play.api.libs.json.Json
 import ru.vtb.uasp.common.dto.UaspDto
 import ru.vtb.uasp.inputconvertor.dao.CommonMsgAndProps.jsValueByType
 import ru.vtb.uasp.inputconvertor.utils.config.InputPropsModel
@@ -32,7 +33,7 @@ class Way4ValidateTest extends AnyFlatSpec with should.Matchers {
     val uaspDto = allProps.uaspDtoParser.fromJValue(commonMessage, allProps.dtoMap).head.get
     //val uaspDto =  UaspDto("sad", Map(),Map(),Map(),Map(),Map(),Map(),Map(),"asd", 9)
 
-    (uaspDto, allProps.droolsValidator)
+    (Json.fromJson[UaspDto](uaspDto).get, allProps.droolsValidator)
   }
 
   "The invalid UaspDto message with empty id" should "return one error message" in {

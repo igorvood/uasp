@@ -113,8 +113,9 @@ class UaspDtoConvertServiceTest extends AnyFlatSpec with MiniPipeLineTrait with 
     )
     assert(res.ok.nonEmpty)
     assert(res.dlq.isEmpty)
+
     res.ok
-      .foreach(d => assert(uaspDto == d.uaspDto))
+      .foreach(d => assert(uaspDto == Json.fromJson[UaspDto](d.uaspDto).get))
   }
 
   "return non empty list " should "be sen to ok and dlq" in {
@@ -128,8 +129,8 @@ class UaspDtoConvertServiceTest extends AnyFlatSpec with MiniPipeLineTrait with 
     assert(res.ok.size == 2)
     assert(res.dlq.size == 2)
 
-    assert(res.ok.contains(UaspAndKafkaKey(kafkaKey, uaspDto)))
-    assert(res.ok.contains(UaspAndKafkaKey(kafkaKey, dto)))
+    assert(res.ok.contains(UaspAndKafkaKey(kafkaKey, Json.toJson(uaspDto))))
+    assert(res.ok.contains(UaspAndKafkaKey(kafkaKey, Json.toJson(dto))))
 
     assert(res.dlq.contains(OutDtoWithErrors(serviceDataDto, Some("ru.vtb.uasp.inputconvertor.service.UaspDtoConvertService"), List("JsPath error =>Some Error"), Some(new JsObject(Map.empty)))))
     assert(res.dlq.contains(OutDtoWithErrors(serviceDataDto, Some("ru.vtb.uasp.inputconvertor.service.UaspDtoConvertService"), List(s"JsPath error =>Some Error1"), Some(new JsObject(Map.empty)))))
@@ -161,7 +162,7 @@ object UaspDtoConvertServiceTest {
 case class MockUaspDtoParser(v: List[JsResult[UaspDto]]) extends UaspDtoParser {
   override val propsModel: InputPropsModel = InputPropsModel(serviceDataDto, "mdm", null, null, null, false, "", None, 1, None)
 
-  override def fromJValue(mes: JsValue, dtoMap: Map[String, Array[String]]): List[JsResult[UaspDto]] = v
+  override def fromJValue(mes: JsValue, dtoMap: Map[String, Array[String]]): List[JsResult[JsValue]] = v.map(s => s.map(d=>Json.toJson(d)) )
 }
 
 class MockDroolsValidator extends DroolsValidator("way4" + "-validation-rules.drl") {

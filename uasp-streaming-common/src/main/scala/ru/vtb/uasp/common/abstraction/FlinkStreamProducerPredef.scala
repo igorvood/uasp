@@ -5,16 +5,18 @@ import org.apache.flink.api.scala.createTypeInformation
 import org.apache.flink.streaming.api.datastream.DataStreamSink
 import org.apache.flink.streaming.api.functions.sink.SinkFunction
 import org.apache.flink.streaming.api.scala.{DataStream, StreamExecutionEnvironment}
+import play.api.libs.json.{JsObject, JsValue, Json, OWrites}
 import ru.vtb.uasp.common.kafka.{FlinkConsumerProperties, FlinkSinkProperties}
+import ru.vtb.uasp.common.mask.MaskedPredef.MaskJsValuePredef
 import ru.vtb.uasp.common.mask.dto.{JsMaskedPath, JsMaskedPathError}
-import ru.vtb.uasp.common.service.JsonConvertOutService.JsonPredef
-import ru.vtb.uasp.common.service.dto.{KafkaDto, OutDtoWithErrors, ServiceDataDto}
+import ru.vtb.uasp.common.service.JsonConvertOutService.{JsonPredef, serializeToBytes}
+import ru.vtb.uasp.common.service.dto.{KafkaDto, KafkaJsValueDto, OutDtoWithErrors, PropertyWithSerializer, ServiceDataDto}
 
 object FlinkStreamProducerPredef {
 
   implicit class StreamFactory[IN](val self: DataStream[IN]) extends AnyVal {
     def processWithMaskedDqlF[OUT: TypeInformation](serviceData: ServiceDataDto,
-                                                    process: DlqProcessFunction[IN, OUT, OutDtoWithErrors[IN]],
+                                                    process: AbstractDlqProcessFunction[IN, OUT, OutDtoWithErrors[IN]],
                                                     sinkDlqProperty: Option[(FlinkSinkProperties, (OutDtoWithErrors[IN], Option[JsMaskedPath]) => Either[List[JsMaskedPathError], KafkaDto])],
                                                     producerFactory: FlinkSinkProperties => SinkFunction[KafkaDto],
                                                    ): DataStream[OUT] = {
@@ -23,7 +25,7 @@ object FlinkStreamProducerPredef {
     }
 
     def processWithMaskedDqlFC[OUT: TypeInformation, DLQ: TypeInformation](serviceData: ServiceDataDto,
-                                                                           process: DlqProcessFunction[IN, OUT, OutDtoWithErrors[DLQ]],
+                                                                           process: AbstractDlqProcessFunction[IN, OUT, OutDtoWithErrors[DLQ]],
                                                                            sinkDlqProperty: Option[(FlinkSinkProperties, (OutDtoWithErrors[DLQ], Option[JsMaskedPath]) => Either[List[JsMaskedPathError], KafkaDto])],
                                                                            producerFactory: FlinkSinkProperties => SinkFunction[KafkaDto],
                                                                           ): DataStream[OUT] = {
@@ -64,7 +66,7 @@ object FlinkStreamProducerPredef {
 
     @deprecated("use processWithMaskedDqlF")
     private [common] def processWithMaskedDql[OUT: TypeInformation](serviceData: ServiceDataDto,
-                                                   process: DlqProcessFunction[IN, OUT, OutDtoWithErrors[IN]],
+                                                   process: AbstractDlqProcessFunction[IN, OUT, OutDtoWithErrors[IN]],
                                                    sinkDlqProperty: Option[(FlinkSinkProperties, AbstractOutDtoWithErrorsMaskedSerializeService[IN])],
                                                    producerFactory: FlinkSinkProperties => SinkFunction[KafkaDto],
                                                   ): DataStream[OUT] = {
@@ -73,6 +75,38 @@ object FlinkStreamProducerPredef {
       val maybeProperties: Option[(FlinkSinkProperties, (OutDtoWithErrors[IN], Option[JsMaskedPath]) => Either[List[JsMaskedPathError], KafkaDto])] = abstractOutDtoToFun(sinkDlqProperty)
 
       processWithMaskedDqlF(serviceData, process, maybeProperties, producerFactory)
+    }
+
+
+    def maskedProducerFErr(serviceData: ServiceDataDto,
+                           dlqSinkPropertyWithSerializer:                            PropertyWithSerializer[IN],
+//                           dlqSinkProperty: FlinkSinkProperties,
+//                           serializer: IN => KafkaJsValueDto, // serializeToKafkaJsValue(val)  == val.serializeToKafkaJsValue
+                           producerFactory: FlinkSinkProperties => SinkFunction[KafkaDto],
+                           serializeFun: OutDtoWithErrors[IN] => KafkaJsValueDto, // serializeToKafkaJsValue(val)
+                       ): DataStreamSink[KafkaDto] = {
+      implicit val typeInformationIn: TypeInformation[IN] = self.dataType
+
+      val mf : (IN, Option[JsMaskedPath]) => Either[List[JsMaskedPathError], KafkaDto] ={(q,w )=>
+        val dto = dlqSinkPropertyWithSerializer.serializerToKafkaJsValue(q)
+         w
+          .map(mp => dto.jsValue.toMaskedJson(mp))
+          .getOrElse(Right(dto.jsValue))
+          .map(s =>KafkaDto(dto.id.getBytes(), Json.stringify(s).getBytes()) )
+      }
+
+      FlinkKafkaFun.createProducerWithMetric[IN](
+        self,
+        serviceData,
+        dlqSinkPropertyWithSerializer.flinkSinkProperties,
+        mf,
+        Some(value = dlqSinkPropertyWithSerializer.flinkSinkProperties -> { (q: OutDtoWithErrors[IN], w: Option[JsMaskedPath]) =>
+          val dto = serializeFun(q.copy(data = None))
+          Right(KafkaDto(dto.id.getBytes(), Json.stringify(dto.jsValue).getBytes()))
+        }),
+//        None,
+        producerFactory
+      )
     }
 
     def maskedProducerF(serviceData: ServiceDataDto,
@@ -119,7 +153,7 @@ object FlinkStreamProducerPredef {
                                                          serviceData: ServiceDataDto,
                                                          consumerProperties: FlinkConsumerProperties,
                                                          dlqProducer: Option[FlinkSinkProperties],
-                                                         serialisationProcessFunction: DlqProcessFunction[Array[Byte], O, JsMaskedPathError],
+                                                         serialisationProcessFunction: AbstractDlqProcessFunction[Array[Byte], O, JsMaskedPathError],
                                                          producerFactory: FlinkSinkProperties => SinkFunction[KafkaDto]
                                                        ): DataStream[O] = {
       val consumer = consumerProperties.createConsumer()

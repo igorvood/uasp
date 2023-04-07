@@ -2,6 +2,7 @@ package ru.vtb.uasp.inputconvertor.dao
 
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should
+import play.api.libs.json.Json
 import ru.vtb.uasp.common.dto.UaspDto
 import ru.vtb.uasp.inputconvertor.UaspDtostandardFactory
 import ru.vtb.uasp.inputconvertor.dao.CommonMsgAndProps.jsValueByType
@@ -23,7 +24,8 @@ class IssuingCardUaspDtoTest extends AnyFlatSpec with should.Matchers {
 
     val commonMessage = jsValueByType(allProps.uaspdtoType)
 
-    val uaspDto: UaspDto = allProps.uaspDtoParser.fromJValue(commonMessage, allProps.dtoMap).head.get
+    val value1 = allProps.uaspDtoParser.fromJValue(commonMessage, allProps.dtoMap).head.get
+    val uaspDto: UaspDto = Json.fromJson[UaspDto](value1).get
 
     val standardUaspDto = UaspDtostandardFactory("issuing-card").getstandardUaspDto(uaspDto.uuid).copy(process_timestamp = uaspDto.process_timestamp)
     standardUaspDto shouldEqual uaspDto

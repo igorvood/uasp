@@ -3,7 +3,7 @@ package ru.vtb.uasp.inputconvertor.dao
 import io.qameta.allure.Feature
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should
-import play.api.libs.json.JsSuccess
+import play.api.libs.json.{JsSuccess, Json}
 import ru.vtb.uasp.common.dto.UaspDto
 import ru.vtb.uasp.inputconvertor.UaspDtostandardFactory
 import ru.vtb.uasp.inputconvertor.dao.CommonMsgAndProps.jsValueByType
@@ -29,7 +29,9 @@ class MDMUaspDtoDaoTest extends AnyFlatSpec with should.Matchers {
 
     val list = allProps.uaspDtoParser.fromJValue(commonMessage, allProps.dtoMap)
 
-    val uaspDto = list.collect { case d: JsSuccess[UaspDto] => d.value }.head
+    val dtoes = list.map(s => Json.fromJson[UaspDto](s.get))
+
+    val uaspDto = dtoes.collect { case d: JsSuccess[UaspDto] => d.value }.head
 
     val standardUaspDto = UaspDtostandardFactory("mdm").getstandardUaspDto(uaspDto.uuid).copy(dataBoolean = Map("is_deleted" -> true))
     assert(uaspDto.copy(process_timestamp = standardUaspDto.process_timestamp) == standardUaspDto)

@@ -2,6 +2,7 @@ package ru.vtb.uasp.inputconvertor.dao
 
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should
+import play.api.libs.json.Json
 import ru.vtb.uasp.common.dto.UaspDto
 import ru.vtb.uasp.inputconvertor.UaspDtostandardFactory
 import ru.vtb.uasp.inputconvertor.dao.CommonMsgAndProps.jsValueByType
@@ -23,7 +24,8 @@ class UddsUaspDtoDaoTest extends AnyFlatSpec with should.Matchers {
 
     val commonMessage = jsValueByType(inputPropsModel.uaspdtoType)
 
-    val uaspDto: UaspDto = inputPropsModel.uaspDtoParser.fromJValue(commonMessage, inputPropsModel.dtoMap).head.get
+    val value1 = inputPropsModel.uaspDtoParser.fromJValue(commonMessage, inputPropsModel.dtoMap).head.get
+    val uaspDto: UaspDto = Json.fromJson[UaspDto](value1).get
 
     val standardUaspDto: UaspDto = UaspDtostandardFactory("udds").getstandardUaspDto(uaspDto.uuid).copy(process_timestamp = uaspDto.process_timestamp)
 

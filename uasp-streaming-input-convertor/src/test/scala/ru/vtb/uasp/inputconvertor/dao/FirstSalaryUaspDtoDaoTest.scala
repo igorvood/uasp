@@ -3,6 +3,7 @@ package ru.vtb.uasp.inputconvertor.dao
 import io.qameta.allure.Feature
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should
+import play.api.libs.json.Json
 import ru.vtb.uasp.common.dto.UaspDto
 import ru.vtb.uasp.inputconvertor.UaspDtostandardFactory
 import ru.vtb.uasp.inputconvertor.dao.CommonMsgAndProps.jsValueByType
@@ -28,7 +29,7 @@ class FirstSalaryUaspDtoDaoTest extends AnyFlatSpec with should.Matchers {
     val commonMessage = jsValueByType(allProps.uaspdtoType)
 
     val head = allProps.uaspDtoParser.fromJValue(commonMessage, allProps.dtoMap).head
-    val uaspDto: UaspDto = head.get
+    val uaspDto: UaspDto = Json.fromJson[UaspDto](head.get).get
 
     val standardUaspDto = UaspDtostandardFactory("first-salary").getstandardUaspDto(uaspDto.uuid).copy(process_timestamp = uaspDto.process_timestamp)
     assert(uaspDto == standardUaspDto)

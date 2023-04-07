@@ -1,7 +1,7 @@
 package ru.vtb.uasp.inputconvertor.dao
 
 import com.eatthepath.uuid.FastUUID
-import play.api.libs.json.{JsError, JsResult, JsSuccess, JsValue}
+import play.api.libs.json.{JsError, JsResult, JsSuccess, JsValue, Json}
 import ru.vtb.uasp.common.dto.UaspDto
 import ru.vtb.uasp.inputconvertor.dao.CommonDao.getMapEntry
 import ru.vtb.uasp.inputconvertor.dao.dto.RatesDto
@@ -10,13 +10,14 @@ import java.time.{LocalDateTime, ZoneId}
 import java.util.UUID
 
 object CurrencyUaspDtoDao {
-  def fromJValue(inMessage: JsValue, dtoMap: Map[String, Array[String]]): List[JsResult[UaspDto]] = {
+  def fromJValue(inMessage: JsValue, dtoMap: Map[String, Array[String]]): List[JsResult[JsValue]] = {
 
 
     val value = inMessage.validate[RatesDto]
 
     val value1 = value.map(rr => rr.rates.map(r =>
-      UaspDto(
+      Json.toJson(
+        UaspDto(
         id = rr.id,
         uuid = FastUUID.toString(UUID.randomUUID),
         process_timestamp = LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant.toEpochMilli,
@@ -31,6 +32,7 @@ object CurrencyUaspDtoDao {
           getMapEntry[String](dtoMap("app.uaspdto.fields.rates_currency_alphaCode")(0), r.currency.alphaCode)
         ),
         dataBoolean = Map.empty
+      )
       )
     )
     )

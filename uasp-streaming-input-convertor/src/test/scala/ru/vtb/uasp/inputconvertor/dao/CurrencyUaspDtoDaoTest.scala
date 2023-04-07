@@ -3,7 +3,7 @@ package ru.vtb.uasp.inputconvertor.dao
 import io.qameta.allure.Feature
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should
-import play.api.libs.json.{JsResult, JsSuccess}
+import play.api.libs.json.{JsResult, JsSuccess, Json}
 import ru.vtb.uasp.common.dto.UaspDto
 import ru.vtb.uasp.inputconvertor.dao.CommonMsgAndProps.jsValueByType
 import ru.vtb.uasp.inputconvertor.utils.config.InputPropsModel
@@ -27,7 +27,8 @@ class CurrencyUaspDtoDaoTest extends AnyFlatSpec with should.Matchers {
       jsonSplitElement = Some("rates"))
 
     val commonMessage = jsValueByType(allProps.uaspdtoType)
-    val list: List[JsResult[UaspDto]] = allProps.uaspDtoParser.fromJValue(commonMessage, allProps.dtoMap)
+    val list1 = allProps.uaspDtoParser.fromJValue(commonMessage, allProps.dtoMap)
+    val list: List[JsResult[UaspDto]] = list1.map(s => Json.fromJson[UaspDto](s.get))
 
     val dtoes: List[UaspDto] = list.collect { case d: JsSuccess[UaspDto] => d.value }
 

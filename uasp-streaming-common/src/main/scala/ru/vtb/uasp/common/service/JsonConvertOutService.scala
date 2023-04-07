@@ -1,10 +1,10 @@
 package ru.vtb.uasp.common.service
 
-import play.api.libs.json.{Json, OWrites}
+import play.api.libs.json.{JsValue, Json, OWrites}
 import ru.vtb.uasp.common.dto.Identity
 import ru.vtb.uasp.common.mask.MaskedPredef.MaskJsValuePredef
 import ru.vtb.uasp.common.mask.dto.{JsMaskedPath, JsMaskedPathError}
-import ru.vtb.uasp.common.service.dto.{KafkaDto, KafkaStrDto}
+import ru.vtb.uasp.common.service.dto.{KafkaDto, KafkaJsValueDto, KafkaStrDto}
 
 object JsonConvertOutService extends Serializable {
 
@@ -12,6 +12,8 @@ object JsonConvertOutService extends Serializable {
     serializeToStr(value, maskedRule)
       .map(d => KafkaDto(d.id.getBytes(), d.value.getBytes()))
   }
+
+  def serializeToKafkaJsValue[T <: Identity](value: T)(implicit oWrites: OWrites[T]): KafkaJsValueDto = KafkaJsValueDto(value.id, Json.toJson(value))
 
   def serializeToBytes[T](value: T, maskedRule: Option[JsMaskedPath])(implicit oWrites: OWrites[T]): Either[List[JsMaskedPathError], KafkaDto] = {
     value.serializeToBytes(maskedRule)
@@ -39,6 +41,8 @@ object JsonConvertOutService extends Serializable {
 
     private [common] def serializeToBytes(implicit oWrites: OWrites[T]): KafkaDto = JsonConvertOutService.serializeToBytesIdentity(self, None).right.get
 
+    def serializeToKafkaJsValue(implicit oWrites: OWrites[T]): KafkaJsValueDto = KafkaJsValueDto(self.id, Json.toJson(self))
+
     def serializeToBytes(maskedRule: Option[JsMaskedPath])(implicit oWrites: OWrites[T]): Either[List[JsMaskedPathError], KafkaDto] = JsonConvertOutService.serializeToBytesIdentity(self, maskedRule)
 
     def serializeToStr(maskedRule: Option[JsMaskedPath])(implicit oWrites: OWrites[T]): Either[List[JsMaskedPathError], KafkaStrDto] = JsonConvertOutService.serializeToStr(self, maskedRule)
@@ -51,6 +55,7 @@ object JsonConvertOutService extends Serializable {
       serializeToBytes(None).right.get
     }
 
+    def serializeToKafkaJsValue(implicit oWrites: OWrites[T]): KafkaJsValueDto = KafkaJsValueDto(java.util.UUID.randomUUID().toString, Json.toJson(self))
     def serializeToBytes(maskedRule: Option[JsMaskedPath])(implicit oWrites: OWrites[T]): Either[List[JsMaskedPathError], KafkaDto] =
       serializeToBytes(java.util.UUID.randomUUID().toString, maskedRule)
 
@@ -61,6 +66,14 @@ object JsonConvertOutService extends Serializable {
       ))
 
     }
+
+  }
+
+  implicit class JsonValuePredef(val self: JsValue) extends AnyVal {
+
+
+    def serializeToBytes(id: String): KafkaDto = KafkaDto(id.getBytes(), Json.stringify(self).getBytes())
+
 
   }
 

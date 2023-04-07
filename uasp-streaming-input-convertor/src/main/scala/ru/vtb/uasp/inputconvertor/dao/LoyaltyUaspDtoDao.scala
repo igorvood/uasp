@@ -1,7 +1,7 @@
 package ru.vtb.uasp.inputconvertor.dao
 
 import com.eatthepath.uuid.FastUUID
-import play.api.libs.json.{JsResult, JsValue}
+import play.api.libs.json.{JsResult, JsValue, Json}
 import ru.vtb.uasp.common.dto.UaspDto
 import ru.vtb.uasp.inputconvertor.dao.CommonDao.{getMapEntry, mapCollect}
 import ru.vtb.uasp.inputconvertor.dao.dto.LoyaltyUaspDto
@@ -14,7 +14,7 @@ import java.util.UUID
 object LoyaltyUaspDtoDao {
   lazy val systemSource = "loyalty"
 
-  def fromJValue(inMessage: JsValue, propsModel: InputPropsModel, dtoMap: Map[String, Array[String]]): List[JsResult[UaspDto]] = {
+  def fromJValue(inMessage: JsValue, propsModel: InputPropsModel, dtoMap: Map[String, Array[String]]): List[JsResult[JsValue]] = {
 
     val value = inMessage.validate[LoyaltyUaspDto]
 
@@ -43,7 +43,7 @@ object LoyaltyUaspDtoDao {
         dataBoolean = Map.empty
       )
     }
-    )
+    ).map(d => Json.toJson(d))
     List(value1)
 
   }

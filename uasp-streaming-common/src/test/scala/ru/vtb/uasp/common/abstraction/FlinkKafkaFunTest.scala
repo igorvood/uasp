@@ -7,14 +7,14 @@ import play.api.libs.json.OFormat.oFormatFromReadsAndOWrites
 import play.api.libs.json.{JsValue, Json}
 import ru.vtb.uasp.common.abstraction.FlinkKafkaFunTest._
 import ru.vtb.uasp.common.abstraction.FlinkStreamProducerPredef.StreamFactory
-import ru.vtb.uasp.common.test.MiniPipeLineTrait.valuesTestDataDto
 import ru.vtb.uasp.common.kafka.FlinkSinkProperties
 import ru.vtb.uasp.common.mask.MaskedPredef.PathFactory
 import ru.vtb.uasp.common.mask.MaskedStrPathWithFunName
 import ru.vtb.uasp.common.service.JsonConvertInService
-import ru.vtb.uasp.common.service.JsonConvertOutService.serializeToBytes
-import ru.vtb.uasp.common.service.dto.{KafkaDto, OutDtoWithErrors, ServiceDataDto}
+import ru.vtb.uasp.common.service.JsonConvertOutService.{JsonPredef, serializeToBytes}
+import ru.vtb.uasp.common.service.dto.{KafkaDto, OutDtoWithErrors, PropertyWithSerializer, ServiceDataDto}
 import ru.vtb.uasp.common.test.MiniPipeLineTrait
+import ru.vtb.uasp.common.test.MiniPipeLineTrait.valuesTestDataDto
 import ru.vtb.uasp.common.utils.config.kafka.KafkaPrdProperty
 
 import java.util.Properties
@@ -288,6 +288,88 @@ class FlinkKafkaFunTest extends AnyFlatSpec with MiniPipeLineTrait with Serializ
     }
 
     maskedProducerFErrMainDLQOk(flinkPipe)
+  }
+
+  "maskedProducerF маскирование основного сообщения с ошибкой, маскирование DLQ без ошибки " should " OK" in {
+
+    implicit val serviceDataDtoIm = serviceDataDto
+    val flinkPipe: DataStream[OutDtoWithErrors[TestDataDto]] => Unit = { ds =>
+
+
+      val value = ds.maskedProducerF(
+        serviceDataDto,
+        flinkSinkProperties.copy(jsMaskedPath = jsMaskedPathDLQErr),
+        serializeToBytes[OutDtoWithErrors[TestDataDto]],
+        Some(flinkSinkProperties.copy(jsMaskedPath = jsMaskedPathDLQOk) -> { (q, _) =>
+          serializeToBytes[OutDtoWithErrors[OutDtoWithErrors[TestDataDto]]](q.copy(data = None), None)
+        }),
+        producerFactory
+      )
+    }
+    val someString = Some("TEST pos")
+    val dto: List[OutDtoWithErrors[TestDataDto]] = listTestDataDto.map(td => {
+
+      OutDtoWithErrors(serviceDataDto, someString, List("some error"), Some(td))
+    })
+    pipeRun(dto, flinkPipe)
+
+    assertResult(1)(valuesTestDataDto.size)
+
+    val listErrs = topicDataArray[KafkaDto](flinkSinkProperties)
+    val list = listErrs
+      .map { by =>
+        JsonConvertInService.deserialize[OutDtoWithErrors[TestDataDto]](by.value).right.get
+      }
+    assertResult(1)(list.size)
+
+    val errs = list.head
+    assert(errs.data.isEmpty)
+    assert(errs.errorPosition == Some("ru.vtb.uasp.common.abstraction.FlinkKafkaFun$$anon$1"))
+  }
+
+  "maskedProducerFErr маскирование основного сообщения с ошибкой, маскирование DLQ без ошибки " should " OK" in {
+
+    implicit val serviceDataDtoIm: ServiceDataDto = serviceDataDto
+    val flinkPipe: DataStream[OutDtoWithErrors[TestDataDto]] => Unit = { ds =>
+
+
+      val propertyWithSerializer = PropertyWithSerializer[OutDtoWithErrors[TestDataDto]](
+        flinkSinkProperties.copy(jsMaskedPath = jsMaskedPathDLQErr),
+        {
+          _.serializeToKafkaJsValue
+        }
+      )
+      val value = ds.maskedProducerFErr(
+        serviceDataDto,
+        propertyWithSerializer,
+        producerFactory,
+        {
+          _.serializeToKafkaJsValue
+        }
+      )
+    }
+    val someString = Some("TEST pos")
+    val dto: List[OutDtoWithErrors[TestDataDto]] = listTestDataDto.map(td => {
+
+      OutDtoWithErrors(serviceDataDto, someString, List("some error"), Some(td))
+    })
+    pipeRun(dto, flinkPipe)
+
+    assertResult(1)(valuesTestDataDto.size)
+
+    val listErrs = topicDataArray[KafkaDto](flinkSinkProperties)
+    val list = listErrs
+      .map { by =>
+        JsonConvertInService.deserialize[OutDtoWithErrors[TestDataDto]](by.value).right.get
+      }
+    assertResult(1)(list.size)
+
+    val errs = list.head
+    assert(errs.data.isEmpty)
+    assert(errs.errorPosition.contains("ru.vtb.uasp.common.abstraction.FlinkKafkaFun$$anon$1"))
+    assert(errs.errors == List("createProducerWithMetric: Unable to mask dto ru.vtb.uasp.common.service.dto.OutDtoWithErrors. Masked rule Some(JsMaskedPathObject(Map(data -> JsMaskedPathObject(Map(srt -> JsNumberMaskedPathValue(NumberMaskAll()))))))",
+      "Unable to masked value wrapper class  class play.api.libs.json.JsString with function -> class ru.vtb.uasp.common.mask.dto.JsNumberMaskedPathValue"
+    ))
   }
 
   "maskedProducer Ошибка при маскировании основного сообщения, маскирование DLQ без ошибки " should " OK" in {

@@ -3,6 +3,7 @@ package ru.vtb.uasp.inputconvertor.dao
 import io.qameta.allure.Feature
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should
+import play.api.libs.json.Json
 import ru.vtb.uasp.common.dto.UaspDto
 import ru.vtb.uasp.inputconvertor.UaspDtostandardFactory
 import ru.vtb.uasp.inputconvertor.dao.CommonMsgAndProps.jsValueByType
@@ -26,7 +27,8 @@ class WithdrawWay4UaspDtoDaoTest extends AnyFlatSpec with should.Matchers {
 
     val commonMessage = jsValueByType(allProp.uaspdtoType)
 
-    val uaspDto: UaspDto = allProp.uaspDtoParser.fromJValue(commonMessage, allProp.dtoMap).head.get
+    val value1 = allProp.uaspDtoParser.fromJValue(commonMessage, allProp.dtoMap).head.get
+    val uaspDto: UaspDto = Json.fromJson[UaspDto](value1).get
     val standardUaspDto: UaspDto = UaspDtostandardFactory("way4").getstandardUaspDto(uaspDto.uuid)
 
     val dto: UaspDto = uaspDto.copy(

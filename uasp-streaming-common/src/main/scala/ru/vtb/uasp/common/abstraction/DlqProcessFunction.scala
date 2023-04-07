@@ -5,9 +5,7 @@ import org.apache.flink.streaming.api.functions.ProcessFunction
 import org.apache.flink.streaming.api.scala.OutputTag
 import org.apache.flink.util.Collector
 
-abstract class DlqProcessFunction[I, O, DLQ: TypeInformation] extends ProcessFunction[I, O] {
-
-  val dlqOutPut: OutputTag[DLQ] = OutputTag[DLQ]("dlq_tag")
+abstract class DlqProcessFunction[I, O, DLQ: TypeInformation] extends AbstractDlqProcessFunction[I, O, DLQ] {
 
   def processWithDlq(dto: I): Either[DLQ, O]
 

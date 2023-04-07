@@ -1,10 +1,10 @@
 package ru.vtb.uasp.inputconvertor.dao
 
 import com.eatthepath.uuid.FastUUID
-import play.api.libs.json.{JsResult, JsValue}
+import play.api.libs.json.{JsResult, JsValue, Json}
 import ru.vtb.uasp.common.dto.UaspDto
-import ru.vtb.uasp.inputconvertor.dao.CommonDao.{dtStringToLong, getMapEntry, getMapO, mapCollect}
-import ru.vtb.uasp.inputconvertor.dao.dto.{FirstSalaryUaspDto, Transaction, Way4UaspDto}
+import ru.vtb.uasp.inputconvertor.dao.CommonDao.{getMapEntry, getMapO, mapCollect}
+import ru.vtb.uasp.inputconvertor.dao.dto.FirstSalaryUaspDto
 import ru.vtb.uasp.inputconvertor.utils.config.InputPropsModel
 import ru.vtb.uasp.inputconvertor.utils.hash.HashUtils
 
@@ -15,7 +15,7 @@ object FirstSalaryUaspDtoDao {
 
   lazy val systemSource = "CFT2RS"
 
-  def fromJValue(inMessage: JsValue, propsModel: InputPropsModel, dtoMap: Map[String, Array[String]]): List[JsResult[UaspDto]] = {
+  def fromJValue(inMessage: JsValue, propsModel: InputPropsModel, dtoMap: Map[String, Array[String]]): List[JsResult[JsValue]] = {
     val value1 = inMessage.validate[FirstSalaryUaspDto]
       .map { dj =>
         UaspDto(
@@ -53,6 +53,7 @@ object FirstSalaryUaspDtoDao {
 
         )
       }
+      .map(d => Json.toJson(d))
 
     List(value1)
 

@@ -22,7 +22,7 @@ class TransformHelperTest extends AnyFlatSpec {
           SysDto(
             "95000",
             "456",
-            "1"
+            true
           )
         )
       )

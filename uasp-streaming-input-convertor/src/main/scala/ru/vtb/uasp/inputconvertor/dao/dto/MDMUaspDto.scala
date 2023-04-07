@@ -1,6 +1,7 @@
 package ru.vtb.uasp.inputconvertor.dao.dto
 
-import play.api.libs.json.{Json, OWrites, Reads}
+import play.api.libs.functional.syntax.toFunctionalBuilderOps
+import play.api.libs.json._
 
 
 case class SysDtoParam(partyUId: String,
@@ -10,9 +11,8 @@ case class SysDtoParam(partyUId: String,
 
 case class SysDto(systemNumber: String,
                   externalId: String,
-                  is_deleted: String,
+                  is_deleted: Boolean,
                  )
-
 
 object SysDtoParam {
 
@@ -21,10 +21,23 @@ object SysDtoParam {
 
 }
 
-
 object SysDto {
 
-  implicit val uaspJsonReads: Reads[SysDto] = Json.reads[SysDto]
+  implicit val reads1: Reads[SysDto] =
+    (
+      (__ \ "systemNumber").read[String] and
+        (__ \ "externalId").read[String] and
+        (__ \ "is_deleted").read[String] //(Reads.min("0") keepAnd Reads.max("1"))
+          .flatMapResult {
+
+            case "1" => JsSuccess(true)
+            case "0" => JsSuccess(false)
+            case er => JsError(s"is_deleted must be 0 or 1, current value is $er")
+
+          }
+      ) (SysDto.apply _)
+
+
   implicit val uaspJsonWrites: OWrites[SysDto] = Json.writes[SysDto]
 
 }

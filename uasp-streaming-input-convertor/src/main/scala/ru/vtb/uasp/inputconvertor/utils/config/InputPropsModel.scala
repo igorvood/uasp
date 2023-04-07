@@ -6,7 +6,7 @@ import ru.vtb.uasp.common.mask.dto.{JsMaskedPath, JsMaskedPathError}
 import ru.vtb.uasp.common.service.JsonConvertOutService.serializeToBytes
 import ru.vtb.uasp.common.service.dto.{KafkaDto, OutDtoWithErrors, ServiceDataDto}
 import ru.vtb.uasp.common.utils.config.ConfigUtils.getPropsFromResourcesFile
-import ru.vtb.uasp.common.utils.config.PropertyUtil.{propertyVal, propertyValOptional, s, i}
+import ru.vtb.uasp.common.utils.config.PropertyUtil.{i, propertyVal, propertyValOptional, s}
 import ru.vtb.uasp.common.utils.config.{AllApplicationProperties, ConfigurationInitialise, ReadConfigErrors}
 import ru.vtb.uasp.inputconvertor.factory.{UaspDtoParser, UaspDtoParserFactory}
 import ru.vtb.uasp.inputconvertor.service.UaspDtoConvertService
@@ -38,7 +38,7 @@ case class InputPropsModel(
   lazy val uaspDtoParser: UaspDtoParser = UaspDtoParserFactory(this)
 
 
-  val uaspDtoConvertService = new UaspDtoConvertService(uaspDtoParser, droolsValidator,serviceData, dtoMap)
+  val uaspDtoConvertService = new UaspDtoConvertService(uaspDtoParser, droolsValidator, serviceData, dtoMap)
 
   val sinkDlqProperty: Option[(FlinkSinkProperties, (OutDtoWithErrors[JsValue], Option[JsMaskedPath]) => Either[List[JsMaskedPathError], KafkaDto])] =
     Some(dlqSink -> { (q, w) => serializeToBytes[OutDtoWithErrors[JsValue]](q, w) })

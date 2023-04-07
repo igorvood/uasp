@@ -28,5 +28,7 @@ package object UaspdtoTypeEnum extends Enumeration {
   val CUSTOMER_PROFILE_FULL = Val({ propsModel => new CustomerProfileFullUaspDtoStandart(propsModel) })
   val UDDS = Val({ propsModel => new UddsUaspDtoParser(propsModel) })
   val LOYALTY = Val({ propsModel => new LoyaltyUaspDtoParser(propsModel) })
+  val CLOSE_ACCOUNT = Val({ propsModel => new CloseAccountDtoParser(propsModel) })
+
 
 }

@@ -27,7 +27,8 @@ class CardFlDtoDaoTest extends AnyFlatSpec with should.Matchers {
 
     val commonMessage = jsValueByType(allProp.uaspdtoType)
 
-    val uaspDto: UaspDto = allProp.uaspDtoParser.fromJValue(commonMessage, allProp.dtoMap).head.get
+    val value1 = allProp.uaspDtoParser.fromJValue(commonMessage, allProp.dtoMap).head.get
+    val uaspDto: UaspDto = Json.fromJson[UaspDto](value1).get
 
     val standardUaspDto: UaspDto = UaspDtostandardFactory("cardfl").getstandardUaspDto(uaspDto.uuid).copy(process_timestamp = uaspDto.process_timestamp)
 
@@ -44,7 +45,9 @@ class CardFlDtoDaoTest extends AnyFlatSpec with should.Matchers {
     val value1: JsValue = Json.parse(jsonMessageStr)
 
 
-    val uaspDto: UaspDto = allProp.uaspDtoParser.fromJValue(value1, allProp.dtoMap).head.get
+    val value2 = allProp.uaspDtoParser.fromJValue(value1, allProp.dtoMap).head.get
+
+    val uaspDto: UaspDto = Json.fromJson[UaspDto](value2).get
 
     val standardUaspDto: UaspDto = UaspDtostandardFactory("cardflNull").getstandardUaspDto(uaspDto.uuid).copy(process_timestamp = uaspDto.process_timestamp)
 

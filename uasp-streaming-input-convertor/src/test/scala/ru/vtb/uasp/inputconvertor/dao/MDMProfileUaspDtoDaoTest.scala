@@ -2,6 +2,7 @@ package ru.vtb.uasp.inputconvertor.dao
 
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should
+import play.api.libs.json.Json
 import ru.vtb.uasp.common.dto.UaspDto
 import ru.vtb.uasp.inputconvertor.UaspDtostandardFactory
 import ru.vtb.uasp.inputconvertor.dao.CommonMsgAndProps.jsValueByType
@@ -26,7 +27,8 @@ class MDMProfileUaspDtoDaoTest extends AnyFlatSpec with should.Matchers {
 
     val list = allProps.uaspDtoParser.fromJValue(commonMessage, allProps.dtoMap)
 
-    val uaspDto: UaspDto = list.head.get
+    val value1 = list.head.get
+    val uaspDto: UaspDto = Json.fromJson[UaspDto](value1).get
 
 
     val standardUaspDto = UaspDtostandardFactory("mdm").getstandardUaspDto(uaspDto.uuid).copy(dataBoolean = Map("is_deleted" -> true))

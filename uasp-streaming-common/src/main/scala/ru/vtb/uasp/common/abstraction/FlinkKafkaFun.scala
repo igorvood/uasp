@@ -59,7 +59,7 @@ object FlinkKafkaFun {
 
   private[common] def processAndDlqSinkWithMetric[IN: TypeInformation, OUT: TypeInformation](self: DataStream[IN],
                                                                                              serviceData: ServiceDataDto,
-                                                                                             process: DlqProcessFunction[IN, OUT, OutDtoWithErrors[IN]],
+                                                                                             process: AbstractDlqProcessFunction[IN, OUT, OutDtoWithErrors[IN]],
                                                                                              sinkDlqProperty: Option[(FlinkSinkProperties, (OutDtoWithErrors[IN], Option[JsMaskedPath]) => Either[List[JsMaskedPathError], KafkaDto])],
                                                                                              producerFactory: FlinkSinkProperties => SinkFunction[KafkaDto],
                                                                                             ): DataStream[OUT] = {
@@ -98,10 +98,7 @@ object FlinkKafkaFun {
           .map(value1)
         privateCreateProducerWithMetric(dlqStream, serviceData, sf._1, producerFactory)
       }
-
-
       }
-
     myBeDlq
   }
 

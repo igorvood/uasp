@@ -5,7 +5,7 @@ import play.api.libs.json.OFormat.oFormatFromReadsAndOWrites
 import play.api.libs.json.{Json, OWrites, Reads}
 import ru.vtb.uasp.common.mask.MaskedPredef.{MaskJsValuePredef, PathFactory}
 import ru.vtb.uasp.common.mask.MaskedStrPathWithFunName
-import ru.vtb.uasp.common.mask.fun.{AccountMask, AddressMaskService, BooleanMaskAll, CenterMaskService, EMailMask, FloatLengthCommonMaskService, NameMaskService, NumberMaskAll, PassportDepartmentMaskService, PassportNumberInStrMaskService, PhoneStrMaskService, StringMaskAll}
+import ru.vtb.uasp.common.mask.fun._
 import ru.vtb.uasp.common.test.MiniPipeLineTrait
 
 class MaskTest extends AnyFlatSpec with MiniPipeLineTrait with Serializable {
@@ -29,7 +29,7 @@ class MaskTest extends AnyFlatSpec with MiniPipeLineTrait with Serializable {
 
       AddressMaskService.getClass.getName.replace("$", ""),
       BooleanMaskAll.getClass.getName.replace("$", ""),
-      CenterMaskService.getClass.getName.replace("$", "")+"(1,1)",
+      CenterMaskService.getClass.getName.replace("$", "") + "(1,1)",
       EMailMask.getClass.getName.replace("$", ""),
       FloatLengthCommonMaskService.getClass.getName.replace("$", ""),
       NameMaskService.getClass.getName.replace("$", ""),
@@ -41,7 +41,7 @@ class MaskTest extends AnyFlatSpec with MiniPipeLineTrait with Serializable {
     ).map { f => List(MaskedStrPathWithFunName("str", f)).toJsonPath }
 
     val list = errorsOrPaths
-      .collect { case Left(value) => value}
+      .collect { case Left(value) => value }
 
     assert(list.isEmpty)
 
