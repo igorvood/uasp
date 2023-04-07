@@ -21,7 +21,6 @@ import ru.vtb.uasp.validate.DroolsValidator
 import ru.vtb.uasp.validate.entity.ValidateMsg
 
 import java.util.Properties
-import scala.collection.JavaConverters.mapAsJavaMapConverter
 
 class UaspDtoConvertServiceTest extends AnyFlatSpec with MiniPipeLineTrait with Serializable {
 
@@ -46,7 +45,9 @@ class UaspDtoConvertServiceTest extends AnyFlatSpec with MiniPipeLineTrait with 
       value2.print()
 
       value2.maskedProducerF(serviceDataDto,
-        PropertyWithSerializer( flinkSinkPropertiesOK,{_.serializeToKafkaJsValue}),
+        PropertyWithSerializer(flinkSinkPropertiesOK, {
+          _.serializeToKafkaJsValue
+        }),
         None,
         producerFactory[KafkaDto]
       )
@@ -144,7 +145,7 @@ object UaspDtoConvertServiceTest {
 
   def producerProps(topicName: String) = {
     val properties = new Properties()
-    properties.put("bootstrap.servers" , "bootstrap.servers")
+    properties.put("bootstrap.servers", "bootstrap.servers")
 
     val kafkaPrdProperty = KafkaPrdProperty(properties)
     FlinkSinkProperties(topicName, kafkaPrdProperty, None, None, None)
@@ -159,7 +160,7 @@ object UaspDtoConvertServiceTest {
 case class MockUaspDtoParser(v: List[JsResult[UaspDto]]) extends UaspDtoParser {
   override val propsModel: InputPropsModel = InputPropsModel(serviceDataDto, "mdm", null, null, null, false, "", None, 1, None)
 
-  override def fromJValue(mes: JsValue, dtoMap: Map[String, Array[String]]): List[JsResult[JsValue]] = v.map(s => s.map(d=>Json.toJson(d)) )
+  override def fromJValue(mes: JsValue, dtoMap: Map[String, Array[String]]): List[JsResult[JsValue]] = v.map(s => s.map(d => Json.toJson(d)))
 }
 
 class MockDroolsValidator extends DroolsValidator("way4" + "-validation-rules.drl") {

@@ -24,7 +24,6 @@ import ru.vtb.uasp.inputconvertor.service.dto.UaspAndKafkaKey
 import ru.vtb.uasp.inputconvertor.utils.config.InputPropsModel
 
 import java.util.Properties
-import scala.collection.JavaConverters.mapAsJavaMapConverter
 
 class UaspDtoConvertServiceNotMockTest extends AnyFlatSpec with MiniPipeLineTrait with Serializable {
 
@@ -61,7 +60,9 @@ class UaspDtoConvertServiceNotMockTest extends AnyFlatSpec with MiniPipeLineTrai
       value2.print()
 
       value2.maskedProducerF(serviceDataDto,
-        PropertyWithSerializer(flinkSinkPropertiesOK,{_.serializeToKafkaJsValue}),
+        PropertyWithSerializer(flinkSinkPropertiesOK, {
+          _.serializeToKafkaJsValue
+        }),
         None,
         producerFactory[KafkaDto]
       )
@@ -126,7 +127,9 @@ class UaspDtoConvertServiceNotMockTest extends AnyFlatSpec with MiniPipeLineTrai
       value.print()
 
       value.maskedProducerF(serviceDataDto,
-        PropertyWithSerializer(flinkSinkPropertiesOK,{_.serializeToKafkaJsValue}),
+        PropertyWithSerializer(flinkSinkPropertiesOK, {
+          _.serializeToKafkaJsValue
+        }),
         None,
         producerFactory[KafkaDto]
       )
@@ -182,7 +185,7 @@ object UaspDtoConvertServiceNotMockTest {
 
   private def prdProp = {
     val properties = new Properties()
-    properties.put("bootstrap.servers" , "bootstrap.servers")
+    properties.put("bootstrap.servers", "bootstrap.servers")
 
     val kafkaPrdProperty = KafkaPrdProperty(properties)
     kafkaPrdProperty
