@@ -5,7 +5,7 @@ import play.api.libs.json.JsString
 /** ОБщаяя ф-ция маскирования оставляет в начале cntBegin не маскированых символов и в конце cntEnd не маскированных символов,
  * середина заменяется на *
  * */
-case class CenterMaskService(cntBegin: String, cntEnd: String) extends JsStringMaskedFun{
+case class CenterMaskService(cntBegin: String, cntEnd: String) extends JsStringMaskedFun {
   val cntBeginInt: Int = cntBegin.toInt
   val cntEndInt: Int = cntEnd.toInt
 

@@ -39,7 +39,7 @@ object JsonConvertOutService extends Serializable {
 
   implicit class IdentityPredef[T <: Identity](val self: T) extends AnyVal {
 
-    private [common] def serializeToBytes(implicit oWrites: OWrites[T]): KafkaDto = JsonConvertOutService.serializeToBytesIdentity(self, None).right.get
+    private[common] def serializeToBytes(implicit oWrites: OWrites[T]): KafkaDto = JsonConvertOutService.serializeToBytesIdentity(self, None).right.get
 
     def serializeToKafkaJsValue(implicit oWrites: OWrites[T]): KafkaJsValueDto = KafkaJsValueDto(self.id, Json.toJson(self))
 
@@ -56,6 +56,7 @@ object JsonConvertOutService extends Serializable {
     }
 
     def serializeToKafkaJsValue(implicit oWrites: OWrites[T]): KafkaJsValueDto = KafkaJsValueDto(java.util.UUID.randomUUID().toString, Json.toJson(self))
+
     def serializeToBytes(maskedRule: Option[JsMaskedPath])(implicit oWrites: OWrites[T]): Either[List[JsMaskedPathError], KafkaDto] =
       serializeToBytes(java.util.UUID.randomUUID().toString, maskedRule)
 

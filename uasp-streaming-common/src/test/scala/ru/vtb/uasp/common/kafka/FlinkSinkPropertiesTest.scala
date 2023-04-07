@@ -7,7 +7,6 @@ import ru.vtb.uasp.common.utils.config.AllApplicationProperties
 import ru.vtb.uasp.common.utils.config.kafka.KafkaPrdProperty
 
 import java.util.Properties
-import scala.collection.JavaConverters.mapAsJavaMapConverter
 import scala.collection.mutable
 
 class FlinkSinkPropertiesTest extends AnyFlatSpec {
@@ -29,8 +28,7 @@ class FlinkSinkPropertiesTest extends AnyFlatSpec {
       .map(p => p._1.replace(PRD, "") -> p._2)
 
     val properties = new Properties()
-    stringToString.foreach { q => properties.put(q._1, q._2)}
-//    properties.putAll(stringToString.asJava)
+    stringToString.foreach { q => properties.put(q._1, q._2) }
 
     val pathObject = JsMaskedPathObject(Map(
       "f1" -> JsStringMaskedPathValue(StringMaskAll()),

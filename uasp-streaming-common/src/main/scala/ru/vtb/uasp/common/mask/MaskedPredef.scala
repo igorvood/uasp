@@ -1,6 +1,6 @@
 package ru.vtb.uasp.common.mask
 
-import play.api.libs.json.{JsNull, _}
+import play.api.libs.json._
 import ru.vtb.uasp.common.mask.dto._
 
 import scala.annotation.tailrec

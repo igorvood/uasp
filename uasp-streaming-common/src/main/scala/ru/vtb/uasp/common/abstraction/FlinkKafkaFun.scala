@@ -9,7 +9,7 @@ import org.apache.flink.streaming.api.scala.DataStream
 import play.api.libs.json.Json
 import ru.vtb.uasp.common.kafka.FlinkSinkProperties
 import ru.vtb.uasp.common.mask.MaskedPredef.MaskJsValuePredef
-import ru.vtb.uasp.common.mask.dto.{JsMaskedPath, JsMaskedPathError}
+import ru.vtb.uasp.common.mask.dto.JsMaskedPathError
 import ru.vtb.uasp.common.service.dto.{KafkaDto, OutDtoWithErrors, PropertyWithSerializer, ServiceDataDto}
 
 object FlinkKafkaFun {
@@ -76,27 +76,23 @@ object FlinkKafkaFun {
       .foreach { sf =>
         val value1: RichMapFunction[OutDtoWithErrors[IN], KafkaDto] = new RichMapFunction[OutDtoWithErrors[IN], KafkaDto] {
           override def map(value: OutDtoWithErrors[IN]): KafkaDto = {
-            val maskedDLQSerializeService: AbstractOutDtoWithErrorsMaskedSerializeService[IN] = new AbstractOutDtoWithErrorsMaskedSerializeService[IN](sf.flinkSinkProperties.jsMaskedPath) {
 
-              override def convert(value: OutDtoWithErrors[IN], jsMaskedPath: Option[JsMaskedPath]): Either[List[JsMaskedPathError], KafkaDto] = {
-                val kafkaJsValueDto = sf.serializerToKafkaJsValue(value)
-                jsMaskedPath
-                  .map(mf => kafkaJsValueDto.jsValue.toMaskedJson(mf))
-                  .getOrElse(Right(kafkaJsValueDto.jsValue))
-                  .map(s =>KafkaDto(kafkaJsValueDto.id.getBytes(), Json.stringify(s).getBytes()) )
-              }
-            }
+            val kafkaJsValueDto = sf.serializerToKafkaJsValue(value)
+            val errorsOrDto = sf.flinkSinkProperties.jsMaskedPath
+              .map(mf => kafkaJsValueDto.jsValue.toMaskedJson(mf))
+              .getOrElse(Right(kafkaJsValueDto.jsValue))
+              .map(s => KafkaDto(kafkaJsValueDto.id.getBytes(), Json.stringify(s).getBytes()))
 
             {
-              val errorsOrDto: Either[List[JsMaskedPathError], KafkaDto] = maskedDLQSerializeService.convert(value, maskedDLQSerializeService.jsMaskedPath)
               errorsOrDto match {
                 case Left(value) =>
                   val value2 = new OutDtoWithErrors[IN](
                     serviceDataDto = serviceData,
                     errorPosition = Some(this.getClass.getName),
-                    errors = s"processAndDlqSinkWithMetric: Unable to mask dto ${value.getClass.getName}. Masked rule ${maskedDLQSerializeService.jsMaskedPath}" :: value.map(q => q.error),
+                    errors = s"processAndDlqSinkWithMetric: Unable to mask dto ${value.getClass.getName}. Masked rule ${sf.flinkSinkProperties.jsMaskedPath}" :: value.map(q => q.error),
                     data = None)
-                  maskedDLQSerializeService.convert(value2, maskedDLQSerializeService.jsMaskedPath).right.get
+                  val dto = sf.serializerToKafkaJsValue(value2)
+                  KafkaDto(dto.id.getBytes(), Json.stringify(dto.jsValue).getBytes())
                 case Right(masked) => masked
               }
             }

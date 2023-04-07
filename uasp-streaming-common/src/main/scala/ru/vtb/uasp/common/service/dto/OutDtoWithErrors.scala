@@ -46,6 +46,6 @@ object OutDtoWithErrors {
 
   implicit val writesJsValueWithErr: OWrites[OutDtoWithErrors[JsValue]] = outDtoWithErrorsJsonWrites(writesJsValue)
 
-  implicit val readsJsValueWithErr: Reads[OutDtoWithErrors[JsValue]]  = outDtoWithErrorsJsonReads(readsJsValue)
+  implicit val readsJsValueWithErr: Reads[OutDtoWithErrors[JsValue]] = outDtoWithErrorsJsonReads(readsJsValue)
 
 }

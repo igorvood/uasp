@@ -146,11 +146,8 @@ object PropertyUtil extends Serializable {
 
   private def getPropsFromMap(props: Map[String, String])(implicit configurationInitialise: ConfigurationInitialise[_]): Properties = {
     val replacedPh = props.map(kv => kv._1 -> replaceDifficultPlaceHolders(kv._2))
-
-    import scala.collection.JavaConverters.mapAsJavaMapConverter
     val properties = new Properties()
-    replacedPh.foreach { q => properties.put(q._1, q._2)}
-//    properties.putAll(replacedPh.asJava)
+    replacedPh.foreach { q => properties.put(q._1, q._2) }
     properties
   }
 

@@ -2,8 +2,7 @@ package ru.vtb.uasp.common.kafka
 
 import org.apache.flink.streaming.api.functions.sink.SinkFunction
 import org.apache.flink.streaming.connectors.kafka.FlinkKafkaProducer
-import ru.vtb.uasp.common.abstraction.AbstractDtoMaskedSerializeService
-import ru.vtb.uasp.common.mask.dto.{JsMaskedPath, JsMaskedPathError}
+import ru.vtb.uasp.common.mask.dto.JsMaskedPath
 import ru.vtb.uasp.common.service.dto.KafkaDto
 import ru.vtb.uasp.common.utils.config.PropertyUtil._
 import ru.vtb.uasp.common.utils.config.kafka.KafkaPrdProperty
