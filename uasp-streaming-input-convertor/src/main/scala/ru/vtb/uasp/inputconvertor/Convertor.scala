@@ -9,7 +9,7 @@ import ru.vtb.uasp.common.dto.UaspDto
 import ru.vtb.uasp.common.kafka.FlinkSinkProperties
 import ru.vtb.uasp.common.kafka.FlinkSinkProperties.producerFactoryDefault
 import ru.vtb.uasp.common.service.JsonConvertOutService.{IdentityPredef, JsonPredef}
-import ru.vtb.uasp.common.service.dto.KafkaDto
+import ru.vtb.uasp.common.service.dto.{KafkaDto, PropertyWithSerializer}
 import ru.vtb.uasp.inputconvertor.entity.InputMessageType
 import ru.vtb.uasp.inputconvertor.service.dto.UaspAndKafkaKey
 import ru.vtb.uasp.inputconvertor.utils.config.InputPropsModel
@@ -73,13 +73,7 @@ object Convertor {
 
     val value = mainDataStream.maskedProducerF(
       propsModel.serviceData,
-      propsModel.outputSink,
-      { (u, m) =>
-        Right(KafkaDto(
-          id = java.util.UUID.randomUUID().toString.getBytes(),
-          value = Json.stringify(u.uaspDto).getBytes()
-        ))
-      },
+      PropertyWithSerializer(propsModel.outputSink, {_.serializeToKafkaJsValue}),
       propsModel.sinkDlqPropertyUaspAndKafkaKey,
       producerFabric
     )

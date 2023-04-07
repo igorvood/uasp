@@ -3,8 +3,8 @@ package ru.vtb.uasp.inputconvertor.utils.config
 import play.api.libs.json.JsValue
 import ru.vtb.uasp.common.kafka.{FlinkConsumerProperties, FlinkSinkProperties}
 import ru.vtb.uasp.common.mask.dto.{JsMaskedPath, JsMaskedPathError}
-import ru.vtb.uasp.common.service.JsonConvertOutService.serializeToBytes
-import ru.vtb.uasp.common.service.dto.{KafkaDto, OutDtoWithErrors, ServiceDataDto}
+import ru.vtb.uasp.common.service.JsonConvertOutService.{JsonPredef, serializeToBytes}
+import ru.vtb.uasp.common.service.dto.{KafkaDto, OutDtoWithErrors, PropertyWithSerializer, ServiceDataDto}
 import ru.vtb.uasp.common.utils.config.ConfigUtils.getPropsFromResourcesFile
 import ru.vtb.uasp.common.utils.config.PropertyUtil.{i, propertyVal, propertyValOptional, s}
 import ru.vtb.uasp.common.utils.config.{AllApplicationProperties, ConfigurationInitialise, ReadConfigErrors}
@@ -43,11 +43,7 @@ case class InputPropsModel(
   val sinkDlqProperty: Option[(FlinkSinkProperties, (OutDtoWithErrors[JsValue], Option[JsMaskedPath]) => Either[List[JsMaskedPathError], KafkaDto])] =
     Some(dlqSink -> { (q, w) => serializeToBytes[OutDtoWithErrors[JsValue]](q, w) })
 
-  val sinkDlqPropertyUaspAndKafkaKey: Option[(FlinkSinkProperties, (OutDtoWithErrors[UaspAndKafkaKey], Option[JsMaskedPath]) => Either[List[JsMaskedPathError], KafkaDto])] =
-    Some(dlqSink -> { (q, w) =>
-      val value = serializeToBytes[OutDtoWithErrors[UaspAndKafkaKey]](q, w)
-      value
-    })
+  val sinkDlqPropertyUaspAndKafkaKey: Option[PropertyWithSerializer[OutDtoWithErrors[UaspAndKafkaKey]]] = Some(PropertyWithSerializer[OutDtoWithErrors[UaspAndKafkaKey]](dlqSink , {_.serializeToKafkaJsValue}))
 
 }
 

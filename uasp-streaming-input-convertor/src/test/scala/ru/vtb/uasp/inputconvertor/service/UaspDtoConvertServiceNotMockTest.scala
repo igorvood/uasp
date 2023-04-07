@@ -11,7 +11,7 @@ import ru.vtb.uasp.common.mask.MaskedPredef.PathFactory
 import ru.vtb.uasp.common.mask.MaskedStrPathWithFunName
 import ru.vtb.uasp.common.mask.dto.{JsMaskedPath, JsMaskedPathError}
 import ru.vtb.uasp.common.service.JsonConvertOutService.{JsonPredef, serializeToBytes}
-import ru.vtb.uasp.common.service.dto.{KafkaDto, OutDtoWithErrors, ServiceDataDto}
+import ru.vtb.uasp.common.service.dto.{KafkaDto, OutDtoWithErrors, PropertyWithSerializer, ServiceDataDto}
 import ru.vtb.uasp.common.test.MiniPipeLineTrait
 import ru.vtb.uasp.common.utils.config.ConfigUtils.getStringFromResourceFile
 import ru.vtb.uasp.common.utils.config.kafka.KafkaPrdProperty
@@ -61,10 +61,7 @@ class UaspDtoConvertServiceNotMockTest extends AnyFlatSpec with MiniPipeLineTrai
       value2.print()
 
       value2.maskedProducerF(serviceDataDto,
-        flinkSinkPropertiesOK,
-        { (u, m) => u.serializeToBytes(None)
-        }
-        ,
+        PropertyWithSerializer(flinkSinkPropertiesOK,{_.serializeToKafkaJsValue}),
         None,
         producerFactory[KafkaDto]
       )
@@ -104,14 +101,12 @@ class UaspDtoConvertServiceNotMockTest extends AnyFlatSpec with MiniPipeLineTrai
     assert(res.ok.isEmpty)
     assert(res.dlq.nonEmpty)
 
-    //    assert(res.dlq.flatMap(q => q.errors).contains("JsPath error /id=>error.path.missing"))
 
   }
 
   "return masked error " should "be sen to dlq" in {
 
     val jsMaskedPath = Iterable(MaskedStrPathWithFunName("data.contract_num", "ru.vtb.uasp.common.mask.fun.CenterMaskService(3,4)")).toJsonPath.right.get
-    //val jsMaskedPath = Iterable(MaskedStrPathWithFunName("data.contract_num", "ru.vtb.uasp.common.mask.fun.StringMaskAll")).toJsonPath.right.get
 
 
     val properties = FlinkSinkProperties("dlq", prdProp, None, None, Some(jsMaskedPath))
@@ -127,15 +122,11 @@ class UaspDtoConvertServiceNotMockTest extends AnyFlatSpec with MiniPipeLineTrai
 
     val flinkPipe: DataStream[InputMessageType] => Unit = { ds =>
       val value = Convertor.process(ds, model1, producerFactory[KafkaDto])
-      //      val sinkDlqProperty: Option[(FlinkSinkProperties, (OutDtoWithErrors[JsValue], Option[JsMaskedPath]) => Either[List[JsMaskedPathError], KafkaDto])] = Some(flinkSinkPropertiesDlq -> { (q, w) => serializeToBytes[OutDtoWithErrors[JsValue]](q, w) })
 
       value.print()
 
       value.maskedProducerF(serviceDataDto,
-        flinkSinkPropertiesOK,
-        { (u, m) => u.serializeToBytes(None)
-        }
-        ,
+        PropertyWithSerializer(flinkSinkPropertiesOK,{_.serializeToKafkaJsValue}),
         None,
         producerFactory[KafkaDto]
       )
@@ -191,7 +182,7 @@ object UaspDtoConvertServiceNotMockTest {
 
   private def prdProp = {
     val properties = new Properties()
-    properties.putAll(Map("bootstrap.servers" -> "bootstrap.servers").asJava)
+    properties.put("bootstrap.servers" , "bootstrap.servers")
 
     val kafkaPrdProperty = KafkaPrdProperty(properties)
     kafkaPrdProperty

@@ -9,7 +9,7 @@ import ru.vtb.uasp.common.dto.UaspDto
 import ru.vtb.uasp.common.kafka.FlinkSinkProperties
 import ru.vtb.uasp.common.mask.dto.{JsMaskedPath, JsMaskedPathError}
 import ru.vtb.uasp.common.service.JsonConvertOutService.{JsonPredef, serializeToBytes}
-import ru.vtb.uasp.common.service.dto.{KafkaDto, OutDtoWithErrors, ServiceDataDto}
+import ru.vtb.uasp.common.service.dto.{KafkaDto, OutDtoWithErrors, PropertyWithSerializer, ServiceDataDto}
 import ru.vtb.uasp.common.test.MiniPipeLineTrait
 import ru.vtb.uasp.common.utils.config.kafka.KafkaPrdProperty
 import ru.vtb.uasp.inputconvertor.entity.InputMessageType
@@ -46,10 +46,7 @@ class UaspDtoConvertServiceTest extends AnyFlatSpec with MiniPipeLineTrait with 
       value2.print()
 
       value2.maskedProducerF(serviceDataDto,
-        flinkSinkPropertiesOK,
-        { (u, m) => u.serializeToBytes(None)
-        }
-        ,
+        PropertyWithSerializer( flinkSinkPropertiesOK,{_.serializeToKafkaJsValue}),
         None,
         producerFactory[KafkaDto]
       )
@@ -147,7 +144,7 @@ object UaspDtoConvertServiceTest {
 
   def producerProps(topicName: String) = {
     val properties = new Properties()
-    properties.putAll(Map("bootstrap.servers" -> "bootstrap.servers").asJava)
+    properties.put("bootstrap.servers" , "bootstrap.servers")
 
     val kafkaPrdProperty = KafkaPrdProperty(properties)
     FlinkSinkProperties(topicName, kafkaPrdProperty, None, None, None)
