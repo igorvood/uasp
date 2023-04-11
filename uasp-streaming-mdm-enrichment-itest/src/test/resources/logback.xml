@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+    <appender name="FILE" class="ch.qos.logback.core.FileAppender">
+        <file>target/links.log</file>
+        <append>false</append>
+            <filter class="ch.qos.logback.core.filter.EvaluatorFilter">
+                <evaluator name="myEval">
+                    <expression>message.contains("TmsLink")</expression>
+                </evaluator>
+                <OnMismatch>DENY</OnMismatch>
+                <OnMatch>ACCEPT</OnMatch>
+            </filter>
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <pattern>%msg%n</pattern>
+        </layout>
+    </appender>
+
+    <root level="INFO">
+        <appender-ref ref="FILE"/>
+    </root>
+
+</configuration>

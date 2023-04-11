@@ -1,0 +1,27 @@
+export COUNT_USERS=1
+export FIRST_USER_ID=8550
+export FIRST_USER_ID_GLOBAL=811510000
+
+export COUNT_TRANSACTION=1
+export TIME_WAIT_MAX=2800
+
+
+export topicInWay4=dev_ivr__uasp_realtime__input_converter__way4_issuing_operation__uaspdto
+export topicInCrossLinkMdm=dev_ivr__uasp_realtime__input_converter__mdm_cross_link__uaspdto
+export topicOutCrossLinkMdmStatus=dev_ivr__uasp_realtime__mdm_enrichment__mdm_cross_link__status
+export topicOutEnrichmentWay4=dev_ivr__uasp_realtime__mdm_enrichment__uaspdto
+export topicDLQ=dev_ivr__uasp_realtime__mdm_enrichment__for_additional_enrichment__uaspdto
+export bootstrapServers="d5uasp-apc002lk.corp.dev.vtb:9092,d5uasp-apc003lk.corp.dev.vtb:9092,d5uasp-apc004lk.corp.dev.vtb:9092"
+export groupIdCrossLinkStatusMdm=groupId-mdm-enrichment-3
+export groupIdWay4=consumer-groupId-mdm-enrichment-way4-3
+export groupIdDlq=consumer-groupId-mdm-enrichment-way4-dlq-3
+export sslTruststorePassword=${DSO_KAFKA_SSL_TRUSTSTORE_PASSWORD}
+export sslKeystorePassword=${DSO_KAFKA_SSL_KEYSTORE_PASSWORD}
+export sslKeyPassword=${DSO_KAFKA_SSL_KEY_PASSWORD}
+export enablePrefix=true
+export prefix=ItestMdmEnrichCluster!-
+
+export sslTruststoreLocation="/opt/kafka-certs/kafka-trust.pfx"
+export sslKeystoreLocation="/opt/kafka-certs/APD00.13.01-USBP-kafka-cluster-uasp.pfx"
+
+MAIN_CLASS=ru.vtb.uasp.streaming.mdm.enrichment.itest.tests.UaspStreamingMdmEnrichmentITestScript
