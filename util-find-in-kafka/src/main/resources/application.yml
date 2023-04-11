@@ -1,0 +1,30 @@
+spring:
+  kafka:
+    consumer:
+      group-id: ${GROUP_ID:demo-group-id11}
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      enable-auto-commit: false
+      ssl:
+        trust-store-location: file:${TRUSTSTORE_LOCATION}
+        key-store-location: file:${KEYSTORE_LOCATION}
+        trust-store-password: ${KAFKA_SSL_TRUSTSTORE_PASSWORD}
+        key-password: ${KAFKA_SSL_KEY_PASSWORD}
+        key-store-password: ${KAFKA_SSL_KEYSTORE_PASSWORD}
+        key-store-type: PKCS12
+        trust-store-type: PKCS12
+    security:
+      protocol: ${PROTOCOL:PLAINTEXT}
+    bootstrap-servers: ${BOOTSTRAP_SERVERS}
+
+topic:
+  name: ${TOPIC_NAME:dev__dko_uasp__card_agreement_converted}
+  findStr: ${TOPIC_FIND:global_id}
+
+logging:
+  level:
+    org:
+      apache:
+        kafka: off
+    ru: info
