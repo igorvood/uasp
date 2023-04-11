@@ -31,8 +31,7 @@ object UaspStreamingModelVector {
       val propsModel = CasePropsModel.configApp(appPrefixDefaultName, args)
 
       val env = StreamExecutionEnvironment.getExecutionEnvironment
-      env.setParallelism(2)
-//      env.setMaxParallelism(propsModel.appSyncParallelism)
+      env.setMaxParallelism(propsModel.appSyncParallelism)
 
 /*      env.enableCheckpointing(propsModel.appStreamCheckpointTimeMilliseconds)
       env.getCheckpointConfig.setCheckpointingMode(CheckpointingMode.EXACTLY_ONCE)
@@ -58,7 +57,6 @@ object UaspStreamingModelVector {
       propsModel.appServiceName,
       propsModel.consumer,
       Some(propsModel.dlqProducer),
-//      None,
       UaspDeserializationProcessFunction(),
       producerFabric
     )
@@ -99,8 +97,6 @@ object UaspStreamingModelVector {
             producerFabric
           )
       }.toSeq
-
-//    Seq[DataStreamSink[KafkaDto]]()
   }
 
 }

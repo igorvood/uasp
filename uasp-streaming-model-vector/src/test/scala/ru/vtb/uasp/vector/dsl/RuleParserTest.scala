@@ -6,7 +6,7 @@ import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
 
 class RuleParserTest extends AnyFlatSpec {
   "RuleParserTest.caseRulesMap " should "be equals" in {
-    RuleParser.caseRulesMap.size shouldBe 10
+    RuleParser.caseRulesMap.size shouldBe 9
   }
 
 }

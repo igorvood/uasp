@@ -7,7 +7,7 @@ import ru.vtb.uasp.vector.util.ProductNmUtil.returnProductNm
 object CustomFunctionHandler {
   val customFunctions: Map[String, (Any, UaspDto) => Any] = Map() ++
     Map("None" -> ((value: Any, uasp: UaspDto) => value)) ++
-    Map("toTimeFormat(YYYY-MM-DD hh:mm:ss.SSS)" -> ((value: Any, uasp: UaspDto) => DateUtil.longToString(System.currentTimeMillis(), DateUtil.eventFormatter))) ++
+    Map("toTimeFormat(YYYY-MM-DD hh:mm:ss.SSS)" -> ((value: Any, uasp: UaspDto) => DateUtil.longToString(System.currentTimeMillis(), DateUtil.kafkaFormatter))) ++
     Map("toTimeFormat(YYYY-MM-DD hh:mm:ss)" -> ((value: Any, uasp: UaspDto) => DateUtil.longToString(value.toString.toLong, DateUtil.eventFormatter))) ++
     Map("toUpperCase" -> ((value: Any, uasp: UaspDto) => value.asInstanceOf[String].toUpperCase)) ++
     Map("returnProductNm" -> ((value: Any, uasp: UaspDto) =>  returnProductNm(value.asInstanceOf[String]))) ++
@@ -17,8 +17,7 @@ object CustomFunctionHandler {
     Map("salaryFlagCalculate" -> ((value: Any, uasp: UaspDto) => if (value.asInstanceOf[String].equals("Y")) "Y" else "N" )) ++
     Map("maskedFunction" -> ((value: Any, uasp: UaspDto) => {
       val sourceAcc = value.asInstanceOf[String]
-      val sourceAccMasked = sourceAcc.substring(0, Math.min(10, sourceAcc.length)) + "******" + sourceAcc.substring(Math.min(16, sourceAcc.length))
-      sourceAccMasked
+      if (sourceAcc.isEmpty) sourceAcc else sourceAcc.substring(0, Math.min(10, sourceAcc.length)) + "******" + sourceAcc.substring(Math.min(16, sourceAcc.length))
     }))
 
 }

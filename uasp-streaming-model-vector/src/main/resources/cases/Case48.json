@@ -99,7 +99,7 @@
       "description": "",
       "mapping": {
         "way4": {
-          "requirement": true,
+          "requirement": false,
           "sourceName": "tagged_data_wallet_type",
           "sourceType": "STRING",
           "destinationName": "CONTACTLESS_NM",
@@ -107,7 +107,7 @@
           "transformFunction": "None"
         },
         "profile": {
-          "requirement": true,
+          "requirement": false,
           "sourceName": "terminal_owner",
           "sourceType": "STRING",
           "destinationName": "CONTACTLESS_NM",
@@ -122,7 +122,7 @@
       "description": "",
       "mapping": {
         "way4": {
-          "requirement": true,
+          "requirement": false,
           "sourceName": "payment_scheme_w4",
           "sourceType": "STRING",
           "destinationName": "PAYMENT_SYSTEM",
@@ -130,7 +130,7 @@
           "transformFunction": "None"
         },
         "profile": {
-          "requirement": true,
+          "requirement": false,
           "sourceName": "payment_system_desc",
           "sourceType": "STRING",
           "destinationName": "PAYMENT_SYSTEM",
@@ -145,7 +145,7 @@
       "description": "",
       "mapping": {
         "way4": {
-          "requirement": true,
+          "requirement": false,
           "sourceName": "card_type_cd",
           "sourceType": "STRING",
           "destinationName": "CARD_TYPE",
@@ -153,7 +153,7 @@
           "transformFunction": "toUpperCase"
         },
         "profile": {
-          "requirement": true,
+          "requirement": false,
           "sourceName": "card_type_cd",
           "sourceType": "STRING",
           "destinationName": "CARD_TYPE",
@@ -168,7 +168,7 @@
       "description": "",
       "mapping": {
         "way4": {
-          "requirement": true,
+          "requirement": false,
           "sourceName": "contract_card_type_cd",
           "sourceType": "STRING",
           "destinationName": "PRODUCT_NM",
@@ -176,7 +176,7 @@
           "transformFunction": "returnProductNm"
         },
         "profile": {
-          "requirement": true,
+          "requirement": false,
           "sourceName": "contract_card_type_cd",
           "sourceType": "STRING",
           "destinationName": "PRODUCT_NM",
@@ -191,7 +191,7 @@
       "description": "",
       "mapping": {
         "way4": {
-          "requirement": true,
+          "requirement": false,
           "sourceName": "package_nm",
           "sourceType": "STRING",
           "destinationName": "PACKAGE_NM",
@@ -199,7 +199,7 @@
           "transformFunction": "None"
         },
         "profile": {
-          "requirement": true,
+          "requirement": false,
           "sourceName": "package_nm",
           "sourceType": "STRING",
           "destinationName": "PACKAGE_NM",
@@ -214,7 +214,7 @@
       "description": "",
       "mapping": {
         "way4": {
-          "requirement": true,
+          "requirement": false,
           "sourceName": "salary_card_type_flg",
           "sourceType": "STRING",
           "destinationName": "SALARY_FLG",
@@ -222,7 +222,7 @@
           "transformFunction": "salaryFlagCalculate"
         },
         "profile": {
-          "requirement": true,
+          "requirement": false,
           "sourceName": "salary_card_type_flg",
           "sourceType": "STRING",
           "destinationName": "SALARY_FLG",
@@ -237,7 +237,7 @@
       "description": "",
       "mapping": {
         "way4": {
-          "requirement": true,
+          "requirement": false,
           "sourceName": "OPERATION_STATUS",
           "sourceType": "STRING",
           "destinationName": "OPERATION_STATUS",
@@ -245,7 +245,7 @@
           "transformFunction": "None"
         },
         "profile": {
-          "requirement": true,
+          "requirement": false,
           "sourceName": "OPERATION_STATUS",
           "sourceType": "STRING",
           "destinationName": "OPERATION_STATUS",
@@ -260,7 +260,7 @@
       "description": "",
       "mapping": {
         "way4": {
-          "requirement": true,
+          "requirement": false,
           "sourceName": "",
           "sourceType": "",
           "destinationName": "SYSTEM_DEVICE",
@@ -268,7 +268,7 @@
           "transformFunction": "None"
         },
         "profile": {
-          "requirement": true,
+          "requirement": false,
           "sourceName": "",
           "sourceType": "",
           "destinationName": "SYSTEM_DEVICE",
@@ -283,7 +283,7 @@
       "description": "",
       "mapping": {
         "way4": {
-          "requirement": true,
+          "requirement": false,
           "sourceName": "card_masked_pan",
           "sourceType": "STRING",
           "destinationName": "CARD_NUMBER",
@@ -291,7 +291,7 @@
           "transformFunction": "None"
         },
         "profile": {
-          "requirement": true,
+          "requirement": false,
           "sourceName": "card_number",
           "sourceType": "STRING",
           "destinationName": "CARD_NUMBER",
@@ -306,7 +306,7 @@
       "description": "",
       "mapping": {
         "way4": {
-          "requirement": true,
+          "requirement": false,
           "sourceName": "card_expiration_dt",
           "sourceType": "STRING",
           "destinationName": "EXPIRE_CARD_DT",
@@ -314,7 +314,7 @@
           "transformFunction": "expireDt48Calculate"
         },
         "profile": {
-          "requirement": true,
+          "requirement": false,
           "sourceName": "card_expiration_dt",
           "sourceType": "STRING",
           "destinationName": "EXPIRE_CARD_DT",

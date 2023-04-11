@@ -49,7 +49,6 @@ object FileUtils {
           "cases/Case44.json",
           "cases/Case48.json",
           "cases/Case51.json",
-          "cases/Case56.json",
           "cases/Case57.json",
           "cases/Case71.json",
           "cases/Case8.json",

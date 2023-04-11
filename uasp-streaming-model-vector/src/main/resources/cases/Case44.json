@@ -162,7 +162,7 @@
           "sourceType": "STRING",
           "destinationName": "TARGET_ACCOUNT",
           "destinationType": "STRING",
-          "transformFunction": "None"
+          "transformFunction": "maskedFunction"
         }
       }
     },
@@ -207,7 +207,7 @@
           "sourceType": "STRING",
           "destinationName": "SOURCE_ACCOUNT",
           "destinationType": "STRING",
-          "transformFunction": "None"
+          "transformFunction": "maskedFunction"
         }
       }
     },
