@@ -9,7 +9,7 @@ import ru.vtb.uasp.common.kafka.FlinkSinkProperties.producerFactoryDefault
 import ru.vtb.uasp.common.service.JsonConvertOutService.JsonPredef
 import ru.vtb.uasp.common.service.dto.{KafkaDto, PropertyWithSerializer}
 import ru.vtb.uasp.inputconvertor.entity.InputMessageType
-import ru.vtb.uasp.inputconvertor.service.dto.UaspAndKafkaKey
+import ru.vtb.uasp.inputconvertor.service.dto.JsValueAndKafkaKey
 import ru.vtb.uasp.inputconvertor.utils.config.InputPropsModel
 import ru.vtb.uasp.inputconvertor.utils.config.InputPropsModel.appPrefixDefaultName
 
@@ -46,7 +46,7 @@ object Convertor {
                messageInputStream: DataStream[InputMessageType],
                propsModel: InputPropsModel,
                producerFabric: FlinkSinkProperties => SinkFunction[KafkaDto] = producerFactoryDefault
-             ): DataStream[UaspAndKafkaKey] = {
+             ): DataStream[JsValueAndKafkaKey] = {
 
     messageInputStream.processWithMaskedDqlFC(
       propsModel.serviceData,
@@ -56,7 +56,7 @@ object Convertor {
     )
   }
 
-  def setSink(mainDataStream: DataStream[UaspAndKafkaKey],
+  def setSink(mainDataStream: DataStream[JsValueAndKafkaKey],
               propsModel: InputPropsModel,
               producerFabric: FlinkSinkProperties => SinkFunction[KafkaDto] = producerFactoryDefault
              ): Unit = {
@@ -64,7 +64,7 @@ object Convertor {
     setMainSink(mainDataStream, propsModel, producerFabric)
   }
 
-  def setMainSink(mainDataStream: DataStream[UaspAndKafkaKey],
+  def setMainSink(mainDataStream: DataStream[JsValueAndKafkaKey],
                   propsModel: InputPropsModel,
                   producerFabric: FlinkSinkProperties => SinkFunction[KafkaDto] = producerFactoryDefault
                  ): DataStreamSink[KafkaDto] = {

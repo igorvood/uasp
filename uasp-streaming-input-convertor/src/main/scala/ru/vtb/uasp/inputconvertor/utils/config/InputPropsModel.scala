@@ -9,8 +9,8 @@ import ru.vtb.uasp.common.utils.config.ConfigUtils.getPropsFromResourcesFile
 import ru.vtb.uasp.common.utils.config.PropertyUtil.{i, propertyVal, propertyValOptional, s}
 import ru.vtb.uasp.common.utils.config.{AllApplicationProperties, ConfigurationInitialise, ReadConfigErrors}
 import ru.vtb.uasp.inputconvertor.factory.{UaspDtoParser, UaspDtoParserFactory}
-import ru.vtb.uasp.inputconvertor.service.UaspDtoConvertService
-import ru.vtb.uasp.inputconvertor.service.dto.UaspAndKafkaKey
+import ru.vtb.uasp.inputconvertor.service.DtoConvertService
+import ru.vtb.uasp.inputconvertor.service.dto.JsValueAndKafkaKey
 import ru.vtb.uasp.inputconvertor.utils.serialization.InputMessageTypeDeserialization
 import ru.vtb.uasp.validate.DroolsValidator
 
@@ -38,12 +38,12 @@ case class InputPropsModel(
   lazy val uaspDtoParser: UaspDtoParser = UaspDtoParserFactory(this)
 
 
-  val uaspDtoConvertService = new UaspDtoConvertService(uaspDtoParser, droolsValidator, serviceData, dtoMap)
+  val uaspDtoConvertService = new DtoConvertService(uaspDtoParser, droolsValidator, serviceData, dtoMap)
 
   val sinkDlqProperty: Option[(FlinkSinkProperties, (OutDtoWithErrors[JsValue], Option[JsMaskedPath]) => Either[List[JsMaskedPathError], KafkaDto])] =
     Some(dlqSink -> { (q, w) => serializeToBytes[OutDtoWithErrors[JsValue]](q, w) })
 
-  val sinkDlqPropertyUaspAndKafkaKey: Option[PropertyWithSerializer[OutDtoWithErrors[UaspAndKafkaKey]]] = Some(PropertyWithSerializer[OutDtoWithErrors[UaspAndKafkaKey]](dlqSink, {
+  val sinkDlqPropertyUaspAndKafkaKey: Option[PropertyWithSerializer[OutDtoWithErrors[JsValueAndKafkaKey]]] = Some(PropertyWithSerializer[OutDtoWithErrors[JsValueAndKafkaKey]](dlqSink, {
     _.serializeToKafkaJsValue
   }))
 

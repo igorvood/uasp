@@ -14,18 +14,18 @@ import ru.vtb.uasp.common.test.MiniPipeLineTrait
 import ru.vtb.uasp.common.utils.config.kafka.KafkaPrdProperty
 import ru.vtb.uasp.inputconvertor.entity.InputMessageType
 import ru.vtb.uasp.inputconvertor.factory.UaspDtoParser
-import ru.vtb.uasp.inputconvertor.service.UaspDtoConvertServiceTest.{flinkSinkPropertiesDlq, flinkSinkPropertiesOK, serviceDataDto, uaspDto}
-import ru.vtb.uasp.inputconvertor.service.dto.UaspAndKafkaKey
+import ru.vtb.uasp.inputconvertor.service.DtoConvertServiceTest.{flinkSinkPropertiesDlq, flinkSinkPropertiesOK, serviceDataDto, uaspDto}
+import ru.vtb.uasp.inputconvertor.service.dto.JsValueAndKafkaKey
 import ru.vtb.uasp.inputconvertor.utils.config.InputPropsModel
 import ru.vtb.uasp.validate.DroolsValidator
 import ru.vtb.uasp.validate.entity.ValidateMsg
 
 import java.util.Properties
 
-class UaspDtoConvertServiceTest extends AnyFlatSpec with MiniPipeLineTrait with Serializable {
+class DtoConvertServiceTest extends AnyFlatSpec with MiniPipeLineTrait with Serializable {
 
-  private val convertService: (UaspDtoParser) => UaspDtoConvertService = { p =>
-    new UaspDtoConvertService(p, new MockDroolsValidator(), ServiceDataDto("1", "2", "3"), Map.empty)
+  private val convertService: (UaspDtoParser) => DtoConvertService = { p =>
+    new DtoConvertService(p, new MockDroolsValidator(), ServiceDataDto("1", "2", "3"), Map.empty)
   }
 
 
@@ -35,7 +35,7 @@ class UaspDtoConvertServiceTest extends AnyFlatSpec with MiniPipeLineTrait with 
     val flinkPipe: DataStream[InputMessageType] => Unit = { ds =>
 
       val sinkDlqProperty: Option[(FlinkSinkProperties, (OutDtoWithErrors[JsValue], Option[JsMaskedPath]) => Either[List[JsMaskedPathError], KafkaDto])] = Some(flinkSinkPropertiesDlq -> { (q, w) => serializeToBytes[OutDtoWithErrors[JsValue]](q, w) })
-      val value2: DataStream[UaspAndKafkaKey] = ds.processWithMaskedDqlFC(
+      val value2: DataStream[JsValueAndKafkaKey] = ds.processWithMaskedDqlFC(
         serviceDataDto,
         convertServiceV,
         sinkDlqProperty,
@@ -66,7 +66,7 @@ class UaspDtoConvertServiceTest extends AnyFlatSpec with MiniPipeLineTrait with 
     val ok = dtoes1
       .map(d => {
         val str = new String(d.value)
-        Json.parse(str).validate[UaspAndKafkaKey].get
+        Json.parse(str).validate[JsValueAndKafkaKey].get
       }
       )
 
@@ -80,7 +80,7 @@ class UaspDtoConvertServiceTest extends AnyFlatSpec with MiniPipeLineTrait with 
     assert(res.ok.isEmpty)
     assert(res.dlq.nonEmpty)
     res.dlq
-      .foreach(d => assert(OutDtoWithErrors(serviceDataDto, Some("ru.vtb.uasp.inputconvertor.service.UaspDtoConvertService"), List("list is nill"), Some(new JsObject(Map()))) == d))
+      .foreach(d => assert(OutDtoWithErrors(serviceDataDto, Some("ru.vtb.uasp.inputconvertor.service.DtoConvertService"), List("list is nill"), Some(new JsObject(Map()))) == d))
   }
 
   "return error parsing " should "be sen to dlq" in {
@@ -89,14 +89,13 @@ class UaspDtoConvertServiceTest extends AnyFlatSpec with MiniPipeLineTrait with 
     )
     assert(res.ok.isEmpty)
     assert(res.dlq.nonEmpty)
-    val value = OutDtoWithErrors(serviceDataDto, Some("ru.vtb.uasp.inputconvertor.service.UaspDtoConvertService"), List(
-      """Error json parsing: Unexpected end-of-input: expected close marker for Object (start marker at [Source: (String)"{"; line: 1, column: 1])
-        | at [Source: (String)"{"; line: 1, column: 2], with allProps: Map()""".stripMargin), None)
+    val value = OutDtoWithErrors(serviceDataDto, Some("ru.vtb.uasp.inputconvertor.service.DtoConvertService"), List(
+      """Error json parsing: Input string is not Json"""), None)
 
     res.dlq.foreach { d => {
       assert(d.data == value.data)
       assert(d.errorPosition == value.errorPosition)
-      d.errors.foreach(a => assert(a.contains("Error json parsing: Unexpected end-of-input: expected close marker for Object (start marker at [Source: (String)")))
+      d.errors.foreach(a => assert(a.contains("Error json parsing: Input string is not Json")))
     }
 
     }
@@ -127,18 +126,18 @@ class UaspDtoConvertServiceTest extends AnyFlatSpec with MiniPipeLineTrait with 
     assert(res.ok.size == 2)
     assert(res.dlq.size == 2)
 
-    assert(res.ok.contains(UaspAndKafkaKey(kafkaKey, Json.toJson(uaspDto))))
-    assert(res.ok.contains(UaspAndKafkaKey(kafkaKey, Json.toJson(dto))))
+    assert(res.ok.contains(JsValueAndKafkaKey(kafkaKey, Json.toJson(uaspDto))))
+    assert(res.ok.contains(JsValueAndKafkaKey(kafkaKey, Json.toJson(dto))))
 
-    assert(res.dlq.contains(OutDtoWithErrors(serviceDataDto, Some("ru.vtb.uasp.inputconvertor.service.UaspDtoConvertService"), List("JsPath error =>Some Error"), Some(new JsObject(Map.empty)))))
-    assert(res.dlq.contains(OutDtoWithErrors(serviceDataDto, Some("ru.vtb.uasp.inputconvertor.service.UaspDtoConvertService"), List(s"JsPath error =>Some Error1"), Some(new JsObject(Map.empty)))))
+    assert(res.dlq.contains(OutDtoWithErrors(serviceDataDto, Some("ru.vtb.uasp.inputconvertor.service.DtoConvertService"), List("JsPath error =>Some Error"), Some(new JsObject(Map.empty)))))
+    assert(res.dlq.contains(OutDtoWithErrors(serviceDataDto, Some("ru.vtb.uasp.inputconvertor.service.DtoConvertService"), List(s"JsPath error =>Some Error1"), Some(new JsObject(Map.empty)))))
 
   }
 
 
 }
 
-object UaspDtoConvertServiceTest {
+object DtoConvertServiceTest {
   val uaspDto = UaspDto("1", Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, Map.empty, "uuid", 0)
 
   def serviceDataDto = ServiceDataDto("1", "2", "3")
@@ -167,4 +166,4 @@ class MockDroolsValidator extends DroolsValidator("way4" + "-validation-rules.dr
   override def validate(model: List[Any]): List[ValidateMsg] = List()
 }
 
-case class TestResult(ok: List[UaspAndKafkaKey], dlq: List[OutDtoWithErrors[JsValue]])
+case class TestResult(ok: List[JsValueAndKafkaKey], dlq: List[OutDtoWithErrors[JsValue]])
