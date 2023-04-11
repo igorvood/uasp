@@ -42,7 +42,7 @@ object Way4Cases48Test {
     Map(),
     Map(),
     Map(
-      "calculate-mdm_id" -> "masked_card_number",
+      "local_id" -> "masked_card_number",
       "card_masked_pan" -> "customer_id",
     ),
     Map(),
@@ -57,7 +57,7 @@ object Way4Cases48Test {
   protected def testData(): List[TestCaseData] = List[TestCaseData](
     TestString("masked_card_number", NoneTestAction(), Some("masked_card_number;customer_id")),
 
-    TestString("calculate-mdm_id", DeleteTestAction()),
+    TestString("local_id", DeleteTestAction()),
     TestString("card_masked_pan", DeleteTestAction()),
 
 

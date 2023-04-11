@@ -14,7 +14,7 @@ dialect "mvel"
 rule "48"
   when
 
-    UaspDto($customerId:dataString.get("calculate-mdm_id"), DrlHelper.isNonEmpty($customerId))
+    UaspDto($customerId:dataString.get("local_id"), DrlHelper.isNonEmpty($customerId))
     UaspDto($maskedCardNumber:dataString.get("card_masked_pan"), DrlHelper.isNonEmpty($maskedCardNumber))
   then
     String m = $maskedCardNumber.get
