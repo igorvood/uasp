@@ -44,7 +44,9 @@ object FilterJob {
       .processWithMaskedDqlF[UaspDto](
         serviceData = filterConfiguration.executionEnvironmentProperty.serviceDto,
         process = filterConfiguration.filterProcessFunction,
-        sinkDlqProperty = filterConfiguration.flinkSinkPropertiesErr.map(sp => sp -> { (q, w) => q.serializeToBytes(w) }),
+        sinkDlqProperty = filterConfiguration.flinkSinkPropertiesErr.map(sp => sp -> { (q, w) =>
+
+          q.serializeToBytes(w) }),
         producerFactory = producerFabric
       )
 
