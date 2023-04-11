@@ -25,7 +25,8 @@ class ExtractPerformanceTest extends AnyFlatSpec {
 
     val meta = NodeJsonMeta(metaJsonProperty)
 
-    val duration = performanceTest("MAPSTRING first",
+    val duration = performanceTest(
+      "MAPSTRING first",
       {
         json =>
           val value = Json.parse(json)
@@ -33,7 +34,7 @@ class ExtractPerformanceTest extends AnyFlatSpec {
       }
     )
 
-    assert(duration > 20000)
+    assert(duration < 40000)
 
     val duration2 = performanceTest("MAPSTRING_2",
       {
@@ -43,7 +44,7 @@ class ExtractPerformanceTest extends AnyFlatSpec {
       }
     )
 
-    assert(duration2 > 20000)
+    assert(duration2 < 40000)
   }
 
   private def performanceTest(prefix: String, value: String => Unit): Double = {

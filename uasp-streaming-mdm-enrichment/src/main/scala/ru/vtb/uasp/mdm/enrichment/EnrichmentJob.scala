@@ -14,7 +14,7 @@ import ru.vtb.uasp.common.kafka.FlinkSinkProperties
 import ru.vtb.uasp.common.kafka.FlinkSinkProperties.producerFactoryDefault
 import ru.vtb.uasp.common.service.JsonConvertOutService.{IdentityPredef, JsonPredef}
 import ru.vtb.uasp.common.service.UaspDeserializationProcessFunction
-import ru.vtb.uasp.common.service.dto.KafkaDto
+import ru.vtb.uasp.common.service.dto.{KafkaDto, PropertyWithSerializer, ServiceDataDto}
 import ru.vtb.uasp.mdm.enrichment.service.JsValueConsumer
 import ru.vtb.uasp.mdm.enrichment.service.dto.{KeyedCAData, KeyedUasp, NotStandardDataStreams, OutStreams}
 import ru.vtb.uasp.mdm.enrichment.utils.config.MDMEnrichmentPropsModel.appPrefixDefaultName
@@ -58,7 +58,7 @@ object EnrichmentJob extends Serializable {
   def init(env: StreamExecutionEnvironment, propsModel: MDMEnrichmentPropsModel, producerFabric: FlinkSinkProperties => SinkFunction[KafkaDto] = producerFactoryDefault): NotStandardDataStreams = {
 
 
-    implicit val serviceData = propsModel.serviceData
+    implicit val serviceData: ServiceDataDto = propsModel.serviceData
 
     val uaspDeserializationProcessFunction = UaspDeserializationProcessFunction()
 
@@ -130,7 +130,7 @@ object EnrichmentJob extends Serializable {
               .processWithMaskedDqlF(
                 mDMEnrichmentPropsModel.serviceData,
                 keyedMainStreamSrv,
-                mainDlqProp.map(sp => sp -> { (q, w) => q.serializeToBytes(w) }),
+                mainDlqProp.map(p => PropertyWithSerializer(p, {_.serializeToKafkaJsValue})),
                 fabric)
               .keyBy(keySelectorMain)
               .connect(validatedGlobalIdStream.keyBy(d => d.key))
@@ -160,7 +160,8 @@ object EnrichmentJob extends Serializable {
               .processWithMaskedDqlF(
                 mDMEnrichmentPropsModel.serviceData,
                 keyedMainStreamSrv,
-                mainDlqProp.map(sp => sp -> { (q, w) => q.serializeToBytes(w) }), fabric)
+                mainDlqProp.map(p => PropertyWithSerializer(p, {_.serializeToKafkaJsValue})),
+                fabric)
               .keyBy(keySelectorMain)
               .connect(validatedGlobalIdStream.keyBy(d => d.key))
               .process(keyCommonEnrichmentMapService)

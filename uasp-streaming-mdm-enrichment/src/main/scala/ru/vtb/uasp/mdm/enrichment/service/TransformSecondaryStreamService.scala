@@ -8,7 +8,7 @@ import ru.vtb.uasp.common.abstraction.FlinkStreamProducerPredef.StreamFactory
 import ru.vtb.uasp.common.kafka.FlinkSinkProperties
 import ru.vtb.uasp.common.mask.dto.{JsMaskedPath, JsMaskedPathError}
 import ru.vtb.uasp.common.service.JsonConvertOutService.JsonPredef
-import ru.vtb.uasp.common.service.dto.{KafkaDto, OutDtoWithErrors, ServiceDataDto}
+import ru.vtb.uasp.common.service.dto.{KafkaDto, OutDtoWithErrors, PropertyWithSerializer, ServiceDataDto}
 import ru.vtb.uasp.mdm.enrichment.service.dto.{KeyedCAData, NotStandardDataStreams, StandartedDataStreams}
 
 class TransformSecondaryStreamService(
@@ -25,13 +25,13 @@ class TransformSecondaryStreamService(
     val transformedGlobalIdStream = transformOneStream(
       streams.globalIdStream,
       globalIdValidateService,
-      dlqGlobalIdProp.map[(FlinkSinkProperties, (OutDtoWithErrors[JsValue], Option[JsMaskedPath]) => Either[List[JsMaskedPathError], KafkaDto])](sp => sp -> { (q, w) => q.serializeToBytes(w) }))
-
+      dlqGlobalIdProp.map(sp => PropertyWithSerializer(sp, {_.serializeToKafkaJsValue}))
+    )
 
     val transformedCommonStream = transformOneStream(
       streams.commonStream,
       commonValidateProcessFunction,
-      dlqCommonProp.map(sp => sp -> { (q, w) => q.serializeToBytes(w) })
+      dlqCommonProp.map(sp => PropertyWithSerializer(sp, {_.serializeToKafkaJsValue}))
     )
 
     StandartedDataStreams(streams.mainDataStream, transformedCommonStream, transformedGlobalIdStream)
@@ -41,16 +41,16 @@ class TransformSecondaryStreamService(
   private def transformOneStream(
                                   streamForTransform: Option[DataStream[JsValue]],
                                   validateService: Option[ExtractKeyFunction],
-                                  dlq: Option[(FlinkSinkProperties, (OutDtoWithErrors[JsValue], Option[JsMaskedPath]) => Either[List[JsMaskedPathError], KafkaDto])]
+//                                  dlq: Option[(FlinkSinkProperties, (OutDtoWithErrors[JsValue], Option[JsMaskedPath]) => Either[List[JsMaskedPathError], KafkaDto])]
+                                  dlq: Option[PropertyWithSerializer[OutDtoWithErrors[JsValue]]],
                                 )(implicit producerFabric: FlinkSinkProperties => SinkFunction[KafkaDto]): Option[DataStream[KeyedCAData]] = {
     for {
       ds <- streamForTransform
       validService <- validateService
-      sinDlqProp = dlq
     } yield ds.processWithMaskedDqlF(
       serviceData,
       validService,
-      sinDlqProp,
+      dlq,
       producerFabric)
   }
 }
