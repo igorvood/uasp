@@ -1,0 +1,13 @@
+export userCount=1
+export countSeconds=1
+
+export sslTruststorePassword=${DSO_KAFKA_SSL_TRUSTSTORE_PASSWORD}
+export sslKeystorePassword=${DSO_KAFKA_SSL_KEYSTORE_PASSWORD}
+export sslKeyPassword=${DSO_KAFKA_SSL_KEY_PASSWORD}
+
+export sslTruststoreLocation="/opt/kafka-certs/kafka-trust.pfx"
+export sslKeystoreLocation="/opt/kafka-certs/APD00.13.01-USBP-kafka-cluster-uasp.pfx"
+
+export baseUrlIE=http://ie.ds5-genr02-pimc-streaming-dev-new.apps.ds5-genr02.corp.dev.vtb
+
+MAIN_CLASS=ru.vtb.ie.test.UaspTarantoolScript
