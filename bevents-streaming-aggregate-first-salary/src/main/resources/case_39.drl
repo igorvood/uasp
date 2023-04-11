@@ -16,6 +16,10 @@ rule "1st Pos transaction for client"
 when
     UaspDto($isPos:dataBoolean.get("is_pos"), DrlHelper.isNonEmpty($isPos) && $isPos.get==true )
     and
+    UaspDto($posFlg:dataString.get("pos_flg"), DrlHelper.isNonEmpty($posFlg) && $posFlg.get=="N")
+    and
+    UaspDto($countCard:dataInt.get("COUNT_POS_CARD"), DrlHelper.isNonEmpty($countCard) && $countCard.get==0)
+    and
     UaspDto($count:dataInt.get("COUNT_POS"), DrlHelper.isNonEmpty($count) && $count.get==0)
 
 then

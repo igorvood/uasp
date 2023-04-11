@@ -37,7 +37,7 @@ object DrlCaseHelper {
   }
 
   def isCase57(value: Option[Any]): Boolean = value match {
-    case Some(s: String) => s.contains("пенс") || s.contains("PFR") || s.contains("ветеран") || s.contains("инвал")
+    case Some(s: String) => s.contains("пенс")
     case _ => false
   }
 

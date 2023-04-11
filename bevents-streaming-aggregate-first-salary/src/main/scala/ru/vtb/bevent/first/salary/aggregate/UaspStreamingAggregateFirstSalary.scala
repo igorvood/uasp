@@ -88,18 +88,6 @@ object UaspStreamingAggregateFirstSalary {
       .process(propsModel.aggregateFirstSalaryRichMapFunction)
   }
 
-  //  private val transactionIdKey = "transactional.id"
-  def addRandomTransactionId(topicName: String, props: Properties): Properties = {
-    props.setProperty("enable.idempotence", "true")
-    props.setProperty("max.in.flight.requests.per.connection", "5")
-    props.setProperty("retries", "1")
-    props.setProperty("acks", "all")
-    props.setProperty("isolation.level", "read_committed")
-    props.setProperty("transactional.id", topicName + "-id-" + Random.nextInt(999999999).toString)
-
-    props
-  }
-
   def setOutsideSink(mainDataStream: DataStream[UaspDto],
                      propsModel: ConfirmedPropsModel,
                      producerFactory: FlinkSinkProperties => SinkFunction[KafkaDto] = producerFactoryDefault

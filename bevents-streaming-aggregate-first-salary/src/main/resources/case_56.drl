@@ -31,7 +31,7 @@ when
 then
   int count = $count.get+1
 
-  insert(new UaspOperation(drools.getRule().getName(), new StringMap("RTO_First_salary_56_case"), "system-classification", new ConcatenateStr(",")))
+ // insert(new UaspOperation(drools.getRule().getName(), new StringMap("RTO_First_salary_56_case"), "system-classification", new ConcatenateStr(",")))
   insert(new UaspOperation(drools.getRule().getName(), new IntMap(count), "EVENT_CNT", new Add()))
   insert(new UaspOperation(drools.getRule().getName(), new BooleanMap(true), "system_is_update_sal", new Add()))
 
@@ -63,7 +63,7 @@ then
         UaspDto($dttm:dataLong.get("event_dttm"), ($dttm.get-$dttm_last.get)>=15552000000L)
 
       then
-            insert(new UaspOperation(drools.getRule().getName(), new StringMap("RTO_First_salary_56_case"), "system-classification", new ConcatenateStr(",")))
+       //     insert(new UaspOperation(drools.getRule().getName(), new StringMap("RTO_First_salary_56_case"), "system-classification", new ConcatenateStr(",")))
             insert(new UaspOperation(drools.getRule().getName(), new IntMap(1), "EVENT_CNT", new Add()))
             insert(new UaspOperation(drools.getRule().getName(), new BooleanMap(true), "system_is_update_sal", new Add()))
 

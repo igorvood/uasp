@@ -84,7 +84,7 @@ object AggregateDao {
     val firstSalaryForAccount = getSalaryFromMap(accountNumberFor, listSalaryForAccountNumber)
 
     val validDates = firstSalaryForAccount
-      .filter(paymentInfo => filterByDay(paymentInfo.date))
+      .filter(paymentInfo => filterByHours(paymentInfo.date))
     val amountAll = getSumOfSalary(validDates)
 
     val firstDaysForLastDays = getFirstDaysForLastDays(validDates)
@@ -193,9 +193,9 @@ object AggregateDao {
       .getOrElse(Seq.empty)
   }
 
-  def filterByDay(date: Long): Boolean = {
-    val days = (new Date().getTime - date) / (60 * 60 * 24 * 1000)
-    days <= 2
+  def filterByHours(date: Long): Boolean = {
+    val days = (new Date().getTime - date)
+    days <= 48 * 60 * 60 * 1000
   }
 
   def getSumOfSalary(validDates: Seq[PaymentInfo]): BigDecimal = {

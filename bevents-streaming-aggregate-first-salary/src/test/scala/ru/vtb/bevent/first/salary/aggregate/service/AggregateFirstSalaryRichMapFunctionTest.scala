@@ -7,6 +7,7 @@ import org.scalatest.flatspec.AnyFlatSpec
 import ru.vtb.bevent.first.salary.aggregate.UaspStreamingAggregateFirstSalary
 import ru.vtb.bevent.first.salary.aggregate.factory.BusinessRulesFactory
 import ru.vtb.uasp.common.dto.UaspDto
+import ru.vtb.uasp.common.service.JsonConvertInService
 
 import java.util.Date
 import scala.collection.JavaConverters.iterableAsScalaIterableConverter
@@ -31,7 +32,8 @@ class AggregateFirstSalaryRichMapFunctionTest extends AnyFlatSpec {
       List("level2.drl"),
       List("case_71.drl", "case_8.drl", "case_29.drl", "case_38.drl", "case_39.drl", "case_44.drl", "case_56.drl", "case_57.drl"))
 
-    val aggregateFirstSalaryRichMapFunction = new AggregateFirstSalaryRichMapFunction(rules, "asd")
+    val nameStateFirstSalaryAggregates = "asd"
+    val aggregateFirstSalaryRichMapFunction = new AggregateFirstSalaryRichMapFunction(rules, nameStateFirstSalaryAggregates)
 
     val testHarness = new KeyedOneInputStreamOperatorTestHarness[String, UaspDto, UaspDto](new KeyedProcessOperator(aggregateFirstSalaryRichMapFunction), UaspStreamingAggregateFirstSalary.keySlector, Types.STRING)
     testHarness.open()
@@ -55,7 +57,8 @@ class AggregateFirstSalaryRichMapFunctionTest extends AnyFlatSpec {
         "message_type" -> "0100",
         "transaction_cd" -> "110",
         "terminal_class" -> "002",
-        "hash_card_number" -> "123456789123456789"
+        "hash_card_number" -> "123456789123456789",
+        "pos_flg" -> "N"
       ),
       dataBoolean = Map(
       ),
@@ -69,7 +72,6 @@ class AggregateFirstSalaryRichMapFunctionTest extends AnyFlatSpec {
     val list = testHarness.extractOutputStreamRecords().asScala.map(q => q.getValue).toList
     assertResult(11)(list.size)
 
-
     assertResult(1)(list.count(d => d.dataInt.getOrElse("COUNT_POS", -1) == 0))
     assertResult(1)(list.count(d => d.dataInt.getOrElse("COUNT_POS_CARD", -1) == 0))
 
@@ -82,8 +84,6 @@ class AggregateFirstSalaryRichMapFunctionTest extends AnyFlatSpec {
 
     assertResult(8)(list.count(d => d.dataInt.getOrElse("COUNT_POS", -1) == 3))
     assertResult(8)(list.count(d => d.dataInt.getOrElse("COUNT_POS_CARD", -1) == 3))
-
-
   }
 
 
