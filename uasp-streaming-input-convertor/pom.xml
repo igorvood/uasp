@@ -5,7 +5,7 @@
 
     <groupId>ru.vtb.uasp.inputconvertor</groupId>
     <artifactId>uasp-streaming-input-convertor</artifactId>
-    <version>1.5.19</version>
+    <version>1.5.21</version>
     <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>
@@ -88,7 +88,7 @@
         <dependency>
             <groupId>ru.vtb.uasp.common</groupId>
             <artifactId>uasp-streaming-common</artifactId>
-            <version>1.3.50</version>
+            <version>1.3.52</version>
         </dependency>
 
         <dependency>
@@ -236,7 +236,7 @@
             <plugin>
                 <groupId>net.alchim31.maven</groupId>
                 <artifactId>scala-maven-plugin</artifactId>
-                <version>4.8.0</version>
+                <version>3.4.0</version>
                 <executions>
                     <execution>
                         <goals>
