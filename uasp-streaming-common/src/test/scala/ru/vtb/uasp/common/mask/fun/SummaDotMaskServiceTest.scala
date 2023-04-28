@@ -1,6 +1,6 @@
 package ru.vtb.uasp.common.mask.fun
 
-class SummaMaskServiceTest extends AbstractMaskedTest {
+class SummaDotMaskServiceTest extends AbstractMaskedTest {
 
 
   override val maskService: JsStringMaskedFun = SummaMaskService()
@@ -9,8 +9,8 @@ class SummaMaskServiceTest extends AbstractMaskedTest {
     "" -> "*",
     "1" -> "*",
     "12" -> "*",
-    "12,3" -> "*,3",
-    "12,34" -> "*,34",
+    "12.3" -> "*.3",
+    "12.34" -> "*.34",
   )
 
 

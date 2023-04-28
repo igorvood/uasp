@@ -7,14 +7,16 @@ import play.api.libs.json.JsString
  */
 case class SummaMaskService() extends JsStringMaskedFun {
 
+  private val str = "\\."
 
   override def mask(in: String): JsString = {
-    val strings = in.split(",")
+
+    val strings = in.split(str)
 
     val result = if (strings.length == 1)
       "*"
     else if (strings.length > 1)
-      "*," + strings.tail.mkString(",")
+      "*." + strings.tail.mkString(",")
     else ""
     JsString(result)
   }

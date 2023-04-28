@@ -43,6 +43,7 @@ case class UaspDto(id: String,
 
   }
 
+  override def kafkaKey: String = id
 }
 
 

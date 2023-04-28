@@ -13,7 +13,7 @@ object JsonConvertOutService extends Serializable {
       .map(d => KafkaDto(d.id.getBytes(), d.value.getBytes()))
   }
 
-  def serializeToKafkaJsValue[T <: Identity](value: T)(implicit oWrites: OWrites[T]): KafkaJsValueDto = KafkaJsValueDto(value.id, Json.toJson(value))
+  def serializeToKafkaJsValue[T <: Identity](value: T)(implicit oWrites: OWrites[T]): KafkaJsValueDto = KafkaJsValueDto(value.kafkaKey, Json.toJson(value))
 
   def serializeToBytes[T](value: T, maskedRule: Option[JsMaskedPath])(implicit oWrites: OWrites[T]): Either[List[JsMaskedPathError], KafkaDto] = {
     value.serializeToBytes(maskedRule)
@@ -21,7 +21,7 @@ object JsonConvertOutService extends Serializable {
 
 
   def serializeToStr[T <: Identity](value: T, maskedRule: Option[JsMaskedPath])(implicit oWrites: OWrites[T]): Either[List[JsMaskedPathError], KafkaStrDto] = {
-    serializeToStr(value.id, value, maskedRule)
+    serializeToStr(value.kafkaKey, value, maskedRule)
   }
 
 
@@ -41,7 +41,7 @@ object JsonConvertOutService extends Serializable {
 
     private[common] def serializeToBytes(implicit oWrites: OWrites[T]): KafkaDto = JsonConvertOutService.serializeToBytesIdentity(self, None).right.get
 
-    def serializeToKafkaJsValue(implicit oWrites: OWrites[T]): KafkaJsValueDto = KafkaJsValueDto(self.id, Json.toJson(self))
+    def serializeToKafkaJsValue(implicit oWrites: OWrites[T]): KafkaJsValueDto = KafkaJsValueDto(self.kafkaKey, Json.toJson(self))
 
     def serializeToBytes(maskedRule: Option[JsMaskedPath])(implicit oWrites: OWrites[T]): Either[List[JsMaskedPathError], KafkaDto] = JsonConvertOutService.serializeToBytesIdentity(self, maskedRule)
 
