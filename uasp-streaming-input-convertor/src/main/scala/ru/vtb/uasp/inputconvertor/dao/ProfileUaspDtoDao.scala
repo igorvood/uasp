@@ -19,7 +19,11 @@ object ProfileUaspDtoDao {
 
   def fromJValue(inMessage: JsValue, propsModel: InputPropsModel, dtoMap: Map[String, Array[String]]): List[JsResult[JsValue]] = {
 
-    val value1 = inMessage.validate[ProfileUaspDto].map(dj => {
+    val value = inMessage.validate[ProfileUaspDto]
+
+    println(1)
+
+    val value2 = value.map(dj => {
       UaspDto(
         id = dj.cid,
         uuid = FastUUID.toString(UUID.randomUUID),
@@ -49,7 +53,8 @@ object ProfileUaspDtoDao {
         ),
         dataBoolean = Map.empty
       )
-    }).map(d => Json.toJson(d))
+    })
+    val value1 = value2.map(d => Json.toJson(d))
 
     List(value1)
 
